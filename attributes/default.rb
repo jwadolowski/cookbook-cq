@@ -20,7 +20,7 @@
 # CQ attributes
 # -----------------------------------------------------------------------------
 default[:cq][:user] = 'cq'
-default[:cq][:group] = 'cq'
+default[:cq][:group] = 'cqadm'
 default[:cq][:limits][:file_descriptors] = '16384'
 default[:cq][:base_dir] = '/opt'
 default[:cq][:home_dir] = "#{node[:cq][:base_dir]}/cq"
