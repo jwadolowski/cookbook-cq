@@ -25,14 +25,38 @@ define :cq_installer,
        :mode => nil do
 
   # Helpers
+  # ---------------------------------------------------------------------------
   instance_home = "#{node[:cq][:home_dir]}/#{params[:mode]}"
-  # jar_name = Pathname.new(URI.parse(node[:cq][:jar][:url]).path).basename.to_s
+  jar_name = Pathname.new(URI.parse(node[:cq][:jar][:url]).path).basename.to_s
 
   # Create CQ instance directory
+  # ---------------------------------------------------------------------------
   directory instance_home do
     owner node[:cq][:user]
     group node[:cq][:group]
     mode '0750'
     action :create
+  end
+
+  # Download CQ JAR file
+  # ---------------------------------------------------------------------------
+  remote_file "#{instance_home}/#{jar_name}" do
+    owner node[:cq][:user]
+    group node[:cq][:group]
+    mode '0644'
+    source node[:cq][:jar][:url]
+    checksum node[:cq][:jar][:checksum]
+  end
+
+  # Unpack CQ JAR file once downloaded
+  bash 'Unpack CQ JAR file' do
+    user node[:cq][:user]
+    group node[:cq][:group]
+    cwd instance_home
+    code "java -jar #{jar_name} -unpack"
+    action :run
+
+    # Do not unpack if crx-quickstart exists inside CQ instance home
+    not_if { ::Dir.exist?("#{instance_home}/crx-quickstart") }
   end
 end
