@@ -19,3 +19,4 @@
 
 # CQ author attributes
 default[:cq][:author][:mode] = 'author'
+default[:cq][:author][:port] = '4502'

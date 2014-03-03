@@ -27,6 +27,8 @@ define :cq_installer,
   # Helpers
   # ---------------------------------------------------------------------------
   instance_home = "#{node[:cq][:home_dir]}/#{params[:mode]}"
+  instance_conf_dir = "#{instance_home}/conf"
+  cq_short_ver = node[:cq][:version].to_s.delete('^0-9')[0, 2]
   jar_name = Pathname.new(URI.parse(node[:cq][:jar][:url]).path).basename.to_s
 
   # Create CQ instance directory
@@ -40,6 +42,7 @@ define :cq_installer,
 
   # Download and unpack CQ JAR file
   # ---------------------------------------------------------------------------
+  # Download JAR file
   remote_file "#{instance_home}/#{jar_name}" do
     owner node[:cq][:user]
     group node[:cq][:group]
@@ -65,8 +68,30 @@ define :cq_installer,
   remote_file "#{instance_home}/license.properties" do
     owner node[:cq][:user]
     group node[:cq][:group]
-    mode '0644'
+    mode '0640'
     source node[:cq][:license][:url]
     checksum node[:cq][:license][:checksum]
+  end
+
+  # Install configuration file
+  # ---------------------------------------------------------------------------
+  # Create config directory
+  directory instance_conf_dir do
+    owner node[:cq][:user]
+    group node[:cq][:group]
+    mode '0750'
+    action :create
+  end
+
+  # Render CQ config file
+  template "#{instance_conf_dir}/cq#{cq_short_ver}-#{params[:mode]}.conf" do
+    owner node[:cq][:user]
+    group node[:cq][:group]
+    mode '0640'
+    source 'cq.conf.erb'
+    variables(
+      :mode => params[:mode],
+      :port => node[:cq][params[:mode]][:port]
+    )
   end
 end
