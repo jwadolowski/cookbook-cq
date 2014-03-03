@@ -90,8 +90,12 @@ define :cq_installer,
     mode '0640'
     source 'cq.conf.erb'
     variables(
+      :port => node[:cq][params[:mode]][:port],
+      :instance_home => instance_home,
       :mode => params[:mode],
-      :port => node[:cq][params[:mode]][:port]
+      :min_heap => node[:cq][params[:mode]][:xms],
+      :max_heap => node[:cq][params[:mode]][:xmx],
+      :max_perm_size => node[:cq][params[:mode]][:max_perm_size]
     )
   end
 end

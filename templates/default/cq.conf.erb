@@ -1,2 +1,26 @@
-export CQ_RUNMODE=<%= @mode %>
+# General settings
+export JAVA_HOME=<%= node[:java][:java_home] %>
+
+# CQ start file variables
 export CQ_PORT=<%= @port %>
+export CQ_USER=<%= node[:cq][:user] %>
+export CQ_HOME=<%= @instance_home %>
+export CQ_RUNMODE=<%= @mode %>
+
+# JVM parameters
+CQ_MIN_HEAP=<%= @min_heap %>
+CQ_MAX_HEAP=<%= @max_heap %>
+CQ_MAX_PERMSIZE=<%= @max_perm_size %>
+
+# General JVM options
+CQ_GENERAL_OPTS="-server \
+                 -Djava.awt.headless=true \
+                 -Djava.net.preferIPv4Stack=true"
+
+# -----------------------------------------------------------------------------
+# do not configure below this point
+# -----------------------------------------------------------------------------
+export CQ_JVM_OPTS="${CQ_GENERAL_OPTS} \
+                    -Xms${CQ_MIN_HEAP}m \
+                    -Xmx${CQ_MAX_HEAP}m \
+                    -XX:MaxPermSize=${CQ_MAX_PERMSIZE}m"
