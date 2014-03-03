@@ -17,7 +17,7 @@ Vagrant.configure('2') do |config|
 
   config.vm.provision :chef_solo do |chef|
     chef.run_list = [
-        'recipe[cq::commons]'
+        'recipe[cq::author]'
     ]
     chef.log_level = :debug
   end
