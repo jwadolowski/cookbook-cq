@@ -38,7 +38,7 @@ define :cq_installer,
     action :create
   end
 
-  # Download CQ JAR file
+  # Download and unpack CQ JAR file
   # ---------------------------------------------------------------------------
   remote_file "#{instance_home}/#{jar_name}" do
     owner node[:cq][:user]
@@ -58,5 +58,15 @@ define :cq_installer,
 
     # Do not unpack if crx-quickstart exists inside CQ instance home
     not_if { ::Dir.exist?("#{instance_home}/crx-quickstart") }
+  end
+
+  # Deploy CQ license file
+  # ---------------------------------------------------------------------------
+  remote_file "#{instance_home}/license.properties" do
+    owner node[:cq][:user]
+    group node[:cq][:group]
+    mode '0644'
+    source node[:cq][:license][:url]
+    checksum node[:cq][:license][:checksum]
   end
 end

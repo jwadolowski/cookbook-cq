@@ -26,6 +26,9 @@ default[:cq][:base_dir] = '/opt'
 default[:cq][:home_dir] = "#{node[:cq][:base_dir]}/cq"
 default[:cq][:version] = '5.6.1'
 default[:cq][:jar][:url] = ''
+default[:cq][:jar][:checksum] = ''
+default[:cq][:license][:url] = ''
+default[:cq][:license][:checksum] = ''
 
 # Java attributes
 # -----------------------------------------------------------------------------
