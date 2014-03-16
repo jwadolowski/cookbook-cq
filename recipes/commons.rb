@@ -52,7 +52,7 @@ end
 directory node[:cq][:home_dir] do
   owner node[:cq][:user]
   group node[:cq][:group]
-  mode '0750'
+  mode '0755'
   action :create
 end
 
