@@ -27,6 +27,8 @@ define :cq_installer,
   # Helpers
   # ---------------------------------------------------------------------------
   instance_home = "#{node[:cq][:home_dir]}/#{params[:mode]}"
+  instance_conf_dir = "#{instance_home}/conf"
+  cq_short_ver = node[:cq][:version].to_s.delete('^0-9')[0, 2]
   jar_name = Pathname.new(URI.parse(node[:cq][:jar][:url]).path).basename.to_s
 
   # Create CQ instance directory
@@ -34,12 +36,13 @@ define :cq_installer,
   directory instance_home do
     owner node[:cq][:user]
     group node[:cq][:group]
-    mode '0750'
+    mode '0755'
     action :create
   end
 
   # Download and unpack CQ JAR file
   # ---------------------------------------------------------------------------
+  # Download JAR file
   remote_file "#{instance_home}/#{jar_name}" do
     owner node[:cq][:user]
     group node[:cq][:group]
@@ -68,5 +71,38 @@ define :cq_installer,
     mode '0644'
     source node[:cq][:license][:url]
     checksum node[:cq][:license][:checksum]
+  end
+
+  # Install configuration file
+  # ---------------------------------------------------------------------------
+  # Create config directory
+  directory instance_conf_dir do
+    owner node[:cq][:user]
+    group node[:cq][:group]
+    mode '0755'
+    action :create
+  end
+
+  # Render CQ config file
+  template "#{instance_conf_dir}/cq#{cq_short_ver}-#{params[:mode]}.conf" do
+    owner node[:cq][:user]
+    group node[:cq][:group]
+    mode '0644'
+    source 'cq.conf.erb'
+    variables(
+      :port => node[:cq][params[:mode]][:port],
+      :instance_home => instance_home,
+      :mode => params[:mode],
+      :min_heap => node[:cq][params[:mode]][:jvm][:min_heap],
+      :max_heap => node[:cq][params[:mode]][:jvm][:max_heap],
+      :max_perm_size => node[:cq][params[:mode]][:jvm][:max_perm_size],
+      :code_cache => node[:cq][params[:mode]][:jvm][:code_cache_size],
+      :jvm_general_opts => node[:cq][params[:mode]][:jvm][:general_opts],
+      :jvm_code_cache_opts => node[:cq][params[:mode]][:jvm][:code_cache_opts],
+      :jvm_gc_opts => node[:cq][params[:mode]][:jvm][:gc_opts],
+      :jvm_jmx_opts => node[:cq][params[:mode]][:jvm][:jmx_opts],
+      :jvm_debug_opts => node[:cq][params[:mode]][:jvm][:debug_opts],
+      :jvm_extra_opts => node[:cq][params[:mode]][:jvm][:extra_opts]
+    )
   end
 end
