@@ -106,7 +106,6 @@ define :cq_installer,
     mode '0644'
     source 'cq.conf.erb'
     variables(
-      :tmp_dir => node[:cq][params[:mode]][:custom_tmp_dir],
       :port => node[:cq][params[:mode]][:port],
       :instance_home => instance_home,
       :mode => params[:mode],

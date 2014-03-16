@@ -20,7 +20,6 @@
 # CQ author attributes
 default[:cq][:author][:mode] = 'author'
 default[:cq][:author][:port] = '4502'
-default[:cq][:author][:custom_tmp_dir] = ''
 default[:cq][:author][:jvm][:min_heap] = '512'
 default[:cq][:author][:jvm][:max_heap] = '1024'
 default[:cq][:author][:jvm][:max_perm_size] = '128'
