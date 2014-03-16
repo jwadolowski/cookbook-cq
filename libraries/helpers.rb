@@ -34,7 +34,7 @@ end
 # Get CQ conf dir
 # -----------------------------------------------------------------------------
 def cq_instance_conf_dir(home_dir, mode)
-  "#{cq_instance_home(home_dir, mode)}/conf"
+  "#{cq_instance_home(home_dir, mode)}/crx-quickstart/conf"
 end
 
 # Get different form of given CQ version
