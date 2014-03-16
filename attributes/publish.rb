@@ -20,6 +20,15 @@
 # CQ publish attributes
 default[:cq][:publish][:mode] = 'publish'
 default[:cq][:publish][:port] = '4503'
+default[:cq][:publish][:custom_tmp_dir] = ''
 default[:cq][:publish][:jvm][:min_heap] = '512'
 default[:cq][:publish][:jvm][:max_heap] = '1024'
 default[:cq][:publish][:jvm][:max_perm_size] = '128'
+default[:cq][:publish][:jvm][:code_cache_size] = '64'
+default[:cq][:publish][:jvm][:general_opts] =
+  '-server -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true'
+default[:cq][:publish][:jvm][:code_cache_opts] = ''
+default[:cq][:publish][:jvm][:gc_opts] = ''
+default[:cq][:publish][:jvm][:jmx_opts] = ''
+default[:cq][:publish][:jvm][:debug_opts] = ''
+default[:cq][:publish][:jvm][:extra_opts] = ''

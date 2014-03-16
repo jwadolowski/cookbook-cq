@@ -20,6 +20,15 @@
 # CQ author attributes
 default[:cq][:author][:mode] = 'author'
 default[:cq][:author][:port] = '4502'
+default[:cq][:author][:custom_tmp_dir] = ''
 default[:cq][:author][:jvm][:min_heap] = '512'
 default[:cq][:author][:jvm][:max_heap] = '1024'
 default[:cq][:author][:jvm][:max_perm_size] = '128'
+default[:cq][:author][:jvm][:code_cache_size] = '64'
+default[:cq][:author][:jvm][:general_opts] =
+  '-server -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true'
+default[:cq][:author][:jvm][:code_cache_opts] = ''
+default[:cq][:author][:jvm][:gc_opts] = ''
+default[:cq][:author][:jvm][:jmx_opts] = ''
+default[:cq][:author][:jvm][:debug_opts] = ''
+default[:cq][:author][:jvm][:extra_opts] = ''

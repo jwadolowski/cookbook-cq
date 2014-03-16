@@ -31,12 +31,28 @@ define :cq_installer,
   cq_short_ver = node[:cq][:version].to_s.delete('^0-9')[0, 2]
   jar_name = Pathname.new(URI.parse(node[:cq][:jar][:url]).path).basename.to_s
 
+  # Create custom tmp directory
+  # ---------------------------------------------------------------------------
+  log "CQ TMPDIR = #{node[:cq][params[:mode]][:custom_tmp_dir].nil?}" do
+    level :debug
+  end
+  if !node[:cq][params[:mode]][:custom_tmp_dir].nil? &&
+     !node[:cq][params[:mode]][:custom_tmp_dir].empty? &&
+     !node[:cq][params[:mode]][:custom_tmp_dir] == '/tmp'
+    directory node[:cq][params[:mode]][:custom_tmp_dir] do
+      owner node[:cq][:user]
+      group node[:cq][:group]
+      mode '0755'
+      action :create
+    end
+  end
+
   # Create CQ instance directory
   # ---------------------------------------------------------------------------
   directory instance_home do
     owner node[:cq][:user]
     group node[:cq][:group]
-    mode '0750'
+    mode '0755'
     action :create
   end
 
@@ -68,7 +84,7 @@ define :cq_installer,
   remote_file "#{instance_home}/license.properties" do
     owner node[:cq][:user]
     group node[:cq][:group]
-    mode '0640'
+    mode '0644'
     source node[:cq][:license][:url]
     checksum node[:cq][:license][:checksum]
   end
@@ -79,7 +95,7 @@ define :cq_installer,
   directory instance_conf_dir do
     owner node[:cq][:user]
     group node[:cq][:group]
-    mode '0750'
+    mode '0755'
     action :create
   end
 
@@ -87,15 +103,23 @@ define :cq_installer,
   template "#{instance_conf_dir}/cq#{cq_short_ver}-#{params[:mode]}.conf" do
     owner node[:cq][:user]
     group node[:cq][:group]
-    mode '0640'
+    mode '0644'
     source 'cq.conf.erb'
     variables(
+      :tmp_dir => node[:cq][params[:mode]][:custom_tmp_dir],
       :port => node[:cq][params[:mode]][:port],
       :instance_home => instance_home,
       :mode => params[:mode],
-      :min_heap => node[:cq][params[:mode]][:xms],
-      :max_heap => node[:cq][params[:mode]][:xmx],
-      :max_perm_size => node[:cq][params[:mode]][:max_perm_size]
+      :min_heap => node[:cq][params[:mode]][:jvm][:min_heap],
+      :max_heap => node[:cq][params[:mode]][:jvm][:max_heap],
+      :max_perm_size => node[:cq][params[:mode]][:jvm][:max_perm_size],
+      :code_cache => node[:cq][params[:mode]][:jvm][:code_cache_size],
+      :jvm_general_opts => node[:cq][params[:mode]][:jvm][:general_opts],
+      :jvm_code_cache_opts => node[:cq][params[:mode]][:jvm][:code_cache_opts],
+      :jvm_gc_opts => node[:cq][params[:mode]][:jvm][:gc_opts],
+      :jvm_jmx_opts => node[:cq][params[:mode]][:jvm][:jmx_opts],
+      :jvm_debug_opts => node[:cq][params[:mode]][:jvm][:debug_opts],
+      :jvm_extra_opts => node[:cq][params[:mode]][:jvm][:extra_opts]
     )
   end
 end
