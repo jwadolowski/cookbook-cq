@@ -31,22 +31,6 @@ define :cq_installer,
   cq_short_ver = node[:cq][:version].to_s.delete('^0-9')[0, 2]
   jar_name = Pathname.new(URI.parse(node[:cq][:jar][:url]).path).basename.to_s
 
-  # Create custom tmp directory
-  # ---------------------------------------------------------------------------
-  log "CQ TMPDIR = #{node[:cq][params[:mode]][:custom_tmp_dir].nil?}" do
-    level :debug
-  end
-  if !node[:cq][params[:mode]][:custom_tmp_dir].nil? &&
-     !node[:cq][params[:mode]][:custom_tmp_dir].empty? &&
-     !node[:cq][params[:mode]][:custom_tmp_dir] == '/tmp'
-    directory node[:cq][params[:mode]][:custom_tmp_dir] do
-      owner node[:cq][:user]
-      group node[:cq][:group]
-      mode '0755'
-      action :create
-    end
-  end
-
   # Create CQ instance directory
   # ---------------------------------------------------------------------------
   directory instance_home do

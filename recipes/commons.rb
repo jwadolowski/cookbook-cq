@@ -64,17 +64,15 @@ end
 
 # Create custom tmp directory
 # -----------------------------------------------------------------------------
-log "CQ TMPDIR = #{node[:cq][:custom_tmp_dir].nil?}" do
-  level :debug
-end
 if !node[:cq][:custom_tmp_dir].nil? &&
-    !node[:cq][:custom_tmp_dir].empty? &&
-    !node[:cq][:custom_tmp_dir] == '/tmp'
+  !node[:cq][:custom_tmp_dir].empty? &&
+  node[:cq][:custom_tmp_dir] != '/tmp'
   directory node[:cq][:custom_tmp_dir] do
     owner node[:cq][:user]
     group node[:cq][:group]
     mode '0755'
     action :create
+    recursive true
   end
 end
 
