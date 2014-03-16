@@ -18,18 +18,14 @@
 # limitations under the License.
 #
 
-require 'pathname'
-require 'uri'
-
 define :cq_installer,
        :mode => nil do
 
   # Helpers
   # ---------------------------------------------------------------------------
-  instance_home = "#{node[:cq][:home_dir]}/#{params[:mode]}"
-  instance_conf_dir = "#{instance_home}/conf"
-  cq_short_ver = node[:cq][:version].to_s.delete('^0-9')[0, 2]
-  jar_name = Pathname.new(URI.parse(node[:cq][:jar][:url]).path).basename.to_s
+  instance_home = cq_instance_home(node[:cq][:home_dir], params[:mode])
+  instance_conf_dir = cq_instance_conf_dir(node[:cq][:home_dir], params[:mode])
+  jar_name = cq_jarfile(node[:cq][:jar][:url])
 
   # Create CQ instance directory
   # ---------------------------------------------------------------------------
@@ -84,7 +80,8 @@ define :cq_installer,
   end
 
   # Render CQ config file
-  template "#{instance_conf_dir}/cq#{cq_short_ver}-#{params[:mode]}.conf" do
+  template "#{instance_conf_dir}/cq#{cq_version('short_squeezed')}"\
+           "-#{params[:mode]}.conf" do
     owner node[:cq][:user]
     group node[:cq][:group]
     mode '0644'
