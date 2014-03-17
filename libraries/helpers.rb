@@ -55,32 +55,3 @@ end
 def cq_daemon_name(mode)
   "cq#{cq_version('short_squeezed')}-#{mode}"
 end
-
-# Wait until CQ instance is up and running
-def cq_start_guard(mode)
-  require 'net/http'
-  require 'uri'
-
-  # Pick proper resource to verify CQ instance full start
-  case node[:cq][:version]
-  when Chef::VersionConstraint.new('~> 5.6.0').include?(node[:cq][:version])
-    uri = URI.parse("http://localhost:#{node[:cq][mode][:port]}"\
-                    "/libs/granite/core/content/login.html")
-  when Chef::VersionConstraint.new('~> 5.5.0').include?(node[:cq][:version])
-    uri = URI.parse("http://localhost:#{node[:cq][mode][:port]}"\
-                    "/libs/cq/core/content/login.html")
-  end
-
-  response = '-1'
-  start_time = Time.now
-  time_diff = 0
-
-  while response != '200' || time_diff < 300
-    response = Net::HTTP.get_response(uri).code
-    sleep(5)
-    time_diff = Time.now - start_time
-  end
-
-  abort "Aborting since #{cq_daemon_name(mode)}"\
-        " start took more than 5 minutes!" if time_diff > 300
-end
