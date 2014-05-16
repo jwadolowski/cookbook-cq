@@ -34,5 +34,3 @@ attribute :last_name, :kind_of => String,
                       :default => nil
 attribute :email, :kind_of => String,
                   :default => nil
-
-attr_accessor :exists
