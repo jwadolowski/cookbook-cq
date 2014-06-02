@@ -17,7 +17,9 @@
 # limitations under the License.
 #
 
-actions :create, :build, :download, :install, :delete, :upload, :activate
+actions :create, :build, :download, :install, :delete, :upload, :activate,
+        :uninstall
+
 default_action :nothing
 
 attribute :name, :kind_of => String, :name_attribute => true, :required => true
@@ -26,6 +28,6 @@ attribute :version, :kind_of => String, :required => false
 attribute :description, :kind_of => String, :required => false
 attribute :filters, :kind_of => Hash, :required => false
 attribute :source, :kind_of => String, :required => true
-attribute :destination, :kind_of => String, :required => true
+attribute :instance, :kind_of => String, :required => true
 
 attr_accessor :exists, :installed
