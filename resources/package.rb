@@ -20,18 +20,11 @@
 actions :create, :build, :download, :install, :delete, :upload
 default_action :nothing
 
-attribute :name, :kind_of => String,
-                 :name_attribute => true,
-                 :required => true
-attribute :group, :kind_of => String,
-                  :required => false
-attribute :version, :kind_of => String,
-                    :required => false
-attribute :description, :kind_of => String,
-                        :required => false
-attribute :filters, :kind_of => Hash,
-                    :required => false
-attribute :source, :kind_of => String,
-                   :required => false
+attribute :name, :kind_of => String, :name_attribute => true, :required => true
+attribute :group, :kind_of => String, :required => false
+attribute :version, :kind_of => String, :required => false
+attribute :description, :kind_of => String, :required => false
+attribute :filters, :kind_of => Hash, :required => false
+attribute :source, :kind_of => String, :required => false
 
-attr_accessor :exists
+attr_accessor :exists?, :installed?
