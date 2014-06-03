@@ -65,8 +65,8 @@ define :cq_daemon,
                         "/libs/cq/core/content/login.html")
       end
 
-      # Start timeout (10 min)
-      timeout = 600
+      # Start timeout (15 min)
+      timeout = 900
 
       response = '-1'
       start_time = Time.now
