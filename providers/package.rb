@@ -18,5 +18,9 @@
 #
 
 action :upload do
-  cmdStr = "#{node[:cq_unix_toolkit][:install_dir]}/cqput -i #{@new_resource.instance} -u admin -p admin /content/packages/#{@new_resource.source}"
+  cmdStr = "#{node[:cq_unix_toolkit][:install_dir]}/cqput
+            -i #{@new_resource.instance}
+            -u admin
+            -p admin
+            #{@new_resource.source}"
 end
