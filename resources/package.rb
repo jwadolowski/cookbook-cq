@@ -27,7 +27,9 @@ attribute :group, :kind_of => String, :required => false
 attribute :version, :kind_of => String, :required => false
 attribute :description, :kind_of => String, :required => false
 attribute :filters, :kind_of => Hash, :required => false
-attribute :source, :kind_of => String, :required => true
+attribute :username, :kind_of => String, :required => true
+attribute :password, :kind_of => String, :required => true
 attribute :instance, :kind_of => String, :required => true
+attribute :source, :kind_of => String, :required => true
 
 attr_accessor :exists, :installed
