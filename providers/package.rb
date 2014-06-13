@@ -27,6 +27,7 @@ action :upload do
   cmd.run_command
   Chef::Log.info "cq_package_upload command: #{cmd_str}"
   Chef::Log.info "cq_package_upload output: #{cmd.stdout}"
+  Chef::Log.info "cq_package_upload error message: #{cmd.stderr}"
   begin
     cmd.error!
     true
