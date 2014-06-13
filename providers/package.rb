@@ -26,7 +26,8 @@ action :upload do
   cmd = Mixlib::ShellOut.new(cmd_str)
   cmd.run_command
   Chef::Log.info "cq_package_upload command: #{cmd_str}"
-  Chef::Log.info "cq_package_upload output: #{cmd.stdout}"
+  Chef::Log.info "cq_package_upload stdout: #{cmd.stdout}"
+  Chef::Log.info "cq_package_upload stderr: #{cmd.stderr}"
   begin
     cmd.error!
     true
