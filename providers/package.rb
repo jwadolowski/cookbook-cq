@@ -18,9 +18,20 @@
 #
 
 action :upload do
-  cmdStr = "#{node[:cq_unix_toolkit][:install_dir]}/cqput
-            -i #{@new_resource.instance}
-            -u admin
-            -p admin
+  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqput\
+            -i #{@new_resource.instance}\
+            -u #{@new_resource.username}\
+            -p #{@new_resource.password}\
             #{@new_resource.source}"
+  cmd = Mixlib::ShellOut.new(cmd_str)
+  cmd.run_command
+  Chef::Log.debug "cq_package_upload command: #{cmd_str}"
+  Chef::Log.debug "cq_package_upload output: #{cmd.stdout}"
+  begin
+    cmd.error!
+    true
+  rescue
+    Chef::Application.fatal!("Can't upload package #{@new_resource.name}:\
+                             #{cmd.stderr}")
+  end
 end
