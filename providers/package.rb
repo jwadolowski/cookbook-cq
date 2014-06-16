@@ -24,15 +24,17 @@ action :upload do
             "-p #{@new_resource.password} "\
             "#{@new_resource.source}"
   cmd = Mixlib::ShellOut.new(cmd_str)
+  Chef::Log.info "Uploading package #{new_resource.name}"
   cmd.run_command
-  Chef::Log.info "cq_package_upload command: #{cmd_str}"
-  Chef::Log.info "cq_package_upload stdout: #{cmd.stdout}"
-  Chef::Log.info "cq_package_upload stderr: #{cmd.stderr}"
+  Chef::Log.debug "cq_package_upload command: #{cmd_str}"
+  Chef::Log.debug "cq_package_upload stdout: #{cmd.stdout}"
+  Chef::Log.debug "cq_package_upload stderr: #{cmd.stderr}"
   begin
     cmd.error!
-    true
+    Chef::Log.info "Packages #{new.resource.name} has been sucessfully "\
+                   'uploaded'
   rescue
     Chef::Application.fatal!("Can't upload package #{@new_resource.name}:\
-                             #{cmd.stdout}")
+                             #{cmd.stderr}")
   end
 end
