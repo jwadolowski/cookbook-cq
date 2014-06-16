@@ -34,7 +34,7 @@ action :upload do
     Chef::Log.info "Packages #{new.resource.name} has been sucessfully "\
                    'uploaded'
   rescue
-    Chef::Application.fatal!("Can't upload package #{@new_resource.name}:\
-                             #{cmd.stderr}")
+    Chef::Application.fatal!("Can't upload package #{@new_resource.name}: "\
+                             "#{cmd.stderr}")
   end
 end
