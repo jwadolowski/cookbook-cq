@@ -31,7 +31,7 @@ action :upload do
   Chef::Log.debug "cq_package_upload stderr: #{cmd.stderr}"
   begin
     cmd.error!
-    Chef::Log.info "Packages #{new.resource.name} has been sucessfully "\
+    Chef::Log.info "Package #{@new_resource.name} has been successfully"\
                    'uploaded'
   rescue
     Chef::Application.fatal!("Can't upload package #{@new_resource.name}: "\
