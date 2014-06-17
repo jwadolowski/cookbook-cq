@@ -19,5 +19,6 @@ Vagrant.configure('2') do |config|
     chef.run_list = [
         'recipe[cq::author]'
     ]
+    chef.log_level = :debug
   end
 end
