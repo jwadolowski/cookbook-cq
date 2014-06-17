@@ -8,4 +8,4 @@ version          '0.1.0'
 
 depends          'java'
 depends          'ulimit'
-depends          'cq-unix-toolkit', '= 1.1.0'
+depends          'cq-unix-toolkit', '= 1.1.1'
