@@ -31,5 +31,7 @@ attribute :username, :kind_of => String, :required => true
 attribute :password, :kind_of => String, :required => true
 attribute :instance, :kind_of => String, :required => true
 attribute :source, :kind_of => String, :required => true
+attribute :http_user, :kind_of => String, :default => '', :required => false
+attribute :http_pass, :kind_of => String, :default => '', :required => false
 
 attr_accessor :exists, :installed
