@@ -85,10 +85,8 @@ end
 # Downloads CQ package from HTTP/HTTPS endpoints using built-in (platform)
 # remote_file resource
 #
-# @param uri [String] HTTP/HTTPS URI
-def download_package(uri)
-  # TODO: simplify method by removing params
-
+# @return [Chef::Resource::RemoteFile]
+def download_package
   src = validate_source
   cache_dir = package_cache
 
@@ -99,15 +97,15 @@ def download_package(uri)
   @dst_path = (cache_dir + file_name).to_s
 
   # Add HTTP Authorization header if necessary
-  unless @new_resource.http_user.empty? &&
-       @new_resource.http_pass.empty?
+  unless new_resource.http_user.empty? &&
+       new_resource.http_pass.empty?
     remote_file_resource.headers('Authorization' =>
                                  "Basic #{auth_header_value}")
   end
 
   # Add checksum validation if necessary
-  unless @new_resource.checksum.empty? || @new_resource.checksum.nil?
-    remote_file_resource.checksum = @new_resource.checksum
+  unless new_resource.checksum.empty? || new_resource.checksum.nil?
+    remote_file_resource.checksum = new_resource.checksum
   end
 
   # Run remote_file resource to download the CQ package
@@ -116,12 +114,12 @@ end
 
 action :upload do
   # TODO: add validation via load_current_resource
-  download_package(@new_resource.source)
+  download_package
 
   cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqput "\
-            "-i #{@new_resource.instance} "\
-            "-u #{@new_resource.username} "\
-            "-p #{@new_resource.password} "\
+            "-i #{new_resource.instance} "\
+            "-u #{new_resource.username} "\
+            "-p #{new_resource.password} "\
             "#{@dst_path}"
   cmd = Mixlib::ShellOut.new(cmd_str)
   Chef::Log.info "Uploading package #{new_resource.name}"
@@ -131,10 +129,10 @@ action :upload do
   Chef::Log.debug "cq_package_upload stderr: #{cmd.stderr}"
   begin
     cmd.error!
-    Chef::Log.info "Package #{@new_resource.name} has been successfully "\
+    Chef::Log.info "Package #{new_resource.name} has been successfully "\
                    'uploaded'
   rescue
-    Chef::Application.fatal!("Can't upload package #{@new_resource.name}: "\
+    Chef::Application.fatal!("Can't upload package #{new_resource.name}: "\
                              "#{cmd.stderr}")
   end
 end
