@@ -21,27 +21,24 @@ use_inline_resources
 
 # Calucates Authorization HTTP header value
 #
-# @param user [String] User name used in HTTP basic authentication
-# @param pass [String] Password of a user
 # @return [String] encoded HTTP header value compliant with the standard
-def auth_header_value(user, pass)
-  Base64.encode64("#{user}:#{pass}")
+def auth_header_value
+  Base64.encode64("#{new_resource.http_user}:#{new_resource.http_pass}")
 end
 
 # Validates source attribute of cq_package resource.
 # To pass it has to be valid HTTP/HTTP URI.
 #
-# @param uri [String] URI in string format you'd like to validate
 # @return [URI] valid/parsed URI object
-def validate_source(uri)
+def validate_source
   begin
-    src = URI.parse(uri)
+    src = URI.parse(new_resource.source)
     unless src.instance_of?(URI::HTTP) || src.instance_of?(URI::HTTPS)
-      Chef::Application.fatal!("#{uri} is valid URI, but is not an instance "\
-                               'of HTTP/HTTPS URI!')
+      Chef::Application.fatal!("#{new_resource.source} is valid URI, but is "\
+                               'not an instance of HTTP/HTTPS URI!')
     end
   rescue URI::InvalidURIError => e
-    Chef::Application.fatal!("#{uri} is not a valid URI: #{e}")
+    Chef::Application.fatal!("#{new_resource.source} is not a valid URI: #{e}")
   end
 
   src
@@ -89,12 +86,10 @@ end
 # remote_file resource
 #
 # @param uri [String] HTTP/HTTPS URI
-# @param user [String] user for HTTP basic authorization
-# @param pass [String] pass for HTTP basic authorization
-def download_package(uri, user, pass)
+def download_package(uri)
   # TODO: simplify method by removing params
 
-  src = validate_source(uri)
+  src = validate_source
   cache_dir = package_cache
 
   # Calculate file name from give URI
@@ -107,7 +102,7 @@ def download_package(uri, user, pass)
   unless @new_resource.http_user.empty? &&
        @new_resource.http_pass.empty?
     remote_file_resource.headers('Authorization' =>
-                                 "Basic #{auth_header_value(user, pass)}")
+                                 "Basic #{auth_header_value}")
   end
 
   # Add checksum validation if necessary
@@ -121,9 +116,7 @@ end
 
 action :upload do
   # TODO: add validation via load_current_resource
-  download_package(@new_resource.source,
-                   @new_resource.http_user,
-                   @new_resource.http_pass)
+  download_package(@new_resource.source)
 
   cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqput "\
             "-i #{@new_resource.instance} "\
