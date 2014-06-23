@@ -2,7 +2,10 @@ Encoding:
     Enabled: false
 
 LineLength:
-    Max: 120
+    Max: 80 
+
+MethodLength:
+    Max: 20
 
 HashSyntax:
     EnforcedStyle: hash_rockets
