@@ -9,3 +9,6 @@ MethodLength:
 
 HashSyntax:
     EnforcedStyle: hash_rockets
+
+CyclomaticComplexity:
+    Max: 10
