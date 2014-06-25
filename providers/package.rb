@@ -27,15 +27,28 @@ def auth_header_value
 end
 
 # Validates source attribute of cq_package resource.
-# To pass it has to be valid HTTP/HTTP URI.
+# To pass it has to be either valid HTTP/HTTP URI or an existing local path
 #
 # @return [URI] valid/parsed URI object
 def validate_source
   begin
     src = URI.parse(new_resource.source)
-    unless src.instance_of?(URI::HTTP) || src.instance_of?(URI::HTTPS)
-      Chef::Application.fatal!("#{new_resource.source} is valid URI, but is "\
-                               'not an instance of HTTP/HTTPS URI!')
+
+    unless src.instance_of?(URI::HTTP) ||
+           src.instance_of?(URI::HTTPS) ||
+           src.instance_of?(URI::Generic)
+      Chef::Application.fatal!("#{new_resource.source} is neither local path "\
+                               '(generic URI) nor HTTP/HTTPS URI!')
+    end
+
+    local_path = Pathname.new(src.path)
+
+    if src.instance_of?(URI::Generic) && !local_path.exist?
+      Chef::Application.fatal!("#{new_resource.source} does not exist!")
+    end
+
+    if src.instance_of?(URI::Generic) && !local_path.file?
+      Chef::Application.fatal!("#{new_resource.source} is not a file!")
     end
   rescue URI::InvalidURIError => e
     Chef::Application.fatal!("#{new_resource.source} is not a valid URI: #{e}")
@@ -82,45 +95,55 @@ def remote_file_resource
   end
 end
 
-# Downloads CQ package from HTTP/HTTPS endpoints using built-in (platform)
-# remote_file resource
+# Based on source attribute downloads CQ package from HTTP/HTTPS endpoints
+# using built-in remote_file resource or just returns source attribute if
+# it is a valid and existing local path
 #
-# @return [Chef::Resource::RemoteFile]
-def download_package
+# @return [String] local path to CQ package
+def package_path
+  # Validate source attribute
   src = validate_source
-  cache_dir = package_cache
 
-  # Calculate file name from give URI
-  file_name = Pathname.new(src.path).basename.to_s
+  # Return source attribute if it's not a remote one or download otherwise
+  if src.instance_of?(URI::Generic)
+    new_resource.source
+  else
+    cache_dir = package_cache
 
-  # Assembly and set absolute local path to CQ package
-  @dst_path = (cache_dir + file_name).to_s
+    # Calculate file name from give URI
+    file_name = Pathname.new(src.path).basename.to_s
 
-  # Add HTTP Authorization header if necessary
-  unless new_resource.http_user.empty? &&
-       new_resource.http_pass.empty?
-    remote_file_resource.headers('Authorization' =>
-                                 "Basic #{auth_header_value}")
+    # Assembly and set absolute local path to CQ package
+    @dst_path = (cache_dir + file_name).to_s
+
+    # Add HTTP Authorization header if necessary
+    unless new_resource.http_user.empty? &&
+        new_resource.http_pass.empty?
+      remote_file_resource.headers('Authorization' =>
+                                  "Basic #{auth_header_value}")
+    end
+
+    # Add checksum validation if necessary
+    unless new_resource.checksum.empty? || new_resource.checksum.nil?
+      remote_file_resource.checksum = new_resource.checksum
+    end
+
+    # Run remote_file resource to download the CQ package
+    remote_file_resource.run_action(:create)
+
+    # Return path to downloaded file
+    @dst_path
   end
-
-  # Add checksum validation if necessary
-  unless new_resource.checksum.empty? || new_resource.checksum.nil?
-    remote_file_resource.checksum = new_resource.checksum
-  end
-
-  # Run remote_file resource to download the CQ package
-  remote_file_resource.run_action(:create)
 end
 
 action :upload do
   # TODO: add validation via load_current_resource
-  download_package
 
   cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqput "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
             "-p #{new_resource.password} "\
-            "#{@dst_path}"
+            "#{package_path}"
   cmd = Mixlib::ShellOut.new(cmd_str)
   Chef::Log.info "Uploading package #{new_resource.name}"
   cmd.run_command
