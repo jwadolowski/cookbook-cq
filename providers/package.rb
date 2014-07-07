@@ -136,6 +136,100 @@ def package_path
   end
 end
 
+# Get package list on a given CQ instance
+#
+# Output format:
+# <packages>
+#   <package>
+#     <group>test_group</group>
+#     <name>test_package</name>
+#     ...
+#   </package>
+#   ...
+# </packages>
+#
+# @return [REXML::Element] list of packages as an XML string
+def package_list
+  require 'rexml/document'
+
+  # Get list of packages using CQ UNIX Toolkit
+  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqls -x "\
+            "-i #{new_resource.instance} "\
+            "-u #{new_resource.username} "\
+            "-p #{new_resource.password}"
+  Chef::Log.debug("Command: #{cmd_str}")
+  cmd = Mixlib::ShellOut.new(cmd_str)
+  cmd.run_command
+  begin
+    cmd.error!
+  rescue
+    Chef::Application.fatal!("Cannot get package list: #{cmd.stderr}")
+  end
+
+  # Extract and return <packages> element from original XML
+  begin
+    REXML::XPath.first(REXML::Document.new(cmd.stdout), '//packages')
+  rescue => e
+    Chef::Application.fatal!("Cannot parse XML returned by CQ instance: #{e}")
+  end
+end
+
+# Looks for a package on a given CQ instance
+#
+# @param [String] package name to look for
+# @return [Boolean] true if pacakge is present, false otherwise
+def package_presence(package_name)
+  # TODO: consider rewrite to package_info
+
+  require 'rexml/document'
+
+  Chef::Log.debug(">>>>>>>>>>>>>>> Package list: #{package_list}")
+
+  package_list.elements.each('package') do |pkg|
+    Chef::Log.debug("!!!!!!!!!!!!! Element name: #{pkg.elements['name'].text}")
+    return true if pkg.elements['name'].text == package_name
+  end
+
+  Chef::Log.debug('>>>>>>>>>>>>>> Did you even search for it?')
+
+  # Return false if package was not found
+  false
+end
+
+# Sets uploaded attribute if pacakge is uploaded to given instance
+#
+# @return [Boolean] true if package is already uploaded, false otherwise
+def package_uploaded?
+  package_presence(new_resource.name)
+end
+
+# Sets installed attribute if package was already installed
+#
+# @return [Boolean] true if package is already installed, false otherwise
+def package_installed?
+  true
+end
+
+# Sets downloaded attribute if package was already downloaded
+#
+# @return [Boolean] true if package was already downaloded, false otherwise
+def package_downloaded?
+  true
+end
+
+# Loads current resource and all accessor attributes
+def load_current_resource
+  @current_resource = Chef::Resource::CqPackage.new(new_resource.name)
+
+  # Load "state" attributes from new resource
+  @current_resource.username(new_resource.username)
+  @current_resource.password(new_resource.password)
+  @current_resource.instance(new_resource.instance)
+
+  # Set attribute acccessors
+  @current_resource.uploaded = true if package_uploaded?
+end
+
 action :upload do
   # TODO: add validation via load_current_resource
 
