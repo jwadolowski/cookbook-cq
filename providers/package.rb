@@ -186,7 +186,6 @@ def package_info(package_name)
 
   # Iterate thorugh packages and get info about package you're looking for
   package_list.elements.each('package') do |pkg|
-    Chef::Log.debug("???????? #{pkg.elements['name'].text} == #{package_name}")
     return pkg if pkg.elements['name'].text == package_name
   end
 
@@ -225,7 +224,6 @@ def load_current_resource
   @current_resource.instance(new_resource.instance)
 
   # Set attribute acccessors
-  Chef::Log.debug(">>>>>> ??????? <<<<<<< #{package_uploaded?}")
   @current_resource.uploaded = true if package_uploaded? != false
 end
 
@@ -253,8 +251,6 @@ def upload_package
 end
 
 action :upload do
-  Chef::Log.debug(">>>>>>>>>>>>> Uploaded attr: #{@current_resource.uploaded}")
-
   if @current_resource.uploaded
     Chef::Log.info("Package #{new_resource.name} is already uploaded - "\
                    'nothing to do')
