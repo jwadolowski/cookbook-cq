@@ -17,7 +17,9 @@
 # limitations under the License.
 #
 
-use_inline_resources
+def whyrun_supported?
+  true
+end
 
 # Calucates Authorization HTTP header value
 #
@@ -177,20 +179,16 @@ end
 # Looks for a package on a given CQ instance
 #
 # @param [String] package name to look for
-# @return [Boolean] true if pacakge is present, false otherwise
-def package_presence(package_name)
-  # TODO: consider rewrite to package_info
-
+# @return [REXML::Element] full package info if package exists
+# @return [Boolean] false if package does not exist
+def package_info(package_name)
   require 'rexml/document'
 
-  Chef::Log.debug(">>>>>>>>>>>>>>> Package list: #{package_list}")
-
+  # Iterate thorugh packages and get info about package you're looking for
   package_list.elements.each('package') do |pkg|
-    Chef::Log.debug("!!!!!!!!!!!!! Element name: #{pkg.elements['name'].text}")
-    return true if pkg.elements['name'].text == package_name
+    Chef::Log.debug("???????? #{pkg.elements['name'].text} == #{package_name}")
+    return pkg if pkg.elements['name'].text == package_name
   end
-
-  Chef::Log.debug('>>>>>>>>>>>>>> Did you even search for it?')
 
   # Return false if package was not found
   false
@@ -200,7 +198,7 @@ end
 #
 # @return [Boolean] true if package is already uploaded, false otherwise
 def package_uploaded?
-  package_presence(new_resource.name)
+  package_info(new_resource.name)
 end
 
 # Sets installed attribute if package was already installed
@@ -227,12 +225,12 @@ def load_current_resource
   @current_resource.instance(new_resource.instance)
 
   # Set attribute acccessors
-  @current_resource.uploaded = true if package_uploaded?
+  Chef::Log.debug(">>>>>> ??????? <<<<<<< #{package_uploaded?}")
+  @current_resource.uploaded = true if package_uploaded? != false
 end
 
-action :upload do
-  # TODO: add validation via load_current_resource
-
+# Uploads package to a given CQ instance
+def upload_package
   cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqput "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
@@ -251,5 +249,18 @@ action :upload do
   rescue
     Chef::Application.fatal!("Can't upload package #{new_resource.name}: "\
                              "#{cmd.stderr}")
+  end
+end
+
+action :upload do
+  Chef::Log.debug(">>>>>>>>>>>>> Uploaded attr: #{@current_resource.uploaded}")
+
+  if @current_resource.uploaded
+    Chef::Log.info("Package #{new_resource.name} is already uploaded - "\
+                   'nothing to do')
+  else
+    converge_by("Upload #{ new_resource }") do
+      upload_package
+    end
   end
 end
