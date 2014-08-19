@@ -193,6 +193,38 @@ def package_info(package_name)
   false
 end
 
+# Extract properties XML from package metadata
+#
+def package_properties
+  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -P "\
+    "#{package_path}"
+  cmd = Mixlib::ShellOut.new(cmd_str)
+  Chef::Log.debug 'Extracting properties.xml from CRX package'
+  cmd.run_command
+  begin
+    cmd.error!
+    Chef::Log.info 'Package properties successfully extracted'
+  rescue
+    Chef::Application.fatal!("Can't extract package properties: #{cmd.stderr}")
+  end
+end
+
+# Extract filters XML from package metadata
+#
+def package_filters
+  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -F "\
+    "#{package_path}"
+  cmd = Mixlib::ShellOut.new(cmd_str)
+  Chef::Log.debug 'Extracting filter.xml from CRX package'
+  cmd.run_command
+  begin
+    cmd.error!
+    Chef::Log.info 'Package filters successfully extracted'
+  rescue
+    Chef::Application.fatal!("Can't extract package filters: #{cmd.stderr}")
+  end
+end
+
 # Sets uploaded attribute if pacakge is uploaded to given instance
 #
 # @return [Boolean] true if package is already uploaded, false otherwise
