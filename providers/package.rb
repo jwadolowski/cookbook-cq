@@ -179,18 +179,18 @@ end
 # Looks for a package on a given CQ instance
 #
 # @param package_name [String] package name to look for
-# @return [REXML::Element] full package info if package exists
-# @return [Boolean] false if package does not exist
+# @return [REXML::Element] an array of elements with package info
 def package_info(package_name)
   require 'rexml/document'
 
+  packages = []
+
   # Iterate thorugh packages and get info about package you're looking for
   package_list.elements.each('package') do |pkg|
-    return pkg if pkg.elements['name'].text == package_name
+    packages.push(pkg) if pkg.elements['name'].text == package_name
   end
 
-  # Return false if package was not found
-  false
+  packages
 end
 
 # Extract raw information from package metadata
@@ -276,24 +276,24 @@ def package_uploaded?
                   "name = #{pkg_name}, "\
                   "version = #{pkg_ver}")
 
-  # Look for package info
-  pkg_obj = package_info(pkg_name)
+  # Look for packages in CRX Package Manager
+  pkg_info = package_info(pkg_name)
 
-  return false if pkg_obj == false
+  # Return false if 0 packages with given name has been found
+  return false if pkg_info.empty?
 
-  # Current resource details
-  current_pkg_name = package_attr_from_object(pkg_obj, 'name')
-  current_pkg_ver = package_attr_from_object(pkg_obj, 'version')
-  Chef::Log.debug('Current resource: '\
-                  "name = #{current_pkg_name}, "\
-                  "version = #{current_pkg_ver}")
+  # Look for specifc version of CQ package
+  pkg_info.each do |pkg|
+    current_pkg_ver = package_attr_from_object(pkg, 'version')
+    Chef::Log.debug('Current resource: '\
+                    "name = #{package_attr_from_object(pkg, 'name')}, "\
+                    "version = #{current_pkg_ver}")
 
-  # Idempotence check
-  if (pkg_name == current_pkg_name) && (pkg_ver == current_pkg_ver)
-    return true
-  else
-    return false
+    return true if pkg_ver == current_pkg_ver
   end
+
+  # Return false if there's no package with given version
+  false
 end
 
 # Sets installed attribute if package was already installed
