@@ -193,11 +193,65 @@ def package_info(package_name)
   false
 end
 
+# Extract raw information from package metadata
+#
+# @param [String] metadata type, accepted values: properties, filters
+# @retrurn [REXML::Document] raw XML object
+def package_metadata(type)
+  require 'rexml/document'
+
+  case type
+  when 'properties'
+    cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -P "\
+      "#{package_path}"
+  when 'filters'
+    cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -F "\
+      "#{package_path}"
+  else
+    Chef::Application.fatal!('Unsupported metadata type while extracting info'\
+                            ' from CRX package! Accepted values: properties,'\
+                            ' filters')
+  end
+
+  cmd = Mixlib::ShellOut.new(cmd_str)
+  Chef::Log.debug "Extracting #{type} from CRX package"
+  cmd.run_command
+  Chef::Log.debug "package_metadata command: #{cmd_str}"
+  Chef::Log.debug "package_metadata stdout: #{cmd.stdout}"
+  Chef::Log.debug "package_metadata stderr: #{cmd.stderr}"
+  begin
+    cmd.error!
+    Chef::Log.debug "Package #{type} successfully extracted"
+  rescue
+    Chef::Application.fatal!("Can't extract package #{type}: #{cmd.stderr}")
+  end
+
+  begin
+    REXML::Document.new(cmd.stdout)
+  rescue => e
+    Chef::Application.fatal!("Cannot parse #{type} XML file: #{e}")
+  end
+end
+
+# Gets package name from properties.xml
+#
+# @return [String] package name
+def package_name_from_metadata
+  require 'rexml/document'
+
+  begin
+    REXML::XPath.first(package_metadata('properties'),
+                       "//entry[@key='name']").text
+  rescue => e
+    Chef::Application.fatal!("Cannot get package name from XML object: #{e}")
+  end
+end
+
 # Sets uploaded attribute if pacakge is uploaded to given instance
 #
 # @return [Boolean] true if package is already uploaded, false otherwise
 def package_uploaded?
-  package_info(new_resource.name)
+  package_info(package_name_from_metadata)
 end
 
 # Sets installed attribute if package was already installed

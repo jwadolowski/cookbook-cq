@@ -5,7 +5,7 @@ LineLength:
     Max: 80 
 
 MethodLength:
-    Max: 20
+    Max: 30
 
 HashSyntax:
     EnforcedStyle: hash_rockets
