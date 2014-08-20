@@ -226,14 +226,32 @@ def package_metadata(type)
     Chef::Application.fatal!("Can't extract package #{type}: #{cmd.stderr}")
   end
 
-  REXML::Document.new(cmd.stdout)
+  begin
+    REXML::Document.new(cmd.stdout)
+  rescue => e
+    Chef::Application.fatal!("Cannot parse #{type} XML file: #{e}")
+  end
+end
+
+# Gets package name from properties.xml
+#
+# @return [String] package name
+def package_name_from_metadata
+  require 'rexml/document'
+
+  begin
+    REXML::XPath.first(package_metadata('properties'),
+                       "//entry[@key='name']").text
+  rescue => e
+    Chef::Application.fatal!("Cannot get package name from XML object: #{e}")
+  end
 end
 
 # Sets uploaded attribute if pacakge is uploaded to given instance
 #
 # @return [Boolean] true if package is already uploaded, false otherwise
 def package_uploaded?
-  package_info(new_resource.name)
+  package_info(package_name_from_metadata)
 end
 
 # Sets installed attribute if package was already installed

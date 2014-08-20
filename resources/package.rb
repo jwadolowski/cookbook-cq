@@ -23,6 +23,7 @@ actions :create, :build, :download, :install, :delete, :upload, :activate,
 default_action :nothing
 
 attribute :name, :kind_of => String, :name_attribute => true, :required => true
+attribute :properties, :kind_of => Hash, :required => false
 attribute :group, :kind_of => String, :required => false
 attribute :version, :kind_of => String, :required => false
 attribute :description, :kind_of => String, :required => false
