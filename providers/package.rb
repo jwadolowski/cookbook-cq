@@ -279,7 +279,7 @@ def package_uploaded?
   # Look for packages in CRX Package Manager
   pkg_info = package_info(pkg_name)
 
-  # Return false if 0 packages with given name has been found
+  # Return false if 0 packages with given name have been found
   return false if pkg_info.empty?
 
   # Look for specifc version of CQ package
