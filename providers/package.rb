@@ -193,9 +193,12 @@ def package_info(package_name)
   false
 end
 
-# Extract properties XML from package metadata
+# Extract and return properties XML from package metadata
 #
+# @retrurn [REXML::Document] properties XML object
 def package_properties
+  require 'rexml/document'
+
   cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -P "\
     "#{package_path}"
   cmd = Mixlib::ShellOut.new(cmd_str)
@@ -203,15 +206,20 @@ def package_properties
   cmd.run_command
   begin
     cmd.error!
-    Chef::Log.info 'Package properties successfully extracted'
+    Chef::Log.debug 'Package properties successfully extracted'
   rescue
     Chef::Application.fatal!("Can't extract package properties: #{cmd.stderr}")
   end
+
+  REXML::Document.new(cmd.stdout)
 end
 
-# Extract filters XML from package metadata
+# Extract and return filters XML from package metadata
 #
+# @retrurn [REXML::Document] filters XML object
 def package_filters
+  require 'rexml/document'
+
   cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -F "\
     "#{package_path}"
   cmd = Mixlib::ShellOut.new(cmd_str)
@@ -219,10 +227,12 @@ def package_filters
   cmd.run_command
   begin
     cmd.error!
-    Chef::Log.info 'Package filters successfully extracted'
+    Chef::Log.debug 'Package filters successfully extracted'
   rescue
     Chef::Application.fatal!("Can't extract package filters: #{cmd.stderr}")
   end
+
+  REXML::Document.new(cmd.stdout)
 end
 
 # Sets uploaded attribute if pacakge is uploaded to given instance
