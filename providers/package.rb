@@ -193,43 +193,37 @@ def package_info(package_name)
   false
 end
 
-# Extract and return properties XML from package metadata
+# Extract raw information from package metadata
 #
-# @retrurn [REXML::Document] properties XML object
-def package_properties
+# @param [String] metadata type, accepted values: properties, filters
+# @retrurn [REXML::Document] raw XML object
+def package_metadata(type)
   require 'rexml/document'
 
-  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -P "\
-    "#{package_path}"
-  cmd = Mixlib::ShellOut.new(cmd_str)
-  Chef::Log.debug 'Extracting properties.xml from CRX package'
-  cmd.run_command
-  begin
-    cmd.error!
-    Chef::Log.debug 'Package properties successfully extracted'
-  rescue
-    Chef::Application.fatal!("Can't extract package properties: #{cmd.stderr}")
+  case type
+  when 'properties'
+    cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -P "\
+      "#{package_path}"
+  when 'filters'
+    cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -F "\
+      "#{package_path}"
+  else
+    Chef::Application.fatal!('Unsupported metadata type while extracting info'\
+                            ' from CRX package! Accepted values: properties,'\
+                            ' filters')
   end
 
-  REXML::Document.new(cmd.stdout)
-end
-
-# Extract and return filters XML from package metadata
-#
-# @retrurn [REXML::Document] filters XML object
-def package_filters
-  require 'rexml/document'
-
-  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -F "\
-    "#{package_path}"
   cmd = Mixlib::ShellOut.new(cmd_str)
-  Chef::Log.debug 'Extracting filter.xml from CRX package'
+  Chef::Log.debug "Extracting #{type} from CRX package"
   cmd.run_command
+  Chef::Log.debug "package_metadata command: #{cmd_str}"
+  Chef::Log.debug "package_metadata stdout: #{cmd.stdout}"
+  Chef::Log.debug "package_metadata stderr: #{cmd.stderr}"
   begin
     cmd.error!
-    Chef::Log.debug 'Package filters successfully extracted'
+    Chef::Log.debug "Package #{type} successfully extracted"
   rescue
-    Chef::Application.fatal!("Can't extract package filters: #{cmd.stderr}")
+    Chef::Application.fatal!("Can't extract package #{type}: #{cmd.stderr}")
   end
 
   REXML::Document.new(cmd.stdout)
