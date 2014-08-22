@@ -21,7 +21,7 @@ def whyrun_supported?
   true
 end
 
-# Calucates Authorization HTTP header value
+# Calculates Authorization HTTP header value
 #
 # @return [String] encoded HTTP header value compliant with the standard
 def auth_header_value
