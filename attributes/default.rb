@@ -36,7 +36,3 @@ default[:cq][:license][:checksum] = ''
 # -----------------------------------------------------------------------------
 default[:java][:install_flavor] = 'oracle'
 default[:java][:oracle][:accept_oracle_download_terms] = true
-
-# CQ Unix Toolkit attributes
-# -----------------------------------------------------------------------------
-default[:cq_unix_toolkit][:repository][:revison] = '1.1-rc'
