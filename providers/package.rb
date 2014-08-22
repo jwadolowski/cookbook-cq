@@ -300,6 +300,7 @@ end
 #
 # @return [Boolean] true if package is already installed, false otherwise
 def package_installed?
+  # TODO: add installation detection
   true
 end
 
@@ -346,6 +347,12 @@ def upload_package
   end
 end
 
+# Installs CQ package
+def install_package
+  # TODO: installation impl
+  true
+end
+
 action :upload do
   if @current_resource.uploaded
     Chef::Log.info("Package #{new_resource.name} is already uploaded - "\
@@ -353,6 +360,17 @@ action :upload do
   else
     converge_by("Upload #{ new_resource }") do
       upload_package
+    end
+  end
+end
+
+action :install do
+  if @current_resource.installed
+    Chef::Log.info("Package #{new_resource.name} is already installed - "\
+                   'nothing to do')
+  else
+    converge_by("Install #{ new_resource }") do
+      install_package
     end
   end
 end
