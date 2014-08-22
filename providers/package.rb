@@ -178,24 +178,24 @@ end
 
 # Looks for a package on a given CQ instance
 #
-# @param [String] package name to look for
-# @return [REXML::Element] full package info if package exists
-# @return [Boolean] false if package does not exist
+# @param package_name [String] package name to look for
+# @return [REXML::Element] an array of elements with package info
 def package_info(package_name)
   require 'rexml/document'
 
+  packages = []
+
   # Iterate thorugh packages and get info about package you're looking for
   package_list.elements.each('package') do |pkg|
-    return pkg if pkg.elements['name'].text == package_name
+    packages.push(pkg) if pkg.elements['name'].text == package_name
   end
 
-  # Return false if package was not found
-  false
+  packages
 end
 
 # Extract raw information from package metadata
 #
-# @param [String] metadata type, accepted values: properties, filters
+# @param type [String] metadata type, accepted values: properties, filters
 # @retrurn [REXML::Document] raw XML object
 def package_metadata(type)
   require 'rexml/document'
@@ -233,25 +233,67 @@ def package_metadata(type)
   end
 end
 
-# Gets package name from properties.xml
+# Gets package attribute from properties.xml
 #
-# @return [String] package name
-def package_name_from_metadata
+# @param attr_name [String] package attribute to look for
+# @return [String] package attribute
+def package_attr_from_metadata(attr_name)
   require 'rexml/document'
 
   begin
-    REXML::XPath.first(package_metadata('properties'),
-                       "//entry[@key='name']").text
+    return REXML::XPath.first(package_metadata('properties'),
+                              "//entry[@key='#{attr_name}']").text
   rescue => e
-    Chef::Application.fatal!("Cannot get package name from XML object: #{e}")
+    Chef::Application.fatal!("Cannot get package #{attr_name} from XML "\
+                             "object: #{e}")
   end
 end
 
-# Sets uploaded attribute if pacakge is uploaded to given instance
+# Gets package attribute from CRX package object
+#
+# @param pkg_xml [REXML::Document] package XML object
+# @param attr_name [String] package attribute to look for
+# @return [String] package attribute
+def package_attr_from_object(pkg_xml, attr_name)
+  require 'rexml/document'
+
+  begin
+    return pkg_xml.elements[attr_name].text
+  rescue => e
+    Chef::Application.fatal!("Cannot get package #{attr_name} from XML "\
+                             "object: #{e}")
+  end
+end
+
+# Sets uploaded attribute if package is uploaded to given instance
 #
 # @return [Boolean] true if package is already uploaded, false otherwise
 def package_uploaded?
-  package_info(package_name_from_metadata)
+  # New resource
+  pkg_name = package_attr_from_metadata('name')
+  pkg_ver = package_attr_from_metadata('version')
+  Chef::Log.debug('New resource: '\
+                  "name = #{pkg_name}, "\
+                  "version = #{pkg_ver}")
+
+  # Look for packages in CRX Package Manager
+  pkg_info = package_info(pkg_name)
+
+  # Return false if 0 packages with given name have been found
+  return false if pkg_info.empty?
+
+  # Look for specifc version of CQ package
+  pkg_info.each do |pkg|
+    current_pkg_ver = package_attr_from_object(pkg, 'version')
+    Chef::Log.debug('Current resource: '\
+                    "name = #{package_attr_from_object(pkg, 'name')}, "\
+                    "version = #{current_pkg_ver}")
+
+    return true if pkg_ver == current_pkg_ver
+  end
+
+  # Return false if there's no package with given version
+  false
 end
 
 # Sets installed attribute if package was already installed
@@ -278,7 +320,7 @@ def load_current_resource
   @current_resource.instance(new_resource.instance)
 
   # Set attribute acccessors
-  @current_resource.uploaded = true if package_uploaded? != false
+  @current_resource.uploaded = package_uploaded?
 end
 
 # Uploads package to a given CQ instance
