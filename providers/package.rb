@@ -316,7 +316,6 @@ def package_installed?
 
   # Gather packages with lastUnpacked attribute set
   package_info(pkg_name).each do |pkg|
-    Chef::Log.debug("AAAAAAAAA #{pkg.to_s}")
     unless package_attr_from_object(pkg, 'lastUnpacked').nil?
       installed_pkgs.push(pkg)
     end
@@ -392,8 +391,32 @@ end
 
 # Installs CQ package
 def install_package
-  # TODO: installation impl
-  true
+  cmd_str = "curl -s -o /dev/null -w '%{http_code}' -X POST "\
+            "-u #{new_resource.username}:#{new_resource.password} "\
+            "#{new_resource.instance}/crx/packmgr/service/.json/etc/packages"\
+            "/#{package_attr_from_metadata('group')}"\
+            "/#{package_attr_from_metadata('name')}-"\
+            "#{package_attr_from_metadata('version')}.zip"\
+            "?cmd=install"
+  cmd = Mixlib::ShellOut.new(cmd_str)
+  Chef::Log.info "Installing package #{new_resource.name}"
+  cmd.run_command
+  Chef::Log.debug "cq_package_install command: #{cmd_str}"
+  Chef::Log.debug "cq_package_install stdout: #{cmd.stdout}"
+  Chef::Log.debug "cq_package_install stderr: #{cmd.stderr}"
+  begin
+    cmd.error!
+    Chef::Log.info "Package #{new_resource.name} has been successfully "\
+                   'installed'
+  rescue
+    Chef::Application.fatal!("Can't install package #{new_resource.name}: "\
+                             "#{cmd.stderr}")
+  end
+
+  # TODO: add curl response code validation
+  # if cmd.stdout != '200'
+  #   Chef::Application.fatal!("")
+  # end
 end
 
 action :upload do
