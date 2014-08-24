@@ -29,6 +29,7 @@ attribute :instance, :kind_of => String, :required => true
 attribute :source, :kind_of => String, :required => false
 attribute :http_user, :kind_of => String, :default => '', :required => false
 attribute :http_pass, :kind_of => String, :default => '', :required => false
+# TODO: verify checksum validation
 attribute :checksum, :kind_of => String, :default => '', :required => false
 
 attr_accessor :uploaded, :installed, :downloaded
