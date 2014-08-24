@@ -27,7 +27,6 @@ attribute :username, :kind_of => String, :required => true
 attribute :password, :kind_of => String, :required => true
 attribute :instance, :kind_of => String, :required => true
 attribute :source, :kind_of => String, :required => false
-attribute :destination, :kind_of => String, :required => false
 attribute :http_user, :kind_of => String, :default => '', :required => false
 attribute :http_pass, :kind_of => String, :default => '', :required => false
 attribute :checksum, :kind_of => String, :default => '', :required => false
