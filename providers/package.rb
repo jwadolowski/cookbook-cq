@@ -325,7 +325,7 @@ def package_installed?
   return false if installed_pkgs.empty?
 
   # Look for the package with the newest lastUnpacked element
-  newest_pkg = ''
+  newest_pkg = installed_pkgs.first
 
   installed_pkgs.each_cons(2) do |pkg1, pkg2|
     newest_pkg = pkg1
@@ -390,6 +390,10 @@ def upload_package
 end
 
 # Installs CQ package
+#
+# Since cqrun command from CQ UNIX Toolkit does not support installation of
+# given package version from the same group, a curl wrapper has been used
+# below.
 def install_package
   cmd_str = "curl -s -o /dev/null -w '%{http_code}' -X POST "\
             "-u #{new_resource.username}:#{new_resource.password} "\
@@ -413,7 +417,7 @@ def install_package
                              "#{cmd.stderr}")
   end
 
-  # TODO: add curl response code validation
+  # TODO: add curl response code validation, use cqapi to print pretty messages
   # if cmd.stdout != '200'
   #   Chef::Application.fatal!("")
   # end
