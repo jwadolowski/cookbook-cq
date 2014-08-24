@@ -36,6 +36,11 @@ def validate_source
   begin
     src = URI.parse(new_resource.source)
 
+    # Raise an error if source attr is empty
+    if new_resource.source.empty?
+      Chef::Application.fatal!("[CQ Package] Source attribute can't be empty!")
+    end
+
     unless src.instance_of?(URI::HTTP) ||
            src.instance_of?(URI::HTTPS) ||
            src.instance_of?(URI::Generic)
@@ -179,7 +184,7 @@ end
 # Looks for a package on a given CQ instance
 #
 # @param package_name [String] package name to look for
-# @return [REXML::Element] an array of elements with package info
+# @return [Array] an array of REXML::Element objects with package info
 def package_info(package_name)
   require 'rexml/document'
 
@@ -269,7 +274,7 @@ end
 #
 # @return [Boolean] true if package is already uploaded, false otherwise
 def package_uploaded?
-  # New resource
+  # New resource attrs
   pkg_name = package_attr_from_metadata('name')
   pkg_ver = package_attr_from_metadata('version')
   Chef::Log.debug('New resource: '\
@@ -296,12 +301,49 @@ def package_uploaded?
   false
 end
 
-# Sets installed attribute if package was already installed
+# Sets installed attribute if package is already installed
 #
 # @return [Boolean] true if package is already installed, false otherwise
 def package_installed?
-  # TODO: add installation detection
-  true
+  # Package has to be uploaded first to be considered installed
+  return false if @uploaded == false
+
+  # New resource attrs
+  pkg_name = package_attr_from_metadata('name')
+  pkg_ver = package_attr_from_metadata('version')
+
+  installed_pkgs = []
+
+  # Gather packages with lastUnpacked attribute set
+  package_info(pkg_name).each do |pkg|
+    Chef::Log.debug("AAAAAAAAA #{pkg.to_s}")
+    unless package_attr_from_object(pkg, 'lastUnpacked').nil?
+      installed_pkgs.push(pkg)
+    end
+  end
+
+  # 0 packages have been installed - return false
+  return false if installed_pkgs.empty?
+
+  # Look for the package with the newest lastUnpacked element
+  newest_pkg = ''
+
+  installed_pkgs.each_cons(2) do |pkg1, pkg2|
+    newest_pkg = pkg1
+    if DateTime.parse(package_attr_from_object(pkg1, 'lastUnpacked')) <
+      DateTime.parse(package_attr_from_object(pkg2, 'lastUnpacked'))
+      newest_pkg = pkg2
+    end
+  end
+
+  Chef::Log.debug("Newest installed package: #{newest_pkg.to_s}")
+
+  # Compare the version of new resource and already installed resource
+  if pkg_ver == package_attr_from_object(newest_pkg, 'version')
+    return true
+  else
+    return false
+  end
 end
 
 # Sets downloaded attribute if package was already downloaded
@@ -322,6 +364,7 @@ def load_current_resource
 
   # Set attribute acccessors
   @current_resource.uploaded = package_uploaded?
+  @current_resource.installed = package_installed?
 end
 
 # Uploads package to a given CQ instance
