@@ -17,24 +17,21 @@
 # limitations under the License.
 #
 
-actions :create, :build, :download, :install, :delete, :upload, :activate,
-        :uninstall
+# TODO: filter below actions
+# actions :create, :build, :download, :install, :delete, :upload, :activate,
+#         :uninstall
+actions :upload, :install
 
 default_action :nothing
 
 attribute :name, :kind_of => String, :name_attribute => true, :required => true
-attribute :properties, :kind_of => Hash, :required => false
-attribute :group, :kind_of => String, :required => false
-attribute :version, :kind_of => String, :required => false
-attribute :description, :kind_of => String, :required => false
-attribute :filters, :kind_of => Hash, :required => false
 attribute :username, :kind_of => String, :required => true
 attribute :password, :kind_of => String, :required => true
 attribute :instance, :kind_of => String, :required => true
-attribute :source, :kind_of => String, :required => false
-attribute :destination, :kind_of => String, :required => false
+attribute :source, :kind_of => String, :required => true
 attribute :http_user, :kind_of => String, :default => '', :required => false
 attribute :http_pass, :kind_of => String, :default => '', :required => false
+# TODO: verify checksum validation
 attribute :checksum, :kind_of => String, :default => '', :required => false
 
 attr_accessor :uploaded, :installed, :downloaded

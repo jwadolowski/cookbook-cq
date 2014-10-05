@@ -21,7 +21,7 @@ def whyrun_supported?
   true
 end
 
-# Calucates Authorization HTTP header value
+# Calculates Authorization HTTP header value
 #
 # @return [String] encoded HTTP header value compliant with the standard
 def auth_header_value
@@ -35,6 +35,11 @@ end
 def validate_source
   begin
     src = URI.parse(new_resource.source)
+
+    # Raise an error if source attr is empty
+    if new_resource.source.empty?
+      Chef::Application.fatal!("[CQ Package] Source attribute can't be empty!")
+    end
 
     unless src.instance_of?(URI::HTTP) ||
            src.instance_of?(URI::HTTPS) ||
@@ -154,19 +159,30 @@ end
 def package_list
   require 'rexml/document'
 
+  # API pre-flight check
+  pkg_mgr_guard
+
   # Get list of packages using CQ UNIX Toolkit
   cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqls -x "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
             "-p #{new_resource.password}"
-  Chef::Log.debug("Command: #{cmd_str}")
+  Chef::Log.debug('Listing packages present in CRX Package Manager')
   cmd = Mixlib::ShellOut.new(cmd_str)
   cmd.run_command
+  Chef::Log.debug "package_list command: #{cmd_str}"
+  Chef::Log.debug "package_list stdout: #{cmd.stdout}"
+  Chef::Log.debug "package_list stderr: #{cmd.stderr}"
   begin
     cmd.error!
   rescue
     Chef::Application.fatal!("Cannot get package list: #{cmd.stderr}")
   end
+
+  # Theoretically speaking cqls should never return empty string, hence no
+  # validation here. Nevertheless I encoutered such issues some time in the
+  # past and decided to implement a preflight check for that (pkg_mgr_guard).
+  # Since it's there it never occurred again.
 
   # Extract and return <packages> element from original XML
   begin
@@ -176,21 +192,35 @@ def package_list
   end
 end
 
-# Looks for a package on a given CQ instance
+# Looks for a package(s) on a given CQ instance
 #
-# @param package_name [String] package name to look for
-# @return [REXML::Element] an array of elements with package info
-def package_info(package_name)
+# @return [Array] an array of REXML::Element objects with package info
+def package_search
   require 'rexml/document'
 
   packages = []
 
   # Iterate thorugh packages and get info about package you're looking for
   package_list.elements.each('package') do |pkg|
-    packages.push(pkg) if pkg.elements['name'].text == package_name
+    packages.push(pkg) if package_attr_from_object(pkg, 'name') ==
+      @metadata_name && package_attr_from_object(pkg, 'group') ==
+      @metadata_group
   end
 
   packages
+end
+
+# Get information from CRX Package Manager about specific package
+#
+# @return [REXML::Element] XML with package information if package is present
+# @return [nil] nil if there's no package that meets given constraints
+def package_info
+  package_search.each do |pkg|
+    return pkg if package_attr_from_object(pkg, 'version') == @metadata_version
+  end
+
+  # Return nil if 0 packages meet name/group/version requirements
+  nil
 end
 
 # Extract raw information from package metadata
@@ -241,8 +271,14 @@ def package_attr_from_metadata(attr_name)
   require 'rexml/document'
 
   begin
-    return REXML::XPath.first(package_metadata('properties'),
-                              "//entry[@key='#{attr_name}']").text
+    # Return empty string in case of <entry key="attr_name"/> (.text == nil)
+    value = REXML::XPath.first(package_metadata('properties'),
+                               "//entry[@key='#{attr_name}']").text
+    if value.nil?
+      return ''
+    else
+      return value
+    end
   rescue => e
     Chef::Application.fatal!("Cannot get package #{attr_name} from XML "\
                              "object: #{e}")
@@ -251,14 +287,21 @@ end
 
 # Gets package attribute from CRX package object
 #
-# @param pkg_xml [REXML::Document] package XML object
+# @param pkg_xml [REXML::Element] package XML object
 # @param attr_name [String] package attribute to look for
 # @return [String] package attribute
 def package_attr_from_object(pkg_xml, attr_name)
   require 'rexml/document'
 
   begin
-    return pkg_xml.elements[attr_name].text
+    # Return empty string in case of <attr_name/> instead of
+    # <attr_name></attr_name> (.text == nil)
+    value = pkg_xml.elements[attr_name].text
+    if value.nil?
+      return ''
+    else
+      return value
+    end
   rescue => e
     Chef::Application.fatal!("Cannot get package #{attr_name} from XML "\
                              "object: #{e}")
@@ -269,38 +312,62 @@ end
 #
 # @return [Boolean] true if package is already uploaded, false otherwise
 def package_uploaded?
-  # New resource
-  pkg_name = package_attr_from_metadata('name')
-  pkg_ver = package_attr_from_metadata('version')
-  Chef::Log.debug('New resource: '\
-                  "name = #{pkg_name}, "\
-                  "version = #{pkg_ver}")
-
-  # Look for packages in CRX Package Manager
-  pkg_info = package_info(pkg_name)
-
-  # Return false if 0 packages with given name have been found
-  return false if pkg_info.empty?
-
-  # Look for specifc version of CQ package
-  pkg_info.each do |pkg|
-    current_pkg_ver = package_attr_from_object(pkg, 'version')
-    Chef::Log.debug('Current resource: '\
-                    "name = #{package_attr_from_object(pkg, 'name')}, "\
-                    "version = #{current_pkg_ver}")
-
-    return true if pkg_ver == current_pkg_ver
+  if package_info.nil?
+    return false
+  else
+    return true
   end
-
-  # Return false if there's no package with given version
-  false
 end
 
-# Sets installed attribute if package was already installed
+# Sets installed attribute if package is already installed
 #
 # @return [Boolean] true if package is already installed, false otherwise
 def package_installed?
-  true
+  # Package has to be uploaded first to be considered installed
+  return false if @uploaded == false
+
+  installed_pkgs = []
+
+  # Collect packages with not empty lastUnpacked attribute
+  package_search.each do |pkg|
+    unless package_attr_from_object(pkg, 'lastUnpacked').empty?
+      installed_pkgs.push(pkg)
+    end
+  end
+
+  # The assumption is that lastUnpacked is always in a parsable format.
+  # Since it's generated by CRX itself it's very unlikely that it might be
+  # invalid. Nevertheless I decided to leave this note here in case of any
+  # issues in the future.
+
+  # 0 packages have been installed - return false
+  return false if installed_pkgs.empty?
+
+  # Make sure that all "lastUnpacked" dates are parsable and remove
+
+  # Look for the package with the newest lastUnpacked element
+  #
+  # Consider first element in package array as the newest when:
+  # - only single package is present
+  # - more than one package is present, but we have to start the comparison
+  #   process somehowe and compare installation dates against something
+  newest_pkg = installed_pkgs.first
+
+  # Iterate over installed packages using element pair as iterator
+  installed_pkgs.each_cons(2) do |pkg1, pkg2|
+    newest_pkg = pkg1
+    if DateTime.parse(package_attr_from_object(pkg1, 'lastUnpacked')) <
+      DateTime.parse(package_attr_from_object(pkg2, 'lastUnpacked'))
+      newest_pkg = pkg2
+    end
+  end
+
+  # Compare the version of new resource and already installed resource
+  if @metadata_version == package_attr_from_object(newest_pkg, 'version')
+    return true
+  else
+    return false
+  end
 end
 
 # Sets downloaded attribute if package was already downloaded
@@ -308,6 +375,126 @@ end
 # @return [Boolean] true if package was already downaloded, false otherwise
 def package_downloaded?
   true
+end
+
+# "Guard" that allows for interaction with CRX Package Manager ONLY when it
+# works properly. Extremely useful when package installation (i.e. hotfix)
+# does some amendments in OSGi bundles state (i.e. restarts CRX Package
+# Manager bundle and effectively makes it temporarily unavailable - it responds
+# either with 500/404 or empty page).
+#
+# Example scenario:
+#
+# cq_packge X do
+#   ...
+#   action :install
+# end
+#
+# <This is the place where bundle is restarted as an effect of package X
+# installation>
+#
+# cq_package Y do
+#   ...
+#   action :install
+# end
+#
+# Above ends with failure as package Y cannot be properly installed due to
+# unavailability of CRX Package Manager.
+#
+# This method has to be invoked before any interaction with Package Manager.
+#
+# Successful criteria:
+# 1) com.adobe.granite.crx-packagemgr bundle is Active
+# 2) http://<INSTANCE>:<PORT>/crx/packmgr/service.jsp returns 200
+#
+# Both items are actively sampled every 10 seconds up to 60 checks (10
+# minutes). As soon as first requirement is fulfilled 2nd check is verified
+# with the same frequency. If any of them fails after 60 checks Chef run is
+# aborted.
+
+# 1st requirement: OSGi bundle is in Active state
+def pkg_mgr_bundle_guard
+  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqosgi -m "\
+            "-i #{new_resource.instance} "\
+            "-u #{new_resource.username} "\
+            "-p #{new_resource.password} "\
+            "| grep 'com.adobe.granite.crx-packagemgr' "\
+            "| awk '{printf \"%s\", $3}'"
+
+  Chef::Log.debug('Verifying CRX Package Manager bundle')
+
+  # Max number of iterations. imax * 10 seconds = how long to wait for CRX
+  # Package Manager
+  i_max = 60
+
+  (1..i_max).each do |i|
+    cmd = Mixlib::ShellOut.new(cmd_str)
+    cmd.run_command
+    Chef::Log.debug "pkg_mgr_bundle_check #{i}/#{i_max} command: #{cmd_str}"
+    Chef::Log.debug "pkg_mgr_bundle_check #{i}/#{i_max} stdout: #{cmd.stdout}"
+    Chef::Log.debug "pkg_mgr_bundle_check #{i}/#{i_max} stderr: #{cmd.stderr}"
+
+    begin
+      cmd.error!
+    rescue => e
+      Chef::Log.error "Unable to verify CRX Package Manager OSGi bundle: #{e}"
+    end
+
+    break if cmd.stdout == 'Active'
+
+    # Timeout verification
+    if i < i_max
+      sleep 10
+    else
+      Chef::Application.fatal!("Cannot proceed as CRX Package Manager bundle is
+                                still in #{cmd.stdout} state.")
+    end
+  end
+end
+
+# 2nd requirement: CRX Package Manager API responds with 200
+def pkg_mgr_api_guard
+  cmd_str = "curl -s -o /dev/null -w '%{http_code}' "\
+            "-u #{new_resource.username}:#{new_resource.password} "\
+            "#{new_resource.instance}/crx/packmgr/service.jsp"
+
+  Chef::Log.debug('Verifying CRX Package Manager API status code')
+
+  # Max number of iterations. imax * 10 seconds = how long to wait for CRX
+  # Package Manager
+  i_max = 60
+
+  (1..i_max).each do |i|
+    cmd = Mixlib::ShellOut.new(cmd_str)
+    cmd.run_command
+    Chef::Log.debug "pkg_mgr_api_check #{i}/#{i_max} command: #{cmd_str}"
+    Chef::Log.debug "pkg_mgr_api_check #{i}/#{i_max} stdout: #{cmd.stdout}"
+    Chef::Log.debug "pkg_mgr_api_check #{i}/#{i_max} stderr: #{cmd.stderr}"
+
+    begin
+      cmd.error!
+    rescue => e
+      Chef::Log.error "Unable to verify CRX Package Manager API: #{e}"
+    end
+
+    break if cmd.stdout == '200'
+
+    # Timeout verification
+    if i < i_max
+      sleep 10
+    else
+      Chef::Application.fatal!("Cannot proceed as CRX Package Manager still
+                                responds with #{cmd.stdout} code.")
+    end
+  end
+end
+
+# Combined CRX Package Manager check
+def pkg_mgr_guard
+  Chef::Log.info('Waiting for CRX Package Manager...')
+  pkg_mgr_bundle_guard
+  pkg_mgr_api_guard
+  Chef::Log.info('CRX Package Manager seems to be working fine. Moving on.')
 end
 
 # Loads current resource and all accessor attributes
@@ -319,12 +506,29 @@ def load_current_resource
   @current_resource.password(new_resource.password)
   @current_resource.instance(new_resource.instance)
 
+  # Set metadata properties
+  @metadata_name = package_attr_from_metadata('name')
+  @metadata_version = package_attr_from_metadata('version')
+  @metadata_group = package_attr_from_metadata('group')
+
   # Set attribute acccessors
   @current_resource.uploaded = package_uploaded?
+  @current_resource.installed = package_installed?
+
+  # Set properties from CRX Package Manager (only possible when package is
+  # uploaded)
+  return unless @current_resource.uploaded
+  @crx_name = package_attr_from_object(package_info, 'name')
+  @crx_version = package_attr_from_object(package_info, 'version')
+  @crx_group = package_attr_from_object(package_info, 'group')
+  @crx_downloadname = package_attr_from_object(package_info, 'downloadName')
 end
 
 # Uploads package to a given CQ instance
 def upload_package
+  # API pre-flight check
+  pkg_mgr_guard
+
   cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqput "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
@@ -346,6 +550,63 @@ def upload_package
   end
 end
 
+# Installs CQ package
+#
+# Since cqrun command (CQ UNIX Toolkit) does not support installation of
+# specifc package version from the same group, a curl wrapper has been used
+# instead.
+#
+# Stdout of curl command:
+# <response_json>;<http_status>
+#
+# Example:
+# {"success":false,"msg":"no package"};200
+def install_package
+  require 'json'
+
+  # API pre-flight check
+  pkg_mgr_guard
+
+  cmd_str = "curl -s -X POST -w ';%{http_code}' "\
+            "-u #{new_resource.username}:#{new_resource.password} "\
+            "#{new_resource.instance}/crx/packmgr/service/.json/etc/packages"\
+            "/#{@crx_group}/#{@crx_downloadname}?cmd=install"
+  cmd = Mixlib::ShellOut.new(cmd_str)
+  Chef::Log.info "Installing package #{new_resource.name}"
+  cmd.run_command
+  Chef::Log.debug "cq_package_install command: #{cmd_str}"
+  Chef::Log.debug "cq_package_install stdout: #{cmd.stdout}"
+  Chef::Log.debug "cq_package_install stderr: #{cmd.stderr}"
+  begin
+    cmd.error!
+    Chef::Log.info "Package #{new_resource.name} has been successfully "\
+                   'installed'
+  rescue
+    Chef::Application.fatal!("Can't install package #{new_resource.name}: "\
+                             "#{cmd.stderr}")
+  end
+
+  # Split the output
+  #
+  # output[0] => JSON returned by CRX Package Manager API
+  # output[1] => response code
+  output = cmd.stdout.split(/;(?=[0-9]{3}$)/)
+
+  # Parse HTTP response status code
+  Chef::Application.fatal!('CRX Package Manager returned non-200 response '\
+                          "code: #{output[1]}!") if output[1] != '200'
+
+  # Parse JSON returned by API
+  begin
+    json_resp = JSON.parse(output[0])
+  rescue => e
+    Chef::Log.error("#{json_resp} is not a parsable JSON: #{e}")
+  end
+
+  Chef::Application.fatal!('Not successful package installation: '\
+                            "#{output[0]}") if json_resp['success'] != true
+end
+
 action :upload do
   if @current_resource.uploaded
     Chef::Log.info("Package #{new_resource.name} is already uploaded - "\
@@ -353,6 +614,17 @@ action :upload do
   else
     converge_by("Upload #{ new_resource }") do
       upload_package
+    end
+  end
+end
+
+action :install do
+  if @current_resource.installed
+    Chef::Log.info("Package #{new_resource.name} is already installed - "\
+                   'nothing to do')
+  else
+    converge_by("Install #{ new_resource }") do
+      install_package
     end
   end
 end
