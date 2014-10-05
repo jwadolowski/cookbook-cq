@@ -12,3 +12,6 @@ HashSyntax:
 
 CyclomaticComplexity:
     Max: 10
+
+PerceivedComplexity:
+    Max: 10
