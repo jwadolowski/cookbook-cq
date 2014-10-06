@@ -52,7 +52,7 @@ define :cq_daemon,
 
   # Wait until CQ is fully up and running
   # ---------------------------------------------------------------------------
-  ruby_block "#{daemon_name} start guard" do
+  ruby_block "#{daemon_name} start guard" do # ~FC014
     block do
       require 'net/http'
       require 'uri'
