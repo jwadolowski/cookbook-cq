@@ -64,15 +64,17 @@ end
 
 # Create custom tmp directory
 # -----------------------------------------------------------------------------
-if !node['cq']['custom_tmp_dir'].nil? &&
-  !node['cq']['custom_tmp_dir'].empty? &&
-  node['cq']['custom_tmp_dir'] != '/tmp'
-  directory node['cq']['custom_tmp_dir'] do
-    owner node['cq']['user']
-    group node['cq']['group']
-    mode '0755'
-    action :create
-    recursive true
+directory node['cq']['custom_tmp_dir'] do
+  owner node['cq']['user']
+  group node['cq']['group']
+  mode '0755'
+  action :create
+  recursive true
+
+  only_if do
+    !node['cq']['custom_tmp_dir'].nil? &&
+    !node['cq']['custom_tmp_dir'].empty? &&
+    node['cq']['custom_tmp_dir'] != '/tmp'
   end
 end
 
