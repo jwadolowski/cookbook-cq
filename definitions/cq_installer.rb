@@ -23,15 +23,16 @@ define :cq_installer,
 
   # Helpers
   # ---------------------------------------------------------------------------
-  instance_home = cq_instance_home(node[:cq][:home_dir], params[:mode])
-  instance_conf_dir = cq_instance_conf_dir(node[:cq][:home_dir], params[:mode])
-  jar_name = cq_jarfile(node[:cq][:jar][:url])
+  local_mode = params[:mode]
+  instance_home = cq_instance_home(node['cq']['home_dir'], local_mode)
+  instance_conf_dir = cq_instance_conf_dir(node['cq']['home_dir'], local_mode)
+  jar_name = cq_jarfile(node['cq']['jar']['url'])
 
   # Create CQ instance directory
   # ---------------------------------------------------------------------------
   directory instance_home do
-    owner node[:cq][:user]
-    group node[:cq][:group]
+    owner node['cq']['user']
+    group node['cq']['group']
     mode '0755'
     action :create
   end
@@ -40,17 +41,17 @@ define :cq_installer,
   # ---------------------------------------------------------------------------
   # Download JAR file
   remote_file "#{instance_home}/#{jar_name}" do
-    owner node[:cq][:user]
-    group node[:cq][:group]
+    owner node['cq']['user']
+    group node['cq']['group']
     mode '0644'
-    source node[:cq][:jar][:url]
-    checksum node[:cq][:jar][:checksum]
+    source node['cq']['jar']['url']
+    checksum node['cq']['jar']['checksum']
   end
 
   # Unpack CQ JAR file once downloaded
   bash 'Unpack CQ JAR file' do
-    user node[:cq][:user]
-    group node[:cq][:group]
+    user node['cq']['user']
+    group node['cq']['group']
     cwd instance_home
     code "java -jar #{jar_name} -unpack"
     action :run
@@ -62,44 +63,44 @@ define :cq_installer,
   # Deploy CQ license file
   # ---------------------------------------------------------------------------
   remote_file "#{instance_home}/license.properties" do
-    owner node[:cq][:user]
-    group node[:cq][:group]
+    owner node['cq']['user']
+    group node['cq']['group']
     mode '0644'
-    source node[:cq][:license][:url]
-    checksum node[:cq][:license][:checksum]
+    source node['cq']['license']['url']
+    checksum node['cq']['license']['checksum']
   end
 
   # Install configuration file
   # ---------------------------------------------------------------------------
   # Create config directory
   directory instance_conf_dir do
-    owner node[:cq][:user]
-    group node[:cq][:group]
+    owner node['cq']['user']
+    group node['cq']['group']
     mode '0755'
     action :create
   end
 
   # Render CQ config file
   template "#{instance_conf_dir}/cq#{cq_version('short_squeezed')}"\
-           "-#{params[:mode]}.conf" do
-    owner node[:cq][:user]
-    group node[:cq][:group]
+           "-#{local_mode}.conf" do
+    owner node['cq']['user']
+    group node['cq']['group']
     mode '0644'
     source 'cq.conf.erb'
     variables(
-      :port => node[:cq][params[:mode]][:port],
+      :port => node['cq'][local_mode]['port'],
       :instance_home => instance_home,
-      :mode => params[:mode],
-      :min_heap => node[:cq][params[:mode]][:jvm][:min_heap],
-      :max_heap => node[:cq][params[:mode]][:jvm][:max_heap],
-      :max_perm_size => node[:cq][params[:mode]][:jvm][:max_perm_size],
-      :code_cache => node[:cq][params[:mode]][:jvm][:code_cache_size],
-      :jvm_general_opts => node[:cq][params[:mode]][:jvm][:general_opts],
-      :jvm_code_cache_opts => node[:cq][params[:mode]][:jvm][:code_cache_opts],
-      :jvm_gc_opts => node[:cq][params[:mode]][:jvm][:gc_opts],
-      :jvm_jmx_opts => node[:cq][params[:mode]][:jvm][:jmx_opts],
-      :jvm_debug_opts => node[:cq][params[:mode]][:jvm][:debug_opts],
-      :jvm_extra_opts => node[:cq][params[:mode]][:jvm][:extra_opts]
+      :mode => local_mode,
+      :min_heap => node['cq'][local_mode]['jvm']['min_heap'],
+      :max_heap => node['cq'][local_mode]['jvm']['max_heap'],
+      :max_perm_size => node['cq'][local_mode]['jvm']['max_perm_size'],
+      :code_cache => node['cq'][local_mode]['jvm']['code_cache_size'],
+      :jvm_general_opts => node['cq'][local_mode]['jvm']['general_opts'],
+      :jvm_code_cache_opts => node['cq'][local_mode]['jvm']['code_cache_opts'],
+      :jvm_gc_opts => node['cq'][local_mode]['jvm']['gc_opts'],
+      :jvm_jmx_opts => node['cq'][local_mode]['jvm']['jmx_opts'],
+      :jvm_debug_opts => node['cq'][local_mode]['jvm']['debug_opts'],
+      :jvm_extra_opts => node['cq'][local_mode]['jvm']['extra_opts']
     )
   end
 end

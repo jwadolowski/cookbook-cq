@@ -23,21 +23,22 @@ define :cq_daemon,
 
   # Helpers
   # ---------------------------------------------------------------------------
-  daemon_name = cq_daemon_name(params[:mode])
+  local_mode = params[:mode]
+  daemon_name = cq_daemon_name(local_mode)
 
   # Create init script
   # ---------------------------------------------------------------------------
   template "/etc/init.d/#{daemon_name}" do
-    owner node[:cq][:user]
-    group node[:cq][:group]
+    owner node['cq']['user']
+    group node['cq']['group']
     mode '0755'
     source 'cq.init.erb'
     variables(
       :daemon_name => daemon_name,
-      :full_name => "Adobe CQ #{node[:cq][:version]}"\
-                    " #{params[:mode].to_s.capitalize}",
-      :conf_file => "#{cq_instance_conf_dir(node[:cq][:home_dir],
-                                            params[:mode])}/"\
+      :full_name => "Adobe CQ #{node['cq']['version']}"\
+                    " #{local_mode.to_s.capitalize}",
+      :conf_file => "#{cq_instance_conf_dir(node['cq']['home_dir'],
+                                            local_mode)}/"\
                                             "#{daemon_name}.conf"
     )
   end
@@ -57,12 +58,12 @@ define :cq_daemon,
       require 'uri'
 
       # Pick valid resource to verify CQ instance full start
-      if Chef::VersionConstraint.new('~> 5.6.0').include?(node[:cq][:version])
-        uri = URI.parse("http://localhost:#{node[:cq][params[:mode]][:port]}"\
-                        "/libs/granite/core/content/login.html")
-      elsif Chef::VersionConstraint.new('~> 5.5.0').include?(node[:cq][:version])
-        uri = URI.parse("http://localhost:#{node[:cq][params[:mode]][:port]}"\
-                        "/libs/cq/core/content/login.html")
+      if constraint('~> 5.6.0').satisfied_by?(node['cq']['version'])
+        uri = URI.parse("http://localhost:#{node['cq'][local_mode]['port']}"\
+                        '/libs/granite/core/content/login.html')
+      elsif constraint('~> 5.5.0').satisfied_by?(node['cq']['version'])
+        uri = URI.parse("http://localhost:#{node['cq'][local_mode]['port']}"\
+                        '/libs/cq/core/content/login.html')
       end
 
       # Start timeout (15 min)
@@ -77,13 +78,13 @@ define :cq_daemon,
         begin
           response = Net::HTTP.get_response(uri).code
         rescue Errno::ECONNREFUSED
-          Chef::Log.debug("Connection has been refused when trying to send "\
+          Chef::Log.debug('Connection has been refused when trying to send '\
                           "GET #{uri} request")
         end
         sleep(5)
         time_diff = Time.now - start_time
         abort "Aborting since #{daemon_name} "\
-              "start took more than "\
+              'start took more than '\
               "#{timeout / 60} minutes " if time_diff > timeout
       end
 
