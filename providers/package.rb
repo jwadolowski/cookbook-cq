@@ -163,7 +163,7 @@ def package_list
   pkg_mgr_guard
 
   # Get list of packages using CQ UNIX Toolkit
-  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqls -x "\
+  cmd_str = "#{node['cq_unix_toolkit']['install_dir']}/cqls -x "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
             "-p #{new_resource.password}"
@@ -232,10 +232,10 @@ def package_metadata(type)
 
   case type
   when 'properties'
-    cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -P "\
+    cmd_str = "#{node['cq_unix_toolkit']['install_dir']}/cqrepkg -P "\
       "#{package_path}"
   when 'filters'
-    cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -F "\
+    cmd_str = "#{node['cq_unix_toolkit']['install_dir']}/cqrepkg -F "\
       "#{package_path}"
   else
     Chef::Application.fatal!('Unsupported metadata type while extracting info'\
@@ -414,7 +414,7 @@ end
 
 # 1st requirement: OSGi bundle is in Active state
 def pkg_mgr_bundle_guard
-  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqosgi -m "\
+  cmd_str = "#{node['cq_unix_toolkit']['install_dir']}/cqosgi -m "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
             "-p #{new_resource.password} "\
@@ -529,7 +529,7 @@ def upload_package
   # API pre-flight check
   pkg_mgr_guard
 
-  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqput "\
+  cmd_str = "#{node['cq_unix_toolkit']['install_dir']}/cqput "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
             "-p #{new_resource.password} "\

@@ -6,16 +6,16 @@
 # -----------------------------------------------------------------------------
 # General settings
 # -----------------------------------------------------------------------------
-export JAVA_HOME=<%= node[:java][:java_home] %>
-<% if !node[:cq][:custom_tmp_dir].nil? && !node[:cq][:custom_tmp_dir].empty? %>
-export CQ_TMP_DIR=<%= node[:cq][:custom_tmp_dir] %>
+export JAVA_HOME=<%= node['java']['java_home'] %>
+<% if !node['cq']['custom_tmp_dir'].nil? && !node['cq']['custom_tmp_dir'].empty? %>
+export CQ_TMP_DIR=<%= node['cq']['custom_tmp_dir'] %>
 <% end %>
 
 # -----------------------------------------------------------------------------
 # CQ start file variables
 # -----------------------------------------------------------------------------
 export CQ_PORT=<%= @port %>
-export CQ_USER=<%= node[:cq][:user] %>
+export CQ_USER=<%= node['cq']['user'] %>
 export CQ_HOME=<%= @instance_home %>
 export CQ_RUNMODE=<%= @mode %>
 
@@ -30,7 +30,7 @@ CQ_CODE_CACHE=<%= @code_cache %>
 # -----------------------------------------------------------------------------
 # JVM options
 # -----------------------------------------------------------------------------
-<% if !node[:cq][:custom_tmp_dir].nil? && !node[:cq][:custom_tmp_dir].empty? %>
+<% if !node['cq']['custom_tmp_dir'].nil? && !node['cq']['custom_tmp_dir'].empty? %>
 CQ_GENERAL_OPTS="<%= @jvm_general_opts %> -Djava.io.tmpdir=${CQ_TMP_DIR}"
 <% else %>
 CQ_GENERAL_OPTS="<%= @jvm_general_opts %>"
