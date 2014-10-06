@@ -163,7 +163,7 @@ def package_list
   pkg_mgr_guard
 
   # Get list of packages using CQ UNIX Toolkit
-  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqls -x "\
+  cmd_str = "#{node['cq_unix_toolkit']['install_dir']}/cqls -x "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
             "-p #{new_resource.password}"
@@ -232,11 +232,11 @@ def package_metadata(type)
 
   case type
   when 'properties'
-    cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -P "\
-      "#{package_path}"
+    cmd_str = "#{node['cq_unix_toolkit']['install_dir']}/cqrepkg -P " +
+      package_path
   when 'filters'
-    cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqrepkg -F "\
-      "#{package_path}"
+    cmd_str = "#{node['cq_unix_toolkit']['install_dir']}/cqrepkg -F " +
+      package_path
   else
     Chef::Application.fatal!('Unsupported metadata type while extracting info'\
                             ' from CRX package! Accepted values: properties,'\
@@ -414,7 +414,7 @@ end
 
 # 1st requirement: OSGi bundle is in Active state
 def pkg_mgr_bundle_guard
-  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqosgi -m "\
+  cmd_str = "#{node['cq_unix_toolkit']['install_dir']}/cqosgi -m "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
             "-p #{new_resource.password} "\
@@ -529,11 +529,11 @@ def upload_package
   # API pre-flight check
   pkg_mgr_guard
 
-  cmd_str = "#{node[:cq_unix_toolkit][:install_dir]}/cqput "\
+  cmd_str = "#{node['cq_unix_toolkit']['install_dir']}/cqput "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
-            "-p #{new_resource.password} "\
-            "#{package_path}"
+            "-p #{new_resource.password} " +
+            package_path
   cmd = Mixlib::ShellOut.new(cmd_str)
   Chef::Log.info "Uploading package #{new_resource.name}"
   cmd.run_command
@@ -545,8 +545,8 @@ def upload_package
     Chef::Log.info "Package #{new_resource.name} has been successfully "\
                    'uploaded'
   rescue
-    Chef::Application.fatal!("Can't upload package #{new_resource.name}: "\
-                             "#{cmd.stderr}")
+    Chef::Application.fatal!("Can't upload package #{new_resource.name}: " +
+                             cmd.stderr)
   end
 end
 
@@ -582,8 +582,8 @@ def install_package
     Chef::Log.info "Package #{new_resource.name} has been successfully "\
                    'installed'
   rescue
-    Chef::Application.fatal!("Can't install package #{new_resource.name}: "\
-                             "#{cmd.stderr}")
+    Chef::Application.fatal!("Can't install package #{new_resource.name}: " +
+                             cmd.stderr)
   end
 
   # Split the output
@@ -603,8 +603,8 @@ def install_package
     Chef::Log.error("#{json_resp} is not a parsable JSON: #{e}")
   end
 
-  Chef::Application.fatal!('Not successful package installation: '\
-                            "#{output[0]}") if json_resp['success'] != true
+  Chef::Application.fatal!('Not successful package installation: ' +
+                            output[0]) if json_resp['success'] != true
 end
 
 action :upload do

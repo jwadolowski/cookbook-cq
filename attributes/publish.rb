@@ -18,20 +18,18 @@
 #
 
 # CQ publish attributes
-default[:cq][:publish][:mode] = 'publish'
-default[:cq][:publish][:port] = '4503'
-default[:cq][:publish][:credentials] = {
-  :login => 'admin',
-  :password => 'admin'
-}
-default[:cq][:publish][:jvm][:min_heap] = '256'
-default[:cq][:publish][:jvm][:max_heap] = '1024'
-default[:cq][:publish][:jvm][:max_perm_size] = '320'
-default[:cq][:publish][:jvm][:code_cache_size] = '64'
-default[:cq][:publish][:jvm][:general_opts] =
+default['cq']['publish']['mode'] = 'publish'
+default['cq']['publish']['port'] = '4503'
+default['cq']['publish']['credentials']['login'] = 'admin'
+default['cq']['publish']['credentials']['password'] = 'admin'
+default['cq']['publish']['jvm']['min_heap'] = '256'
+default['cq']['publish']['jvm']['max_heap'] = '1024'
+default['cq']['publish']['jvm']['max_perm_size'] = '320'
+default['cq']['publish']['jvm']['code_cache_size'] = '64'
+default['cq']['publish']['jvm']['general_opts'] =
   '-server -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true'
-default[:cq][:publish][:jvm][:code_cache_opts] = ''
-default[:cq][:publish][:jvm][:gc_opts] = ''
-default[:cq][:publish][:jvm][:jmx_opts] = ''
-default[:cq][:publish][:jvm][:debug_opts] = ''
-default[:cq][:publish][:jvm][:extra_opts] = ''
+default['cq']['publish']['jvm']['code_cache_opts'] = ''
+default['cq']['publish']['jvm']['gc_opts'] = ''
+default['cq']['publish']['jvm']['jmx_opts'] = ''
+default['cq']['publish']['jvm']['debug_opts'] = ''
+default['cq']['publish']['jvm']['extra_opts'] = ''
