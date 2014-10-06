@@ -43,10 +43,10 @@ def cq_version(type)
   case type
   when 'short'
     # Example: 5.6.1 => 5.6
-    node[:cq][:version].to_s.delete('^0-9')[0, 3]
+    node['cq']['version'].to_s.delete('^0-9')[0, 3]
   when 'short_squeezed'
     # Example: 5.6.1 => 56
-    node[:cq][:version].to_s.delete('^0-9')[0, 2]
+    node['cq']['version'].to_s.delete('^0-9')[0, 2]
   end
 end
 

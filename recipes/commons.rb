@@ -17,11 +17,11 @@
 # limitations under the License.
 #
 
-require 'chef/version_constraint'
+include_recipe 'chef-sugar::default'
 
 # Create base directory if necessary
 # -----------------------------------------------------------------------------
-directory node[:cq][:base_dir] do
+directory node['cq']['base_dir'] do
   owner 'root'
   group 'root'
   mode '0755'
@@ -32,44 +32,44 @@ end
 # Create dedicated user and group
 # -----------------------------------------------------------------------------
 # Create group
-group node[:cq][:group] do
+group node['cq']['group'] do
   system true
   action :create
 end
 
 # Create user
-user node[:cq][:user] do
+user node['cq']['user'] do
   supports :manage_home => true
   system true
   comment 'Adobe CQ'
-  group node[:cq][:group]
-  home node[:cq][:home_dir]
+  group node['cq']['group']
+  home node['cq']['home_dir']
   shell '/bin/bash'
   action :create
 end
 
 # Fix home directory permissions
-directory node[:cq][:home_dir] do
-  owner node[:cq][:user]
-  group node[:cq][:group]
+directory node['cq']['home_dir'] do
+  owner node['cq']['user']
+  group node['cq']['group']
   mode '0755'
   action :create
 end
 
 # Set user limits
 # -----------------------------------------------------------------------------
-user_ulimit node[:cq][:user] do
-  filehandle_limit node[:cq][:limits][:file_descriptors]
+user_ulimit node['cq']['user'] do
+  filehandle_limit node['cq']['limits']['file_descriptors']
 end
 
 # Create custom tmp directory
 # -----------------------------------------------------------------------------
-if !node[:cq][:custom_tmp_dir].nil? &&
-  !node[:cq][:custom_tmp_dir].empty? &&
-  node[:cq][:custom_tmp_dir] != '/tmp'
-  directory node[:cq][:custom_tmp_dir] do
-    owner node[:cq][:user]
-    group node[:cq][:group]
+if !node['cq']['custom_tmp_dir'].nil? &&
+  !node['cq']['custom_tmp_dir'].empty? &&
+  node['cq']['custom_tmp_dir'] != '/tmp'
+  directory node['cq']['custom_tmp_dir'] do
+    owner node['cq']['user']
+    group node['cq']['group']
     mode '0755'
     action :create
     recursive true
@@ -78,10 +78,10 @@ end
 
 # Java deployment (JDK7 for 5.6.0+, JDK6 for any previous version)
 # -----------------------------------------------------------------------------
-if Chef::VersionConstraint.new('>= 5.6.0').include?(node[:cq][:version])
-  node.default[:java][:jdk_version] = '7'
+if constraint('>= 5.6.0').satisfied_by?(node['cq']['version'])
+  node.default['java']['jdk_version'] = '7'
 else
-  node.default[:java][:jdk_version] = '6'
+  node.default['java']['jdk_version'] = '6'
 end
 
 include_recipe 'java'

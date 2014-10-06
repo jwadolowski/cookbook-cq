@@ -18,20 +18,18 @@
 #
 
 # CQ author attributes
-default[:cq][:author][:mode] = 'author'
-default[:cq][:author][:port] = '4502'
-default[:cq][:author][:credentials] = {
-  :login => 'admin',
-  :password => 'admin'
-}
-default[:cq][:author][:jvm][:min_heap] = '256'
-default[:cq][:author][:jvm][:max_heap] = '1024'
-default[:cq][:author][:jvm][:max_perm_size] = '320'
-default[:cq][:author][:jvm][:code_cache_size] = '64'
-default[:cq][:author][:jvm][:general_opts] =
+default['cq']['author']['mode'] = 'author'
+default['cq']['author']['port'] = '4502'
+default['cq']['author']['credentials']['login'] = 'admin'
+default['cq']['author']['credentials']['password'] = 'admin'
+default['cq']['author']['jvm']['min_heap'] = '256'
+default['cq']['author']['jvm']['max_heap'] = '1024'
+default['cq']['author']['jvm']['max_perm_size'] = '320'
+default['cq']['author']['jvm']['code_cache_size'] = '64'
+default['cq']['author']['jvm']['general_opts'] =
   '-server -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true'
-default[:cq][:author][:jvm][:code_cache_opts] = ''
-default[:cq][:author][:jvm][:gc_opts] = ''
-default[:cq][:author][:jvm][:jmx_opts] = ''
-default[:cq][:author][:jvm][:debug_opts] = ''
-default[:cq][:author][:jvm][:extra_opts] = ''
+default['cq']['author']['jvm']['code_cache_opts'] = ''
+default['cq']['author']['jvm']['gc_opts'] = ''
+default['cq']['author']['jvm']['jmx_opts'] = ''
+default['cq']['author']['jvm']['debug_opts'] = ''
+default['cq']['author']['jvm']['extra_opts'] = ''

@@ -23,12 +23,12 @@ include_recipe 'cq::commons'
 
 # Install CQ instance
 # -----------------------------------------------------------------------------
-cq_installer "CQ #{node[:cq][:publish][:mode]}" do
-  mode node[:cq][:publish][:mode]
+cq_installer "CQ #{node['cq']['publish']['mode']}" do
+  mode node['cq']['publish']['mode']
 end
 
 # Create a daemon and start CQ instance
 # -----------------------------------------------------------------------------
-cq_daemon "CQ #{node[:cq][:publish][:mode]}" do
-  mode node[:cq][:publish][:mode]
+cq_daemon "CQ #{node['cq']['publish']['mode']}" do
+  mode node['cq']['publish']['mode']
 end
