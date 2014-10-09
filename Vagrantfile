@@ -3,7 +3,7 @@
 
 Vagrant.configure('2') do |config|
   config.vm.hostname = 'cq-berkshelf'
-  config.vm.box = 'opscode-centos-6.5'
+  config.vm.box = 'opscode_centos-6.5_chef-provisionerless'
   config.vm.box_url = 'http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box'
   config.vm.network :private_network, ip: '192.168.2.254'
 
@@ -17,7 +17,7 @@ Vagrant.configure('2') do |config|
 
   config.vm.provision :chef_solo do |chef|
     chef.run_list = [
-        'recipe[cq::author]'
+        'recipe[cq::mongo]'
     ]
     chef.log_level = :debug
   end
