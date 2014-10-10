@@ -24,7 +24,6 @@ default['cq']['group'] = 'cq'
 default['cq']['limits']['file_descriptors'] = '16384'
 default['cq']['base_dir'] = '/opt'
 default['cq']['home_dir'] = "#{node['cq']['base_dir']}/cq"
-default['cq']['custom_tmp_dir'] = ''
 default['cq']['version'] = '5.6.1'
 default['cq']['custom_tmp_dir'] = '/opt/tmp'
 default['cq']['package_cache'] = ''
@@ -32,6 +31,7 @@ default['cq']['jar']['url'] = ''
 default['cq']['jar']['checksum'] = ''
 default['cq']['license']['url'] = ''
 default['cq']['license']['checksum'] = ''
+default['cq']['mongo'] = true
 
 # Java attributes
 # -----------------------------------------------------------------------------
