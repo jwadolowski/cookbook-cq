@@ -69,8 +69,8 @@ define :cq_daemon,
                         '/libs/granite/core/content/login.html')
       end
 
-      # Start timeout (15 min)
-      timeout = 900
+      # Start timeout (30 min)
+      timeout = 1800
 
       response = '-1'
       start_time = Time.now
