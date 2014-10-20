@@ -64,6 +64,9 @@ define :cq_daemon,
       elsif constraint('~> 5.5.0').satisfied_by?(node['cq']['version'])
         uri = URI.parse("http://localhost:#{node['cq'][local_mode]['port']}"\
                         '/libs/cq/core/content/login.html')
+      elsif constraint('~> 6.0.0').satisfied_by?(node['cq']['version'])
+        uri = URI.parse("http://localhost:#{node['cq'][local_mode]['port']}"\
+                        '/libs/granite/core/content/login.html')
       end
 
       # Start timeout (15 min)
