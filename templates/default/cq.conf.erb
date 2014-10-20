@@ -17,7 +17,7 @@ export CQ_TMP_DIR=<%= node['cq']['custom_tmp_dir'] %>
 export CQ_PORT=<%= @port %>
 export CQ_USER=<%= node['cq']['user'] %>
 export CQ_HOME=<%= @instance_home %>
-export CQ_RUNMODE=<%= @mode %>
+export CQ_RUNMODE=<%= @mode %><% if node['cq']['mongo'] == true %>,crx3mongo<% end %>
 
 # -----------------------------------------------------------------------------
 # Core JVM parameters
