@@ -24,7 +24,6 @@ default['cq']['group'] = 'cq'
 default['cq']['limits']['file_descriptors'] = '16384'
 default['cq']['base_dir'] = '/opt'
 default['cq']['home_dir'] = "#{node['cq']['base_dir']}/cq"
-default['cq']['custom_tmp_dir'] = ''
 default['cq']['version'] = '5.6.1'
 default['cq']['custom_tmp_dir'] = '/opt/tmp'
 default['cq']['package_cache'] = ''
