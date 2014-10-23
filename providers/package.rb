@@ -179,10 +179,10 @@ def package_list
     Chef::Application.fatal!("Cannot get package list: #{cmd.stderr}")
   end
 
-  # Theoretically speaking cqls should never return empty string, hence no
+  # Theoretically speaking cqls should never return empty string, so no
   # validation here. Nevertheless I encoutered such issues some time in the
   # past and decided to implement a preflight check for that (pkg_mgr_guard).
-  # Since it's there it never occurred again.
+  # Since it's there problem never occurred again.
 
   # Extract and return <packages> element from original XML
   begin
@@ -453,6 +453,7 @@ def pkg_mgr_bundle_guard
 end
 
 # 2nd requirement: CRX Package Manager API responds with 200
+# TODO: do POST instead of GET check
 def pkg_mgr_api_guard
   cmd_str = "curl -s -o /dev/null -w '%{http_code}' "\
             "-u #{new_resource.username}:#{new_resource.password} "\
@@ -460,7 +461,7 @@ def pkg_mgr_api_guard
 
   Chef::Log.debug('Verifying CRX Package Manager API status code')
 
-  # Max number of iterations. imax * 10 seconds = how long to wait for CRX
+  # Max number of iterations. i_max * 10 seconds = how long to wait for CRX
   # Package Manager
   i_max = 60
 
@@ -569,8 +570,15 @@ def install_package
 
   cmd_str = "curl -s -X POST -w ';%{http_code}' "\
             "-u #{new_resource.username}:#{new_resource.password} "\
-            "#{new_resource.instance}/crx/packmgr/service/.json/etc/packages"\
-            "/#{@crx_group}/#{@crx_downloadname}?cmd=install"
+            "#{new_resource.instance}/crx/packmgr/service/.json/etc/packages"
+
+  # Empty group fix
+  if @crx_group.empty?
+    cmd_str += "/#{@crx_downloadname}?cmd=install"
+  else
+    cmd_str += "/#{@crx_group}/#{@crx_downloadname}?cmd=install"
+  end
+
   cmd = Mixlib::ShellOut.new(cmd_str)
   Chef::Log.info "Installing package #{new_resource.name}"
   cmd.run_command
