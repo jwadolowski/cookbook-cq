@@ -31,6 +31,8 @@ attribute :instance, :kind_of => String, :required => true
 attribute :source, :kind_of => String, :required => true
 attribute :http_user, :kind_of => String, :default => '', :required => false
 attribute :http_pass, :kind_of => String, :default => '', :required => false
+attribute :recursive_install, :kind_of => [TrueClass, FalseClass],
+  :default => false, :required => false
 # TODO: verify checksum validation
 attribute :checksum, :kind_of => String, :default => '', :required => false
 
