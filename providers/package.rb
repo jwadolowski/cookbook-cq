@@ -522,7 +522,11 @@ def load_current_resource
   @crx_name = package_attr_from_object(package_info, 'name')
   @crx_version = package_attr_from_object(package_info, 'version')
   @crx_group = package_attr_from_object(package_info, 'group')
-  @crx_downloadname = package_attr_from_object(package_info, 'downloadName')
+  # It turned out downloadName attr may contain blank characters (see AEM6
+  # Service Pack 1). Let's get rid of these before any interaction with CRX
+  # Package Manager.
+  @crx_downloadname =
+    package_attr_from_object(package_info, 'downloadName').gsub(' ', '%20')
 end
 
 # Uploads package to a given CQ instance
