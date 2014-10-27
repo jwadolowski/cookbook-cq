@@ -453,11 +453,10 @@ def pkg_mgr_bundle_guard
 end
 
 # 2nd requirement: CRX Package Manager API responds with 200
-# TODO: do POST instead of GET check
 def pkg_mgr_api_guard
   cmd_str = "curl -s -o /dev/null -w '%{http_code}' "\
             "-u #{new_resource.username}:#{new_resource.password} "\
-            "#{new_resource.instance}/crx/packmgr/service.jsp"
+            "#{new_resource.instance}/crx/packmgr/service.jsp -F cmd=ls"
 
   Chef::Log.debug('Verifying CRX Package Manager API status code')
 
@@ -492,10 +491,10 @@ end
 
 # Combined CRX Package Manager check
 def pkg_mgr_guard
-  Chef::Log.info('Waiting for CRX Package Manager...')
+  Chef::Log.debug('Waiting for CRX Package Manager...')
   pkg_mgr_bundle_guard
   pkg_mgr_api_guard
-  Chef::Log.info('CRX Package Manager seems to be working fine. Moving on.')
+  Chef::Log.debug('CRX Package Manager seems to be working fine. Moving on.')
 end
 
 # Loads current resource and all accessor attributes
