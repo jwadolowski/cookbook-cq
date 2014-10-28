@@ -23,7 +23,13 @@ CQ_CONF_FILE=<%= @conf_file %>
 # -----------------------------------------------------------------------------
 
 # Source function library
+<% if node['platform_family'] == "rhel" %>
 . /etc/rc.d/init.d/functions
+<% end %>
+<% if node['platform_family'] == "debian" %>
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+<% end %>
 
 # Soruce CQ configuration file
 [ -e $CQ_CONF_FILE ] && . $CQ_CONF_FILE
@@ -41,7 +47,7 @@ PID_FILE="$PID_DIR/cq.pid"
 LOG_DIR="$CQ_HOME/crx-quickstart/logs"
 
 # Execute path
-EXEC=". $CQ_CONF_FILE; $EXP_PATH bash $CQ_HOME/crx-quickstart/bin/start 2>$LOG_DIR/start_error.log > $LOG_DIR/start.log"
+EXEC="/bin/bash $CQ_HOME/crx-quickstart/bin/start 2>$LOG_DIR/start_error.log > $LOG_DIR/start.log"
 
 # Kill delay
 KILL_DELAY=60
@@ -52,7 +58,14 @@ start() {
     [ -x $CQ_HOME/crx-quickstart/bin/start ] || exit 5
     [ -f $CQ_CONF_FILE ] || exit 6
     echo -n $"Starting $PROG: "
-    daemon --user=$CQ_USER --pidfile=$PID_FILE --check $PROG $EXEC
+	. $CQ_CONF_FILE
+	PATH="$JAVA_HOME/bin:$PATH"
+	<% if node['platform_family'] == "rhel" %>
+		daemon --user=$CQ_USER --pidfile=$PID_FILE --check $PROG $EXEC
+	<% end %>
+	<% if node['platform_family'] == "debian" %>
+		start-stop-daemon --user=$CQ_USER --pidfile=$PID_FILE --start --exec $EXEC
+	<% end %>
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile
