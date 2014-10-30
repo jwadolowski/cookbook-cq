@@ -165,7 +165,7 @@ def package_list
             "-u #{new_resource.username} "\
             "-p #{new_resource.password}"
   Chef::Log.debug('Listing packages present in CRX Package Manager')
-  cmd = Mixlib::ShellOut.new(cmd_str)
+  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
   cmd.run_command
   Chef::Log.debug "package_list command: #{cmd_str}"
   Chef::Log.debug "package_list stdout: #{cmd.stdout}"
@@ -240,7 +240,7 @@ def package_metadata(type)
                             ' filters')
   end
 
-  cmd = Mixlib::ShellOut.new(cmd_str)
+  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
   Chef::Log.debug "Extracting #{type} from CRX package"
   cmd.run_command
   Chef::Log.debug "package_metadata command: #{cmd_str}"
@@ -423,7 +423,7 @@ def instance_healthcheck
 
   (1..i_max).each do |i|
     Chef::Log.debug("CQ instance - status check: [#{i}/#{i_max}]")
-    cmd = Mixlib::ShellOut.new(cmd_str)
+    cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
     cmd.run_command
 
     begin
@@ -461,7 +461,7 @@ def pkg_mgr_bundle_healthcheck
 
   (1..i_max).each do |i|
     Chef::Log.debug("Package Manager bundle - status check: [#{i}/#{i_max}]")
-    cmd = Mixlib::ShellOut.new(cmd_str)
+    cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
     cmd.run_command
 
     begin
@@ -499,7 +499,7 @@ def pkg_mgr_api_healthcheck
 
   (1..i_max).each do |i|
     Chef::Log.debug("Package Manager bundle - status check: [#{i}/#{i_max}]")
-    cmd = Mixlib::ShellOut.new(cmd_str)
+    cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
     cmd.run_command
 
     begin
@@ -539,7 +539,7 @@ def osgi_bundles_velocity_healthcheck
   i_max = 60
 
   (1..i_max).each do |i|
-    cmd = Mixlib::ShellOut.new(cmd_str)
+    cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
     cmd.run_command
 
     begin
@@ -620,7 +620,7 @@ def upload_package
             "-u #{new_resource.username} "\
             "-p #{new_resource.password} " +
             package_path
-  cmd = Mixlib::ShellOut.new(cmd_str)
+  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
   Chef::Log.info "Uploading package #{new_resource.name}"
   cmd.run_command
   Chef::Log.debug "cq_package_upload command: #{cmd_str}"
@@ -664,7 +664,7 @@ def install_package
   # Add recursive flag if requested
   cmd_str += '\&recursive=true' if new_resource.recursive_install == true
 
-  cmd = Mixlib::ShellOut.new(cmd_str)
+  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
   Chef::Log.info "Installing package #{new_resource.name}"
   cmd.run_command
   Chef::Log.debug "cq_package_install command: #{cmd_str}"
