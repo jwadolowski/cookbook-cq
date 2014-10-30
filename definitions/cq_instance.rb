@@ -123,7 +123,8 @@ define :cq_instance,
     )
 
     notifies :restart,
-      "service[cq#{cq_version('short_squeezed')}-#{local_mode}]", :immediately
+             "service[cq#{cq_version('short_squeezed')}-#{local_mode}]",
+             :immediately
   end
 
   # Start instance
@@ -141,13 +142,8 @@ define :cq_instance,
       require 'uri'
 
       # Pick valid resource to verify CQ instance full start
-      if constraint('>= 5.6.0').satisfied_by?(node['cq']['version'])
-        uri = URI.parse("http://localhost:#{node['cq'][local_mode]['port']}"\
-                        '/libs/granite/core/content/login.html')
-      elsif constraint('~> 5.5.0').satisfied_by?(node['cq']['version'])
-        uri = URI.parse("http://localhost:#{node['cq'][local_mode]['port']}"\
-                        '/libs/cq/core/content/login.html')
-      end
+      uri = URI.parse("http://localhost:#{node['cq'][local_mode]['port']}"\
+                        "#{node['cq']['healthcheck_resource']}")
 
       # Start timeout (30 min)
       timeout = 1800
