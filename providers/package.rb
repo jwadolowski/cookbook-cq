@@ -159,9 +159,6 @@ end
 def package_list
   require 'rexml/document'
 
-  # API pre-flight check
-  pkg_mgr_guard
-
   # Get list of packages using CQ UNIX Toolkit
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqls -x "\
             "-i #{new_resource.instance} "\
@@ -181,8 +178,8 @@ def package_list
 
   # Theoretically speaking cqls should never return empty string, so no
   # validation here. Nevertheless I encoutered such issues some time in the
-  # past and decided to implement a preflight check for that (pkg_mgr_guard).
-  # Since it's there problem never occurred again.
+  # past and decided to implement a preflight checks for that. Since it's
+  # there problem never occurred again.
 
   # Extract and return <packages> element from original XML
   begin
@@ -390,7 +387,7 @@ end
 #   action :install
 # end
 #
-# <This is the place where bundle is restarted as an effect of package X
+# <This is the place where bundles are restarted as an effect of package X
 # installation>
 #
 # cq_package Y do
@@ -404,16 +401,53 @@ end
 # This method has to be invoked before any interaction with Package Manager.
 #
 # Successful criteria:
-# 1) com.adobe.granite.crx-packagemgr bundle is Active
-# 2) http://<INSTANCE>:<PORT>/crx/packmgr/service.jsp returns 200
+# 1) CQ instance works properly - 200 is returned for login page
+# 2) com.adobe.granite.crx-packagemgr bundle is Active
+# 3) http://<INSTANCE>:<PORT>/crx/packmgr/service.jsp returns 200
 #
-# Both items are actively sampled every 10 seconds up to 60 checks (10
+# All items are actively sampled every 10 seconds up to 30 checks (5
 # minutes). As soon as first requirement is fulfilled 2nd check is verified
-# with the same frequency. If any of them fails after 60 checks Chef run is
-# aborted.
+# with the same frequency (and so on).If any of them fails after 60 checks Chef
+# run is aborted.
 
-# 1st requirement: OSGi bundle is in Active state
-def pkg_mgr_bundle_guard
+# 1st requirement - CQ works fine
+def instance_healthcheck
+  cmd_str = "curl -s -o /dev/null -w '%{http_code}' "\
+            "-u #{new_resource.username}:#{new_resource.password} "\
+            "#{new_resource.instance}#{node['cq']['healthcheck_resource']}"
+
+  Chef::Log.info('Verifying general instance state before proceeding with '\
+                 'package operation.')
+
+  i_max = 30
+
+  (1..i_max).each do |i|
+    Chef::Log.debug("CQ instance - status check: [#{i}/#{i_max}]")
+    cmd = Mixlib::ShellOut.new(cmd_str)
+    cmd.run_command
+
+    begin
+      cmd.error!
+
+      # Exit immediately if returned status code equals 200
+      break if cmd.stdout == '200'
+    rescue => e
+      Chef::Log.error "Unable to retrive HTTP status from CQ instance.\n"\
+        "#{cmd_str} command returned non 0 exit code.\n"\
+        "Standard error: #{cmd.stderr}\n"\
+        "Error description: #{e}"
+    end
+
+    Chef::Application.fatal!("CQ instance didn't return 200 for 5 minutes. "\
+                             'Aborting...') if i == i_max
+    sleep 10
+  end
+
+  Chef::Log.info('Instance returned 200. Moving on...')
+end
+
+# 2nd requirement: OSGi bundle is in "Active" state
+def pkg_mgr_bundle_healthcheck
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqosgi -m "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
@@ -421,84 +455,135 @@ def pkg_mgr_bundle_guard
             "| grep 'com.adobe.granite.crx-packagemgr' "\
             "| awk '{printf \"%s\", $3}'"
 
-  Chef::Log.debug('Verifying CRX Package Manager bundle')
+  Chef::Log.info('Verifying CRX Package Manager bundle')
 
-  # Max number of iterations. imax * 10 seconds = how long to wait for CRX
-  # Package Manager
-  i_max = 60
+  i_max = 30
 
   (1..i_max).each do |i|
+    Chef::Log.debug("Package Manager bundle - status check: [#{i}/#{i_max}]")
     cmd = Mixlib::ShellOut.new(cmd_str)
     cmd.run_command
-    Chef::Log.debug "pkg_mgr_bundle_check #{i}/#{i_max} command: #{cmd_str}"
-    Chef::Log.debug "pkg_mgr_bundle_check #{i}/#{i_max} stdout: #{cmd.stdout}"
-    Chef::Log.debug "pkg_mgr_bundle_check #{i}/#{i_max} stderr: #{cmd.stderr}"
 
     begin
       cmd.error!
+
+      # Sanitize the output
+      cmd_out_sanitized = cmd.stdout.strip.gsub('\n', '')
+
+      # Break if bundle is in "Active" state
+      break if cmd_out_sanitized == 'Active'
     rescue => e
-      Chef::Log.error "Unable to verify CRX Package Manager OSGi bundle: #{e}"
+      Chef::Log.error "Unable to retrive CRX Package Manager bundle state.\n"\
+        "#{cmd_str} command returned non 0 exit code.\n"\
+        "Standard error: #{cmd.stderr}\n"\
+        "Error description: #{e}"
     end
 
-    break if cmd.stdout == 'Active'
-
-    # Timeout verification
-    if i < i_max
-      sleep 10
-    else
-      Chef::Application.fatal!("Cannot proceed as CRX Package Manager bundle is
-                                still in #{cmd.stdout} state.")
-    end
+    Chef::Application.fatal!('Cannot proceed as CRX Package Manager bundle '\
+                             "is still in #{cmd_out_sanitized}") if i == i_max
+    sleep 10
   end
+
+  Chef::Log.info('Package Manager bundle is in Active state. Moving on...')
 end
 
-# 2nd requirement: CRX Package Manager API responds with 200
-def pkg_mgr_api_guard
+# 3rd requirement: package listing using API works correctly
+def pkg_mgr_api_healthcheck
   cmd_str = "curl -s -o /dev/null -w '%{http_code}' "\
             "-u #{new_resource.username}:#{new_resource.password} "\
             "#{new_resource.instance}/crx/packmgr/service.jsp -F cmd=ls"
 
-  Chef::Log.debug('Verifying CRX Package Manager API status code')
+  Chef::Log.info('Verifying CRX Package Manager API status code')
 
-  # Max number of iterations. i_max * 10 seconds = how long to wait for CRX
-  # Package Manager
+  i_max = 30
+
+  (1..i_max).each do |i|
+    Chef::Log.debug("Package Manager bundle - status check: [#{i}/#{i_max}]")
+    cmd = Mixlib::ShellOut.new(cmd_str)
+    cmd.run_command
+
+    begin
+      cmd.error!
+      break if cmd.stdout == '200'
+    rescue => e
+      Chef::Log.error "Unable to list packages using Package Manager API.\n"\
+        "#{cmd_str} command returned non 0 exit code.\n"\
+        "Standard error: #{cmd.stderr}\n"\
+        "Error description: #{e}"
+    end
+
+    Chef::Application.fatal!("Cannot proceed as package listing didn't work "\
+                             'for 5 minutes') if i == i_max
+    sleep 10
+  end
+
+  Chef::Log.info('Package Manager API works correctly. Moving on...')
+end
+
+# Detect changes in bundle state. 30 seconds without changes is considered as a
+# "safe" state.
+def osgi_bundles_velocity_healthcheck
+  cmd_str = "curl -s -u #{new_resource.username}:#{new_resource.password} "\
+            "#{new_resource.instance}/system/console/bundles/.json"
+
+  Chef::Log.info('Waiting for stable state of OSGi bundles...')
+
+  # Previous state of OSGi bundles (start with empty)
+  previous_state = ''
+
+  # How many times the state hasn't changed
+  same_state_counter = 0
+
+  # Timeout value (wait until i_max * 10 seconds and abort a chef run if OSGi
+  # bundles are still changing)
   i_max = 60
 
   (1..i_max).each do |i|
     cmd = Mixlib::ShellOut.new(cmd_str)
     cmd.run_command
-    Chef::Log.debug "pkg_mgr_api_check #{i}/#{i_max} command: #{cmd_str}"
-    Chef::Log.debug "pkg_mgr_api_check #{i}/#{i_max} stdout: #{cmd.stdout}"
-    Chef::Log.debug "pkg_mgr_api_check #{i}/#{i_max} stderr: #{cmd.stderr}"
 
     begin
       cmd.error!
+
+      # if the loop has just started assign initial previous state
+      previous_state == cmd.stdout if previous_state == ''
+
+      # Count same state occurrences or reset state counter if something has
+      # changed
+      if cmd.stdout == previous_state
+        same_state_counter += 1
+      else
+        same_state_counter = 0
+      end
+
+      # Assign new state as a previous state
+      previous_state = cmd.stdout
+
+      # Move on if the same state last 30 seconds (6 * 5 seconds)
+      break if same_state_counter == 3
     rescue => e
-      Chef::Log.error "Unable to verify CRX Package Manager API: #{e}"
+      Chef::Log.error "Unable to get OSGi bundles state.\n"\
+        "#{cmd_str} command returned non 0 exit code.\n"\
+        "Standard error: #{cmd.stderr}\n"\
+        "Error description: #{e}"
     end
 
-    break if cmd.stdout == '200'
-
-    # Timeout verification
-    if i < i_max
-      sleep 10
-    else
-      Chef::Application.fatal!("Cannot proceed as CRX Package Manager still
-                                responds with #{cmd.stdout} code.")
-    end
+    Chef::Application.fatal!('Cannot detect stable state for 10 minutes. '\
+                             'Aborting...') if i == i_max
+    sleep 10
   end
-end
 
-# Combined CRX Package Manager check
-def pkg_mgr_guard
-  Chef::Log.debug('Waiting for CRX Package Manager...')
-  pkg_mgr_bundle_guard
-  pkg_mgr_api_guard
-  Chef::Log.debug('CRX Package Manager seems to be working fine. Moving on.')
+  Chef::Log.info('OSGi bundles seem to be stable. Moving on...')
 end
 
 # Loads current resource and all accessor attributes
 def load_current_resource
+  # Pre-flight checks - make sure that everything is working as expected before
+  # moving on
+  instance_healthcheck
+  pkg_mgr_bundle_healthcheck
+  pkg_mgr_api_healthcheck
+
   @current_resource = Chef::Resource::CqPackage.new(new_resource.name)
 
   # Load "state" attributes from new resource
@@ -530,9 +615,6 @@ end
 
 # Uploads package to a given CQ instance
 def upload_package
-  # API pre-flight check
-  pkg_mgr_guard
-
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqput "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
@@ -567,9 +649,6 @@ end
 # {"success":false,"msg":"no package"};200
 def install_package
   require 'json'
-
-  # API pre-flight check
-  pkg_mgr_guard
 
   cmd_str = "curl -s -X POST -w ';%{http_code}' "\
             "-u #{new_resource.username}:#{new_resource.password} "\
@@ -619,6 +698,11 @@ def install_package
 
   Chef::Application.fatal!('Not successful package installation: ' +
                             output[0]) if json_resp['success'] != true
+
+  # Wait for stable state of OSGi bundles. Installation of a package (hotfixes/
+  # service packs in particular) may cause a lot bundle restarts, which prevents
+  # further operations against CQ/AEM APIs.
+  osgi_bundles_velocity_healthcheck
 end
 
 action :upload do
