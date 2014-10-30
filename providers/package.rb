@@ -620,7 +620,7 @@ def upload_package
             "-u #{new_resource.username} "\
             "-p #{new_resource.password} " +
             package_path
-  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
+  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 600)
   Chef::Log.info "Uploading package #{new_resource.name}"
   cmd.run_command
   Chef::Log.debug "cq_package_upload command: #{cmd_str}"
@@ -664,7 +664,7 @@ def install_package
   # Add recursive flag if requested
   cmd_str += '\&recursive=true' if new_resource.recursive_install == true
 
-  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
+  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 600)
   Chef::Log.info "Installing package #{new_resource.name}"
   cmd.run_command
   Chef::Log.debug "cq_package_install command: #{cmd_str}"
