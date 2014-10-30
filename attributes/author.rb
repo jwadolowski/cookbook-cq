@@ -20,6 +20,8 @@
 # CQ author attributes
 default['cq']['author']['mode'] = 'author'
 default['cq']['author']['port'] = '4502'
+default['cq']['author']['jmx_port'] = ''
+default['cq']['author']['debug_port'] = ''
 default['cq']['author']['credentials']['login'] = 'admin'
 default['cq']['author']['credentials']['password'] = 'admin'
 default['cq']['author']['jvm']['min_heap'] = '256'

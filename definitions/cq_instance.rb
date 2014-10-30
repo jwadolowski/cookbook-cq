@@ -108,6 +108,8 @@ define :cq_instance,
     source 'cq.conf.erb'
     variables(
       :port => node['cq'][local_mode]['port'],
+      :jmx_port => node['cq'][local_mode]['jmx_port'],
+      :debug_port => node['cq'][local_mode]['debug_port'],
       :instance_home => instance_home,
       :mode => local_mode,
       :min_heap => node['cq'][local_mode]['jvm']['min_heap'],

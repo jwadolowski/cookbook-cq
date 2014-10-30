@@ -20,12 +20,14 @@ export CQ_HOME=<%= @instance_home %>
 export CQ_RUNMODE=<%= @mode %>
 
 # -----------------------------------------------------------------------------
-# Core JVM parameters
+# JVM parameters
 # -----------------------------------------------------------------------------
 CQ_MIN_HEAP=<%= @min_heap %>
 CQ_MAX_HEAP=<%= @max_heap %>
 CQ_MAX_PERMSIZE=<%= @max_perm_size %>
 CQ_CODE_CACHE=<%= @code_cache %>
+CQ_JMX_PORT=<% @jmx_port %>
+CQ_DEBUG_PORT=<% @debug_port %>
 
 # -----------------------------------------------------------------------------
 # JVM options
