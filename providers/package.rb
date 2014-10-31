@@ -433,8 +433,6 @@ def instance_healthcheck
       break if cmd.stdout == '200'
     rescue => e
       Chef::Log.error "Unable to retrive HTTP status from CQ instance.\n"\
-        "#{cmd_str} command returned non 0 exit code.\n"\
-        "Standard error: #{cmd.stderr}\n"\
         "Error description: #{e}"
     end
 
@@ -474,8 +472,6 @@ def pkg_mgr_bundle_healthcheck
       break if cmd_out_sanitized == 'Active'
     rescue => e
       Chef::Log.error "Unable to retrive CRX Package Manager bundle state.\n"\
-        "#{cmd_str} command returned non 0 exit code.\n"\
-        "Standard error: #{cmd.stderr}\n"\
         "Error description: #{e}"
     end
 
@@ -507,8 +503,6 @@ def pkg_mgr_api_healthcheck
       break if cmd.stdout == '200'
     rescue => e
       Chef::Log.error "Unable to list packages using Package Manager API.\n"\
-        "#{cmd_str} command returned non 0 exit code.\n"\
-        "Standard error: #{cmd.stderr}\n"\
         "Error description: #{e}"
     end
 
@@ -563,8 +557,6 @@ def osgi_bundles_velocity_healthcheck
       break if same_state_counter == 3
     rescue => e
       Chef::Log.error "Unable to get OSGi bundles state.\n"\
-        "#{cmd_str} command returned non 0 exit code.\n"\
-        "Standard error: #{cmd.stderr}\n"\
         "Error description: #{e}"
     end
 
