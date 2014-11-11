@@ -167,13 +167,12 @@ def package_list
   Chef::Log.debug('Listing packages present in CRX Package Manager')
   cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
   cmd.run_command
-  Chef::Log.debug "package_list command: #{cmd_str}"
-  Chef::Log.debug "package_list stdout: #{cmd.stdout}"
-  Chef::Log.debug "package_list stderr: #{cmd.stderr}"
+
   begin
     cmd.error!
-  rescue
-    Chef::Application.fatal!("Cannot get package list: #{cmd.stderr}")
+  rescue => e
+    Chef::Application.fatal!("Cannot get package list!\n"\
+                             "Error description: #{e}")
   end
 
   # Theoretically speaking cqls should never return empty string, so no
@@ -241,16 +240,16 @@ def package_metadata(type)
   end
 
   cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
-  Chef::Log.debug "Extracting #{type} from CRX package"
+  Chef::Log.debug "Extracting #{type} from CQ package..."
   cmd.run_command
-  Chef::Log.debug "package_metadata command: #{cmd_str}"
-  Chef::Log.debug "package_metadata stdout: #{cmd.stdout}"
-  Chef::Log.debug "package_metadata stderr: #{cmd.stderr}"
+
   begin
     cmd.error!
-    Chef::Log.debug "Package #{type} successfully extracted"
-  rescue
-    Chef::Application.fatal!("Can't extract package #{type}: #{cmd.stderr}")
+    Chef::Log.debug "Package #{type} has been successfully extracted from "\
+      'metadata file.'
+  rescue => e
+    Chef::Application.fatal!("Can't extract package #{type} from metadata"\
+                             " file!\nError description: #{e}")
   end
 
   begin
@@ -615,16 +614,14 @@ def upload_package
   cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 600)
   Chef::Log.info "Uploading package #{new_resource.name}"
   cmd.run_command
-  Chef::Log.debug "cq_package_upload command: #{cmd_str}"
-  Chef::Log.debug "cq_package_upload stdout: #{cmd.stdout}"
-  Chef::Log.debug "cq_package_upload stderr: #{cmd.stderr}"
+
   begin
     cmd.error!
     Chef::Log.info "Package #{new_resource.name} has been successfully "\
                    'uploaded'
-  rescue
-    Chef::Application.fatal!("Can't upload package #{new_resource.name}: " +
-                             cmd.stderr)
+  rescue => e
+    Chef::Application.fatal!("Can't upload package #{new_resource.name}!\n"\
+                             "Error description: #{e}")
   end
 end
 
@@ -659,16 +656,14 @@ def install_package
   cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 600)
   Chef::Log.info "Installing package #{new_resource.name}"
   cmd.run_command
-  Chef::Log.debug "cq_package_install command: #{cmd_str}"
-  Chef::Log.debug "cq_package_install stdout: #{cmd.stdout}"
-  Chef::Log.debug "cq_package_install stderr: #{cmd.stderr}"
+
   begin
     cmd.error!
     Chef::Log.info "Package #{new_resource.name} has been successfully "\
-                   'installed'
-  rescue
-    Chef::Application.fatal!("Can't install package #{new_resource.name}: " +
-                             cmd.stderr)
+      'installed.'
+  rescue => e
+    Chef::Application.fatal!("Can't install package #{new_resource.name}!\n"\
+                             "Error description: #{e}")
   end
 
   # Split the output
