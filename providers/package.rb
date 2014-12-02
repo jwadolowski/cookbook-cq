@@ -229,18 +229,8 @@ def package_metadata(type)
   # Cache output at @pkg_metadata and return cached value on all subseqent
   # calls
   if @pkg_metadata.nil?
-    case type
-    when 'properties'
-      cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqrepkg -P " +
-                package_path
-    when 'filters'
-      cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqrepkg -F " +
-                package_path
-    else
-      Chef::Application.fatal!('Unsupported metadata type while extracting'\
-                              ' info from CRX package! Accepted values: '\
-                              'properties, filters')
-    end
+    cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqrepkg -P " +
+              package_path
 
     cmd = Mixlib::ShellOut.new(cmd_str)
     Chef::Log.debug "Extracting #{type} from CQ package..."
@@ -277,7 +267,7 @@ def package_attr_from_metadata(attr_name)
 
   begin
     # Return empty string in case of <entry key="attr_name"/> (.text == nil)
-    value = REXML::XPath.first(package_metadata('properties'),
+    value = REXML::XPath.first(package_metadata,
                                "//entry[@key='#{attr_name}']").text
     if value.nil?
       return ''
