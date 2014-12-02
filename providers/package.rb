@@ -232,22 +232,22 @@ def package_metadata
               package_path
 
     cmd = Mixlib::ShellOut.new(cmd_str)
-    Chef::Log.debug "Extracting #{type} from CQ package..."
+    Chef::Log.debug 'Extracting properties from CQ package...'
     cmd.run_command
 
     begin
       cmd.error!
-      Chef::Log.debug "Package #{type} has been successfully extracted from "\
-        'metadata file.'
+      Chef::Log.debug 'Package properties has been successfully extracted '\
+                      'from metadata file.'
     rescue => e
-      Chef::Application.fatal!("Can't extract package #{type} from metadata"\
+      Chef::Application.fatal!("Can't extract package properties from metadata"\
                               " file!\nError description: #{e}")
     end
 
     begin
       @pkg_metadata = REXML::Document.new(cmd.stdout)
     rescue => e
-      Chef::Application.fatal!("Cannot parse #{type} XML file: #{e}")
+      Chef::Application.fatal!("Cannot parse properties XML file: #{e}")
     end
   end
 
