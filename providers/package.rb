@@ -239,7 +239,7 @@ def package_metadata(type)
                             ' filters')
   end
 
-  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
+  cmd = Mixlib::ShellOut.new(cmd_str)
   Chef::Log.debug "Extracting #{type} from CQ package..."
   cmd.run_command
 
