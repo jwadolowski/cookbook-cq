@@ -221,13 +221,12 @@ end
 
 # Extract raw information from package metadata
 #
-# @param type [String] metadata type, accepted values: properties, filters
 # @retrurn [REXML::Document] raw XML object
-def package_metadata(type)
+def package_metadata
   require 'rexml/document'
 
-  # Cache output at @pkg_metadata and return cached value on all subseqent
-  # calls
+  # Extract package properties from zip file and cache the output at instance
+  # variable
   if @pkg_metadata.nil?
     cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqrepkg -P " +
               package_path
@@ -247,15 +246,14 @@ def package_metadata(type)
 
     begin
       @pkg_metadata = REXML::Document.new(cmd.stdout)
-      @pkg_metadata
     rescue => e
       Chef::Application.fatal!("Cannot parse #{type} XML file: #{e}")
     end
-  else
-    # Instead of going through the whole processing above just return cached
-    # value
-    @pkg_metadata
   end
+
+  # Return package properties - either calculated (1st call) or cached (all
+  # subsequent calls) output
+  @pkg_metadata
 end
 
 # Gets package attribute from properties.xml
