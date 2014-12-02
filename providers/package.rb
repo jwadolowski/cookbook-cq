@@ -226,36 +226,45 @@ end
 def package_metadata(type)
   require 'rexml/document'
 
-  case type
-  when 'properties'
-    cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqrepkg -P " +
-      package_path
-  when 'filters'
-    cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqrepkg -F " +
-      package_path
+  # Cache output at @pkg_metadata and return cached value on all subseqent
+  # calls
+  if @pkg_metadata.nil?
+    case type
+    when 'properties'
+      cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqrepkg -P " +
+                package_path
+    when 'filters'
+      cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqrepkg -F " +
+                package_path
+    else
+      Chef::Application.fatal!('Unsupported metadata type while extracting'\
+                              ' info from CRX package! Accepted values: '\
+                              'properties, filters')
+    end
+
+    cmd = Mixlib::ShellOut.new(cmd_str)
+    Chef::Log.debug "Extracting #{type} from CQ package..."
+    cmd.run_command
+
+    begin
+      cmd.error!
+      Chef::Log.debug "Package #{type} has been successfully extracted from "\
+        'metadata file.'
+    rescue => e
+      Chef::Application.fatal!("Can't extract package #{type} from metadata"\
+                              " file!\nError description: #{e}")
+    end
+
+    begin
+      @pkg_metadata = REXML::Document.new(cmd.stdout)
+      @pkg_metadata
+    rescue => e
+      Chef::Application.fatal!("Cannot parse #{type} XML file: #{e}")
+    end
   else
-    Chef::Application.fatal!('Unsupported metadata type while extracting info'\
-                            ' from CRX package! Accepted values: properties,'\
-                            ' filters')
-  end
-
-  cmd = Mixlib::ShellOut.new(cmd_str)
-  Chef::Log.debug "Extracting #{type} from CQ package..."
-  cmd.run_command
-
-  begin
-    cmd.error!
-    Chef::Log.debug "Package #{type} has been successfully extracted from "\
-      'metadata file.'
-  rescue => e
-    Chef::Application.fatal!("Can't extract package #{type} from metadata"\
-                             " file!\nError description: #{e}")
-  end
-
-  begin
-    REXML::Document.new(cmd.stdout)
-  rescue => e
-    Chef::Application.fatal!("Cannot parse #{type} XML file: #{e}")
+    # Instead of going through the whole processing above just return cached
+    # value
+    @pkg_metadata
   end
 end
 
