@@ -159,33 +159,43 @@ end
 def package_list
   require 'rexml/document'
 
-  # Get list of packages using CQ UNIX Toolkit
-  cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqls -x "\
-            "-i #{new_resource.instance} "\
-            "-u #{new_resource.username} "\
-            "-p #{new_resource.password}"
-  Chef::Log.debug('Listing packages present in CRX Package Manager')
-  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
-  cmd.run_command
+  # There's no need to call CQ every single time, as the output is not changing
+  # during cq_package lifecycle (until some action, i.e. install/update, is
+  # invoked, but after that there's no need to fetch any data from API).
+  # All in all package list can be cached and reused on all subsequent calls
+  # (except 1st)
+  if @package_list.nil?
+    # Get list of packages using CQ UNIX Toolkit
+    cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqls -x "\
+              "-i #{new_resource.instance} "\
+              "-u #{new_resource.username} "\
+              "-p #{new_resource.password}"
+    Chef::Log.debug('Listing packages present in CRX Package Manager')
+    cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
+    cmd.run_command
 
-  begin
-    cmd.error!
-  rescue => e
-    Chef::Application.fatal!("Cannot get package list!\n"\
-                             "Error description: #{e}")
+    begin
+      cmd.error!
+    rescue => e
+      Chef::Application.fatal!("Cannot get package list!\n"\
+                              "Error description: #{e}")
+    end
+
+    # Theoretically speaking cqls should never return empty string, so no
+    # validation here. Nevertheless I encoutered such issues some time in the
+    # past and decided to implement a preflight checks for that. Since it's
+    # there problem never occurred again.
+
+    # Extract and return <packages> element from original XML
+    begin
+      @package_list =
+        REXML::XPath.first(REXML::Document.new(cmd.stdout), '//packages')
+    rescue => e
+      Chef::Application.fatal!("Cannot parse XML returned by CQ: #{e}")
+    end
   end
 
-  # Theoretically speaking cqls should never return empty string, so no
-  # validation here. Nevertheless I encoutered such issues some time in the
-  # past and decided to implement a preflight checks for that. Since it's
-  # there problem never occurred again.
-
-  # Extract and return <packages> element from original XML
-  begin
-    REXML::XPath.first(REXML::Document.new(cmd.stdout), '//packages')
-  rescue => e
-    Chef::Application.fatal!("Cannot parse XML returned by CQ instance: #{e}")
-  end
+  @package_list
 end
 
 # Looks for a package(s) on a given CQ instance
@@ -221,42 +231,39 @@ end
 
 # Extract raw information from package metadata
 #
-# @param type [String] metadata type, accepted values: properties, filters
 # @retrurn [REXML::Document] raw XML object
-def package_metadata(type)
+def package_metadata
   require 'rexml/document'
 
-  case type
-  when 'properties'
+  # Extract package properties from zip file and cache the output at instance
+  # variable
+  if @pkg_metadata.nil?
     cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqrepkg -P " +
-      package_path
-  when 'filters'
-    cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqrepkg -F " +
-      package_path
-  else
-    Chef::Application.fatal!('Unsupported metadata type while extracting info'\
-                            ' from CRX package! Accepted values: properties,'\
-                            ' filters')
+              package_path
+
+    cmd = Mixlib::ShellOut.new(cmd_str)
+    Chef::Log.debug 'Extracting properties from CQ package...'
+    cmd.run_command
+
+    begin
+      cmd.error!
+      Chef::Log.debug 'Package properties has been successfully extracted '\
+                      'from metadata file.'
+    rescue => e
+      Chef::Application.fatal!("Can't extract package properties from metadata"\
+                              " file!\nError description: #{e}")
+    end
+
+    begin
+      @pkg_metadata = REXML::Document.new(cmd.stdout)
+    rescue => e
+      Chef::Application.fatal!("Cannot parse properties XML file: #{e}")
+    end
   end
 
-  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
-  Chef::Log.debug "Extracting #{type} from CQ package..."
-  cmd.run_command
-
-  begin
-    cmd.error!
-    Chef::Log.debug "Package #{type} has been successfully extracted from "\
-      'metadata file.'
-  rescue => e
-    Chef::Application.fatal!("Can't extract package #{type} from metadata"\
-                             " file!\nError description: #{e}")
-  end
-
-  begin
-    REXML::Document.new(cmd.stdout)
-  rescue => e
-    Chef::Application.fatal!("Cannot parse #{type} XML file: #{e}")
-  end
+  # Return package properties - either calculated (1st call) or cached (all
+  # subsequent calls) output
+  @pkg_metadata
 end
 
 # Gets package attribute from properties.xml
@@ -268,7 +275,7 @@ def package_attr_from_metadata(attr_name)
 
   begin
     # Return empty string in case of <entry key="attr_name"/> (.text == nil)
-    value = REXML::XPath.first(package_metadata('properties'),
+    value = REXML::XPath.first(package_metadata,
                                "//entry[@key='#{attr_name}']").text
     if value.nil?
       return ''
