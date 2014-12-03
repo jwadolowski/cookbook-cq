@@ -159,33 +159,43 @@ end
 def package_list
   require 'rexml/document'
 
-  # Get list of packages using CQ UNIX Toolkit
-  cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqls -x "\
-            "-i #{new_resource.instance} "\
-            "-u #{new_resource.username} "\
-            "-p #{new_resource.password}"
-  Chef::Log.debug('Listing packages present in CRX Package Manager')
-  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
-  cmd.run_command
+  # There's no need to call CQ every single time, as the output is not changing
+  # during cq_package lifecycle (until some action, i.e. install/update, is
+  # invoked, but after that there's no need to fetch any data from API).
+  # All in all package list can be cached and reused on all subsequent calls
+  # (except 1st)
+  if @package_list.nil?
+    # Get list of packages using CQ UNIX Toolkit
+    cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqls -x "\
+              "-i #{new_resource.instance} "\
+              "-u #{new_resource.username} "\
+              "-p #{new_resource.password}"
+    Chef::Log.debug('Listing packages present in CRX Package Manager')
+    cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
+    cmd.run_command
 
-  begin
-    cmd.error!
-  rescue => e
-    Chef::Application.fatal!("Cannot get package list!\n"\
-                             "Error description: #{e}")
+    begin
+      cmd.error!
+    rescue => e
+      Chef::Application.fatal!("Cannot get package list!\n"\
+                              "Error description: #{e}")
+    end
+
+    # Theoretically speaking cqls should never return empty string, so no
+    # validation here. Nevertheless I encoutered such issues some time in the
+    # past and decided to implement a preflight checks for that. Since it's
+    # there problem never occurred again.
+
+    # Extract and return <packages> element from original XML
+    begin
+      @package_list =
+        REXML::XPath.first(REXML::Document.new(cmd.stdout), '//packages')
+    rescue => e
+      Chef::Application.fatal!("Cannot parse XML returned by CQ: #{e}")
+    end
   end
 
-  # Theoretically speaking cqls should never return empty string, so no
-  # validation here. Nevertheless I encoutered such issues some time in the
-  # past and decided to implement a preflight checks for that. Since it's
-  # there problem never occurred again.
-
-  # Extract and return <packages> element from original XML
-  begin
-    REXML::XPath.first(REXML::Document.new(cmd.stdout), '//packages')
-  rescue => e
-    Chef::Application.fatal!("Cannot parse XML returned by CQ instance: #{e}")
-  end
+  @package_list
 end
 
 # Looks for a package(s) on a given CQ instance
