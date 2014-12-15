@@ -36,7 +36,7 @@ CQ_CONF_FILE=<%= @conf_file %>
 
 # Add JAVA_HOME to the PATH variable if necessary
 if [ -n "$JAVA_HOME" ]; then
-    EXP_PATH="export PATH=\"$JAVA_HOME/bin:$PATH\"; "
+  EXP_PATH="export PATH=\"$JAVA_HOME/bin:$PATH\""
 fi
 
 # PID file
@@ -47,7 +47,7 @@ PID_FILE="$PID_DIR/cq.pid"
 LOG_DIR="$CQ_HOME/crx-quickstart/logs"
 
 # Execute path
-EXEC="/bin/bash $CQ_HOME/crx-quickstart/bin/start 2>$LOG_DIR/start_error.log > $LOG_DIR/start.log"
+EXEC=". $CQ_CONF_FILE; $EXP_PATH bash $CQ_HOME/crx-quickstart/bin/start 2>$LOG_DIR/start_error.log > $LOG_DIR/start.log"
 
 # Kill delay
 KILL_DELAY=60
@@ -55,62 +55,60 @@ KILL_DELAY=60
 lockfile=/var/lock/subsys/$PROG
 
 start() {
-    [ -x $CQ_HOME/crx-quickstart/bin/start ] || exit 5
-    [ -f $CQ_CONF_FILE ] || exit 6
-    echo -n $"Starting $PROG: "
-	. $CQ_CONF_FILE
-	PATH="$JAVA_HOME/bin:$PATH"
-	<% if node['platform_family'] == "rhel" %>
-		daemon --user=$CQ_USER --pidfile=$PID_FILE --check $PROG $EXEC
-	<% end %>
-	<% if node['platform_family'] == "debian" %>
-		start-stop-daemon --user=$CQ_USER --pidfile=$PID_FILE --start --exec $EXEC
-	<% end %>
-    retval=$?
-    echo
-    [ $retval -eq 0 ] && touch $lockfile
-    return $retval
+  [ -x $CQ_HOME/crx-quickstart/bin/start ] || exit 5
+  [ -f $CQ_CONF_FILE ] || exit 6
+  echo -n $"Starting $PROG: "
+  <% if node['platform_family'] == "rhel" %>
+  daemon --user=$CQ_USER --pidfile=$PID_FILE --check $PROG $EXEC
+  <% end %>
+  <% if node['platform_family'] == "debian" %>
+  start-stop-daemon --user=$CQ_USER --pidfile=$PID_FILE --start --exec $CQ_HOME/crx-quickstart/bin/start -- $EXEC
+  <% end %>
+  retval=$?
+  echo
+  [ $retval -eq 0 ] && touch $lockfile
+  return $retval
 }
 
 stop() {
-    echo -n $"Stopping $PROG: "
-    killproc -p $PID_FILE -d $KILL_DELAY $PROG
-    retval=$?
-    echo
-    [ $retval -eq 0 ] && rm -f $lockfile
-    return $retval
+  echo -n $"Stopping $PROG: "
+  killproc -p $PID_FILE -d $KILL_DELAY $PROG
+  retval=$?
+  echo
+  [ $retval -eq 0 ] && rm -f $lockfile
+  return $retval
 }
 
 restart() {
-    stop
-    start
+  stop
+  start
 }
 
 rh_status() {
-    status -p $PID_FILE $PROG
+  status -p $PID_FILE $PROG
 }
 
 rh_status_q() {
-    rh_status >/dev/null 2>&1
+  rh_status >/dev/null 2>&1
 }
 
 case "$1" in
-    start)
-        rh_status_q && exit 0
-        $1
-        ;;
-    stop)
-        rh_status_q || exit 0
-        $1
-        ;;
-    restart)
-        $1
-        ;;
-    status)
-        rh_status
-        ;;
-    *)
-        echo $"Usage: $0 {start|stop|status|restart}"
-        exit 2
+  start)
+  rh_status_q && exit 0
+  $1
+  ;;
+  stop)
+  rh_status_q || exit 0
+  $1
+  ;;
+  restart)
+  $1
+  ;;
+  status)
+  rh_status
+  ;;
+  *)
+  echo $"Usage: $0 {start|stop|status|restart}"
+  exit 2
 esac
 exit $?
