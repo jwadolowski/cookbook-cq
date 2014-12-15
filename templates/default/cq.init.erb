@@ -23,9 +23,15 @@ CQ_CONF_FILE=<%= @conf_file %>
 # -----------------------------------------------------------------------------
 
 # Source function library
+<% if node['platform_family'] == "rhel" %>
 . /etc/rc.d/init.d/functions
+<% end %>
+<% if node['platform_family'] == "debian" %>
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+<% end %>
 
-# Soruce CQ configuration file
+# Source CQ configuration file
 [ -e $CQ_CONF_FILE ] && . $CQ_CONF_FILE
 
 # Add JAVA_HOME to the PATH variable if necessary
@@ -52,7 +58,12 @@ start() {
     [ -x $CQ_HOME/crx-quickstart/bin/start ] || exit 5
     [ -f $CQ_CONF_FILE ] || exit 6
     echo -n $"Starting $PROG: "
-    daemon --user=$CQ_USER --pidfile=$PID_FILE --check $PROG $EXEC
+    <% if node['platform_family'] == "rhel" %>
+      daemon --user=$CQ_USER --pidfile=$PID_FILE --check $PROG $EXEC
+    <% end %>
+    <% if node['platform_family'] == "debian" %>
+      start-stop-daemon --user=$CQ_USER --pidfile=$PID_FILE --start --exec $CQ_HOME/crx-quickstart/bin/start -- $EXEC
+    <% end %>
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile
