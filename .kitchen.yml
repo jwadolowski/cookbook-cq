@@ -7,10 +7,12 @@ provisioner:
 
 platforms:
   - name: ubuntu-12.04
-  - name: centos-6.4
+  - name: centos-6.6
+  - name: debian-7.7
 
 suites:
   - name: default
     run_list:
-      - recipe[cq::default]
+      - recipe[cq::author]
+      - recipe[cq::publish]
     attributes:
