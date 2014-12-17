@@ -1,5 +1,5 @@
 ---
-<% chef_versions = %w( latest 11.16.4 ) %>
+<% chef_versions = %w( 11.16.4 ) %>
 <% platforms = %w( centos-6.6 debian-7.7 ubuntu-14.04 ) %>
 
 driver:
