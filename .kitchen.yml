@@ -15,8 +15,9 @@ provisioner:
 platforms:
   - name: centos-6.5
     attributes:
-      license:
-        url: <%= ENV['CQ_LICENSE_URL'] %>
+      cq:
+        license:
+          url: <%= ENV['CQ_LICENSE_URL'] %>
       java:
         jdk:
           '7':
