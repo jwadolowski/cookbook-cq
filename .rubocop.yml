@@ -3,12 +3,13 @@ AllCops:
         - 'Vagrantfile'
         - 'metadata.rb'
         - 'Thorfile'
+        - 'Berskfile'
 
 Encoding:
     Enabled: false
 
 LineLength:
-    Max: 80 
+    Max: 80
 
 MethodLength:
     Max: 30
