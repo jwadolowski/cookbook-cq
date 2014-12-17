@@ -34,7 +34,6 @@ platforms:
 <%   end %>
 <% end %>
 
-
 suites:
   - name: author-v5.6.1
     run_list:
