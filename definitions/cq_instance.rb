@@ -40,13 +40,22 @@ define :cq_instance,
 
   # Download and unpack CQ JAR file
   # ---------------------------------------------------------------------------
-  # Download JAR file
+  # Download JAR file to Chef's cache
+  remote_file "#{Chef::Config[:file_cache_path]}/#{jar_name}" do
+    owner 'root'
+    group 'root'
+    mode '0644'
+    source node['cq']['jar']['url']
+    checksum node['cq']['jar']['checksum'] if node['cq']['jar']['checksum']
+  end
+
+  # Move JAR file to instance home
   remote_file "#{instance_home}/#{jar_name}" do
     owner node['cq']['user']
     group node['cq']['group']
     mode '0644'
-    source node['cq']['jar']['url']
-    checksum node['cq']['jar']['checksum']
+    source "file://#{Chef::Config[:file_cache_path]}/#{jar_name}"
+    checksum node['cq']['jar']['checksum'] if node['cq']['jar']['checksum']
   end
 
   # Unpack CQ JAR file once downloaded
@@ -63,29 +72,31 @@ define :cq_instance,
 
   # Deploy CQ license file
   # ---------------------------------------------------------------------------
+  # Download license file to Chef's cache
+  remote_file "#{Chef::Config[:file_cache_path]}/license.properties" do
+    owner 'root'
+    group 'root'
+    mode '0644'
+    source node['cq']['license']['url']
+    checksum node['cq']['license']['checksum'] if
+      node['cq']['license']['checksum']
+  end
+
+  # Move license to instance home
   remote_file "#{instance_home}/license.properties" do
     owner node['cq']['user']
     group node['cq']['group']
     mode '0644'
-    source node['cq']['license']['url']
-    checksum node['cq']['license']['checksum']
-  end
-
-  # Create config directory
-  # TODO: does it really needed? crx-quickstart/conf exists after unpack
-  # ---------------------------------------------------------------------------
-  directory instance_conf_dir do
-    owner node['cq']['user']
-    group node['cq']['group']
-    mode '0755'
-    action :create
+    source "file://#{Chef::Config[:file_cache_path]}/license.properties"
+    checksum node['cq']['license']['checksum'] if
+      node['cq']['license']['checksum']
   end
 
   # Create init script
   # ---------------------------------------------------------------------------
   template "/etc/init.d/#{daemon_name}" do
-    owner node['cq']['user']
-    group node['cq']['group']
+    owner 'root'
+    group 'root'
     mode '0755'
     source 'cq.init.erb'
     variables(
@@ -134,11 +145,13 @@ define :cq_instance,
   service daemon_name do
     supports :status => true, :restart => true
     action [:enable, :start]
+
+    notifies :run, 'ruby_block[cq-start-guard]', :immediately
   end
 
   # Wait until CQ is fully up and running
   # ---------------------------------------------------------------------------
-  ruby_block "#{daemon_name} start guard" do # ~FC014
+  ruby_block 'cq-start-guard' do # ~FC014
     block do
       require 'net/http'
       require 'uri'
@@ -171,5 +184,7 @@ define :cq_instance,
 
       Chef::Log.info("CQ start time: #{time_diff} seconds")
     end
+
+    action :nothing
   end
 end
