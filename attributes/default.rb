@@ -28,9 +28,9 @@ default['cq']['version'] = '5.6.1'
 default['cq']['custom_tmp_dir'] = '/opt/tmp'
 default['cq']['package_cache'] = ''
 default['cq']['jar']['url'] = ''
-default['cq']['jar']['checksum'] = ''
+# default['cq']['jar']['checksum'] = ''
 default['cq']['license']['url'] = ''
-default['cq']['license']['checksum'] = ''
+# default['cq']['license']['checksum'] = ''
 
 # Java attributes
 # -----------------------------------------------------------------------------
