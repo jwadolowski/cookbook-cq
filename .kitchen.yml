@@ -40,6 +40,7 @@ suites:
       - recipe[cq::author]
     attributes:
       cq:
+        version: '5.6.1'
         jar:
           url: <%= ENV['CQ_V561_JAR_URL'] %>
 
@@ -48,5 +49,24 @@ suites:
       - recipe[cq::publish]
     attributes:
       cq:
+        version: '5.6.1'
         jar:
           url: <%= ENV['CQ_V561_JAR_URL'] %>
+
+  - name: author-v6.0.0
+    run_list:
+      - recipe[cq::author]
+    attributes:
+      cq:
+        version: '6.0.0'
+        jar:
+          url: <%= ENV['CQ_V600_JAR_URL'] %>
+
+  - name: publish-v6.0.0
+    run_list:
+      - recipe[cq::publish]
+    attributes:
+      cq:
+        version: '6.0.0'
+        jar:
+          url: <%= ENV['CQ_V600_JAR_URL'] %>
