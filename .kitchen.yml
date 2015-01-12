@@ -1,16 +1,72 @@
 ---
+<% chef_versions = %w( 11.16.4 ) %>
+<% platforms = %w( centos-6.6 ) %>
+
 driver:
   name: vagrant
+  customize:
+      memory: 2048
+      cpus: 2
 
 provisioner:
-  name: chef_solo
+  name: chef_zero
 
 platforms:
-  - name: ubuntu-12.04
-  - name: centos-6.4
+<% platforms.each do |p| %>
+<%   chef_versions.each do |chef_version| %>
+  - name: <%= p %>-chef-<%= chef_version %>
+    driver_config:
+      box: opscode-<%= p %>
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_<%= p %>_chef-provisionerless.box
+      require_chef_omnibus: <%= chef_version %>
+    attributes:
+      cq:
+        license:
+          url: <%= ENV['CQ_LICENSE_URL'] %>
+      java:
+        jdk:
+          '6':
+            x86_64:
+              url: <%= ENV['JAVA_JDK_6_X86_64_URL'] || "http://download.oracle.com/otn-pub/java/jdk/6u45-b06/jdk-6u45-linux-x64.bin" %>
+          '7':
+            x86_64:
+              url: <%= ENV['JAVA_JDK_7_X86_64_URL'] || "http://download.oracle.com/otn-pub/java/jdk/7u72-b14/jdk-7u72-linux-x64.tar.gz" %>
+<%   end %>
+<% end %>
 
 suites:
-  - name: default
+  - name: author-v5.6.1
     run_list:
-      - recipe[cq::default]
+      - recipe[cq::author]
     attributes:
+      cq:
+        version: '5.6.1'
+        jar:
+          url: <%= ENV['CQ_V561_JAR_URL'] %>
+
+  - name: publish-v5.6.1
+    run_list:
+      - recipe[cq::publish]
+    attributes:
+      cq:
+        version: '5.6.1'
+        jar:
+          url: <%= ENV['CQ_V561_JAR_URL'] %>
+
+  - name: author-v6.0.0
+    run_list:
+      - recipe[cq::author]
+    attributes:
+      cq:
+        version: '6.0.0'
+        jar:
+          url: <%= ENV['CQ_V600_JAR_URL'] %>
+
+  - name: publish-v6.0.0
+    run_list:
+      - recipe[cq::publish]
+    attributes:
+      cq:
+        version: '6.0.0'
+        jar:
+          url: <%= ENV['CQ_V600_JAR_URL'] %>
