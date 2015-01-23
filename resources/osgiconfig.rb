@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cq
-# Resource:: osgi_config
+# Resource:: osgiconfig
 #
 # Copyright (C) 2015 Jakub Wadolowski
 #
@@ -22,7 +22,10 @@ actions :create, :delete, :modify, :manage
 default_action :nothing
 
 attribute :name, :kind_of => String, :name_attribute => true, :required => true
+attribute :username, :kind_of => String, :required => true
+attribute :password, :kind_of => String, :required => true
+attribute :instance, :kind_of => String, :required => true
 attribute :factory_config, :kind_of => String, :required => false
 attribute :properties, :kind_of => Hash, :required => true
 
-attr_accessor :present
+attr_accessor :created
