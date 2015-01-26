@@ -41,7 +41,7 @@ def osgi_config_metadata
 end
 
 def load_current_resource
-  @current_resource = Chef::Resource::CqOsgiconfig.new(new_resource.name)
+  @current_resource = Chef::Resource::CqOsgiConfig.new(new_resource.name)
 
   # Set attribute accessors
   @current_resource.created = false

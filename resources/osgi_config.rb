@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cq
-# Resource:: osgiconfig
+# Resource:: osgi_config
 #
 # Copyright (C) 2015 Jakub Wadolowski
 #
