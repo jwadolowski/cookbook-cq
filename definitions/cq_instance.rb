@@ -146,12 +146,12 @@ define :cq_instance,
     supports :status => true, :restart => true
     action [:enable, :start]
 
-    notifies :run, 'ruby_block[cq-start-guard]', :immediately
+    notifies :run, "ruby_block[cq-#{local_mode}-start-guard]", :immediately
   end
 
   # Wait until CQ is fully up and running
   # ---------------------------------------------------------------------------
-  ruby_block 'cq-start-guard' do # ~FC014
+  ruby_block "cq-#{local_mode}-start-guard" do # ~FC014
     block do
       require 'net/http'
       require 'uri'
