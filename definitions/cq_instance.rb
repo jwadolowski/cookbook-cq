@@ -20,7 +20,6 @@
 
 define :cq_instance,
        :id => nil do
-
   # Helpers
   # ---------------------------------------------------------------------------
   local_id = params[:id]
@@ -157,8 +156,8 @@ define :cq_instance,
       require 'uri'
 
       # Pick valid resource to verify CQ instance full start
-      uri = URI.parse("http://localhost:#{node['cq'][local_id]['port']}"\
-                        "#{node['cq']['healthcheck_resource']}")
+      uri = URI.parse("http://localhost:#{node['cq'][local_id]['port']}" +
+                      node['cq']['healthcheck_resource'])
 
       # Start timeout (30 min)
       timeout = 1800
