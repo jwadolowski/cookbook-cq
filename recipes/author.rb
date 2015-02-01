@@ -24,5 +24,5 @@ include_recipe 'cq::commons'
 # Create author instance
 # -----------------------------------------------------------------------------
 cq_instance "CQ #{node['cq']['author']['mode']}" do
-  mode node['cq']['author']['mode']
+  id 'author'
 end

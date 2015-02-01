@@ -18,7 +18,7 @@
 #
 
 # CQ author attributes
-default['cq']['author']['mode'] = 'author'
+default['cq']['author']['run_mode'] = 'author'
 default['cq']['author']['port'] = '4502'
 default['cq']['author']['jmx_port'] = ''
 default['cq']['author']['debug_port'] = ''
