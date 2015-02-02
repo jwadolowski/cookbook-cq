@@ -28,6 +28,9 @@ define :cq_instance,
   jar_name = cq_jarfile(node['cq']['jar']['url'])
   daemon_name = cq_daemon_name(local_id)
 
+  Chef::Log.warn "Attribute node['cq']['#{params[:id]}']['mode'] is now "\
+    "deprecated and can be safely removed." if node['cq'][local_id]['mode']
+
   # Create CQ instance directory
   # ---------------------------------------------------------------------------
   directory instance_home do
