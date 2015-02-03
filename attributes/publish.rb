@@ -18,7 +18,7 @@
 #
 
 # CQ publish attributes
-default['cq']['publish']['mode'] = 'publish'
+default['cq']['publish']['run_mode'] = 'publish'
 default['cq']['publish']['port'] = '4503'
 default['cq']['publish']['jmx_port'] = ''
 default['cq']['publish']['debug_port'] = ''

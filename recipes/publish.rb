@@ -23,6 +23,6 @@ include_recipe 'cq::commons'
 
 # Create publish instance
 # -----------------------------------------------------------------------------
-cq_instance "CQ #{node['cq']['publish']['mode']}" do
-  mode node['cq']['publish']['mode']
+cq_instance "CQ Publish" do
+  id 'publish'
 end
