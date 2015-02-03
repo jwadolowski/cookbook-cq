@@ -139,10 +139,10 @@ describe 'CQ publish config file' do
     ).not_to match('export CQ_PORT=4502')
     expect(
       file('/opt/cq/publish/crx-quickstart/conf/cq60-publish.conf').content
-    ).to match('export CQ_RUN_MODE=crx2,publish')
+    ).to match('export CQ_RUNMODE=crx2,publish')
     expect(
       file('/opt/cq/publish/crx-quickstart/conf/cq60-publish.conf').content
-    ).not_to match('export CQ_RUN_MODE=publish')
+    ).not_to match('export CQ_RUNMODE=publish')
   end
 end
 

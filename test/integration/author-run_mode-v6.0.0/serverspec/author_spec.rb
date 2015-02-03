@@ -139,10 +139,10 @@ describe 'CQ author config file' do
     ).not_to match('export CQ_PORT=4503')
     expect(
       file('/opt/cq/author/crx-quickstart/conf/cq60-author.conf').content
-    ).to match('export CQ_RUN_MODE=crx2,author')
+    ).to match('export CQ_RUNMODE=crx2,author')
     expect(
       file('/opt/cq/author/crx-quickstart/conf/cq60-author.conf').content
-    ).not_to match('export CQ_RUN_MODE=author')
+    ).not_to match('export CQ_RUNMODE=author')
   end
 end
 
