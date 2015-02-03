@@ -19,15 +19,17 @@
 #
 
 define :cq_instance,
-       :mode => nil do
-
+       :id => nil do
   # Helpers
   # ---------------------------------------------------------------------------
-  local_mode = params[:mode]
-  instance_home = cq_instance_home(node['cq']['home_dir'], local_mode)
-  instance_conf_dir = cq_instance_conf_dir(node['cq']['home_dir'], local_mode)
+  local_id = params[:id]
+  instance_home = cq_instance_home(node['cq']['home_dir'], local_id)
+  instance_conf_dir = cq_instance_conf_dir(node['cq']['home_dir'], local_id)
   jar_name = cq_jarfile(node['cq']['jar']['url'])
-  daemon_name = cq_daemon_name(local_mode)
+  daemon_name = cq_daemon_name(local_id)
+
+  Chef::Log.warn "Attribute node['cq']['#{params[:id]}']['mode'] is now "\
+    "deprecated and can be safely removed." if node['cq'][local_id]['mode']
 
   # Create CQ instance directory
   # ---------------------------------------------------------------------------
@@ -102,9 +104,9 @@ define :cq_instance,
     variables(
       :daemon_name => daemon_name,
       :full_name => "Adobe CQ #{node['cq']['version']}"\
-                    " #{local_mode.to_s.capitalize}",
+                    " #{local_id.to_s.capitalize}",
       :conf_file => "#{cq_instance_conf_dir(node['cq']['home_dir'],
-                                            local_mode)}/"\
+                                            local_id)}/"\
                                             "#{daemon_name}.conf"
     )
   end
@@ -112,31 +114,31 @@ define :cq_instance,
   # Render CQ config file
   # ---------------------------------------------------------------------------
   template "#{instance_conf_dir}/cq#{cq_version('short_squeezed')}"\
-           "-#{local_mode}.conf" do
+           "-#{local_id}.conf" do
     owner node['cq']['user']
     group node['cq']['group']
     mode '0644'
     source 'cq.conf.erb'
     variables(
-      :port => node['cq'][local_mode]['port'],
-      :jmx_port => node['cq'][local_mode]['jmx_port'],
-      :debug_port => node['cq'][local_mode]['debug_port'],
+      :port => node['cq'][local_id]['port'],
+      :jmx_port => node['cq'][local_id]['jmx_port'],
+      :debug_port => node['cq'][local_id]['debug_port'],
       :instance_home => instance_home,
-      :mode => local_mode,
-      :min_heap => node['cq'][local_mode]['jvm']['min_heap'],
-      :max_heap => node['cq'][local_mode]['jvm']['max_heap'],
-      :max_perm_size => node['cq'][local_mode]['jvm']['max_perm_size'],
-      :code_cache => node['cq'][local_mode]['jvm']['code_cache_size'],
-      :jvm_general_opts => node['cq'][local_mode]['jvm']['general_opts'],
-      :jvm_code_cache_opts => node['cq'][local_mode]['jvm']['code_cache_opts'],
-      :jvm_gc_opts => node['cq'][local_mode]['jvm']['gc_opts'],
-      :jvm_jmx_opts => node['cq'][local_mode]['jvm']['jmx_opts'],
-      :jvm_debug_opts => node['cq'][local_mode]['jvm']['debug_opts'],
-      :jvm_extra_opts => node['cq'][local_mode]['jvm']['extra_opts']
+      :run_mode => node['cq'][local_id]['run_mode'],
+      :min_heap => node['cq'][local_id]['jvm']['min_heap'],
+      :max_heap => node['cq'][local_id]['jvm']['max_heap'],
+      :max_perm_size => node['cq'][local_id]['jvm']['max_perm_size'],
+      :code_cache => node['cq'][local_id]['jvm']['code_cache_size'],
+      :jvm_general_opts => node['cq'][local_id]['jvm']['general_opts'],
+      :jvm_code_cache_opts => node['cq'][local_id]['jvm']['code_cache_opts'],
+      :jvm_gc_opts => node['cq'][local_id]['jvm']['gc_opts'],
+      :jvm_jmx_opts => node['cq'][local_id]['jvm']['jmx_opts'],
+      :jvm_debug_opts => node['cq'][local_id]['jvm']['debug_opts'],
+      :jvm_extra_opts => node['cq'][local_id]['jvm']['extra_opts']
     )
 
     notifies :restart,
-             "service[cq#{cq_version('short_squeezed')}-#{local_mode}]",
+             "service[cq#{cq_version('short_squeezed')}-#{local_id}]",
              :immediately
   end
 
@@ -146,19 +148,19 @@ define :cq_instance,
     supports :status => true, :restart => true
     action [:enable, :start]
 
-    notifies :run, "ruby_block[cq-#{local_mode}-start-guard]", :immediately
+    notifies :run, "ruby_block[cq-#{local_id}-start-guard]", :immediately
   end
 
   # Wait until CQ is fully up and running
   # ---------------------------------------------------------------------------
-  ruby_block "cq-#{local_mode}-start-guard" do # ~FC014
+  ruby_block "cq-#{local_id}-start-guard" do # ~FC014
     block do
       require 'net/http'
       require 'uri'
 
       # Pick valid resource to verify CQ instance full start
-      uri = URI.parse("http://localhost:#{node['cq'][local_mode]['port']}"\
-                        "#{node['cq']['healthcheck_resource']}")
+      uri = URI.parse("http://localhost:#{node['cq'][local_id]['port']}" +
+                      node['cq']['healthcheck_resource'])
 
       # Start timeout (30 min)
       timeout = 1800
