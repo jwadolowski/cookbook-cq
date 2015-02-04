@@ -413,7 +413,7 @@ end
 #
 # All items are actively sampled every 10 seconds up to 30 checks (5
 # minutes). As soon as first requirement is fulfilled 2nd check is verified
-# with the same frequency (and so on).If any of them fails after 60 checks Chef
+# with the same frequency (and so on).If any of them fails after 30 checks Chef
 # run is aborted.
 
 # 1st requirement - CQ works fine
