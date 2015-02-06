@@ -81,7 +81,7 @@ end
 def current_properties_hash
   kv = {}
 
-  osgi_config_properties.each_pair do |key,val|
+  osgi_config_properties.each_pair do |key, val|
     kv[key] = val['value']
     kv[key] = val['values'].sort.uniq if kv[key].nil?
   end
@@ -103,10 +103,8 @@ end
 def sanitized_new_properties
   local_properties = @new_resource.properties
 
-  local_properties.each do |k,v|
-    if v.kind_of?(Array)
-      local_properties[k] = v.sort.uniq
-    end
+  local_properties.each do |k, v|
+    local_properties[k] = v.sort.uniq if v.is_a?(Array)
   end
 
   local_properties
@@ -121,13 +119,9 @@ def load_current_resource
   @current_resource.exists = osgi_config_presence
 
   # Load OSGi properties for existing configuration and check validity
-  if current_resource.exists
-    @current_resource.properties(current_properties_hash)
-    @current_resource.valid = validate_properties
-    Chef::Log.error("Current resource: #{current_resource.properties}")
-    Chef::Log.error("New resource: #{sanitized_new_properties}")
-    Chef::Log.error(">>> valid?: #{current_resource.valid}")
-  end
+  @current_resource.properties(current_properties_hash) if
+    current_resource.exists
+  @current_resource.valid = validate_properties if current_resource.exists
 end
 
 # Converts properties hash to -s KEY -v VALUE string for cqcfg execution
@@ -136,8 +130,8 @@ end
 def cqcfg_params
   param_str = ''
 
-  sanitized_new_properties.each do |k,v|
-    if v.kind_of?(Array)
+  sanitized_new_properties.each do |k, v|
+    if v.is_a?(Array)
       v.each do |v1|
         param_str += "-s #{k} -v #{v1} "
       end
