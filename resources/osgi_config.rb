@@ -19,7 +19,7 @@
 
 actions :create, :delete, :modify, :manage
 
-default_action :nothing
+default_action :create
 
 attribute :pid,
           :kind_of => String,
