@@ -21,11 +21,28 @@ actions :create, :delete, :modify, :manage
 
 default_action :nothing
 
-attribute :name, :kind_of => String, :name_attribute => true, :required => true
-attribute :username, :kind_of => String, :required => true
-attribute :password, :kind_of => String, :required => true
-attribute :instance, :kind_of => String, :required => true
-attribute :factory_config, :kind_of => String, :required => false
-attribute :properties, :kind_of => Hash, :required => true
+attribute :pid,
+          :kind_of => String,
+          :name_attribute => true,
+          :required => true
+attribute :factory_pid,
+          :kind_of => String,
+          :required => false
+attribute :properties,
+          :kind_of => Hash,
+          :required => true
+attribute :append,
+          :kind_of => [TrueClass, FalseClass],
+          :default => false,
+          :required => false
+attribute :username,
+          :kind_of => String,
+          :required => true
+attribute :password,
+          :kind_of => String,
+          :required => true
+attribute :instance,
+          :kind_of => String,
+          :required => true
 
-attr_accessor :created
+attr_accessor :exists, :valid

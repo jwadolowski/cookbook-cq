@@ -21,40 +21,119 @@ def whyrun_supported?
   true
 end
 
-def osgi_config_metadata
+# Get a list of all OSGi configurations
+#
+# @return [String] list of all OSGi configurations
+def osgi_config_list
+  cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfgls "\
+            "-i #{new_resource.instance} "\
+            "-u #{new_resource.username} "\
+            "-p #{new_resource.password} "
+
+  cmd = Mixlib::ShellOut.new(cmd_str)
+  cmd.run_command
+
+  Chef::Log.debug("Executing #{cmd_str}")
+
+  begin
+    cmd.error!
+    cmd.stdout
+  rescue => e
+    Chef::Application.fatal!("Can't get a list of OSGi configurations!\n"\
+                             "Error description: #{e}")
+  end
+end
+
+# Checks presence of OSGi config
+#
+# @return [Boolean] true if OSGi config exists, false otherwise
+def osgi_config_presence
+  osgi_config_list.include? new_resource.pid
+end
+
+# Get properties of existing OSGi configuration
+#
+# @return [JSON] properties of given OSGi configuration
+def osgi_config_properties
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
-            "-p #{new_resource.password} " +
-            new_resource.name
+            "-p #{new_resource.password} "\
+            '-j ' +
+            new_resource.pid
 
   cmd = Mixlib::ShellOut.new(cmd_str)
   cmd.run_command
 
   begin
     cmd.error!
-    Chef::Log.info "#{new_resource.name} metadata: #{cmd.stdout}"
-  rescue
-    Chef::Application.fatal!("Can't get #{new_resource.name} metadata!\n"\
+    JSON.parse(cmd.stdout)['properties']
+  rescue => e
+    Chef::Application.fatal!("Can't get #{new_resource.pid} properties!\n"\
                              "Error description: #{e}")
   end
 end
 
+# Parse OSGi config properties to get a simple hash (key-value) from all items.
+# Additionally sort and get rid of duplicated entries (if any)
+#
+# @return [Hash] key value pairs
+def current_properties_hash
+  kv = Hash.new
+
+  osgi_config_properties.each_pair do |key,val|
+    kv[key] = val['value']
+    kv[key] = val['values'].sort.uniq if kv[key].nil?
+  end
+
+  kv
+end
+
+# Compares properties of new and current resources
+#
+# @return [Boolean] true if properties match, false otherwise
+def validate_properties
+  sanitized_new_properties.to_a.sort.uniq ==
+    current_properties_hash.to_a.sort.uniq
+end
+
+# Sanitize new resource properties (sort and get rid of duplicates)
+#
+# @return [Hash] sanitized hash of new resource properties
+def sanitized_new_properties
+  local_properties = @new_resource.properties
+
+  local_properties.each do |k,v|
+    if v.kind_of?(Array)
+      local_properties[k] = v.sort.uniq
+    end
+  end
+
+  local_properties
+end
+
 def load_current_resource
-  @current_resource = Chef::Resource::CqOsgiConfig.new(new_resource.name)
+  Chef::Log.error("New resource properties: #{new_resource.properties}")
+
+  @current_resource = Chef::Resource::CqOsgiConfig.new(new_resource.pid)
 
   # Set attribute accessors
-  @current_resource.created = false
+  @current_resource.exists = osgi_config_presence
 
-  # Load properties from OSGi console
-  # TODO
+  # Load OSGi properties for existing configuration and check validity
+  if current_resource.exists
+    @current_resource.properties(osgi_config_properties)
+    @current_resource.valid = validate_properties
+    Chef::Log.error("Current resource: #{current_properties_hash}")
+    Chef::Log.error("New resource: #{sanitized_new_properties}")
+    Chef::Log.error(">>> valid?: #{@current_resource.valid}")
+  end
 end
 
 # Create OSGi config with given attributes. If OSGi config already exists (but
 # does not match), it will update that OSGi config to match.
 def create_osgi_config
   # TODO
-  osgi_config_metadata
 end
 
 # Delete OSGi config.
@@ -74,9 +153,9 @@ def manage_osgi_config
 end
 
 action :create do
-  if @current_resource.created
-    Chef::Log.info("OSGi config #{new_resource.name} is already created and "\
-                   ' properly configured - nothing to do')
+  if @current_resource.exists && @current_resource.valid
+    Chef::Log.info("OSGi config #{new_resource.pid} is already in valid "\
+                   'state - nothing to do')
   else
     converge_by("Create #{ new_resource }") do
       create_osgi_config
