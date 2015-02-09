@@ -3,7 +3,7 @@ AllCops:
         - 'Vagrantfile'
         - 'metadata.rb'
         - 'Thorfile'
-        - 'Berskfile'
+        - 'Berksfile'
 
 Encoding:
     Enabled: false
@@ -21,4 +21,4 @@ CyclomaticComplexity:
     Max: 10
 
 PerceivedComplexity:
-    Max: 10
+    Max: 1
