@@ -89,19 +89,46 @@ def current_properties_hash
   kv
 end
 
+# Returns merged properties from new and current resources
+#
+# @return [Hash] merged properties
+def merged_properties
+  current_resource.properties.merge(
+    new_resource.properties) do |key, oldval, newval|
+      if oldval.is_a?(Array)
+        (oldval + newval).sort.uniq
+      else
+        newval
+      end
+  end
+end
+
 # Compares properties of new and current resources
 #
 # @return [Boolean] true if properties match, false otherwise
 def validate_properties
-  sanitized_new_properties.to_a.sort.uniq ==
-    current_resource.properties.to_a.sort.uniq
+  # W/o append flag simple comparison is all we need
+  if !new_resource.append
+    sanitized_new_properties.to_a.sort.uniq ==
+      current_resource.properties.to_a.sort.uniq
+  else
+    # If append flag is present, more sophisticated comparison is required
+    merged_properties.to_a.sort.uniq ==
+      current_resource.properties.to_a.sort.uniq
+  end
 end
 
-# Sanitize new resource properties (sort and get rid of duplicates)
+# Sanitize new resource properties (sort and get rid of duplicates). Takes
+# 'append' attribute into account and returns merged properties (new +
+# current) if it's set to true.
 #
 # @return [Hash] sanitized hash of new resource properties
 def sanitized_new_properties
-  local_properties = @new_resource.properties
+  if new_resource.append
+    local_properties = merged_properties
+  else
+    local_properties = @new_resource.properties
+  end
 
   local_properties.each do |k, v|
     local_properties[k] = v.sort.uniq if v.is_a?(Array)
@@ -111,8 +138,6 @@ def sanitized_new_properties
 end
 
 def load_current_resource
-  Chef::Log.error("New resource properties: #{new_resource.properties}")
-
   @current_resource = Chef::Resource::CqOsgiConfig.new(new_resource.pid)
 
   # Set attribute accessors
@@ -122,6 +147,13 @@ def load_current_resource
   @current_resource.properties(current_properties_hash) if
     current_resource.exists
   @current_resource.valid = validate_properties if current_resource.exists
+
+  # Chef::Log.error(">>> NEW: #{new_resource.properties}")
+  # if current_resource.exists
+  #   Chef::Log.error(">>> CURRENT: #{current_resource.properties}")
+  #   Chef::Log.error(">>> VALID: #{current_resource.valid}")
+  #   Chef::Log.error(">>> MERGED: #{merged_properties}") if new_resource.append
+  # end
 end
 
 # Converts properties hash to -s KEY -v VALUE string for cqcfg execution
@@ -133,10 +165,10 @@ def cqcfg_params
   sanitized_new_properties.each do |k, v|
     if v.is_a?(Array)
       v.each do |v1|
-        param_str += "-s #{k} -v #{v1} "
+        param_str += "-s \"#{k}\" -v \"#{v1}\" "
       end
     else
-      param_str += "-s #{k} -v #{v} "
+      param_str += "-s \"#{k}\" -v \"#{v}\" "
     end
   end
 
