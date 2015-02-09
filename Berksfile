@@ -1,5 +1,5 @@
-source "https://supermarket.getchef.com"
+source "https://supermarket.chef.io"
 
 metadata
 
-cookbook 'cq-unix-toolkit', github: 'jwadolowski/cookbook-cq-unix-toolkit', branch: 'feature/osgi-configs'
+cookbook 'cq-unix-toolkit', github: 'jwadolowski/cookbook-cq-unix-toolkit', branch: '1.2.0-dev'
