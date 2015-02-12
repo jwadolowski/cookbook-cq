@@ -64,14 +64,15 @@ end
 
 # Get properties of existing OSGi configuration
 #
+# @param name [String] the name the config (PID)
 # @return [JSON] properties of given OSGi configuration
-def osgi_config_properties
+def osgi_config_properties(name)
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
             "-p #{new_resource.password} "\
             '-j ' +
-            new_resource.pid
+            name
 
   cmd = Mixlib::ShellOut.new(cmd_str)
   cmd.run_command
@@ -88,11 +89,12 @@ end
 # Parse OSGi config properties to get a simple hash (key-value) from all items.
 # Additionally sort and get rid of duplicated entries (if any)
 #
+# @param properties [JSON] properties in JSON format
 # @return [Hash] key value pairs
-def current_properties_hash
+def properties_hash(properties)
   kv = {}
 
-  osgi_config_properties.each_pair do |key, val|
+  properties.each_pair do |key, val|
     kv[key] = val['value']
     kv[key] = val['values'].sort.uniq if kv[key].nil?
   end
@@ -155,8 +157,11 @@ def load_current_resource
   @current_resource.exists = osgi_config_presence
 
   # Load OSGi properties for existing configuration and check validity
-  @current_resource.properties(current_properties_hash) if
-    current_resource.exists
+  @current_resource.properties(
+    properties_hash(
+      osgi_config_properties(current_resource.pid)
+    )
+  ) if current_resource.exists
   @current_resource.valid = validate_properties if current_resource.exists
 
   # Chef::Log.error(">>> NEW: #{new_resource.properties}")
