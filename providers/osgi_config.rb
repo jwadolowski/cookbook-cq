@@ -44,6 +44,17 @@ def osgi_config_list
   end
 end
 
+# Returns all OSGi configs created from a specific factory
+#
+# @return [Array of Strings] all factory configs that matches factory pid
+def factory_config_list
+  # Convert factory pid to a regex form and add a suffix to match just
+  # instances and not the factory pid itself
+  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\..+'
+
+  osgi_config_list.scan(/#{regex}/)
+end
+
 # Checks presence of OSGi config
 #
 # @return [Boolean] true if OSGi config exists, false otherwise
