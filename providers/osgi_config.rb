@@ -55,6 +55,43 @@ def factory_config_list
   osgi_config_list.scan(/#{regex}/)
 end
 
+# Compares all instances of a given factory config and returns a hash with
+# scores
+#
+# @return [Hash] comparison hash
+def compare_factory_instances
+  # Hash that stores the following key-value pairs:
+  # KEY            => VALUE
+  # factory_config => [0-N]
+  output = {}
+
+  # Compare new resource against all factory configs
+  factory_config_list.each do |config|
+    output[config] = comparison_score(config)
+  end
+
+  output
+end
+
+# Validates given config against new resource properties and returns the score
+# (number of common attributes)
+#
+# @param factory_instance [String] PID name of a factory based config
+# @return [Integer] numer of common properties
+def comparison_score(factory_instance)
+  factory_config_properties = properties_hash(
+    osgi_config_properties(factory_instance)
+  )
+
+  score = 0
+
+  new_resource.properties.each do |key, val|
+    score +=1 if factory_config_properties[key] == val
+  end
+
+  score
+end
+
 # Checks presence of OSGi config
 #
 # @return [Boolean] true if OSGi config exists, false otherwise
@@ -163,6 +200,8 @@ def load_current_resource
     )
   ) if current_resource.exists
   @current_resource.valid = validate_properties if current_resource.exists
+
+  # compare_factory_instances if new_resource.factory_pid
 
   # Chef::Log.error(">>> NEW: #{new_resource.properties}")
   # if current_resource.exists
