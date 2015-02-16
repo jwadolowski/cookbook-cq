@@ -59,7 +59,7 @@ end
 # scores
 #
 # @return [Hash] comparison hash
-def compare_factory_instances
+def compatibility_hash
   # Hash that stores the following key-value pairs:
   # KEY            => VALUE
   # factory_config => [0-N]
@@ -67,7 +67,7 @@ def compare_factory_instances
 
   # Compare new resource against all factory configs
   factory_config_list.each do |config|
-    output[config] = comparison_score(config)
+    output[config] = compatibility_score(config)
   end
 
   output
@@ -78,7 +78,7 @@ end
 #
 # @param factory_instance [String] PID name of a factory based config
 # @return [Integer] numer of common properties
-def comparison_score(factory_instance)
+def compatibility_score(factory_instance)
   factory_config_properties = properties_hash(
     osgi_config_properties(factory_instance)
   )
@@ -90,6 +90,47 @@ def comparison_score(factory_instance)
   end
 
   score
+end
+
+# Analyzes score hash returned by compatibility_hash and picks the highest
+# score
+#
+# @return [Integer] highest value from hash
+def max_compatibility_score
+  compatibility_hash.max_by { |k, v| v }[1]
+end
+
+# Get all items that has the highest compatibility score
+#
+# @return [Hash] hash of factory config instances with the highest score
+def matching_candidates
+  compatibility_hash.select { |k, v| v == max_compatibility_score }
+end
+
+# Analyzes both compatibility scores and new_resource properties to pick the
+# best candidate (if any)
+#
+# @return [String, Nil] name of the config or Nil if none of configs match
+def matching_factory_config
+  # Score of the config has to be greater than 0 and equal to the number of
+  # key-value pairs in new_resource properties hash to be taken into
+  # consideration as a matching candidate
+  if max_compatibility_score < new_resource.properties.length
+    nil
+  else
+    candidates = matching_candidates
+
+    case candidates.length
+    when 1
+      candidates.keys[0]
+    else
+      Chef::Application.fatal!(
+        "More than 1 existing OSGi config matches to #{new_resource.name}. "\
+        'Please make sure that your cq_osgi_config resource matches either '\
+        'to a single configuration or none of existing configurations'
+      )
+    end
+  end
 end
 
 # Checks presence of OSGi config
@@ -201,14 +242,7 @@ def load_current_resource
   ) if current_resource.exists
   @current_resource.valid = validate_properties if current_resource.exists
 
-  # compare_factory_instances if new_resource.factory_pid
-
-  # Chef::Log.error(">>> NEW: #{new_resource.properties}")
-  # if current_resource.exists
-  #   Chef::Log.error(">>> CURRENT: #{current_resource.properties}")
-  #   Chef::Log.error(">>> VALID: #{current_resource.valid}")
-  #   Chef::Log.error(">>> MERGED: #{merged_properties}") if new_resource.append
-  # end
+  Chef::Log.error("#{matching_factory_config}") if new_resource.factory_pid
 end
 
 # Converts properties hash to -s KEY -v VALUE string for cqcfg execution
