@@ -33,8 +33,6 @@ def osgi_config_list
   cmd = Mixlib::ShellOut.new(cmd_str)
   cmd.run_command
 
-  Chef::Log.debug("Executing #{cmd_str}")
-
   begin
     cmd.error!
     cmd.stdout
@@ -56,7 +54,7 @@ def factory_config_list
 end
 
 # Compares all instances of a given factory config and returns a hash with
-# scores
+# PIDs (keys) and scores (values)
 #
 # @return [Hash] comparison hash
 def compatibility_hash
@@ -100,7 +98,7 @@ def max_compatibility_score
   compatibility_hash.max_by { |k, v| v }[1]
 end
 
-# Get all items that has the highest compatibility score
+# Get all items that have the highest compatibility score
 #
 # @return [Hash] hash of factory config instances with the highest score
 def matching_candidates
@@ -111,7 +109,7 @@ end
 # best candidate (if any)
 #
 # @return [String, Nil] name of the config or Nil if none of configs match
-def matching_factory_config
+def best_candidate_pid
   # Score of the config has to be greater than 0 and equal to the number of
   # key-value pairs in new_resource properties hash to be taken into
   # consideration as a matching candidate
@@ -127,7 +125,7 @@ def matching_factory_config
       Chef::Application.fatal!(
         "More than 1 existing OSGi config matches to #{new_resource.name}. "\
         'Please make sure that your cq_osgi_config resource matches either '\
-        'to a single configuration or none of existing configurations'
+        'to a single configuration or none of existing ones'
       )
     end
   end
@@ -137,7 +135,15 @@ end
 #
 # @return [Boolean] true if OSGi config exists, false otherwise
 def osgi_config_presence
-  osgi_config_list.include? new_resource.pid
+  if new_resource.factory_pid.nil?
+    osgi_config_list.include? new_resource.pid
+  else
+    if best_candidate_pid.nil?
+      false
+    else
+      true
+    end
+  end
 end
 
 # Get properties of existing OSGi configuration
@@ -234,15 +240,28 @@ def load_current_resource
   # Set attribute accessors
   @current_resource.exists = osgi_config_presence
 
-  # Load OSGi properties for existing configuration and check validity
-  @current_resource.properties(
-    properties_hash(
-      osgi_config_properties(current_resource.pid)
-    )
-  ) if current_resource.exists
-  @current_resource.valid = validate_properties if current_resource.exists
+  # Initialize current resource properties for the create action for factory
+  # config with append attribute. It will be overwritten later on if required
+  @current_resource.properties({})
 
-  Chef::Log.error("#{matching_factory_config}") if new_resource.factory_pid
+  # For non-factory configs choose PID of current resource, otherwise look for
+  # best candidate
+  if new_resource.factory_pid.nil?
+    config_name = current_resource.pid
+  else
+    config_name = best_candidate_pid
+
+    # Update new_resource PID with best candidate's PID
+    @new_resource.pid(config)
+  end
+
+  # Load OSGi properties for existing configuration and check validity
+  if current_resource.exists
+    @current_resource.properties(
+      properties_hash(osgi_config_properties(config_name))
+    )
+    @current_resource.valid = validate_properties
+  end
 end
 
 # Converts properties hash to -s KEY -v VALUE string for cqcfg execution
@@ -266,12 +285,20 @@ end
 
 # Create OSGi config with given attributes. If OSGi config already exists (but
 # does not match), it will update that OSGi config to match.
-def create_osgi_config
-  cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
-            "-i #{new_resource.instance} "\
-            "-u #{new_resource.username} "\
-            "-p #{new_resource.password} " +
-            cqcfg_params + new_resource.pid
+#
+# @param factory_flag [Boolean] use or not factory flag (false by default)
+def create_osgi_config(factory_flag=false)
+  cmd_str_base = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
+                 "-i #{new_resource.instance} "\
+                 "-u #{new_resource.username} "\
+                 "-p #{new_resource.password} " +
+                 cqcfg_params
+
+  if factory_flag
+    cmd_str = cmd_str_base + "-f #{new_resource.factory_pid}"
+  else
+    cmd_str = cmd_str_base + new_resource.pid
+  end
 
   cmd = Mixlib::ShellOut.new(cmd_str)
   cmd.run_command
@@ -302,7 +329,15 @@ end
 
 action :create do
   if !@current_resource.exists
-    Chef::Log.error("OSGi config #{new_resource.pid} does NOT exists!")
+    # Non-factory configs
+    if @new_resource.factory_pid.nil?
+      Chef::Log.error("OSGi config #{new_resource.pid} does NOT exists!")
+    # Factory configs
+    else
+      converge_by("Create #{ new_resource }") do
+        create_osgi_config(true)
+      end
+    end
   elsif @current_resource.exists && @current_resource.valid
     Chef::Log.info("OSGi config #{new_resource.pid} is already in valid "\
                    'state - nothing to do')
