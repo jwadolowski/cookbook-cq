@@ -660,7 +660,7 @@ def install_package
   # Add recursive flag if requested
   cmd_str += '\&recursive=true' if new_resource.recursive_install == true
 
-  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 600)
+  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 1800)
   Chef::Log.info "Installing package #{new_resource.name}"
   cmd.run_command
 
