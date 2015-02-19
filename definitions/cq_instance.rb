@@ -162,8 +162,8 @@ define :cq_instance,
       uri = URI.parse("http://localhost:#{node['cq'][local_id]['port']}" +
                       node['cq']['healthcheck_resource'])
 
-      # Start timeout (30 min)
-      timeout = 1800
+      # Start timeout
+      timeout = node['cq']['start_timeout']
 
       response = '-1'
       start_time = Time.now
@@ -174,7 +174,13 @@ define :cq_instance,
         begin
           response = Net::HTTP.get_response(uri).code
         rescue Errno::ECONNREFUSED
-          Chef::Log.debug('Connection has been refused when trying to send '\
+          Chef::Log.debug('Connection has been refused while trying to send '\
+                          "GET #{uri} request")
+        rescue Errno::ECONNRESET
+          Chef::Log.debug('Connection has been reset by peer while trying to '\
+                          " send GET #{uri} request")
+        else
+          Chef::Log.debug('Unexpected error occurred while trying to send '\
                           "GET #{uri} request")
         end
         sleep(5)

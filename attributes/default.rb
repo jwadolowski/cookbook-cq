@@ -31,6 +31,7 @@ default['cq']['jar']['url'] = ''
 # default['cq']['jar']['checksum'] = ''
 default['cq']['license']['url'] = ''
 # default['cq']['license']['checksum'] = ''
+default['cq']['start_timeout'] = 1800
 
 # Java attributes
 # -----------------------------------------------------------------------------
