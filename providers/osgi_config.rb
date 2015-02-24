@@ -257,8 +257,9 @@ def load_current_resource
   else
     config_name = best_candidate_pid
 
-    # Update new_resource PID with best candidate's PID
-    @new_resource.pid(config)
+    # Update new_resource PID with best candidate's PID (but only if such
+    # exists)
+    @new_resource.pid(config_name) unless config_name.nil?
   end
 
   # Load OSGi properties for existing configuration and check validity
