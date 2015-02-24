@@ -95,7 +95,13 @@ end
 #
 # @return [Integer] highest value from hash
 def max_compatibility_score
-  compatibility_hash.max_by { |k, v| v }[1]
+  hash = compatibility_hash
+
+  if hash.empty?
+    0
+  else
+    hash.max_by { |k, v| v }[1]
+  end
 end
 
 # Get all items that have the highest compatibility score
