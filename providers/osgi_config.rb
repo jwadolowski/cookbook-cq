@@ -81,8 +81,6 @@ def compatibility_score(factory_instance)
     osgi_config_properties(factory_instance)
   )
 
-  Chef::Log.error("Properties: #{factory_config_properties}")
-
   score = 0
 
   new_resource.properties.each do |key, val|
@@ -98,8 +96,6 @@ end
 # @return [Integer] highest value from hash
 def max_compatibility_score
   hash = compatibility_hash
-
-  Chef::Log.error("compatibility_hash: #{hash}")
 
   if hash.empty?
     0
@@ -123,15 +119,10 @@ def best_candidate_pid
   # Score of the config has to be greater than 0 and equal to the number of
   # key-value pairs in new_resource properties hash to be taken into
   # consideration as a matching candidate
-  Chef::Log.error("max_compatibility_score: #{max_compatibility_score}")
-  Chef::Log.error("new_resource.properties.length: "\
-                  "#{new_resource.properties.length}")
-
   if max_compatibility_score < new_resource.properties.length
     nil
   else
     candidates = matching_candidates
-    Chef::Log.error("matching candidates: #{candidates}")
 
     case candidates.length
     when 1
@@ -221,18 +212,10 @@ end
 def validate_properties
   # W/o append flag simple comparison is all we need
   if !new_resource.append
-    Chef::Log.error(">>> NO APPEND, new"\
-                    " #{sanitized_new_properties.to_a.sort.uniq}")
-    Chef::Log.error(">>> NO APPEND, current"\
-                    " #{current_resource.properties.to_a.sort.uniq}")
     sanitized_new_properties.to_a.sort.uniq ==
       current_resource.properties.to_a.sort.uniq
   else
     # If append flag is present, more sophisticated comparison is required
-    Chef::Log.error(">>> APPEND, new"\
-                    " #{merged_properties.to_a.sort.uniq}")
-    Chef::Log.error(">>> APPEND, current"\
-                    " #{current_resource.properties.to_a.sort.uniq}")
     merged_properties.to_a.sort.uniq ==
       current_resource.properties.to_a.sort.uniq
   end
@@ -262,7 +245,6 @@ def load_current_resource
 
   # Set attribute accessors
   @current_resource.exists = osgi_config_presence
-  Chef::Log.error(">>> Exists? #{@current_resource.exists}")
 
   # Initialize current resource properties for the create action for factory
   # config with append attribute. It will be overwritten later on if required
@@ -286,7 +268,6 @@ def load_current_resource
       properties_hash(osgi_config_properties(config_name))
     )
     @current_resource.valid = validate_properties
-    Chef::Log.error(">>> Valid? #{@current_resource.valid}")
   end
 end
 
