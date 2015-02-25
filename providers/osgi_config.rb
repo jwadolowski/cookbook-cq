@@ -81,6 +81,8 @@ def compatibility_score(factory_instance)
     osgi_config_properties(factory_instance)
   )
 
+  Chef::Log.error("Properties: #{factory_config_properties}")
+
   score = 0
 
   new_resource.properties.each do |key, val|
