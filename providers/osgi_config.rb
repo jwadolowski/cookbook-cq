@@ -212,10 +212,18 @@ end
 def validate_properties
   # W/o append flag simple comparison is all we need
   if !new_resource.append
+    Chef::Log.error(">>> NO APPEND, new"\
+                    " #{sanitized_new_properties.to_a.sort.uniq}")
+    Chef::Log.error(">>> NO APPEND, current"\
+                    " #{current_resource.properties.to_a.sort.uniq}")
     sanitized_new_properties.to_a.sort.uniq ==
       current_resource.properties.to_a.sort.uniq
   else
     # If append flag is present, more sophisticated comparison is required
+    Chef::Log.error(">>> APPEND, new"\
+                    " #{merged_properties.to_a.sort.uniq}")
+    Chef::Log.error(">>> APPEND, current"\
+                    " #{current_resource.properties.to_a.sort.uniq}")
     merged_properties.to_a.sort.uniq ==
       current_resource.properties.to_a.sort.uniq
   end
@@ -245,6 +253,7 @@ def load_current_resource
 
   # Set attribute accessors
   @current_resource.exists = osgi_config_presence
+  Chef::Log.error(">>> Exists? #{@current_resource.exists}")
 
   # Initialize current resource properties for the create action for factory
   # config with append attribute. It will be overwritten later on if required
@@ -268,6 +277,7 @@ def load_current_resource
       properties_hash(osgi_config_properties(config_name))
     )
     @current_resource.valid = validate_properties
+    Chef::Log.error(">>> Valid? #{@current_resource.valid}")
   end
 end
 
