@@ -119,10 +119,15 @@ def best_candidate_pid
   # Score of the config has to be greater than 0 and equal to the number of
   # key-value pairs in new_resource properties hash to be taken into
   # consideration as a matching candidate
+  Chef::Log.error("max_compatibility_score: #{max_compatibility_score}")
+  Chef::Log.error("new_resource.properties.length: "\
+                  "#{new_resource.properties.length}")
+
   if max_compatibility_score < new_resource.properties.length
     nil
   else
     candidates = matching_candidates
+    Chef::Log.error("matching candidates: #{candidates}")
 
     case candidates.length
     when 1
