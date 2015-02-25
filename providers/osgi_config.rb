@@ -97,6 +97,8 @@ end
 def max_compatibility_score
   hash = compatibility_hash
 
+  Chef::Log.error("compatibility_hash: #{hash}")
+
   if hash.empty?
     0
   else
