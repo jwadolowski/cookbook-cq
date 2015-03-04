@@ -291,7 +291,7 @@ def cqcfg_params
 end
 
 # Create OSGi config with given attributes. If OSGi config already exists (but
-# does not match), it will update that OSGi config to match.
+# does not match), it will update that OSGi config to match
 #
 # @param factory_flag [Boolean] use or not factory flag (false by default)
 def create_osgi_config(factory_flag=false)
@@ -318,18 +318,18 @@ def create_osgi_config(factory_flag=false)
   end
 end
 
-# Delete OSGi config.
+# Delete OSGi config
 def delete_osgi_config
   # TODO
 end
 
-# Modify an existing config. It will raise an exception if item does not exist.
+# Modify an existing config. It will raise an exception if item does not exist
 def modify_osgi_config
   # TODO
 end
 
 # Modify an existing config. It will not raise an exception if item does not
-# exist.
+# exist
 def manage_osgi_config
   # TODO
 end
