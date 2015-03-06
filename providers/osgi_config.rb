@@ -47,8 +47,11 @@ end
 # @return [Array of Strings] all factory configs that matches factory pid
 def factory_config_list
   # Convert factory pid to a regex form and add a suffix to match just
-  # instances and not the factory pid itself
-  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\..+'
+  # instances and not the factory pid itself.
+  #
+  # Format: <factory_pid>\.<uuid>
+  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\.i' +
+    '[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'
 
   osgi_config_list.scan(/#{regex}/)
 end
