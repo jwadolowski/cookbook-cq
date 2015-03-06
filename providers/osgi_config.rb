@@ -47,8 +47,11 @@ end
 # @return [Array of Strings] all factory configs that matches factory pid
 def factory_config_list
   # Convert factory pid to a regex form and add a suffix to match just
-  # instances and not the factory pid itself
-  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\..+'
+  # instances and not the factory pid itself.
+  #
+  # Format: <factory_pid>\.<uuid>
+  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\.i' +
+    '[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'
 
   osgi_config_list.scan(/#{regex}/)
 end
@@ -291,7 +294,7 @@ def cqcfg_params
 end
 
 # Create OSGi config with given attributes. If OSGi config already exists (but
-# does not match), it will update that OSGi config to match.
+# does not match), it will update that OSGi config to match
 #
 # @param factory_flag [Boolean] use or not factory flag (false by default)
 def create_osgi_config(factory_flag=false)
@@ -318,18 +321,18 @@ def create_osgi_config(factory_flag=false)
   end
 end
 
-# Delete OSGi config.
+# Delete OSGi config
 def delete_osgi_config
   # TODO
 end
 
-# Modify an existing config. It will raise an exception if item does not exist.
+# Modify an existing config. It will raise an exception if item does not exist
 def modify_osgi_config
   # TODO
 end
 
 # Modify an existing config. It will not raise an exception if item does not
-# exist.
+# exist
 def manage_osgi_config
   # TODO
 end
