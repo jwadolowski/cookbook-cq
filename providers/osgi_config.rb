@@ -51,7 +51,7 @@ def factory_config_list
   # instances and not the factory pid itself.
   #
   # Format: <factory_pid>\.<uuid>
-  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\.i' +
+  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\.' +
     '[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'
 
   osgi_config_list.scan(/#{regex}/)
