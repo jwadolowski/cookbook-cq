@@ -50,14 +50,14 @@ def factory_config_list
   # instances and not the factory pid itself.
   #
   # Format: <factory_pid>\.<uuid>
-  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\.i' +
+  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\.' +
     '[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'
 
   osgi_config_list.scan(/#{regex}/)
 end
 
 # Compares all instances of a given factory config and returns a hash with
-# PIDs (keys) and scores (values)
+# PIDs (keys) and scores (valus)
 #
 # @return [Hash] comparison hash
 def compatibility_hash
