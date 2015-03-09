@@ -35,7 +35,6 @@ def osgi_config_list
 
   begin
     cmd.error!
-    Chef::Log.error("All configs: #{cmd.stdout}")
     cmd.stdout
   rescue => e
     Chef::Application.fatal!("Can't get a list of OSGi configurations!\n"\
@@ -67,7 +66,7 @@ def compatibility_hash
   # factory_config => [0-N]
   output = {}
 
-  Chef::Log.error("factory_config_list for #{new_resource.name}: "\
+  Chef::Log.error("factory_config_list for #{new_resource.pid}: "\
                   "#{factory_config_list.each}")
 
   # Compare new resource against all factory configs
