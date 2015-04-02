@@ -13,13 +13,6 @@ class OSGiConfigHelper
      -i http://localhost:4502`
   end
 
-  # Clear access, error and request
-  def clear_logs
-    `> /opt/cq/author/crx-quickstart/logs/access.log`
-    `> /opt/cq/author/crx-quickstart/logs/error.log`
-    `> /opt/cq/author/crx-quickstart/logs/request.log`
-  end
-
   # Get value of a specific key for a given OSGi config PID
   #
   # @param pid [String] PID of OSGi config
@@ -33,13 +26,16 @@ class OSGiConfigHelper
     #{pid} | grep #{key} | awk '{print $2}'`
   end
 
-  # Get specific messages from given log file
+  # Get number of all occurences of a string in given AEM log file
   #
   # @param log [String] name of log
   # @param regex [String] regex to match
-  # @return [String] matched entries from log file
-  def log_entry(log, msg)
-    `grep -i -E "#{msg}" /opt/cq/author/crx-quickstart/logs/#{log}`
+  # @return [Integer] number of matched lines
+  def log_entries_number(log, msg)
+    `grep \
+    -i \
+    -E "#{msg}" \
+    /opt/cq/author/crx-quickstart/logs/#{log}`.lines.to_a.length
   end
 end
 
