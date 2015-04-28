@@ -83,7 +83,7 @@ end
 # @return [Integer] numer of common properties
 def compatibility_score(factory_instance)
   factory_config_properties = properties_hash(
-    osgi_config_properties(factory_instance)
+    current_osgi_config_properties(factory_instance)
   )
 
   score = 0
@@ -161,7 +161,7 @@ end
 #
 # @param name [String] the name the config (PID)
 # @return [JSON] properties of given OSGi configuration
-def osgi_config_properties(name)
+def current_osgi_config_properties(name)
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
@@ -263,7 +263,7 @@ def load_current_resource
   # Load OSGi properties for existing configuration and check validity
   if current_resource.exists
     @current_resource.properties(
-      properties_hash(osgi_config_properties(config_name))
+      properties_hash(current_osgi_config_properties(config_name))
     )
     @current_resource.valid = validate_properties
   end
