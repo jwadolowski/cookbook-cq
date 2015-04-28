@@ -26,16 +26,16 @@ class OSGiConfigHelper
     #{pid} | grep #{key} | awk '{print $2}'`
   end
 
-  # Get number of all occurences of a string in given AEM log file
+  # Get all lines that contain a string in given AEM log file
   #
   # @param log [String] name of log
   # @param regex [String] regex to match
-  # @return [Integer] number of matched lines
-  def log_entries_number(log, msg)
+  # @return [Array] array with matched lines as elements
+  def log_entries(log, msg)
     `grep \
     -i \
     -E "#{msg}" \
-    /opt/cq/author/crx-quickstart/logs/#{log}`.lines.to_a.length
+    /opt/cq/author/crx-quickstart/logs/#{log}`.lines.to_a
   end
 end
 
