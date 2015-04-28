@@ -26,7 +26,7 @@ Chef::Log.warn(
 
 # ** 1 key, 1 value
 # *** existing: 0, append: [0,1], valid: [0,1]
-cq_osgi_config 'not.existing.config.create.1k1v.1' do
+cq_osgi_config 'not.existing.config.create.1k1v' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -61,16 +61,16 @@ end
 
 # ** 1 key, N values
 # *** existing: 0, append: [0,1], valid: [0,1]
-cq_osgi_config 'not.existing.config.create.1kNv.1' do
-  username node['cq']['author']['credentials']['login']
-  password node['cq']['author']['credentials']['password']
-  instance "http://localhost:#{node['cq']['author']['port']}"
-  properties(
-    'key1' => ['val1', 'val2', 'val3']
-  )
+# cq_osgi_config 'not.existing.config.create.1kNv.1' do
+#   username node['cq']['author']['credentials']['login']
+#   password node['cq']['author']['credentials']['password']
+#   instance "http://localhost:#{node['cq']['author']['port']}"
+#   properties(
+#     'key1' => ['val1', 'val2', 'val3']
+#   )
 
-  action :create
-end
+#   action :create
+# end
 # *** existing: 1, append: 0, valid: 0
 # *** existing: 1, append: 0, valid: 1
 # *** existing: 1, append: 1, valid: 0
