@@ -62,8 +62,10 @@ end
 # @return [Hash] comparison hash
 def compatibility_hash
   # Hash that stores the following key-value pairs:
-  # KEY            => VALUE
-  # factory_config => [0-N]
+  #
+  # | KEY            | VALUE |
+  # | -------------- | ----- |
+  # | factory_config | [0-N] |
   output = {}
 
   # Compare new resource against all factory configs
@@ -202,7 +204,7 @@ def merged_properties
   current_resource.properties.merge(
     new_resource.properties) do |key, oldval, newval|
       if oldval.is_a?(Array)
-        (oldval + newval).sort.uniq
+        (oldval + newval)
       else
         newval
       end
@@ -213,15 +215,8 @@ end
 #
 # @return [Boolean] true if properties match, false otherwise
 def validate_properties
-  # W/o append flag simple comparison is all we need
-  if !new_resource.append
-    sanitized_new_properties.to_a.sort.uniq ==
-      current_resource.properties.to_a.sort.uniq
-  else
-    # If append flag is present, more sophisticated comparison is required
-    merged_properties.to_a.sort.uniq ==
-      current_resource.properties.to_a.sort.uniq
-  end
+  sanitized_new_properties.to_a.sort.uniq ==
+    current_resource.properties.to_a.sort.uniq
 end
 
 # Sanitize new resource properties (sort and get rid of duplicates). Takes
@@ -249,8 +244,8 @@ def load_current_resource
   # Set attribute accessors
   @current_resource.exists = osgi_config_presence
 
-  # Initialize current resource properties for the create action for factory
-  # config with append attribute. It will be overwritten later on if required
+  # Initialize current resource properties (will be overwritten later on if
+  # required)
   @current_resource.properties({})
 
   # For non-factory configs choose PID of current resource, otherwise look for
@@ -326,17 +321,6 @@ def delete_osgi_config
   # TODO
 end
 
-# Modify an existing config. It will raise an exception if item does not exist
-def modify_osgi_config
-  # TODO
-end
-
-# Modify an existing config. It will not raise an exception if item does not
-# exist
-def manage_osgi_config
-  # TODO
-end
-
 action :create do
   if !@current_resource.exists
     # Non-factory configs
@@ -344,7 +328,7 @@ action :create do
       Chef::Log.error("OSGi config #{new_resource.pid} does NOT exists!")
     # Factory configs
     else
-      converge_by("Create #{ new_resource }") do
+      converge_by("Create #{new_resource}") do
         create_osgi_config(true)
       end
     end
@@ -352,7 +336,7 @@ action :create do
     Chef::Log.info("OSGi config #{new_resource.pid} is already in valid "\
                    'state - nothing to do')
   else
-    converge_by("Create #{ new_resource }") do
+    converge_by("Create #{new_resource}") do
       create_osgi_config
     end
   end
