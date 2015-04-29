@@ -69,3 +69,20 @@ describe 'OSGi config '\
     ).to match(/^true$/)
   end
 end
+
+describe 'OSGi config not.existing.config.create.1kNv' do
+  it 'there was NO attempts to create it' do
+    expect(
+      @osgi_config_helper.log_entries(
+        'access.log',
+        'not\.existing\.config\.create\.1kNv'
+      ).length
+    ).to eq(0)
+  end
+
+  it 'does NOT exists' do
+    expect(
+      @config_list.include?('not.existing.config.create.1kNv')
+    ).to be false
+  end
+end
