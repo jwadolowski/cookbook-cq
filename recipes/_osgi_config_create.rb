@@ -27,26 +27,22 @@ Chef::Log.warn(
 # ** 1 key, 1 value
 # *** existing: 0, append: [0,1], valid: [0,1]
 osgi_config_wrapper 'not.existing.config.create.1k1v' do
-  # name 'not.existing.config.create.1k1v'
   properties({'key1' => 'val1'})
 end
 # *** existing: 1, append: [0,1], valid: 0
 osgi_config_wrapper 'com.day.cq.dam.s7dam.common.'\
   'S7damDamChangeEventListener' do
-  # name 'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
   properties({'cq.dam.s7dam.damchangeeventlistener.enabled' => false})
 end
 # *** existing: 1, append: [0,1], valid: 1
 osgi_config_wrapper 'com.day.cq.dam.scene7.impl.'\
   'Scene7ConfigurationEventListener' do
-  # name 'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener'
   properties({'cq.dam.scene7.configurationeventlistener.enabled' => true})
 end
 
 # ** 1 key, N values
 # *** existing: 0, append: [0,1], valid: [0,1]
 osgi_config_wrapper 'not.existing.config.create.1kNv' do
-  # name 'not.existing.config.create.1kNv'
   properties({'key1' => ['val1', 'val2', 'val3']})
 
   action :create
