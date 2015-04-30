@@ -117,3 +117,26 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
     ).to match(/\["foundation\/components\/image"\]/)
   end
 end
+
+describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+  'DPSSubPagesUpdateHandler' do
+  it 'there were 2 HTTP request (read + modify)' do
+    expect(
+      @osgi_config_helper.log_entries(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSSubPagesUpdateHandler'
+      ).length
+    ).to eq(2)
+  end
+
+  it 'cq.pagesupdatehandler.imageresourcetypes is set to '\
+    '["foundation/components/image","test/append/value"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSSubPagesUpdateHandler',
+        'cq.pagesupdatehandler.imageresourcetypes'
+      )
+    ).to match(/\["foundation\/components\/image","test\/append\/value"\]/)
+  end
+end

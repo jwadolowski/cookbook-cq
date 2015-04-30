@@ -59,6 +59,15 @@ osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   )
 end
 # *** existing: 1, append: 1, valid: 0
+osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+  'DPSSubPagesUpdateHandler' do
+  properties(
+    {'cq.pagesupdatehandler.imageresourcetypes' =>
+     ['test/append/value']}
+  )
+  append true
+end
+
 # *** existing: 1, append: 1, valid: 1
 
 # ** N key, N single values
