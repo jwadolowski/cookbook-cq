@@ -94,3 +94,26 @@ describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
     ).to match(/\["325","476","480","620","720"\]/)
   end
 end
+
+describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+  'DPSPagesUpdateHandler' do
+  it 'there was just a single HTTP request to check current values' do
+    expect(
+      @osgi_config_helper.log_entries(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSPagesUpdateHandler'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'cq.pagesupdatehandler.imageresourcetypes is set to ["foundation'\
+    '/components/image"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSPagesUpdateHandler',
+        'cq.pagesupdatehandler.imageresourcetypes'
+      )
+    ).to match(/\["foundation\/components\/image"\]/)
+  end
+end

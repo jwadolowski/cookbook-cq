@@ -51,6 +51,13 @@ osgi_config_wrapper 'com.day.cq.wcm.foundation.impl.'\
   properties({'adapt.supported.widths' => ['325','480','476','620','720']})
 end
 # *** existing: 1, append: 0, valid: 1
+osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+  'DPSPagesUpdateHandler' do
+  properties(
+    {'cq.pagesupdatehandler.imageresourcetypes' =>
+     ['foundation/components/image']}
+  )
+end
 # *** existing: 1, append: 1, valid: 0
 # *** existing: 1, append: 1, valid: 1
 
