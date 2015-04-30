@@ -44,10 +44,12 @@ end
 # *** existing: 0, append: [0,1], valid: [0,1]
 osgi_config_wrapper 'not.existing.config.create.1kNv' do
   properties({'key1' => ['val1', 'val2', 'val3']})
-
-  action :create
 end
 # *** existing: 1, append: 0, valid: 0
+osgi_config_wrapper 'com.day.cq.wcm.foundation.impl.'\
+  'AdaptiveImageComponentServlet' do
+  properties({'adapt.supported.widths' => ['325','480','476','620','720']})
+end
 # *** existing: 1, append: 0, valid: 1
 # *** existing: 1, append: 1, valid: 0
 # *** existing: 1, append: 1, valid: 1

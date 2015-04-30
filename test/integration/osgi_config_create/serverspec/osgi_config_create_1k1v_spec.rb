@@ -20,7 +20,7 @@ describe 'OSGi config '\
   'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener' do
 
   # Two log entries - first one to get values, second to modify them
-  it 'there was an attempt to modify it' do
+  it 'there were 2 requests (1st to check values, 2nd to modify them)' do
     expect(
       @osgi_config_helper.log_entries(
         'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
@@ -42,8 +42,7 @@ end
 describe 'OSGi config '\
   'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener' do
 
-  # Just a single request to get current values
-  it 'there was NO attempts to modify it' do
+  it 'there was a single HTTP check to get current values' do
     expect(
       @osgi_config_helper.log_entries(
         'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener'
@@ -74,5 +73,24 @@ describe 'OSGi config not.existing.config.create.1kNv' do
     expect(
       @config_list.include?('not.existing.config.create.1kNv')
     ).to be false
+  end
+end
+
+describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
+  it 'there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.log_entries(
+        'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet'
+      ).length
+    ).to eq(2)
+  end
+
+  it 'has adapt.supported.widths set to ["325","480","476","620","720"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet',
+        'adapt.supported.widths'
+      )
+    ).to match(/\["325","476","480","620","720"\]/)
   end
 end
