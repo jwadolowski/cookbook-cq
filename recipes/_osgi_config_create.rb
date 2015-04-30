@@ -67,8 +67,14 @@ osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   )
   append true
 end
-
 # *** existing: 1, append: 1, valid: 1
+osgi_config_wrapper 'com.day.cq.dam.scene7.impl.'\
+  'Scene7AssetMimeTypeServiceImpl' do
+  properties(
+    {'cq.dam.scene7.assetmimetypeservice.mapping' => ['Image=image/jpeg']}
+  )
+  append true
+end
 
 # ** N key, N single values
 # *** existing: 0, append: [0,1], valid: [0,1]

@@ -140,3 +140,29 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
     ).to match(/\["foundation\/components\/image","test\/append\/value"\]/)
   end
 end
+
+describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
+  it 'there was just a single request to read current values' do
+    expect(
+      @osgi_config_helper.log_entries(
+        'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'cq.dam.scene7.assetmimetypeservice.mapping is set to original value' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl',
+        'cq.dam.scene7.assetmimetypeservice.mapping'
+      )
+    ).to match(%r{\["Generic=image/s7asset",
+               "Template=image/s7template",
+               "Flash=image/s7flashtemplate",
+               "Image=image/jpeg",
+               "Video=video/\*",
+               "Video\.mp4=video/mp4",
+               "Video\.f4v=video/mp4",
+               "Video\.flv=video/x-flv"\]}x)
+  end
+end
