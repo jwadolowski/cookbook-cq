@@ -1,17 +1,10 @@
-# -----------------------------------------------------------------------------
-# All 'attempts' test should be executed as a very first step, as spec helper
-# verification affects logs and effectively numbers returned by attempts
-# counter.
-# -----------------------------------------------------------------------------
-
 require_relative '../../../kitchen/data/spec_helper'
 
 describe 'OSGi config not.existing.config.create.1k1v' do
   it 'there was NO attempts to create it' do
     expect(
       @osgi_config_helper.log_entries(
-        'access.log',
-        'not\.existing\.config\.create\.1k1v'
+        'not.existing.config.create.1k1v'
       ).length
     ).to eq(0)
   end
@@ -30,8 +23,7 @@ describe 'OSGi config '\
   it 'there was an attempt to modify it' do
     expect(
       @osgi_config_helper.log_entries(
-        'access.log',
-        'com\.day\.cq\.dam\.s7dam\.common\.S7damDamChangeEventListener'
+        'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
       ).length
     ).to eq(2)
   end
@@ -54,8 +46,7 @@ describe 'OSGi config '\
   it 'there was NO attempts to modify it' do
     expect(
       @osgi_config_helper.log_entries(
-        'access.log',
-        'com\.day\.cq\.dam\.scene7\.impl\.Scene7ConfigurationEventListener'
+        'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener'
       ).length
     ).to eq(1)
   end
@@ -74,8 +65,7 @@ describe 'OSGi config not.existing.config.create.1kNv' do
   it 'there was NO attempts to create it' do
     expect(
       @osgi_config_helper.log_entries(
-        'access.log',
-        'not\.existing\.config\.create\.1kNv'
+        'not.existing.config.create.1kNv'
       ).length
     ).to eq(0)
   end
