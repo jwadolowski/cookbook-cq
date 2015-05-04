@@ -278,10 +278,10 @@ def cqcfg_params
   sanitized_new_properties.each do |k, v|
     if v.is_a?(Array)
       v.each do |v1|
-        param_str += "-s \"#{k}\" -v \"#{v1}\" "
+        param_str += "-s '#{k}' -v '#{v1}' "
       end
     else
-      param_str += "-s \"#{k}\" -v \"#{v}\" "
+      param_str += "-s '#{k}' -v '#{v}' "
     end
   end
 
