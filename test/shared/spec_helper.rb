@@ -23,7 +23,7 @@ class OSGiConfigHelper
      -u admin \
      -p admin \
      -i http://localhost:4502 \
-    #{pid} | grep #{key} | awk '{print $2}'`
+     -m #{pid} | grep #{key} | cut -d$'\t' -f2`
   end
 
   # Get all lines that contain a given string in AEM access.log and was
@@ -62,11 +62,6 @@ class OSGiConfigHelper
     end
 
     array
-
-    # `grep \
-    # -i \
-    # -E "#{msg}" \
-    # /opt/cq/author/crx-quickstart/logs/#{log}`.lines.to_a
   end
 end
 
