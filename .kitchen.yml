@@ -121,6 +121,10 @@ suites:
       - recipe[cq::author]
       - recipe[cq::_osgi_config_create]
     attributes:
+      cq-unix-toolkit:
+        repository:
+          url: 'https://github.com/jwadolowski/CQ-Unix-Toolkit'
+          revision: 'not-merged-features'
       cq:
         version: '5.6.1'
         jar:
