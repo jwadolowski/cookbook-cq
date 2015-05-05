@@ -11,14 +11,5 @@ Encoding:
 LineLength:
     Max: 80
 
-MethodLength:
-    Max: 30
-
 HashSyntax:
     EnforcedStyle: hash_rockets
-
-CyclomaticComplexity:
-    Max: 10
-
-PerceivedComplexity:
-    Max: 1
