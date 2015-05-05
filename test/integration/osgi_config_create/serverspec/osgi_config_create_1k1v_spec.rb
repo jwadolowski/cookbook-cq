@@ -34,7 +34,7 @@ describe 'OSGi config '\
         'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener',
         'cq.dam.s7dam.damchangeeventlistener.enabled'
       )
-    ).to match(/^false$/)
+    ).to match(/^false\n$/)
   end
 
 end
@@ -56,7 +56,7 @@ describe 'OSGi config '\
         'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener',
         'cq.dam.scene7.configurationeventlistener.enabled'
       )
-    ).to match(/^true$/)
+    ).to match(/^true\n$/)
   end
 end
 
@@ -91,7 +91,7 @@ describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
         'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet',
         'adapt.supported.widths'
       )
-    ).to match(/\["325","476","480","620","720"\]/)
+    ).to match(/^\["325","476","480","620","720"\]\n$/)
   end
 end
 
@@ -114,7 +114,7 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSPagesUpdateHandler',
         'cq.pagesupdatehandler.imageresourcetypes'
       )
-    ).to match(/\["foundation\/components\/image"\]/)
+    ).to match(/^\["foundation\/components\/image"\]\n$/)
   end
 end
 
@@ -137,7 +137,9 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSSubPagesUpdateHandler',
         'cq.pagesupdatehandler.imageresourcetypes'
       )
-    ).to match(/\["foundation\/components\/image","test\/append\/value"\]/)
+    ).to match(
+      /^\["foundation\/components\/image","test\/append\/value"\]\n$/
+    )
   end
 end
 
@@ -156,14 +158,14 @@ describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
         'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl',
         'cq.dam.scene7.assetmimetypeservice.mapping'
       )
-    ).to match(%r{\["Generic=image/s7asset",
+    ).to match(%r{^\["Generic=image/s7asset",
                "Template=image/s7template",
                "Flash=image/s7flashtemplate",
                "Image=image/jpeg",
                "Video=video/\*",
                "Video\.mp4=video/mp4",
                "Video\.f4v=video/mp4",
-               "Video\.flv=video/x-flv"\]}x)
+               "Video\.flv=video/x-flv"\]\n$}x)
   end
 end
 
@@ -198,7 +200,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'scheduler.period'
       )
-    ).to match(/5/)
+    ).to match(/^5\n$/)
   end
 
   it 'scheduler.concurrent is set to false' do
@@ -207,7 +209,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'scheduler.concurrent'
       )
-    ).to match(/false/)
+    ).to match(/^false\n$/)
   end
 
   it 'service.bad_link_tolerance_interval is set to 24' do
@@ -216,7 +218,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.bad_link_tolerance_interval'
       )
-    ).to match(/24/)
+    ).to match(/^24\n$/)
   end
 
   it 'service.check_override_patterns is set to "^system/"' do
@@ -225,7 +227,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.check_override_patterns'
       )
-    ).to match(/\^system\//)
+    ).to match(/^\[\"\^system\/\"\]\n$/)
   end
 
   it 'service.cache_broken_internal_links is set to true' do
@@ -234,7 +236,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.cache_broken_internal_links'
       )
-    ).to match(/true/)
+    ).to match(/^true\n$/)
   end
 
   it 'service.special_link_prefix is set to ["#","${","<!--","data:",'\
@@ -245,7 +247,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'service.special_link_prefix'
       )
     ).to match(
-      /\["#","\${","<!--","data:","javascript:","mailto:","rx:","z:"\]/
+      /^\["#","\${","<!--","data:","javascript:","mailto:","rx:","z:"\]\n$/
     )
   end
 
