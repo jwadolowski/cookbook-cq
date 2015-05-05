@@ -50,7 +50,9 @@ class OSGiConfigHelper
     File.open(src_file).each do |line|
       regex_groups = line.match(line_regex)
 
-      next if regex_groups['date'].nil? || regex_groups['time'].nil?
+      next if regex_groups.nil? ||
+        regex_groups['date'].nil? ||
+        regex_groups['time'].nil?
 
       line_time = DateTime.parse(
         regex_groups['date'] + ' ' + regex_groups['time']
