@@ -101,8 +101,29 @@ osgi_config_wrapper 'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
   )
 end
 # *** existing: 1, append: 0, valid: 1
+osgi_config_wrapper 'com.adobe.mac.core.impl.DAMVolumeChecker' do
+  properties(
+    'scheduler.expression' => '0 0 0 * * ?',
+    'damRootPath' => '/content/dam/mac/',
+    'sizeThreshold' => '500',
+    'countThreshold' => 1000,
+    'recipients' => []
+  )
+end
 # *** existing: 1, append: 1, valid: 0
+osgi_config_wrapper 'org.apache.felix.eventadmin.impl.EventAdmin' do
+  properties(
+    'org.apache.felix.eventadmin.IgnoreTimeout' => ['com.example*']
+  )
+  append true
+end
 # *** existing: 1, append: 1, valid: 1
+osgi_config_wrapper 'org.apache.sling.engine.impl.SlingMainServlet' do
+  properties(
+    'sling.max.inclusions' => 50
+  )
+  append true
+end
 
 # Factory configurations
 # -----------------------------------------------------------------------------

@@ -257,3 +257,187 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
     ).to match(/^\n$/)
   end
 end
+
+describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
+  it 'there was a single HTTP request to get current values' do
+    expect(
+      @osgi_config_helper.log_entries(
+        'com.adobe.mac.core.impl.DAMVolumeChecker'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'scheduler.expression is set to "0 0 0 * * ?"' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.mac.core.impl.DAMVolumeChecker',
+        'scheduler.expression'
+      )
+    ).to match(/^0\ 0\ 0\ \*\ \*\ \?\n$/)
+  end
+
+  it 'damRootPath is set to /content/dam/mac/' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.mac.core.impl.DAMVolumeChecker',
+        'damRootPath'
+      )
+    ).to match(%r{^/content/dam/mac/\n$})
+  end
+
+  it 'sizeThreshold is set to 500' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.mac.core.impl.DAMVolumeChecker',
+        'sizeThreshold'
+      )
+    ).to match(/^500\n$/)
+  end
+
+  it 'countThreshold to 1000' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.mac.core.impl.DAMVolumeChecker',
+        'countThreshold'
+      )
+    ).to match(/^1000\n$/)
+  end
+
+  it 'recipients is set to []' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.mac.core.impl.DAMVolumeChecker',
+        'recipients'
+      )
+    ).to match(/^\[\]\n$/)
+  end
+end
+
+describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
+  it 'there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.log_entries(
+        'org.apache.felix.eventadmin.impl.EventAdmin'
+      ).length
+    ).to eq(2)
+  end
+
+  it 'org.apache.felix.eventadmin.ThreadPoolSize is set to 20' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.ThreadPoolSize'
+      )
+    ).to match(/^20\n$/)
+  end
+
+  it 'org.apache.felix.eventadmin.Timeout is set to 5000' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.Timeout'
+      )
+    ).to match(/^5000\n$/)
+  end
+
+  it 'org.apache.felix.eventadmin.RequireTopic is set to true' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.RequireTopic'
+      )
+    ).to match(/^true\n$/)
+  end
+
+  it 'org.apache.felix.eventadmin.IgnoreTimeout is set to '\
+    '["com.adobe*", "com.day*", "com.example*", "org.apache.felix*", '\
+    '"org.apache.sling*"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.IgnoreTimeout'
+      )
+    ).to match(
+      %r{
+      ^\["com\.adobe\*",
+      "com\.day\*",
+      "com\.example\*",
+      "org\.apache.felix\*",
+      "org\.apache.sling\*"
+      \]\n$}x
+    )
+  end
+end
+
+describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
+  it 'there was just a single HTTP request to get current values' do
+    expect(
+      @osgi_config_helper.log_entries(
+        'org.apache.sling.engine.impl.SlingMainServlet'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'sling.max.calls is set to 1500' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.sling.engine.impl.SlingMainServlet',
+        'sling.max.calls'
+      )
+    ).to match(/^1500\n$/)
+  end
+
+  it 'sling.max.inclusions is set to 50' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.sling.engine.impl.SlingMainServlet',
+        'sling.max.inclusions'
+      )
+    ).to match(/^50\n$/)
+  end
+
+  it 'sling.trace.allow is set to false' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.sling.engine.impl.SlingMainServlet',
+        'sling.trace.allow'
+      )
+    ).to match(/^false\n$/)
+  end
+
+  it 'sling.filter.compat.mode is set to false' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.sling.engine.impl.SlingMainServlet',
+        'sling.filter.compat.mode'
+      )
+    ).to match(/^false\n$/)
+  end
+
+  it 'sling.max.record.requests is set to 20' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.sling.engine.impl.SlingMainServlet',
+        'sling.max.record.requests'
+      )
+    ).to match(/^20\n$/)
+  end
+
+  it 'sling.store.pattern.requests is set to []' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.sling.engine.impl.SlingMainServlet',
+        'sling.store.pattern.requests'
+      )
+    ).to match(/^\[\]\n$/)
+  end
+
+  it 'sling.default.parameter.encoding is empty' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.sling.engine.impl.SlingMainServlet',
+        'sling.default.parameter.encoding'
+      )
+    ).to match(/^\n$/)
+  end
+end
