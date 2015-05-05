@@ -32,7 +32,7 @@ define :osgi_config_wrapper, :properties => nil, :append => false do
       )
     end
 
-    not_if { ::File.exists?("/tmp/#{params[:name]}_start_timestamp") }
+    not_if { ::File.exist?("/tmp/#{params[:name]}_start_timestamp") }
   end
 
   cq_osgi_config params[:name] do
@@ -53,6 +53,6 @@ define :osgi_config_wrapper, :properties => nil, :append => false do
       )
     end
 
-    not_if { ::File.exists?("/tmp/#{params[:name]}_stop_timestamp") }
+    not_if { ::File.exist?("/tmp/#{params[:name]}_stop_timestamp") }
   end
 end
