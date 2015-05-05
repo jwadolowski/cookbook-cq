@@ -166,3 +166,95 @@ describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
                "Video\.flv=video/x-flv"\]}x)
   end
 end
+
+describe 'OSGi not.existing.config.create.NkNv' do
+  it 'there was NO attempts to read/modify it' do
+    expect(
+      @osgi_config_helper.log_entries(
+        'not.existing.config.create.NkNv'
+      ).length
+    ).to eq(0)
+  end
+
+  it 'does NOT exists' do
+    expect(
+      @config_list.include?('not.existing.config.create.NkNv')
+    ).to be false
+  end
+end
+
+describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
+  it 'there were 2 HTTP requests (read + modify)' do
+    expect(
+      @osgi_config_helper.log_entries(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
+      ).length
+    ).to eq(2)
+  end
+
+  it 'scheduler.period is set to 5' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
+        'scheduler.period'
+      )
+    ).to match(/5/)
+  end
+
+  it 'scheduler.concurrent is set to false' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
+        'scheduler.concurrent'
+      )
+    ).to match(/false/)
+  end
+
+  it 'service.bad_link_tolerance_interval is set to 24' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
+        'service.bad_link_tolerance_interval'
+      )
+    ).to match(/24/)
+  end
+
+  it 'service.check_override_patterns is set to "^system/"' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
+        'service.check_override_patterns'
+      )
+    ).to match(/\^system\//)
+  end
+
+  it 'service.cache_broken_internal_links is set to true' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
+        'service.cache_broken_internal_links'
+      )
+    ).to match(/true/)
+  end
+
+  it 'service.special_link_prefix is set to ["#","${","<!--","data:",'\
+    '"javascript:","mailto:","rx:","z:"]"}"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
+        'service.special_link_prefix'
+      )
+    ).to match(
+      /\["#","\${","<!--","data:","javascript:","mailto:","rx:","z:"\]/
+    )
+  end
+
+  it 'service.special_link_patterns is empty' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
+        'service.special_link_patterns'
+      )
+    ).to match(/^\n$/)
+  end
+end
