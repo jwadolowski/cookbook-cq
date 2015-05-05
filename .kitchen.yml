@@ -6,6 +6,7 @@ driver:
   name: vagrant
   customize:
       memory: 3072
+      cpus: 2
 
 provisioner:
   name: chef_zero
@@ -115,11 +116,15 @@ suites:
         jar:
           url: <%= ENV['CQ_V600_JAR_URL'] %>
 
-  - name: author-v5.6.1-osgi_config
+  - name: osgi_config_create
     run_list:
       - recipe[cq::author]
-      - recipe[cq::_osgi_config]
+      - recipe[cq::_osgi_config_create]
     attributes:
+      cq-unix-toolkit:
+        repository:
+          url: 'https://github.com/jwadolowski/CQ-Unix-Toolkit'
+          revision: 'not-merged-features'
       cq:
         version: '5.6.1'
         jar:

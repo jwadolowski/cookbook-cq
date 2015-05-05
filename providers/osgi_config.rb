@@ -62,8 +62,10 @@ end
 # @return [Hash] comparison hash
 def compatibility_hash
   # Hash that stores the following key-value pairs:
-  # KEY            => VALUE
-  # factory_config => [0-N]
+  #
+  # | KEY            | VALUE |
+  # | -------------- | ----- |
+  # | factory_config | [0-N] |
   output = {}
 
   # Compare new resource against all factory configs
@@ -81,13 +83,13 @@ end
 # @return [Integer] numer of common properties
 def compatibility_score(factory_instance)
   factory_config_properties = properties_hash(
-    osgi_config_properties(factory_instance)
+    current_osgi_config_properties(factory_instance)
   )
 
   score = 0
 
   new_resource.properties.each do |key, val|
-    score +=1 if factory_config_properties[key] == val
+    score += 1 if factory_config_properties[key] == val
   end
 
   score
@@ -103,7 +105,7 @@ def max_compatibility_score
   if hash.empty?
     0
   else
-    hash.max_by { |k, v| v }[1]
+    hash.max_by { |_k, v| v }[1]
   end
 end
 
@@ -111,7 +113,7 @@ end
 #
 # @return [Hash] hash of factory config instances with the highest score
 def matching_candidates
-  compatibility_hash.select { |k, v| v == max_compatibility_score }
+  compatibility_hash.select { |_k, v| v == max_compatibility_score }
 end
 
 # Analyzes both compatibility scores and new_resource properties to pick the
@@ -159,7 +161,7 @@ end
 #
 # @param name [String] the name the config (PID)
 # @return [JSON] properties of given OSGi configuration
-def osgi_config_properties(name)
+def current_osgi_config_properties(name)
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
@@ -200,28 +202,46 @@ end
 # @return [Hash] merged properties
 def merged_properties
   current_resource.properties.merge(
-    new_resource.properties) do |key, oldval, newval|
-      if oldval.is_a?(Array)
-        (oldval + newval).sort.uniq
-      else
-        newval
-      end
+    new_resource.properties
+  ) do |_key, oldval, newval|
+    if oldval.is_a?(Array)
+      (oldval + newval)
+    else
+      newval
+    end
   end
+end
+
+# Baselines (converts to string) all given properties.
+#
+# All values are sent to OSGi configuration manager as strings, however under
+# the hood AEM may convert them to integers or booleans. Unfortunately it's not
+# easy to determine what type was used, hence it was decided to convert all
+# values to strings, because during comparison property type is completely
+# insignificant.
+#
+# @param properties [Hash] hash of properties to be converted
+# @return [Hash] baselined properties hash
+def baselined_values(properties)
+  properties.each do |k, v|
+    if v.is_a?(Array)
+      v.each_with_index do |val, index|
+        v[index] = val.to_s
+      end
+    else
+      properties[k] = v.to_s
+    end
+  end
+
+  properties
 end
 
 # Compares properties of new and current resources
 #
 # @return [Boolean] true if properties match, false otherwise
 def validate_properties
-  # W/o append flag simple comparison is all we need
-  if !new_resource.append
-    sanitized_new_properties.to_a.sort.uniq ==
-      current_resource.properties.to_a.sort.uniq
-  else
-    # If append flag is present, more sophisticated comparison is required
-    merged_properties.to_a.sort.uniq ==
-      current_resource.properties.to_a.sort.uniq
-  end
+  baselined_values(sanitized_new_properties).to_a.sort.uniq ==
+    baselined_values(current_resource.properties).to_a.sort.uniq
 end
 
 # Sanitize new resource properties (sort and get rid of duplicates). Takes
@@ -249,8 +269,8 @@ def load_current_resource
   # Set attribute accessors
   @current_resource.exists = osgi_config_presence
 
-  # Initialize current resource properties for the create action for factory
-  # config with append attribute. It will be overwritten later on if required
+  # Initialize current resource properties (will be overwritten later on if
+  # required)
   @current_resource.properties({})
 
   # For non-factory configs choose PID of current resource, otherwise look for
@@ -268,7 +288,7 @@ def load_current_resource
   # Load OSGi properties for existing configuration and check validity
   if current_resource.exists
     @current_resource.properties(
-      properties_hash(osgi_config_properties(config_name))
+      properties_hash(current_osgi_config_properties(config_name))
     )
     @current_resource.valid = validate_properties
   end
@@ -283,10 +303,10 @@ def cqcfg_params
   sanitized_new_properties.each do |k, v|
     if v.is_a?(Array)
       v.each do |v1|
-        param_str += "-s \"#{k}\" -v \"#{v1}\" "
+        param_str += "-s '#{k}' -v '#{v1}' "
       end
     else
-      param_str += "-s \"#{k}\" -v \"#{v}\" "
+      param_str += "-s '#{k}' -v '#{v}' "
     end
   end
 
@@ -297,7 +317,7 @@ end
 # does not match), it will update that OSGi config to match
 #
 # @param factory_flag [Boolean] use or not factory flag (false by default)
-def create_osgi_config(factory_flag=false)
+def create_osgi_config(factory_flag = false)
   cmd_str_base = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
                  "-i #{new_resource.instance} "\
                  "-u #{new_resource.username} "\
@@ -326,17 +346,6 @@ def delete_osgi_config
   # TODO
 end
 
-# Modify an existing config. It will raise an exception if item does not exist
-def modify_osgi_config
-  # TODO
-end
-
-# Modify an existing config. It will not raise an exception if item does not
-# exist
-def manage_osgi_config
-  # TODO
-end
-
 action :create do
   if !@current_resource.exists
     # Non-factory configs
@@ -344,7 +353,7 @@ action :create do
       Chef::Log.error("OSGi config #{new_resource.pid} does NOT exists!")
     # Factory configs
     else
-      converge_by("Create #{ new_resource }") do
+      converge_by("Create #{new_resource}") do
         create_osgi_config(true)
       end
     end
@@ -352,7 +361,7 @@ action :create do
     Chef::Log.info("OSGi config #{new_resource.pid} is already in valid "\
                    'state - nothing to do')
   else
-    converge_by("Create #{ new_resource }") do
+    converge_by("Create #{new_resource}") do
       create_osgi_config
     end
   end
