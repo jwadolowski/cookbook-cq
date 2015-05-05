@@ -211,12 +211,36 @@ def merged_properties
   end
 end
 
+# Baselines (converts to string) all given properties.
+#
+# All values are sent to OSGi configuration manager as strings, however under
+# the hood AEM may convert them to integers or booleans. Unfortunately it's not
+# easy to determine what type was used, hence it was decided to convert all
+# values to strings, because during comparison property type is completely
+# insignificant.
+#
+# @param properties [Hash] hash of properties to be converted
+# @return [Hash] baselined properties hash
+def baselined_values(properties)
+  properties.each do |k, v|
+    if v.is_a?(Array)
+      v.each_with_index do |val, index|
+        v[index] = val.to_s
+      end
+    else
+      properties[k] = v.to_s
+    end
+  end
+
+  properties
+end
+
 # Compares properties of new and current resources
 #
 # @return [Boolean] true if properties match, false otherwise
 def validate_properties
-  sanitized_new_properties.to_a.sort.uniq ==
-    current_resource.properties.to_a.sort.uniq
+  baselined_values(sanitized_new_properties).to_a.sort.uniq ==
+    baselined_values(current_resource.properties).to_a.sort.uniq
 end
 
 # Sanitize new resource properties (sort and get rid of duplicates). Takes
