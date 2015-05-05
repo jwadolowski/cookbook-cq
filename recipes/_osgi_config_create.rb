@@ -86,7 +86,7 @@ osgi_config_wrapper 'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
   properties(
     'scheduler.period' => 5,
     'scheduler.concurrent' => false,
-    'service.bad_link_tolerance_interval' => 24,
+    'service.bad_link_tolerance_interval' => '24',
     'service.check_override_patterns' => ['^system/'],
     'service.cache_broken_internal_links' => true,
     'service.special_link_prefix' => ['javascript:',
