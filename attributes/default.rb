@@ -40,6 +40,6 @@ default['java']['oracle']['accept_oracle_download_terms'] = true
 
 # CQ Unix Toolkit
 # -----------------------------------------------------------------------------
-defaut['cq-unix-toolkit']['repository']['url'] =
+default['cq-unix-toolkit']['repository']['url'] =
   'https://github.com/jwadolowski/CQ-Unix-Toolkit'
-defaut['cq-unix-toolkit']['repository']['revision'] = 'not-merged-features'
+default['cq-unix-toolkit']['repository']['revision'] = 'not-merged-features'
