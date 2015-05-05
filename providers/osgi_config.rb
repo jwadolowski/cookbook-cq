@@ -89,7 +89,7 @@ def compatibility_score(factory_instance)
   score = 0
 
   new_resource.properties.each do |key, val|
-    score +=1 if factory_config_properties[key] == val
+    score += 1 if factory_config_properties[key] == val
   end
 
   score
@@ -105,7 +105,7 @@ def max_compatibility_score
   if hash.empty?
     0
   else
-    hash.max_by { |k, v| v }[1]
+    hash.max_by { |_k, v| v }[1]
   end
 end
 
@@ -113,7 +113,7 @@ end
 #
 # @return [Hash] hash of factory config instances with the highest score
 def matching_candidates
-  compatibility_hash.select { |k, v| v == max_compatibility_score }
+  compatibility_hash.select { |_k, v| v == max_compatibility_score }
 end
 
 # Analyzes both compatibility scores and new_resource properties to pick the
@@ -202,12 +202,13 @@ end
 # @return [Hash] merged properties
 def merged_properties
   current_resource.properties.merge(
-    new_resource.properties) do |key, oldval, newval|
-      if oldval.is_a?(Array)
-        (oldval + newval)
-      else
-        newval
-      end
+    new_resource.properties
+  ) do |_key, oldval, newval|
+    if oldval.is_a?(Array)
+      (oldval + newval)
+    else
+      newval
+    end
   end
 end
 
@@ -316,7 +317,7 @@ end
 # does not match), it will update that OSGi config to match
 #
 # @param factory_flag [Boolean] use or not factory flag (false by default)
-def create_osgi_config(factory_flag=false)
+def create_osgi_config(factory_flag = false)
   cmd_str_base = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
                  "-i #{new_resource.instance} "\
                  "-u #{new_resource.username} "\
