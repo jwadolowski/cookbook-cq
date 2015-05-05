@@ -18,7 +18,6 @@ end
 
 describe 'OSGi config '\
   'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener' do
-
   # Two log entries - first one to get values, second to modify them
   it 'there were 2 requests (1st to check values, 2nd to modify them)' do
     expect(
@@ -36,12 +35,10 @@ describe 'OSGi config '\
       )
     ).to match(/^false\n$/)
   end
-
 end
 
 describe 'OSGi config '\
   'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener' do
-
   it 'there was a single HTTP check to get current values' do
     expect(
       @osgi_config_helper.log_entries(
@@ -114,7 +111,7 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSPagesUpdateHandler',
         'cq.pagesupdatehandler.imageresourcetypes'
       )
-    ).to match(/^\["foundation\/components\/image"\]\n$/)
+    ).to match(%r{^\["foundation/components/image"\]\n$})
   end
 end
 
@@ -138,7 +135,7 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'cq.pagesupdatehandler.imageresourcetypes'
       )
     ).to match(
-      /^\["foundation\/components\/image","test\/append\/value"\]\n$/
+      %r{^\["foundation/components/image","test/append/value"\]\n$}
     )
   end
 end
