@@ -37,9 +37,3 @@ default['cq']['start_timeout'] = 1800
 # -----------------------------------------------------------------------------
 default['java']['install_flavor'] = 'oracle'
 default['java']['oracle']['accept_oracle_download_terms'] = true
-
-# CQ Unix Toolkit
-# -----------------------------------------------------------------------------
-default['cq-unix-toolkit']['repository']['url'] =
-  'https://github.com/jwadolowski/CQ-Unix-Toolkit'
-default['cq-unix-toolkit']['repository']['revision'] = 'not-merged-features'
