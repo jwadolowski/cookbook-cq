@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: cq
-# Recipe:: _osgi_config
+# Recipe:: _osgi_config_create_regular
 #
-# Copyright (C) 2014 Jakub Wadolowski
+# Copyright (C) 2015 Jakub Wadolowski
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -124,36 +124,3 @@ osgi_config_wrapper 'org.apache.sling.engine.impl.SlingMainServlet' do
   )
   append true
 end
-
-# Factory configurations
-# -----------------------------------------------------------------------------
-
-# ** 1 key, 1 value
-# *** existing: 0, append: 0, valid: 0
-# *** existing: 0, append: 0, valid: 1
-# *** existing: 0, append: 1, valid: 0
-# *** existing: 0, append: 1, valid: 1
-# *** existing: 1, append: 0, valid: 0
-# *** existing: 1, append: 0, valid: 1
-# *** existing: 1, append: 1, valid: 0
-# *** existing: 1, append: 1, valid: 1
-
-# ** 1 key, N values
-# *** existing: 0, append: 0, valid: 0
-# *** existing: 0, append: 0, valid: 1
-# *** existing: 0, append: 1, valid: 0
-# *** existing: 0, append: 1, valid: 1
-# *** existing: 1, append: 0, valid: 0
-# *** existing: 1, append: 0, valid: 1
-# *** existing: 1, append: 1, valid: 0
-# *** existing: 1, append: 1, valid: 1
-
-# ** N key, N values
-# *** existing: 0, append: 0, valid: 0
-# *** existing: 0, append: 0, valid: 1
-# *** existing: 0, append: 1, valid: 0
-# *** existing: 0, append: 1, valid: 1
-# *** existing: 1, append: 0, valid: 0
-# *** existing: 1, append: 0, valid: 1
-# *** existing: 1, append: 1, valid: 0
-# *** existing: 1, append: 1, valid: 1
