@@ -4,7 +4,7 @@ describe 'Factory OSGi config com.example.random.factory' do
   it 'there was NO attemtps to create it' do
     expect(
       @osgi_config_helper.log_entries(
-        'com.example.random.factory'
+        'com.example.random.factory',
         '&factoryPid=com.example.random.factory&'
       ).length
     ).to eq(0)
