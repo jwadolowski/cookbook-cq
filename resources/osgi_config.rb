@@ -45,4 +45,4 @@ attribute :instance,
           :kind_of => String,
           :required => true
 
-attr_accessor :exists, :valid
+attr_accessor :exists, :factory_pid_exists, :valid

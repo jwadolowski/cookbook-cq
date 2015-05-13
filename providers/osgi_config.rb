@@ -142,26 +142,51 @@ def best_candidate_pid
   end
 end
 
+# Verifies presence of given factory OSGi config
+#
+# When a given factory config PID has no instances, it is not reported by OSGi
+# console, hence a simple 'include?' will not work.
+#
+# @return [Boolean] true if given factory PID exists, false otherwise
+def factory_pid_presence
+  fc_properties = raw_config_info(@new_resource.factory_pid)
+
+  if fc_properties['description'] == 'This form is automatically generated '\
+      'from existing properties because no property descriptors are '\
+      'available for this configuration. This may be cause by the absence of '\
+      'the OSGi Metatype Service or the absence of a MetaType descriptor for '\
+      'this configuration.'
+    false
+  else
+    true
+  end
+end
+
 # Checks presence of OSGi config
 #
 # @return [Boolean] true if OSGi config exists, false otherwise
 def osgi_config_presence
+  # Regular configs
   if new_resource.factory_pid.nil?
     osgi_config_list.include? new_resource.pid
   else
-    if best_candidate_pid.nil?
-      false
-    else
+    # Configs created from factory PID
+    #
+    # There's no point to look for factory instance if parent (factory PID
+    # itself) doesn't exist
+    if @current_resource.factory_pid_exists && !best_candidate_pid.nil?
       true
+    else
+      false
     end
   end
 end
 
-# Get properties of existing OSGi configuration
+# Get raw JSON that includes all information about given config
 #
-# @param name [String] the name the config (PID)
-# @return [JSON] properties of given OSGi configuration
-def current_osgi_config_properties(name)
+# @param name [String] name of the config (PID)
+# @return [Hash] Ruby hash with all information about requested PID
+def raw_config_info(name)
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
             "-i #{new_resource.instance} "\
             "-u #{new_resource.username} "\
@@ -174,11 +199,19 @@ def current_osgi_config_properties(name)
 
   begin
     cmd.error!
-    JSON.parse(cmd.stdout)['properties']
+    JSON.parse(cmd.stdout)
   rescue => e
     Chef::Application.fatal!("Can't get #{new_resource.pid} properties!\n"\
                              "Error description: #{e}")
   end
+end
+
+# Get properties of existing OSGi configuration
+#
+# @param name [String] config name (PID)
+# @return [Hash] properties of given OSGi configuration
+def current_osgi_config_properties(name)
+    raw_config_info(name)['properties']
 end
 
 # Parse OSGi config properties to get a simple hash (key-value) from all items.
@@ -267,6 +300,8 @@ def load_current_resource
   @current_resource = Chef::Resource::CqOsgiConfig.new(new_resource.pid)
 
   # Set attribute accessors
+  @current_resource.factory_pid_exists =
+    factory_pid_presence if @new_resource.factory_pid
   @current_resource.exists = osgi_config_presence
 
   # Initialize current resource properties (will be overwritten later on if
@@ -341,28 +376,46 @@ def create_osgi_config(factory_flag = false)
   end
 end
 
-# Delete OSGi config
-def delete_osgi_config
-  # TODO
+def create_regular_config
+  if !@current_resource.exists
+    Chef::Log.error("OSGi config #{new_resource.pid} does NOT exist!")
+  else
+    if @current_resource.valid
+      Chef::Log.info("OSGi config #{new_resource.pid} is already in valid "\
+                     'state - nothing to do')
+    else
+      converge_by("Create #{new_resource}") do
+        create_osgi_config
+      end
+    end
+  end
 end
 
-action :create do
-  if !@current_resource.exists
-    # Non-factory configs
-    if @new_resource.factory_pid.nil?
-      Chef::Log.error("OSGi config #{new_resource.pid} does NOT exists!")
-    # Factory configs
-    else
+def create_factory_config
+  if !@current_resource.factory_pid_exists
+    Chef::Log.error("Given factory PID doesn't exist!")
+  else
+    if !@current_resource.exists
       converge_by("Create #{new_resource}") do
         create_osgi_config(true)
       end
+    else
+      if @current_resource.valid
+        Chef::Log.info("OSGi config #{new_resource.pid} is already in valid "\
+                       'state - nothing to do')
+      else
+        converge_by("Create #{new_resource}") do
+          create_osgi_config(true)
+        end
+      end
     end
-  elsif @current_resource.exists && @current_resource.valid
-    Chef::Log.info("OSGi config #{new_resource.pid} is already in valid "\
-                   'state - nothing to do')
+  end
+end
+
+action :create do
+  if @new_resource.factory_pid.nil?
+    create_regular_config
   else
-    converge_by("Create #{new_resource}") do
-      create_osgi_config
-    end
+    create_factory_config
   end
 end
