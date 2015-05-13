@@ -29,13 +29,14 @@ class OSGiConfigHelper
   # Get all lines that contain a given string in AEM access.log and was
   # generated between start and stop timetamps (generated during provisioning)
   #
-  # @param msg [String] string (config name) to look for
+  # @param pid [String] OSGi configuration PID
+  # @param msg [String] string to look for
   # @return [Array] array with matched lines as elements
-  def log_entries(msg)
+  def log_entries(pid, msg)
     src_file = '/opt/cq/author/crx-quickstart/logs/access.log'
 
-    start_time = DateTime.parse(File.read("/tmp/#{msg}_start_timestamp"))
-    stop_time = DateTime.parse(File.read("/tmp/#{msg}_stop_timestamp"))
+    start_time = DateTime.parse(File.read("/tmp/#{pid}_start_timestamp"))
+    stop_time = DateTime.parse(File.read("/tmp/#{pid}_stop_timestamp"))
 
     line_regex = %r{
       ^[0-9.]+
