@@ -9,7 +9,7 @@ describe 'OSGi config not.existing.config.create.1k1v' do
     ).to eq(0)
   end
 
-  it 'does NOT exists' do
+  it 'does NOT exist' do
     expect(
       @config_list.include?('not.existing.config.create.1k1v')
     ).to be false
@@ -66,7 +66,7 @@ describe 'OSGi config not.existing.config.create.1kNv' do
     ).to eq(0)
   end
 
-  it 'does NOT exists' do
+  it 'does NOT exist' do
     expect(
       @config_list.include?('not.existing.config.create.1kNv')
     ).to be false
@@ -175,7 +175,7 @@ describe 'OSGi not.existing.config.create.NkNv' do
     ).to eq(0)
   end
 
-  it 'does NOT exists' do
+  it 'does NOT exist' do
     expect(
       @config_list.include?('not.existing.config.create.NkNv')
     ).to be false
