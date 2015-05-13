@@ -5,6 +5,7 @@ describe 'Factory OSGi config com.example.random.factory' do
     expect(
       @osgi_config_helper.log_entries(
         'com.example.random.factory'
+        '&factoryPid=com.example.random.factory&'
       ).length
     ).to eq(0)
   end

@@ -23,32 +23,11 @@ Chef::Log.warn(
 
 # Factory configurations
 # -----------------------------------------------------------------------------
-
-# ** 1 key, 1 value
-# *** existing: 0, append: 0, valid: 0
-# *** existing: 0, append: 0, valid: 1
-# *** existing: 0, append: 1, valid: 0
-# *** existing: 0, append: 1, valid: 1
-# *** existing: 1, append: 0, valid: 0
-# *** existing: 1, append: 0, valid: 1
-# *** existing: 1, append: 1, valid: 0
-# *** existing: 1, append: 1, valid: 1
-
-# ** 1 key, N values
-# *** existing: 0, append: 0, valid: 0
-# *** existing: 0, append: 0, valid: 1
-# *** existing: 0, append: 1, valid: 0
-# *** existing: 0, append: 1, valid: 1
-# *** existing: 1, append: 0, valid: 0
-# *** existing: 1, append: 0, valid: 1
-# *** existing: 1, append: 1, valid: 0
-# *** existing: 1, append: 1, valid: 1
-
-# ** N key, N values
-# *** existing: 0, append: 0, valid: 0
-# *** existing: 0, append: 0, valid: 1
-# *** existing: 0, append: 1, valid: 0
-# *** existing: 0, append: 1, valid: 1
+# *** existing: 0, append: [0,1], valid: [0,1]
+osgi_config_wrapper 'com.example.random.factory' do
+  properties('val1' => 'key1', 'abcd' => 'efgh')
+  factory true
+end
 # *** existing: 1, append: 0, valid: 0
 # *** existing: 1, append: 0, valid: 1
 # *** existing: 1, append: 1, valid: 0
