@@ -4,6 +4,7 @@ describe 'OSGi config not.existing.config.create.1k1v' do
   it 'there was NO attempts to create it' do
     expect(
       @osgi_config_helper.log_entries(
+        'not.existing.config.create.1k1v',
         'not.existing.config.create.1k1v'
       ).length
     ).to eq(0)
@@ -22,6 +23,7 @@ describe 'OSGi config '\
   it 'there were 2 requests (1st to check values, 2nd to modify them)' do
     expect(
       @osgi_config_helper.log_entries(
+        'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener',
         'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
       ).length
     ).to eq(2)
@@ -42,6 +44,7 @@ describe 'OSGi config '\
   it 'there was a single HTTP check to get current values' do
     expect(
       @osgi_config_helper.log_entries(
+        'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener',
         'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener'
       ).length
     ).to eq(1)
@@ -61,6 +64,7 @@ describe 'OSGi config not.existing.config.create.1kNv' do
   it 'there was NO attempts to create it' do
     expect(
       @osgi_config_helper.log_entries(
+        'not.existing.config.create.1kNv',
         'not.existing.config.create.1kNv'
       ).length
     ).to eq(0)
@@ -77,6 +81,7 @@ describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
   it 'there were 2 HTTP requests' do
     expect(
       @osgi_config_helper.log_entries(
+        'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet',
         'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet'
       ).length
     ).to eq(2)
@@ -97,6 +102,8 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   it 'there was just a single HTTP request to check current values' do
     expect(
       @osgi_config_helper.log_entries(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSPagesUpdateHandler',
         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSPagesUpdateHandler'
       ).length
@@ -121,6 +128,8 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
     expect(
       @osgi_config_helper.log_entries(
         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSSubPagesUpdateHandler',
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSSubPagesUpdateHandler'
       ).length
     ).to eq(2)
@@ -144,6 +153,7 @@ describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
   it 'there was just a single request to read current values' do
     expect(
       @osgi_config_helper.log_entries(
+        'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl',
         'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl'
       ).length
     ).to eq(1)
@@ -170,6 +180,7 @@ describe 'OSGi not.existing.config.create.NkNv' do
   it 'there was NO attempts to read/modify it' do
     expect(
       @osgi_config_helper.log_entries(
+        'not.existing.config.create.NkNv',
         'not.existing.config.create.NkNv'
       ).length
     ).to eq(0)
@@ -186,6 +197,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
   it 'there were 2 HTTP requests (read + modify)' do
     expect(
       @osgi_config_helper.log_entries(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
       ).length
     ).to eq(2)
@@ -262,6 +274,7 @@ describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
   it 'there was a single HTTP request to get current values' do
     expect(
       @osgi_config_helper.log_entries(
+        'com.adobe.mac.core.impl.DAMVolumeChecker',
         'com.adobe.mac.core.impl.DAMVolumeChecker'
       ).length
     ).to eq(1)
@@ -317,6 +330,7 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
   it 'there were 2 HTTP requests' do
     expect(
       @osgi_config_helper.log_entries(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
         'org.apache.felix.eventadmin.impl.EventAdmin'
       ).length
     ).to eq(2)
@@ -373,6 +387,7 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
   it 'there was just a single HTTP request to get current values' do
     expect(
       @osgi_config_helper.log_entries(
+        'org.apache.sling.engine.impl.SlingMainServlet',
         'org.apache.sling.engine.impl.SlingMainServlet'
       ).length
     ).to eq(1)
