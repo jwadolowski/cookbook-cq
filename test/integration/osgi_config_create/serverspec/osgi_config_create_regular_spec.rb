@@ -307,7 +307,7 @@ describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
     ).to match(/^500\n$/)
   end
 
-  it 'countThreshold to 1000' do
+  it 'countThreshold is set to 1000' do
     expect(
       @osgi_config_helper.config_value(
         'com.adobe.mac.core.impl.DAMVolumeChecker',
