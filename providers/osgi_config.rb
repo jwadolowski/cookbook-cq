@@ -412,7 +412,7 @@ def create_factory_config
   end
 end
 
-action :create do
+action :create do # ~FC017
   if @new_resource.factory_pid.nil?
     create_regular_config
   else
