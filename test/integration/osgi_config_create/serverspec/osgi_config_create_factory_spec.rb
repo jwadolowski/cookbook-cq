@@ -11,7 +11,7 @@ describe 'Factory OSGi config com.example.random.factory' do
 
   it 'there was a single check to verify factory PID presence' do
     expect(
-      @osgi_config_helper.factory_read_requests(
+      @osgi_config_helper.read_requests(
         'com.example.random.factory'
       ).length
     ).to eq(1)
@@ -27,7 +27,7 @@ end
 describe 'Factory OSGi com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
   it 'there was a single check to verify factory PID presence' do
     expect(
-      @osgi_config_helper.factory_read_requests(
+      @osgi_config_helper.read_requests(
         'com.adobe.granite.monitoring.impl.ScriptConfigImpl'
       ).length
     ).to eq(1)
