@@ -82,13 +82,15 @@ end
 # @param factory_instance [String] PID name of a factory based config
 # @return [Integer] numer of common properties
 def compatibility_score(factory_instance)
-  factory_config_properties = properties_hash(
-    current_osgi_config_properties(factory_instance)
+  factory_config_properties = baselined_values(
+    properties_hash(
+      current_osgi_config_properties(factory_instance)
+    )
   )
 
   score = 0
 
-  new_resource.properties.each do |key, val|
+  baselined_values(sanitized_new_properties).each do |key, val|
     score += 1 if factory_config_properties[key] == val
   end
 
