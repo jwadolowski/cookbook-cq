@@ -3,8 +3,7 @@ require_relative '../../../kitchen/data/spec_helper'
 describe 'OSGi config not.existing.config.create.1k1v' do
   it 'there was NO attempts to create it' do
     expect(
-      @osgi_config_helper.log_entries(
-        'not.existing.config.create.1k1v',
+      @osgi_config_helper.regular_update_requests(
         'not.existing.config.create.1k1v'
       ).length
     ).to eq(0)
@@ -19,14 +18,20 @@ end
 
 describe 'OSGi config '\
   'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener' do
-  # Two log entries - first one to get values, second to modify them
-  it 'there were 2 requests (1st to check values, 2nd to modify them)' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
-        'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener',
+      @osgi_config_helper.read_requests(
         'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
       ).length
-    ).to eq(2)
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
+      ).length
+    ).to eq(1)
   end
 
   it 'has cq.dam.s7dam.damchangeeventlistener.enabled set to false' do
@@ -41,10 +46,9 @@ end
 
 describe 'OSGi config '\
   'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener' do
-  it 'there was a single HTTP check to get current values' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
-        'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener',
+      @osgi_config_helper.read_requests(
         'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener'
       ).length
     ).to eq(1)
@@ -63,8 +67,7 @@ end
 describe 'OSGi config not.existing.config.create.1kNv' do
   it 'there was NO attempts to create it' do
     expect(
-      @osgi_config_helper.log_entries(
-        'not.existing.config.create.1kNv',
+      @osgi_config_helper.regular_update_requests(
         'not.existing.config.create.1kNv'
       ).length
     ).to eq(0)
@@ -78,13 +81,20 @@ describe 'OSGi config not.existing.config.create.1kNv' do
 end
 
 describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
-  it 'there were 2 HTTP requests' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
-        'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet',
+      @osgi_config_helper.read_requests(
         'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet'
       ).length
-    ).to eq(2)
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet'
+      ).length
+    ).to eq(1)
   end
 
   it 'has adapt.supported.widths set to ["325","480","476","620","720"]' do
@@ -99,11 +109,9 @@ end
 
 describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   'DPSPagesUpdateHandler' do
-  it 'there was just a single HTTP request to check current values' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
-        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-        'DPSPagesUpdateHandler',
+      @osgi_config_helper.read_requests(
         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSPagesUpdateHandler'
       ).length
@@ -124,15 +132,22 @@ end
 
 describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   'DPSSubPagesUpdateHandler' do
-  it 'there were 2 HTTP request (read + modify)' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
-        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-        'DPSSubPagesUpdateHandler',
+      @osgi_config_helper.read_requests(
         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSSubPagesUpdateHandler'
       ).length
-    ).to eq(2)
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSSubPagesUpdateHandler'
+      ).length
+    ).to eq(1)
   end
 
   it 'cq.pagesupdatehandler.imageresourcetypes is set to '\
@@ -150,10 +165,9 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
 end
 
 describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
-  it 'there was just a single request to read current values' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
-        'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl',
+      @osgi_config_helper.read_requests(
         'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl'
       ).length
     ).to eq(1)
@@ -179,8 +193,7 @@ end
 describe 'OSGi not.existing.config.create.NkNv' do
   it 'there was NO attempts to read/modify it' do
     expect(
-      @osgi_config_helper.log_entries(
-        'not.existing.config.create.NkNv',
+      @osgi_config_helper.regular_update_requests(
         'not.existing.config.create.NkNv'
       ).length
     ).to eq(0)
@@ -194,13 +207,20 @@ describe 'OSGi not.existing.config.create.NkNv' do
 end
 
 describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
-  it 'there were 2 HTTP requests (read + modify)' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
-        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
+      @osgi_config_helper.read_requests(
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
       ).length
-    ).to eq(2)
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
+      ).length
+    ).to eq(1)
   end
 
   it 'scheduler.period is set to 5' do
@@ -271,10 +291,9 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
 end
 
 describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
-  it 'there was a single HTTP request to get current values' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
-        'com.adobe.mac.core.impl.DAMVolumeChecker',
+      @osgi_config_helper.read_requests(
         'com.adobe.mac.core.impl.DAMVolumeChecker'
       ).length
     ).to eq(1)
@@ -327,13 +346,20 @@ describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
 end
 
 describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
-  it 'there were 2 HTTP requests' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
-        'org.apache.felix.eventadmin.impl.EventAdmin',
+      @osgi_config_helper.read_requests(
         'org.apache.felix.eventadmin.impl.EventAdmin'
       ).length
-    ).to eq(2)
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'org.apache.felix.eventadmin.impl.EventAdmin'
+      ).length
+    ).to eq(1)
   end
 
   it 'org.apache.felix.eventadmin.ThreadPoolSize is set to 20' do
@@ -384,10 +410,9 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
 end
 
 describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
-  it 'there was just a single HTTP request to get current values' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
-        'org.apache.sling.engine.impl.SlingMainServlet',
+      @osgi_config_helper.read_requests(
         'org.apache.sling.engine.impl.SlingMainServlet'
       ).length
     ).to eq(1)
