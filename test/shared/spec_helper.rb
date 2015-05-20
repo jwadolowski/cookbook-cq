@@ -36,9 +36,20 @@ class OSGiConfigHelper
      -m #{pid} | grep #{key} | cut -d$'\t' -f2`
   end
 
+  # Get all POST requests that read settings given PID
+  #
+  # @param pid [String] PID
+  # @return [Array] array of elements (request lines)
+  def read_requests(pid)
+    log_entries(
+      pid,
+      "POST\ \/system\/console\/configMgr\/#{pid}\ HTTP\/1\.1"
+    )
+  end
+
   # Get all POST requests that modify given factory config
   #
-  # @param pid [String] PID of factory PID
+  # @param pid [String] factory PID
   # @return [Array] array of elements (request lines)
   def factory_update_requests(pid)
     log_entries(
@@ -49,14 +60,15 @@ class OSGiConfigHelper
     )
   end
 
-  # Get all POST requests that read given factory PID
+  # Get all POST requests that modify given regular config
   #
-  # @param pid [String] PID of factory PID
+  # @param pid [String] PID
   # @return [Array] array of elements (request lines)
-  def factory_read_requests(pid)
+  def regular_update_requests(pid)
     log_entries(
       pid,
-      "POST\ \/system\/console\/configMgr\/#{pid}\ HTTP\/1\.1"
+      "POST\ \/system\/console\/configMgr\/#{pid}\?"\
+      '.*apply=true.*action=ajaxConfigManager.*\ HTTP\/1\.1'
     )
   end
 
