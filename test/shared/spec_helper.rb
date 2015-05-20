@@ -36,6 +36,30 @@ class OSGiConfigHelper
      -m #{pid} | grep #{key} | cut -d$'\t' -f2`
   end
 
+  # Get all POST requests that modify given factory config
+  #
+  # @param pid [String] PID of factory PID
+  # @return [Array] array of elements (request lines)
+  def factory_update_requests(pid)
+    log_entries(
+      pid,
+      'POST\ \/system\/console\/configMgr\/%5BTemporary%20PID%20replaced'\
+      "%20by%20real%20PID%20upon%20save%5D\?.*factoryPid=#{pid}"\
+      '.*\ HTTP\/1\.1'
+    )
+  end
+
+  # Get all POST requests that read given factory PID
+  #
+  # @param pid [String] PID of factory PID
+  # @return [Array] array of elements (request lines)
+  def factory_read_requests(pid)
+    log_entries(
+      pid,
+      "POST\ \/system\/console\/configMgr\/#{pid}\ HTTP\/1\.1"
+    )
+  end
+
   # Get all lines that contain a given string in AEM access.log and was
   # generated between start and stop timetamps (generated during provisioning)
   #
