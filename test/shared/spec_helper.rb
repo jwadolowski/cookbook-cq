@@ -13,6 +13,16 @@ class OSGiConfigHelper
      -i http://localhost:4502`
   end
 
+  # Get all instances of given factory OSGi config PID
+  #
+  # @param pid [String] factory PID to look for
+  # @return [Array] a list of all instances of a given OSGi factory
+  def factory_instaces(pid)
+    regex = pid.gsub(/\./, '\.') + '\.' +
+      '[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'
+    config_list.scan(/#{regex}/)
+  end
+
   # Get value of a specific key for a given OSGi config PID
   #
   # @param pid [String] PID of OSGi config

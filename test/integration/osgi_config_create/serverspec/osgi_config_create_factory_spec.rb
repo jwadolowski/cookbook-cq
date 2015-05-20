@@ -48,4 +48,12 @@ describe 'Factory OSGi com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
       ).length
     ).to eq(1)
   end
+
+  it '3 com.adobe.granite.monitoring.impl.ScriptConfigImpl instances exist' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'com.adobe.granite.monitoring.impl.ScriptConfigImpl'
+      ).length
+    ).to eq(3)
+  end
 end
