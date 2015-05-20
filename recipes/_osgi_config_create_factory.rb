@@ -29,6 +29,30 @@ osgi_config_wrapper 'com.example.random.factory' do
   factory true
 end
 # *** existing: 1, append: 0, valid: 0
+osgi_config_wrapper 'com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
+  properties(
+    'script.filename' => 'test-script.sh',
+    'script.display' => 'Fancy Script',
+    'script.path' => '/path/to/not/exisitng/script.sh',
+    'script.platform' => ['dev7',
+                          'prod1',
+                          '-platform1',
+                          '-p aaa',
+                          '-uat17',
+                          '-u bbb',
+                          '-v111',
+                          '-v ccc',
+                          '-f36',
+                          '-f ddd',
+                          '-i43',
+                          '-i eee',
+                          '-stg1',
+                          '-s ffff'],
+    'interval' => '99',
+    'jmxdomain' => 'com.example.monitoring'
+  )
+  factory true
+end
 # *** existing: 1, append: 0, valid: 1
 # *** existing: 1, append: 1, valid: 0
 # *** existing: 1, append: 1, valid: 1
