@@ -14,6 +14,14 @@ describe 'OSGi config not.existing.config.create.1k1v' do
       @config_list.include?('not.existing.config.create.1k1v')
     ).to be false
   end
+
+  it 'in total there was 0 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'not.existing.config.create.1k1v'
+      ).length
+    ).to eq(0)
+  end
 end
 
 describe 'OSGi config '\
@@ -34,6 +42,14 @@ describe 'OSGi config '\
     ).to eq(1)
   end
 
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
+      ).length
+    ).to eq(2)
+  end
+
   it 'has cq.dam.s7dam.damchangeeventlistener.enabled set to false' do
     expect(
       @osgi_config_helper.config_value(
@@ -49,6 +65,14 @@ describe 'OSGi config '\
   it 'there was single READ request' do
     expect(
       @osgi_config_helper.read_requests(
+        'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener'
       ).length
     ).to eq(1)
@@ -78,6 +102,14 @@ describe 'OSGi config not.existing.config.create.1kNv' do
       @config_list.include?('not.existing.config.create.1kNv')
     ).to be false
   end
+
+  it 'in total there was 0 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'not.existing.config.create.1kNv'
+      ).length
+    ).to eq(0)
+  end
 end
 
 describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
@@ -97,6 +129,14 @@ describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
     ).to eq(1)
   end
 
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet'
+      ).length
+    ).to eq(2)
+  end
+
   it 'has adapt.supported.widths set to ["325","480","476","620","720"]' do
     expect(
       @osgi_config_helper.config_value(
@@ -112,6 +152,15 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   it 'there was single READ request' do
     expect(
       @osgi_config_helper.read_requests(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSPagesUpdateHandler'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSPagesUpdateHandler'
       ).length
@@ -150,6 +199,15 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
     ).to eq(1)
   end
 
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSSubPagesUpdateHandler'
+      ).length
+    ).to eq(2)
+  end
+
   it 'cq.pagesupdatehandler.imageresourcetypes is set to '\
     '["foundation/components/image","test/append/value"]' do
     expect(
@@ -168,6 +226,14 @@ describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
   it 'there was single READ request' do
     expect(
       @osgi_config_helper.read_requests(
+        'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl'
       ).length
     ).to eq(1)
@@ -204,6 +270,14 @@ describe 'OSGi not.existing.config.create.NkNv' do
       @config_list.include?('not.existing.config.create.NkNv')
     ).to be false
   end
+
+  it 'in total there was 0 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'not.existing.config.create.NkNv'
+      ).length
+    ).to eq(0)
+  end
 end
 
 describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
@@ -221,6 +295,14 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
       ).length
     ).to eq(1)
+  end
+
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
+      ).length
+    ).to eq(2)
   end
 
   it 'scheduler.period is set to 5' do
@@ -299,6 +381,14 @@ describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
     ).to eq(1)
   end
 
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.adobe.mac.core.impl.DAMVolumeChecker'
+      ).length
+    ).to eq(1)
+  end
+
   it 'scheduler.expression is set to "0 0 0 * * ?"' do
     expect(
       @osgi_config_helper.config_value(
@@ -362,6 +452,14 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
     ).to eq(1)
   end
 
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'org.apache.felix.eventadmin.impl.EventAdmin'
+      ).length
+    ).to eq(2)
+  end
+
   it 'org.apache.felix.eventadmin.ThreadPoolSize is set to 20' do
     expect(
       @osgi_config_helper.config_value(
@@ -413,6 +511,14 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
   it 'there was single READ request' do
     expect(
       @osgi_config_helper.read_requests(
+        'org.apache.sling.engine.impl.SlingMainServlet'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
         'org.apache.sling.engine.impl.SlingMainServlet'
       ).length
     ).to eq(1)
