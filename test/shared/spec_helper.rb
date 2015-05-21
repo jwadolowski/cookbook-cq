@@ -72,6 +72,17 @@ class OSGiConfigHelper
     )
   end
 
+  # Get all requests that includes given PID
+  #
+  # @param pid [String] PID
+  # @return [Array] array of elements (request lines)
+  def all_requests(pid)
+    log_entries(
+      pid,
+      "POST\ \/system\/console\/configMgr\/.*#{pid}.*\ HTTP\/1\.1"
+    )
+  end
+
   # Get all lines that contain a given string in AEM access.log and was
   # generated between start and stop timetamps (generated during provisioning)
   #
