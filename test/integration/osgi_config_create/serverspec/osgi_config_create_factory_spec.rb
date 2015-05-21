@@ -22,6 +22,14 @@ describe 'Factory OSGi config com.example.random.factory' do
       @config_list.include?('com.example.random.factory')
     ).to be false
   end
+
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.example.random.factory'
+      ).length
+    ).to eq(1)
+  end
 end
 
 describe 'Factory OSGi com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
@@ -47,5 +55,17 @@ describe 'Factory OSGi com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
         'com.adobe.granite.monitoring.impl.ScriptConfigImpl'
       ).length
     ).to eq(3)
+  end
+
+  # 1) Get factory PID
+  # 2) Get 1st existing instance
+  # 3) Get 2nd existing instance
+  # 4) Create request
+  it 'in total there were 4 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.adobe.granite.monitoring.impl.ScriptConfigImpl'
+      ).length
+    ).to eq(4)
   end
 end
