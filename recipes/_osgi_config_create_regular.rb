@@ -100,6 +100,25 @@ osgi_config_wrapper 'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
     'service.special_link_patterns' => ''
   )
 end
+
+osgi_config_wrapper 'com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
+  properties(
+    'sling.servlet.paths' => '/libs/dam/health_check',
+    'sling.servlet.methods' => ['GET', 'POST', 'CUSTOM', '-stop', '-i NJECT'],
+    'sling.servlet.extensions' => 'json',
+    'cq.dam.sync.workflow.id' => '/some/path/to/model',
+    'cq.dam.sync.folder.types' => ['sth',
+                                   '-u Z',
+                                   '-uZ',
+                                   '-u',
+                                   '-p Y',
+                                   '-pY',
+                                   '-p',
+                                   '-i X',
+                                   '-iX',
+                                   '-i']
+  )
+end
 # *** existing: 1, append: 0, valid: 1
 osgi_config_wrapper 'com.adobe.mac.core.impl.DAMVolumeChecker' do
   properties(

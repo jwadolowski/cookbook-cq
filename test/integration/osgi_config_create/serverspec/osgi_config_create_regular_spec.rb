@@ -372,6 +372,80 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
   end
 end
 
+describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
+  it 'there was single READ request' do
+    expect(
+      @osgi_config_helper.read_requests(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet'
+      ).length
+    ).to eq(2)
+  end
+
+  it 'sling.servlet.paths is set to /libs/dam/health_check' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.paths'
+      )
+    ).to match(%r{^/libs/dam/health_check\n$})
+  end
+
+  it 'sling.servlet.methods is set to ["GET", "POST", "CUSTOM", "-stop",'\
+    ' "-i NJECT"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.methods'
+      )
+    ).to match(/^\["-i NJECT","-stop","CUSTOM","GET","POST"\]\n$/)
+  end
+
+  it 'sling.servlet.extensions is set to json' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.extensions'
+      )
+    ).to match(/^json\n$/)
+  end
+
+  it 'cq.dam.sync.workflow.id is set to /some/path/to/model' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'cq.dam.sync.workflow.id'
+      )
+    ).to match(%r{^/some/path/to/model\n$})
+  end
+
+  it 'cq.dam.sync.folder.types is set to valid array' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'cq.dam.sync.folder.types'
+      )
+    ).to match(
+      %r{^\["-i","-i X","-iX","-p","-p Y","-pY","-u","-u Z","-uZ","sth"\]}
+    )
+  end
+end
+
 describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
   it 'there was single READ request' do
     expect(
