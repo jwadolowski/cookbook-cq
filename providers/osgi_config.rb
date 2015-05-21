@@ -73,6 +73,9 @@ def compatibility_hash
     output[config] = compatibility_score(config)
   end
 
+  @max_compatibility_score = max_compatibility_score(output)
+  @compatibility_hash = output
+
   output
 end
 
@@ -100,10 +103,9 @@ end
 # Analyzes score hash returned by compatibility_hash and picks the highest
 # score
 #
+# @param hash [Hash] data structure to analyze
 # @return [Integer] highest value from hash
-def max_compatibility_score
-  hash = compatibility_hash
-
+def max_compatibility_score(hash)
   if hash.empty?
     0
   else
@@ -115,7 +117,7 @@ end
 #
 # @return [Hash] hash of factory config instances with the highest score
 def matching_candidates
-  compatibility_hash.select { |_k, v| v == max_compatibility_score }
+  @compatibility_hash.select { |_k, v| v == @max_compatibility_score }
 end
 
 # Analyzes both compatibility scores and new_resource properties to pick the
@@ -123,16 +125,21 @@ end
 #
 # @return [String, Nil] name of the config or Nil if none of configs match
 def best_candidate_pid
+  # Calculate compatiblity hash
+  compatibility_hash
+
   # Score of the config has to be greater than 0 and equal to the number of
   # key-value pairs in new_resource properties hash to be taken into
   # consideration as a matching candidate
-  if max_compatibility_score < new_resource.properties.length
+  if @max_compatibility_score < new_resource.properties.length
+    @best_candidate_pid = nil
     nil
   else
     candidates = matching_candidates
 
     case candidates.length
     when 1
+      @best_candidate_pid = candidates.keys[0]
       candidates.keys[0]
     else
       Chef::Application.fatal!(
@@ -315,7 +322,7 @@ def load_current_resource
   if new_resource.factory_pid.nil?
     config_name = current_resource.pid
   else
-    config_name = best_candidate_pid
+    config_name = @best_candidate_pid
 
     # Update new_resource PID with best candidate's PID (but only if such
     # exists)
