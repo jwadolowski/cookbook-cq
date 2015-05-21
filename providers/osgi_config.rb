@@ -362,11 +362,11 @@ end
 #
 # @param factory_flag [Boolean] use or not factory flag (false by default)
 def create_osgi_config(factory_flag = false)
-  cmd_str_base = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
+  cmd_str_base = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg " +
+                 cqcfg_params +
                  "-i #{new_resource.instance} "\
                  "-u #{new_resource.username} "\
-                 "-p #{new_resource.password} " +
-                 cqcfg_params
+                 "-p #{new_resource.password} "
 
   if factory_flag
     cmd_str = cmd_str_base + "-f #{new_resource.factory_pid}"
