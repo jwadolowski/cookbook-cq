@@ -54,5 +54,14 @@ osgi_config_wrapper 'com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
   factory true
 end
 # *** existing: 1, append: 0, valid: 1
+osgi_config_wrapper 'com.day.cq.mcm.impl.MCMConfiguration' do
+  properties(
+    'experience.indirection' => ['geometrixx/components/newsletterpage',
+                                'mcm/components/newsletter/page'],
+    'touchpoint.indirection' => ['exampleGeometrixxAddedComp',
+                                'exampleMCMSuperTouchpoint']
+  )
+  factory true
+end
 # *** existing: 1, append: 1, valid: 0
 # *** existing: 1, append: 1, valid: 1

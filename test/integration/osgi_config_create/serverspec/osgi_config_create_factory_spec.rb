@@ -69,3 +69,41 @@ describe 'Factory OSGi com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
     ).to eq(4)
   end
 end
+
+describe 'Factory OSGi com.day.cq.mcm.impl.MCMConfiguration' do
+  it 'there was a single check to verify factory PID presence' do
+    expect(
+      @osgi_config_helper.read_requests(
+        'com.day.cq.mcm.impl.MCMConfiguration'
+      ).length
+    ).to eq(1)
+  end
+
+  it "UPDATE request hasn't been sent" do
+    expect(
+      @osgi_config_helper.factory_update_requests(
+        'com.day.cq.mcm.impl.MCMConfiguration'
+      ).length
+    ).to eq(0)
+  end
+
+  it 'single com.day.cq.mcm.impl.MCMConfiguration instance exists' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'com.day.cq.mcm.impl.MCMConfiguration'
+      ).length
+    ).to eq(1)
+  end
+
+  # 1) Read factory PID
+  # 2) Read 1st instance settings
+  # 3) Read properties for factory instance that has been found (can be
+  #    improved as stated in CHEF-155)
+  it 'in total there were 3 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.day.cq.mcm.impl.MCMConfiguration'
+      ).length
+    ).to eq(3)
+  end
+end
