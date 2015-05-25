@@ -115,9 +115,17 @@ For factory configs:
   </tr>
 </table>
 
-## Usage
+### Usage
 
-### Regular OSGi configs
+More comprehensive examples can be found here:
+
+* `recipes/_osgi_config_create_regular.rb`
+* `recipes/_osgi_config_create_factory.rb`
+
+Please keep in mind that all recipes above use
+`definitions/osgi_config_wrapper.rb` definition for testing purposes.
+
+#### Regular OSGi configs
 
 ```
 cq_osgi_config 'Root Mapping' do
@@ -131,7 +139,7 @@ cq_osgi_config 'Root Mapping' do
 end
 ```
 
-### Factory OSGi configs
+#### Factory OSGi configs
 
 ```
 cq_osgi_config 'Custom Logger' do
