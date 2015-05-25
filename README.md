@@ -10,7 +10,7 @@ Because I like CQ name better I decided to stick with the old naming schema.
 
 * CentOS/RHEL 6.x
 
-## AEM versions
+## AEM/CQ versions
 
 * AEM 5.6.x
 * AEM 6.0.x
@@ -58,16 +58,18 @@ TBD
 
 ### Actions
 
-For non-factory (regular configs):
+For non-factory (regulari) configs:
 
 * `create` - updates already existing configuration
-* `delete` - TBD
+* `delete` - restores default settings of given OSGi config (regardless of
+  defined properties)
 
 For factory configs:
 
 * `create` - creates a new factory config instance if none of existing ones
   match to defined state
-* `delete` - TBD
+* `delete` - deletes factory config instance if there's one that matches to
+  defined state
 
 
 ### Parameter Attributes
@@ -140,6 +142,9 @@ cq_osgi_config 'Root Mapping' do
 end
 ```
 
+`Root Mapping` resource sets `/` redirect to `/welcome.html` if it's not
+already set.
+
 #### Factory OSGi configs
 
 ```ruby
@@ -162,6 +167,10 @@ cq_osgi_config 'Custom Logger' do
   action :create
 end
 ```
+
+`Custom Logger` resource will create a new logger according to defined
+properties unless it is already present. There's no need to specify an UUID in
+resource definition.
 
 # Authors
 
