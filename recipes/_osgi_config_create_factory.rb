@@ -64,4 +64,25 @@ osgi_config_wrapper 'com.day.cq.mcm.impl.MCMConfiguration' do
   factory true
 end
 # *** existing: 1, append: 1, valid: 0
+osgi_config_wrapper 'com.adobe.granite.auth.oauth.provider' do
+  properties(
+    'oauth.config.id' => 'test123'
+  )
+  factory true
+  append true
+end
 # *** existing: 1, append: 1, valid: 1
+osgi_config_wrapper 'org.apache.sling.commons.log.LogManager.factory.config' do
+  properties(
+    'org.apache.sling.commons.log.level' => 'info',
+    'org.apache.sling.commons.log.file' => 'logs/upgrade.log',
+    'org.apache.sling.commons.log.pattern' =>
+      '{0,date,dd.MM.yyyy HH:mm:ss.SSS} *{4}* [{2}] {3} {5}',
+    'org.apache.sling.commons.log.names' => [
+      'com.day.cq.compat.codeupgrade',
+      'com.adobe.cq.upgradesexecutor'
+    ]
+  )
+  factory true
+  append true
+end
