@@ -21,11 +21,38 @@ changes).
 
 # Attributes
 
+## default.rb
+
+TBD
+
+## author.rb
+
+TBD
+
+## publish.rb
+
+TBD
+
 # Recipes
+
+## default.rb
+
+TBD
+
+## author.rb
+
+TBD
+
+## publish.rb
+
+TBD
+
 
 # Lightweight Resource Providers
 
-## cq_pacakge
+## cq_package
+
+TBD
 
 ## cq_osgi_config
 
@@ -88,6 +115,43 @@ For factory configs:
   </tr>
 </table>
 
-# License and Authors
+## Usage
+
+### Regular OSGi configs
+
+```
+cq_osgi_config 'Root Mapping' do
+  pid 'com.day.cq.commons.servlets.RootMappingServlet'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties('rootmapping.target' => '/welcome.html')
+
+  action :create
+end
+```
+
+### Factory OSGi configs
+
+```
+cq_osgi_config 'Custom Logger' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  factory_pid 'org.apache.sling.commons.log.LogManager.factory.config'
+  properties(
+    'org.apache.sling.commons.log.level' => 'error',
+    'org.apache.sling.commons.log.file' => 'logs/custom.log',
+    'org.apache.sling.commons.log.pattern' =>
+      '{0,date,dd.MM.yyyy HH:mm:ss.SSS} *{4}* [{2}] {3} {5}',
+    'org.apache.sling.commons.log.names' => [
+      'com.example.custom1',
+      'com.example.custom2'
+    ]
+  )
+end
+```
+
+# Authors
 
 Author:: Jakub Wadolowski (<jakub.wadolowski@cognifide.com>)
