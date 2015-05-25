@@ -59,7 +59,7 @@ TBD
 
 ### Actions
 
-For non-factory (regulari) configs:
+For non-factory (regular) configs:
 
 * `create` - updates already existing configuration
 * `delete` - restores default settings of given OSGi config (regardless of
