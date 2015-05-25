@@ -1,6 +1,7 @@
 # CQ/AEM Chef cookbook
 
-This is CQ/AEM cookbook that is primarily a library cookbook.
+This is CQ/AEM cookbook that is primarily a library cookbook. It heavily uses
+and relies on [CQ Unix Toolkit](https://github.com/Cognifide/CQ-Unix-Toolkit)
 
 Because I like CQ name better I decided to stick with the old naming schema.
 
