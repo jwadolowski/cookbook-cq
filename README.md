@@ -128,7 +128,7 @@ definition for testing purposes.
 
 #### Regular OSGi configs
 
-```
+```ruby
 cq_osgi_config 'Root Mapping' do
   pid 'com.day.cq.commons.servlets.RootMappingServlet'
   username node['cq']['author']['credentials']['login']
@@ -142,7 +142,7 @@ end
 
 #### Factory OSGi configs
 
-```
+```ruby
 cq_osgi_config 'Custom Logger' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -158,6 +158,8 @@ cq_osgi_config 'Custom Logger' do
       'com.example.custom2'
     ]
   )
+
+  action :create
 end
 ```
 
