@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: cq
-# Recipe:: _osgi_config
+# Recipe:: _osgi_config_create_regular
 #
-# Copyright (C) 2014 Jakub Wadolowski
+# Copyright (C) 2015 Jakub Wadolowski
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -100,6 +100,25 @@ osgi_config_wrapper 'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
     'service.special_link_patterns' => ''
   )
 end
+
+osgi_config_wrapper 'com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
+  properties(
+    'sling.servlet.paths' => '/libs/dam/health_check',
+    'sling.servlet.methods' => ['GET', 'POST', 'CUSTOM', '-stop', '-i NJECT'],
+    'sling.servlet.extensions' => 'json',
+    'cq.dam.sync.workflow.id' => '/some/path/to/model',
+    'cq.dam.sync.folder.types' => ['sth',
+                                   '-u Z',
+                                   '-uZ',
+                                   '-u',
+                                   '-p Y',
+                                   '-pY',
+                                   '-p',
+                                   '-i X',
+                                   '-iX',
+                                   '-i']
+  )
+end
 # *** existing: 1, append: 0, valid: 1
 osgi_config_wrapper 'com.adobe.mac.core.impl.DAMVolumeChecker' do
   properties(
@@ -124,36 +143,3 @@ osgi_config_wrapper 'org.apache.sling.engine.impl.SlingMainServlet' do
   )
   append true
 end
-
-# Factory configurations
-# -----------------------------------------------------------------------------
-
-# ** 1 key, 1 value
-# *** existing: 0, append: 0, valid: 0
-# *** existing: 0, append: 0, valid: 1
-# *** existing: 0, append: 1, valid: 0
-# *** existing: 0, append: 1, valid: 1
-# *** existing: 1, append: 0, valid: 0
-# *** existing: 1, append: 0, valid: 1
-# *** existing: 1, append: 1, valid: 0
-# *** existing: 1, append: 1, valid: 1
-
-# ** 1 key, N values
-# *** existing: 0, append: 0, valid: 0
-# *** existing: 0, append: 0, valid: 1
-# *** existing: 0, append: 1, valid: 0
-# *** existing: 0, append: 1, valid: 1
-# *** existing: 1, append: 0, valid: 0
-# *** existing: 1, append: 0, valid: 1
-# *** existing: 1, append: 1, valid: 0
-# *** existing: 1, append: 1, valid: 1
-
-# ** N key, N values
-# *** existing: 0, append: 0, valid: 0
-# *** existing: 0, append: 0, valid: 1
-# *** existing: 0, append: 1, valid: 0
-# *** existing: 0, append: 1, valid: 1
-# *** existing: 1, append: 0, valid: 0
-# *** existing: 1, append: 0, valid: 1
-# *** existing: 1, append: 1, valid: 0
-# *** existing: 1, append: 1, valid: 1

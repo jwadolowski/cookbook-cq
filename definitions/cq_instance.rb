@@ -173,15 +173,9 @@ define :cq_instance,
       while response != '200'
         begin
           response = Net::HTTP.get_response(uri).code
-        rescue Errno::ECONNREFUSED
-          Chef::Log.debug('Connection has been refused while trying to send '\
-                          "GET #{uri} request")
-        rescue Errno::ECONNRESET
-          Chef::Log.debug('Connection has been reset by peer while trying to '\
-                          " send GET #{uri} request")
-        else
-          Chef::Log.debug('Unexpected error occurred while trying to send '\
-                          "GET #{uri} request")
+        rescue => e
+          Chef::Log.debug("Error occurred while trying to send GET #{uri} "\
+                          "request: #{e}")
         end
         sleep(5)
         time_diff = Time.now - start_time

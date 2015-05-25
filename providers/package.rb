@@ -481,8 +481,10 @@ def pkg_mgr_bundle_healthcheck
         "Error description: #{e}"
     end
 
-    Chef::Application.fatal!('Cannot proceed as CRX Package Manager bundle '\
-                             "is still in #{cmd_out_sanitized}") if i == i_max
+    Chef::Application.fatal!(
+      'Cannot proceed as CRX Package Manager bundle '\
+      "is still in #{cmd_out_sanitized} state"
+    ) if i == i_max
     sleep 10
   end
 

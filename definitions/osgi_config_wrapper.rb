@@ -23,7 +23,10 @@
 # outside of test kitchen suites.
 # -----------------------------------------------------------------------------
 
-define :osgi_config_wrapper, :properties => nil, :append => false do
+define :osgi_config_wrapper,
+  :properties => nil,
+  :append => false,
+  :factory => false do
   ruby_block "start timestamp for #{params[:name]}" do
     block do
       File.write(
@@ -41,6 +44,7 @@ define :osgi_config_wrapper, :properties => nil, :append => false do
     instance "http://localhost:#{node['cq']['author']['port']}"
     append params[:append]
     properties(params[:properties])
+    factory_pid params[:name] if params[:factory]
 
     action :create
   end

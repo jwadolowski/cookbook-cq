@@ -3,25 +3,48 @@ require_relative '../../../kitchen/data/spec_helper'
 describe 'OSGi config not.existing.config.create.1k1v' do
   it 'there was NO attempts to create it' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.regular_update_requests(
         'not.existing.config.create.1k1v'
       ).length
     ).to eq(0)
   end
 
-  it 'does NOT exists' do
+  it 'does NOT exist' do
     expect(
       @config_list.include?('not.existing.config.create.1k1v')
     ).to be false
+  end
+
+  it 'in total there was 0 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'not.existing.config.create.1k1v'
+      ).length
+    ).to eq(0)
   end
 end
 
 describe 'OSGi config '\
   'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener' do
-  # Two log entries - first one to get values, second to modify them
-  it 'there were 2 requests (1st to check values, 2nd to modify them)' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.read_requests(
+        'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
       ).length
     ).to eq(2)
@@ -39,9 +62,17 @@ end
 
 describe 'OSGi config '\
   'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener' do
-  it 'there was a single HTTP check to get current values' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.read_requests(
+        'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener'
       ).length
     ).to eq(1)
@@ -60,23 +91,47 @@ end
 describe 'OSGi config not.existing.config.create.1kNv' do
   it 'there was NO attempts to create it' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.regular_update_requests(
         'not.existing.config.create.1kNv'
       ).length
     ).to eq(0)
   end
 
-  it 'does NOT exists' do
+  it 'does NOT exist' do
     expect(
       @config_list.include?('not.existing.config.create.1kNv')
     ).to be false
   end
+
+  it 'in total there was 0 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'not.existing.config.create.1kNv'
+      ).length
+    ).to eq(0)
+  end
 end
 
 describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
-  it 'there were 2 HTTP requests' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.read_requests(
+        'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet'
       ).length
     ).to eq(2)
@@ -94,9 +149,18 @@ end
 
 describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   'DPSPagesUpdateHandler' do
-  it 'there was just a single HTTP request to check current values' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.read_requests(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSPagesUpdateHandler'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSPagesUpdateHandler'
       ).length
@@ -117,9 +181,27 @@ end
 
 describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   'DPSSubPagesUpdateHandler' do
-  it 'there were 2 HTTP request (read + modify)' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.read_requests(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSSubPagesUpdateHandler'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSSubPagesUpdateHandler'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSSubPagesUpdateHandler'
       ).length
@@ -141,9 +223,17 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
 end
 
 describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
-  it 'there was just a single request to read current values' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.read_requests(
+        'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl'
       ).length
     ).to eq(1)
@@ -169,23 +259,47 @@ end
 describe 'OSGi not.existing.config.create.NkNv' do
   it 'there was NO attempts to read/modify it' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.regular_update_requests(
         'not.existing.config.create.NkNv'
       ).length
     ).to eq(0)
   end
 
-  it 'does NOT exists' do
+  it 'does NOT exist' do
     expect(
       @config_list.include?('not.existing.config.create.NkNv')
     ).to be false
   end
+
+  it 'in total there was 0 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'not.existing.config.create.NkNv'
+      ).length
+    ).to eq(0)
+  end
 end
 
 describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
-  it 'there were 2 HTTP requests (read + modify)' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.read_requests(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
       ).length
     ).to eq(2)
@@ -258,10 +372,92 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
   end
 end
 
-describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
-  it 'there was a single HTTP request to get current values' do
+describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.read_requests(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet'
+      ).length
+    ).to eq(2)
+  end
+
+  it 'sling.servlet.paths is set to /libs/dam/health_check' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.paths'
+      )
+    ).to match(%r{^/libs/dam/health_check\n$})
+  end
+
+  it 'sling.servlet.methods is set to ["GET", "POST", "CUSTOM", "-stop",'\
+    ' "-i NJECT"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.methods'
+      )
+    ).to match(/^\["-i NJECT","-stop","CUSTOM","GET","POST"\]\n$/)
+  end
+
+  it 'sling.servlet.extensions is set to json' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.extensions'
+      )
+    ).to match(/^json\n$/)
+  end
+
+  it 'cq.dam.sync.workflow.id is set to /some/path/to/model' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'cq.dam.sync.workflow.id'
+      )
+    ).to match(%r{^/some/path/to/model\n$})
+  end
+
+  it 'cq.dam.sync.folder.types is set to valid array' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'cq.dam.sync.folder.types'
+      )
+    ).to match(
+      %r{^\["-i","-i X","-iX","-p","-p Y","-pY","-u","-u Z","-uZ","sth"\]}
+    )
+  end
+end
+
+describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
+  it 'there was single READ request' do
+    expect(
+      @osgi_config_helper.read_requests(
+        'com.adobe.mac.core.impl.DAMVolumeChecker'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
         'com.adobe.mac.core.impl.DAMVolumeChecker'
       ).length
     ).to eq(1)
@@ -294,7 +490,7 @@ describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
     ).to match(/^500\n$/)
   end
 
-  it 'countThreshold to 1000' do
+  it 'countThreshold is set to 1000' do
     expect(
       @osgi_config_helper.config_value(
         'com.adobe.mac.core.impl.DAMVolumeChecker',
@@ -314,9 +510,25 @@ describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
 end
 
 describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
-  it 'there were 2 HTTP requests' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.read_requests(
+        'org.apache.felix.eventadmin.impl.EventAdmin'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'there was single UPDATE request' do
+    expect(
+      @osgi_config_helper.regular_update_requests(
+        'org.apache.felix.eventadmin.impl.EventAdmin'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
         'org.apache.felix.eventadmin.impl.EventAdmin'
       ).length
     ).to eq(2)
@@ -370,9 +582,17 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
 end
 
 describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
-  it 'there was just a single HTTP request to get current values' do
+  it 'there was single READ request' do
     expect(
-      @osgi_config_helper.log_entries(
+      @osgi_config_helper.read_requests(
+        'org.apache.sling.engine.impl.SlingMainServlet'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
         'org.apache.sling.engine.impl.SlingMainServlet'
       ).length
     ).to eq(1)
