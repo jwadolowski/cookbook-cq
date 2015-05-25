@@ -305,36 +305,52 @@ def sanitized_new_properties
   local_properties
 end
 
-def load_current_resource
-  @current_resource = Chef::Resource::CqOsgiConfig.new(new_resource.pid)
-
-  # Set attribute accessors
-  @current_resource.factory_pid_exists =
-    factory_pid_presence if @new_resource.factory_pid
-  @current_resource.exists = osgi_config_presence
-
-  # Initialize current resource properties (will be overwritten later on if
-  # required)
-  @current_resource.properties({})
-
-  # For non-factory configs choose PID of current resource, otherwise look for
-  # best candidate
-  if new_resource.factory_pid.nil?
-    config_name = current_resource.pid
+# Checks correctness of cq_osgi_config definition
+#
+# Some attributes combination are not allowed and should be detected and
+# communicated.
+#
+# @return [Boolean] true when resource definition is correct, false otherwise
+def definition_correctness
+  if !@new_resource.factory_pid.nil? && @new_resource.append == true
+    false
   else
-    config_name = @best_candidate_pid
-
-    # Update new_resource PID with best candidate's PID (but only if such
-    # exists)
-    @new_resource.pid(config_name) unless config_name.nil?
+    true
   end
+end
 
-  # Load OSGi properties for existing configuration and check validity
-  if current_resource.exists
-    @current_resource.properties(
-      properties_hash(current_osgi_config_properties(config_name))
-    )
-    @current_resource.valid = validate_properties
+def load_current_resource
+  if definition_correctness
+    @current_resource = Chef::Resource::CqOsgiConfig.new(new_resource.pid)
+
+    # Set attribute accessors
+    @current_resource.factory_pid_exists =
+      factory_pid_presence if @new_resource.factory_pid
+    @current_resource.exists = osgi_config_presence
+
+    # Initialize current resource properties (will be overwritten later on if
+    # required)
+    @current_resource.properties({})
+
+    # For non-factory configs choose PID of current resource, otherwise look
+    # for best candidate
+    if new_resource.factory_pid.nil?
+      config_name = current_resource.pid
+    else
+      config_name = @best_candidate_pid
+
+      # Update new_resource PID with best candidate's PID (but only if such
+      # exists)
+      @new_resource.pid(config_name) unless config_name.nil?
+    end
+
+    # Load OSGi properties for existing configuration and check validity
+    if current_resource.exists
+      @current_resource.properties(
+        properties_hash(current_osgi_config_properties(config_name))
+      )
+      @current_resource.valid = validate_properties
+    end
   end
 end
 
@@ -422,9 +438,16 @@ def create_factory_config
 end
 
 action :create do # ~FC017
-  if @new_resource.factory_pid.nil?
-    create_regular_config
+  if definition_correctness
+    if @new_resource.factory_pid.nil?
+      create_regular_config
+    else
+      create_factory_config
+    end
   else
-    create_factory_config
+    Chef::Log.error(
+      "Defined #{new_resource.pid} is not valid - factory configs do not "\
+      'support append mode!'
+    )
   end
 end
