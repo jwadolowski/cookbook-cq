@@ -129,16 +129,16 @@ For factory configs:
 
 ### Compatibility matrix
 
-| Attribute   | Regular OSGi config | Factory OSGi config |
-| ----------- | ------------------- | ------------------- |
-| pid         | :white_check_mark:  | :white_check_mark:  |
-| factory_pid | :no_entry:          | :white_check_mark:  |
-| properties  | :white_check_mark:  | :white_check_mark:  |
-| append      | :white_check_mark:  | :no_entry:          |
-| force       | :white_check_mark:  | :no_entry:          |
-| username    | :white_check_mark:  | :white_check_mark:  |
-| password    | :white_check_mark:  | :white_check_mark:  |
-| instance    | :white_check_mark:  | :white_check_mark:  |
+| Attribute     | Regular OSGi config | Factory OSGi config |
+| ------------- | ------------------- | ------------------- |
+| `pid`         | :white_check_mark:  | :white_check_mark:  |
+| `factory_pid` | :no_entry:          | :white_check_mark:  |
+| `properties`  | :white_check_mark:  | :white_check_mark:  |
+| `append`      | :white_check_mark:  | :no_entry:          |
+| `force`       | :white_check_mark:  | :no_entry:          |
+| `username`    | :white_check_mark:  | :white_check_mark:  |
+| `password`    | :white_check_mark:  | :white_check_mark:  |
+| `instance`    | :white_check_mark:  | :white_check_mark:  |
 
 ### Usage
 
