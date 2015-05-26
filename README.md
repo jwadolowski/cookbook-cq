@@ -106,8 +106,9 @@ For factory configs:
     <td><tt>force</tt></td>
     <td>Boolean</td>
     <td>If true defined OSGi config is deleted reagrdless of current settings.
-    Applies only to regular OSGi configs. *WARNING*: this violates idempotence,
-    so please use `only_if` / `not_if` block to prevent constant execution</td>
+    Applies only to regular OSGi configs. <b>WARNING</b>: this violates
+    idempotence, so please use <tt>only_if</tt> or <tt>not_if</tt> block to
+    prevent constant execution</td>
   </tr>
   <tr>
     <td><tt>username</tt></td>
