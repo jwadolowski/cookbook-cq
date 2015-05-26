@@ -47,9 +47,7 @@ end
 
 # Forced delete
 osgi_config_wrapper 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
-  properties(
-    'oauth.provider.id' => 'XYZ'
-  )
+  properties({})
   force true
   action :delete
 end
