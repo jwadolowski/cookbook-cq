@@ -79,3 +79,60 @@ describe 'OSGi com.adobe.cq.wcm.launches.impl.LaunchesEventHandler' do
     ).to match(/^MIN\n$/)
   end
 end
+
+describe 'OSGi com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl' do
+  it 'there was 0 DELETE requests' do
+    expect(
+      @osgi_config_helper.delete_requests(
+        'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl'
+      ).length
+    ).to eq(0)
+  end
+
+  # Just a READ request
+  it 'in total there was 1 HTTP request' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'cq.commerce.promotion.root is set to /content/campaigns' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl',
+        'cq.commerce.promotion.root'
+      )
+    ).to match(%r{^/content/campaigns\n$})
+  end
+end
+
+
+describe 'OSGi com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
+  it 'there was 1 DELETE request' do
+    expect(
+      @osgi_config_helper.delete_requests(
+        'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl'
+      ).length
+    ).to eq(1)
+  end
+
+  # READ + DELETE
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl'
+      ).length
+    ).to eq(2)
+  end
+
+  it 'oauth.provider.id set to twitter' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl',
+        'oauth.provider.id'
+      )
+    ).to match(/^twitter\n$/)
+  end
+end

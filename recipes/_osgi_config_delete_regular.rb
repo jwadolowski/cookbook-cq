@@ -35,3 +35,21 @@ osgi_config_wrapper 'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler' do
   )
   action [:create, :delete]
 end
+
+# Not forced delete
+osgi_config_wrapper 'com.adobe.cq.commerce.impl.promotion.'\
+  'PromotionManagerImpl' do
+  properties(
+    'cq.commerce.promotion.root' => '/random/path'
+  )
+  action :delete
+end
+
+# Forced delete
+osgi_config_wrapper 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
+  properties(
+    'oauth.provider.id' => 'XYZ'
+  )
+  force true
+  action :delete
+end
