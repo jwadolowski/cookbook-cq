@@ -116,11 +116,13 @@ suites:
         jar:
           url: <%= ENV['CQ_V600_JAR_URL'] %>
 
-  - name: osgi_config_create
+  - name: osgi_configs
     run_list:
       - recipe[cq::author]
       - recipe[cq::_osgi_config_create_regular]
       - recipe[cq::_osgi_config_create_factory]
+      - recipe[cq::_osgi_config_delete_regular]
+      - recipe[cq::_osgi_config_delete_factory]
     attributes:
       cq:
         version: '5.6.1'

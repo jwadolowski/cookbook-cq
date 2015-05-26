@@ -401,6 +401,24 @@ def create_osgi_config(factory_flag = false)
   end
 end
 
+def delete_osgi_config
+  cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfgdel " +
+            "-i #{new_resource.instance} "\
+            "-u #{new_resource.username} "\
+            "-p #{new_resource.password} " +
+            @current_resource.pid
+
+  cmd = Mixlib::ShellOut.new(cmd_str)
+  cmd.run_command
+
+  begin
+    cmd.error!
+  rescue => e
+    Chef::Application.fatal!("Can't delete #{current_resource.pid}!\n"\
+                             "Error description: #{e}")
+  end
+end
+
 def create_regular_config
   if !@current_resource.exists
     Chef::Log.error("OSGi config #{new_resource.pid} does NOT exist!")
@@ -433,6 +451,20 @@ def create_factory_config
           create_osgi_config(true)
         end
       end
+    end
+  end
+end
+
+action :delete do
+  if @new_resource.force
+    delete_osgi_config
+  else
+    if @current_resource.exists && @current_resource.valid
+      delete_osgi_config
+    else
+      Chef::Log.error(
+        "#{@current_resource.pid} does not exist, so can't be deleted"
+      )
     end
   end
 end

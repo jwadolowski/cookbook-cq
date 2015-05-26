@@ -62,8 +62,9 @@ TBD
 For non-factory (regular) configs:
 
 * `create` - updates already existing configuration
-* `delete` - restores default settings of given OSGi config (regardless of
-  defined properties)
+* `delete` - restores default settings of given OSGi config if all properties
+  match to defined state. If you'd like to restore default settings regardless
+  of current properties please use `force` parameter
 
 For factory configs:
 
@@ -100,6 +101,13 @@ For factory configs:
     <td><tt>append</tt></td>
     <td>Boolean</td>
     <td>Append defined values to existing regular OSGi config</td>
+  </tr>
+  <tr>
+    <td><tt>force</tt></td>
+    <td>Boolean</td>
+    <td>If true defined OSGi config is deleted reagrdless of current settings.
+    Applies only to regular OSGi configs. *WARNING*: this violates idempotence,
+    so please use `only_if` / `not_if` block to prevent constant execution</td>
   </tr>
   <tr>
     <td><tt>username</tt></td>
