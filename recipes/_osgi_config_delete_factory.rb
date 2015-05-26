@@ -20,3 +20,44 @@
 Chef::Log.warn(
   'This is a test recipe and should not be used outside of test kitchen!'
 )
+
+osgi_config_wrapper 'not.existing.factory.config.to.delete' do
+  properties('x' => '123')
+  factory true
+  action :delete
+end
+
+osgi_config_wrapper 'org.apache.sling.tenant.internal.TenantProviderImpl' do
+  properties(
+    'tenant.root' => '/some/path',
+    'tenant.path.matcher' => ['/home/a*', '/home/b*']
+  )
+  factory true
+  force true
+  action :delete
+end
+
+osgi_config_wrapper 'org.apache.sling.commons.log.LogManager.factory.writer' do
+  properties(
+    'org.apache.sling.commons.log.file' => 'logs/custom.log',
+    'org.apache.sling.commons.log.file.number' => 10,
+    'org.apache.sling.commons.log.file.size' => "'.'yyyy-MM-dd"
+  )
+  factory true
+  action :delete
+end
+
+osgi_config_wrapper 'org.apache.sling.event.jobs.QueueConfiguration' do
+  properties(
+    'queue.name' => 'Granite Workflow Timeout Queue',
+    'queue.type' => 'TOPIC_ROUND_ROBIN',
+    'queue.topics' => ['com/adobe/granite/workflow/timeout/job'],
+    'queue.maxparallel' => -1,
+    'queue.retries' => 10,
+    'queue.retrydelay' => 2000,
+    'queue.priority' => 'MIN',
+    'service.ranking' => 0
+  )
+  factory true
+  action :delete
+end
