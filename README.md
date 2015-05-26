@@ -212,8 +212,8 @@ and after Chef run:
 | org.apache.felix.eventadmin.IgnoreTimeout  | ["com.adobe\*","com.day\*","com.example\*","org.apache.felix\*","org.apache.sling\*"] |
 
 `OAuth Twitter` will be deleted (restore to the defaults, as this is regular
-OSGi config) only if properties exactly match (`oauth.provider.id` is set to
-`oauth.provider.id`)
+OSGi config) only if properties match: `oauth.provider.id` is set to
+`oauth.provider.id`.
 
 `Promotion Manager` will be deleted (restored to defaults) regardless of its
 current settings because of `force` flag.
