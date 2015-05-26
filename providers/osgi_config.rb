@@ -307,12 +307,12 @@ end
 
 # Checks correctness of cq_osgi_config definition
 #
-# Some attributes combination are not allowed and should be detected and
-# communicated.
+# Some attributes combination are not allowed. Such state should be detected.
 #
 # @return [Boolean] true when resource definition is correct, false otherwise
 def definition_correctness
-  if !@new_resource.factory_pid.nil? && @new_resource.append == true
+  if !@new_resource.factory_pid.nil? &&
+      (@new_resource.append == true || @new_resource.force == true)
     false
   else
     true
@@ -339,9 +339,10 @@ def load_current_resource
     else
       config_name = @best_candidate_pid
 
-      # Update new_resource PID with best candidate's PID (but only if such
+      # Update resource PID with best candidate's PID (but only if such
       # exists)
       @new_resource.pid(config_name) unless config_name.nil?
+      @current_resource.pid(config_name) unless config_name.nil?
     end
 
     # Load OSGi properties for existing configuration and check validity
@@ -455,25 +456,74 @@ def create_factory_config
   end
 end
 
-action :delete do
-  if @new_resource.factory_pid.nil? && @new_resource.force
-    delete_osgi_config
+def delete_regular_config
+  # Does not exist
+  if !@current_resource.exists
+    Chef::Log.error(
+      "#{@current_resource.pid} does not exist, so can't be deleted!"
+    )
+  # Exists
   else
-    if @current_resource.exists && @current_resource.valid
-      delete_osgi_config
+    # Force
+    if @new_resource.force
+      converge_by("Delete #{new_resource}") do
+        delete_osgi_config
+      end
+    # Force = false
     else
-      if !@current_resource.exists
-        Chef::Log.error(
-          "#{@current_resource.pid} does not exist, so can't be deleted!"
-        )
-      elsif @current_resource.exists && !@current_resource.valid
+      # Valid
+      if @current_resource.valid
+        converge_by("Delete #{new_resource}") do
+          delete_osgi_config
+        end
+      # Not valid
+      else
         Chef::Log.warn(
-          "#{@current_resource.pid} exists, but it doesn't match to defined "\
-          "state, so delete action won't be executed! Please either use "\
-          "force attribute or update defined properties."
+          "#{@current_resource.pid} exists, but it doesn't match to "\
+          "defined state, so delete action won't be executed! Please "\
+          'either use force attribute or update defined properties.'
         )
       end
     end
+  end
+end
+
+def delete_factory_config
+  # Factory PID doesn't exist
+  if !@current_resource.factory_pid_exists
+    Chef::Log.error("Given factory PID doesn't exist!")
+  # Factory PID exists
+  else
+    # Not existing
+    if !@current_resource.exists
+      Chef::Log.info("Defined #{new_resource.pid} already doesn't exist.")
+    else
+      if @current_resource.valid
+        converge_by("Delete #{new_resource}") do
+          delete_osgi_config
+        end
+      else
+        Chef::Log.warn(
+          "#{@current_resource.pid} exists, but it doesn't match to "\
+          "defined state, so delete action won't be executed!"
+        )
+      end
+    end
+  end
+end
+
+action :delete do # ~FC017
+  if definition_correctness
+    if @new_resource.factory_pid.nil?
+      delete_regular_config
+    else
+      delete_factory_config
+    end
+  else
+    Chef::Log.error(
+      "Defined #{new_resource.pid} is not valid - please refer to "\
+      'documentation for more details.'
+    )
   end
 end
 
@@ -486,8 +536,8 @@ action :create do # ~FC017
     end
   else
     Chef::Log.error(
-      "Defined #{new_resource.pid} is not valid - factory configs do not "\
-      'support append mode!'
+      "Defined #{new_resource.pid} is not valid - please refer to "\
+      'documentation for more details.'
     )
   end
 end
