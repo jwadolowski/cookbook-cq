@@ -35,6 +35,10 @@ attribute :append,
           :kind_of => [TrueClass, FalseClass],
           :default => false,
           :required => false
+attribute :force,
+          :kind_of => [TrueClass, FalseClass],
+          :default => false,
+          :required => false
 attribute :username,
           :kind_of => String,
           :required => true

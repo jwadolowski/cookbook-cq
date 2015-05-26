@@ -26,7 +26,9 @@
 define :osgi_config_wrapper,
   :properties => nil,
   :append => false,
-  :factory => false do
+  :factory => false,
+  :force => false,
+  :action => :create do
   ruby_block "start timestamp for #{params[:name]}" do
     block do
       File.write(
@@ -43,10 +45,11 @@ define :osgi_config_wrapper,
     password node['cq']['author']['credentials']['password']
     instance "http://localhost:#{node['cq']['author']['port']}"
     append params[:append]
+    force params[:force]
     properties(params[:properties])
     factory_pid params[:name] if params[:factory]
 
-    action :create
+    action params[:action]
   end
 
   ruby_block "stop timestamp for #{params[:name]}" do
