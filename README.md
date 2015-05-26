@@ -191,7 +191,7 @@ end
 `Root Mapping` resource sets `/` redirect to `/welcome.html` if it's not
 already set.
 
-`Event Admin` merges defined properties with the one that are already set
+`Event Admin` merges defined properties with the ones that are already set
 (because of `append` attribute). This is how `Event Admin` will look like
 before:
 
