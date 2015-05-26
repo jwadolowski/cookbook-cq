@@ -150,10 +150,75 @@ cq_osgi_config 'Root Mapping' do
 
   action :create
 end
+
+cq_osgi_config 'Event Admin' do
+  pid 'org.apache.felix.eventadmin.impl.EventAdmin'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  append true
+  properties(
+  'org.apache.felix.eventadmin.IgnoreTimeout' => ['com.example*']
+  )
+
+  action :create
+end
+
+cq_osgi_config 'OAuth Twitter' do
+  pid 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+  'oauth.provider.id' => 'twitter'
+  )
+
+  action :delete
+end
+
+cq_osgi_config 'Promotion Manager' do
+  pid 'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  force true
+  properties({})
+
+  action :delete
+end
 ```
 
 `Root Mapping` resource sets `/` redirect to `/welcome.html` if it's not
 already set.
+
+`Event Admin` merges defined properties with the one that are already set
+(because of `append` attribute). This is how `Event Admin` will look like
+before:
+
+| ID                                         | VALUE |
+| ------------------------------------------ | ----- |
+| org.apache.felix.eventadmin.ThreadPoolSize | 20    |
+| org.apache.felix.eventadmin.Timeout        | 5000  |
+| org.apache.felix.eventadmin.RequireTopic   | true  |
+| org.apache.felix.eventadmin.IgnoreTimeout  |
+["org.apache.felix\*","org.apache.sling\*","com.day\*","com.adobe\*"] |
+
+and after Chef run:
+
+| ID                                         | VALUE |
+| ------------------------------------------ | ----- |
+| org.apache.felix.eventadmin.ThreadPoolSize | 20    |
+| org.apache.felix.eventadmin.Timeout        | 5000  |
+| org.apache.felix.eventadmin.RequireTopic   | true  |
+| org.apache.felix.eventadmin.IgnoreTimeout  |
+["com.adobe\*","com.day\*","com.example\*","org.apache.felix\*","org.apache.sling\*"] |
+
+`OAuth Twitter` will be deleted (restore to the defaults, as this is regular
+OSGi config) only if properties exactly match (`oauth.provider.id` is set to
+`oauth.provider.id`)
+
+`Promotion Manager` will be deleted (restored to defaults) regardless of its
+current settings because of `force` flag.
 
 #### Factory OSGi configs
 
