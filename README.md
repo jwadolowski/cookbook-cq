@@ -252,11 +252,35 @@ cq_osgi_config 'Custom Logger' do
 
   action :create
 end
+
+cq_osgi_config 'Jobs Queue' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  factory_pid 'org.apache.sling.event.jobs.QueueConfiguration'
+  properties(
+    'queue.name' => 'Granite Workflow Timeout Queue',
+    'queue.type' => 'TOPIC_ROUND_ROBIN',
+    'queue.topics' => ['com/adobe/granite/workflow/timeout/job'],
+    'queue.maxparallel' => -1,
+    'queue.retries' => 10,
+    'queue.retrydelay' => 2000,
+    'queue.priority' => 'MIN',
+    'service.ranking' => 0
+  )
+
+  action :delete
+end
+
 ```
 
 `Custom Logger` resource will create a new logger according to defined
 properties unless it is already present. There's no need to specify an UUID in
 resource definition.
+
+`Jobs Queue` resource will delete a factory instance of
+`org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
+properties. When there's no such instance already no action will be performed.
 
 # Authors
 
