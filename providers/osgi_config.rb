@@ -456,7 +456,7 @@ def create_factory_config
 end
 
 action :delete do
-  if @new_resource.force
+  if @new_resource.factory_pid.nil? && @new_resource.force
     delete_osgi_config
   else
     if @current_resource.exists && @current_resource.valid
