@@ -200,8 +200,7 @@ before:
 | org.apache.felix.eventadmin.ThreadPoolSize | 20    |
 | org.apache.felix.eventadmin.Timeout        | 5000  |
 | org.apache.felix.eventadmin.RequireTopic   | true  |
-| org.apache.felix.eventadmin.IgnoreTimeout  |
-["org.apache.felix\*","org.apache.sling\*","com.day\*","com.adobe\*"] |
+| org.apache.felix.eventadmin.IgnoreTimeout  | ["org.apache.felix\*","org.apache.sling\*","com.day\*","com.adobe\*"] |
 
 and after Chef run:
 
@@ -210,8 +209,7 @@ and after Chef run:
 | org.apache.felix.eventadmin.ThreadPoolSize | 20    |
 | org.apache.felix.eventadmin.Timeout        | 5000  |
 | org.apache.felix.eventadmin.RequireTopic   | true  |
-| org.apache.felix.eventadmin.IgnoreTimeout  |
-["com.adobe\*","com.day\*","com.example\*","org.apache.felix\*","org.apache.sling\*"] |
+| org.apache.felix.eventadmin.IgnoreTimeout  | ["com.adobe\*","com.day\*","com.example\*","org.apache.felix\*","org.apache.sling\*"] |
 
 `OAuth Twitter` will be deleted (restore to the defaults, as this is regular
 OSGi config) only if properties exactly match (`oauth.provider.id` is set to
