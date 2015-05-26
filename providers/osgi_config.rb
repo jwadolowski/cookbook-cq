@@ -462,9 +462,17 @@ action :delete do
     if @current_resource.exists && @current_resource.valid
       delete_osgi_config
     else
-      Chef::Log.error(
-        "#{@current_resource.pid} does not exist, so can't be deleted"
-      )
+      if !@current_resource.exists
+        Chef::Log.error(
+          "#{@current_resource.pid} does not exist, so can't be deleted!"
+        )
+      elsif @current_resource.exists && !@current_resource.valid
+        Chef::Log.warn(
+          "#{@current_resource.pid} exists, but it doesn't match to defined "\
+          "state, so delete action won't be executed! Please either use "\
+          "force attribute or update defined properties."
+        )
+      end
     end
   end
 end
