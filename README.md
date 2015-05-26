@@ -158,7 +158,7 @@ cq_osgi_config 'Event Admin' do
   instance "http://localhost:#{node['cq']['author']['port']}"
   append true
   properties(
-  'org.apache.felix.eventadmin.IgnoreTimeout' => ['com.example*']
+    'org.apache.felix.eventadmin.IgnoreTimeout' => ['com.example*']
   )
 
   action :create
@@ -170,7 +170,7 @@ cq_osgi_config 'OAuth Twitter' do
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
   properties(
-  'oauth.provider.id' => 'twitter'
+    'oauth.provider.id' => 'twitter'
   )
 
   action :delete
