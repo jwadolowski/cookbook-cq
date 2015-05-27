@@ -5,29 +5,29 @@ set :backend, :exec
 describe 'CQ author config file' do
   it 'contains valid content' do
     expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq60-author.conf').content
+      file('/opt/cq/author/crx-quickstart/conf/cq56-author.conf').content
     ).to match('export CQ_HOME=/opt/cq/author')
     expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq60-author.conf').content
+      file('/opt/cq/author/crx-quickstart/conf/cq56-author.conf').content
     ).not_to match('export CQ_HOME=/opt/cq/publish')
     expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq60-author.conf').content
+      file('/opt/cq/author/crx-quickstart/conf/cq56-author.conf').content
     ).to match('export CQ_PORT=4502')
     expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq60-author.conf').content
+      file('/opt/cq/author/crx-quickstart/conf/cq56-author.conf').content
     ).not_to match('export CQ_PORT=4503')
     expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq60-author.conf').content
+      file('/opt/cq/author/crx-quickstart/conf/cq56-author.conf').content
     ).to match('export CQ_RUNMODE=crx2,author')
     expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq60-author.conf').content
+      file('/opt/cq/author/crx-quickstart/conf/cq56-author.conf').content
     ).not_to match('export CQ_RUNMODE=author')
   end
 end
 
 describe 'CQ author service' do
   it 'is running' do
-    expect(service('cq60-author')).to be_running
+    expect(service('cq56-author')).to be_running
   end
 end
 

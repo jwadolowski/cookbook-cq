@@ -5,29 +5,29 @@ set :backend, :exec
 describe 'CQ publish config file' do
   it 'contains valid content' do
     expect(
-      file('/opt/cq/publish/crx-quickstart/conf/cq60-publish.conf').content
+      file('/opt/cq/publish/crx-quickstart/conf/cq56-publish.conf').content
     ).to match('export CQ_HOME=/opt/cq/publish')
     expect(
-      file('/opt/cq/publish/crx-quickstart/conf/cq60-publish.conf').content
+      file('/opt/cq/publish/crx-quickstart/conf/cq56-publish.conf').content
     ).not_to match('export CQ_HOME=/opt/cq/author')
     expect(
-      file('/opt/cq/publish/crx-quickstart/conf/cq60-publish.conf').content
+      file('/opt/cq/publish/crx-quickstart/conf/cq56-publish.conf').content
     ).to match('export CQ_PORT=4503')
     expect(
-      file('/opt/cq/publish/crx-quickstart/conf/cq60-publish.conf').content
+      file('/opt/cq/publish/crx-quickstart/conf/cq56-publish.conf').content
     ).not_to match('export CQ_PORT=4502')
     expect(
-      file('/opt/cq/publish/crx-quickstart/conf/cq60-publish.conf').content
+      file('/opt/cq/publish/crx-quickstart/conf/cq56-publish.conf').content
     ).to match('export CQ_RUNMODE=crx2,publish')
     expect(
-      file('/opt/cq/publish/crx-quickstart/conf/cq60-publish.conf').content
+      file('/opt/cq/publish/crx-quickstart/conf/cq56-publish.conf').content
     ).not_to match('export CQ_RUNMODE=publish')
   end
 end
 
 describe 'CQ publish service' do
   it 'is running' do
-    expect(service('cq60-publish')).to be_running
+    expect(service('cq56-publish')).to be_running
   end
 end
 
