@@ -1,6 +1,7 @@
 ---
-<% chef_versions = %w( 11.16.4 ) %>
+<% chef_versions = %w( 11 latest ) %>
 <% platforms = %w( centos-6.6 ) %>
+<% aem_versions = %w( 5.6.1 6.0.0 ) %>
 
 driver:
   name: vagrant
@@ -20,8 +21,6 @@ platforms:
       box: opscode-<%= p %>
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_<%= p %>_chef-provisionerless.box
       require_chef_omnibus: <%= chef_version %>
-      network:
-        - ["private_network", {ip: "192.168.123.100"}]
     attributes:
       cq:
         license:
@@ -31,92 +30,64 @@ platforms:
           '6':
             x86_64:
               url: <%= ENV['JAVA_JDK_6_X86_64_URL'] || "http://download.oracle.com/otn-pub/java/jdk/6u45-b06/jdk-6u45-linux-x64.bin" %>
+              checksum: '6b493aeab16c940cae9e3d07ad2a5c5684fb49cf06c5d44c400c7993db0d12e8'
           '7':
             x86_64:
-              url: <%= ENV['JAVA_JDK_7_X86_64_URL'] || "http://download.oracle.com/otn-pub/java/jdk/7u72-b14/jdk-7u72-linux-x64.tar.gz" %>
+              url: <%= ENV['JAVA_JDK_7_X86_64_URL'] || "http://download.oracle.com/otn-pub/java/jdk/7u80-b15/jdk-7u80-linux-x64.tar.gz" %>
+              checksum: 'bad9a731639655118740bee119139c1ed019737ec802a630dd7ad7aab4309623'
 <%   end %>
 <% end %>
 
 suites:
-  - name: author-v5.6.1
+<% aem_versions.each do |v| %>
+  <% env = "CQ_V#{v.delete('.')}_JAR_URL" %>
+  - name: author-v<%= v %>
     run_list:
       - recipe[cq::author]
     attributes:
       cq:
-        version: '5.6.1'
+        version: <%= v %>
         jar:
-          url: <%= ENV['CQ_V561_JAR_URL'] %>
-
-  - name: publish-v5.6.1
+          url: <%= ENV[env] %>
+  - name: publish-v<%= v %>
     run_list:
       - recipe[cq::publish]
     attributes:
       cq:
-        version: '5.6.1'
+        version: <%= v %>
         jar:
-          url: <%= ENV['CQ_V561_JAR_URL'] %>
-
-  - name: combined-v5.6.1
-    run_list:
-      - recipe[cq::author]
-      - recipe[cq::publish]
-    attributes:
-      cq:
-        version: '5.6.1'
-        jar:
-          url: <%= ENV['CQ_V561_JAR_URL'] %>
-
-  - name: author-v6.0.0
-    run_list:
-      - recipe[cq::author]
-    attributes:
-      cq:
-        version: '6.0.0'
-        jar:
-          url: <%= ENV['CQ_V600_JAR_URL'] %>
-
-  - name: publish-v6.0.0
-    run_list:
-      - recipe[cq::publish]
-    attributes:
-      cq:
-        version: '6.0.0'
-        jar:
-          url: <%= ENV['CQ_V600_JAR_URL'] %>
-
-  - name: combined-v6.0.0
+          url: <%= ENV[env] %>
+  - name: combined-v<%= v %>
     run_list:
       - recipe[cq::author]
       - recipe[cq::publish]
     attributes:
       cq:
-        version: '6.0.0'
+        version: <%= v %>
         jar:
-          url: <%= ENV['CQ_V600_JAR_URL'] %>
-
-  - name: author-run_mode-v6.0.0
+          url: <%= ENV[env] %>
+  - name: author-run_mode-v<%= v %>
     run_list:
       - recipe[cq::author]
     attributes:
       cq:
         author:
           run_mode: 'crx2,author'
-        version: '6.0.0'
+        version: <%= v %>
         jar:
-          url: <%= ENV['CQ_V600_JAR_URL'] %>
+          url: <%= ENV[env] %>
 
-  - name: publish-run_mode-v6.0.0
+  - name: publish-run_mode-v<%= v %>
     run_list:
       - recipe[cq::publish]
     attributes:
       cq:
         publish:
           run_mode: 'crx2,publish'
-        version: '6.0.0'
+        version: <%= v %>
         jar:
-          url: <%= ENV['CQ_V600_JAR_URL'] %>
-
-  - name: osgi_configs
+          url: <%= ENV[env] %>
+  - name: osgi_configs-v<%= v %>
     run_list:
       - recipe[cq::author]
       - recipe[cq::_osgi_config_create_regular]
@@ -125,6 +96,7 @@ suites:
       - recipe[cq::_osgi_config_delete_factory]
     attributes:
       cq:
-        version: '5.6.1'
+        version: <%= v %>
         jar:
-          url: <%= ENV['CQ_V561_JAR_URL'] %>
+          url: <%= ENV[env] %>
+<% end %>
