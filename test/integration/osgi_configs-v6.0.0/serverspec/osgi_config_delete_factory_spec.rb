@@ -33,12 +33,20 @@ describe 'Factory OSGi not.existing.factory.config.to.delete' do
 end
 
 describe 'Factory OSGi org.apache.sling.tenant.internal.TenantProviderImpl' do
-  it 'in total there was 0 HTTP requests' do
+  it 'there was a single check to verify factory PID presence' do
+    expect(
+      @osgi_config_helper.read_requests(
+        'org.apache.sling.tenant.internal.TenantProviderImpl'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there was 1 HTTP request' do
     expect(
       @osgi_config_helper.all_requests(
         'org.apache.sling.tenant.internal.TenantProviderImpl'
       ).length
-    ).to eq(0)
+    ).to eq(1)
   end
 end
 
