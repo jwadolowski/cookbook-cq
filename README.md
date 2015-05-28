@@ -3,7 +3,8 @@
 This is CQ/AEM cookbook that is primarily a library cookbook. It heavily uses
 and relies on [CQ Unix Toolkit](https://github.com/Cognifide/CQ-Unix-Toolkit).
 
-Because I like CQ name better I decided to stick with the old naming schema.
+FYI, this cookbook is not called `aem-coobkook` because of the fact when I
+started development there was no AEM yet and I simply like CQ name much better.
 
 # Supported platforms
 
@@ -13,12 +14,8 @@ Because I like CQ name better I decided to stick with the old naming schema.
 
 ## AEM/CQ versions
 
-* AEM 5.6.x
-* AEM 6.0.x
-
-Most probably it should work with 5.5 (although cookbook wasn't tested on this
-version), but not with 5.4 and any other previous version (because of API
-changes).
+* AEM 5.6.1
+* AEM 6.0.0
 
 # Attributes
 
@@ -281,6 +278,10 @@ resource definition.
 `Jobs Queue` resource will delete a factory instance of
 `org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
 properties. When there's no such instance already no action will be performed.
+
+# Testing
+
+TBD
 
 # Authors
 

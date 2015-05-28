@@ -87,14 +87,8 @@ directory node['cq']['custom_tmp_dir'] do
   end
 end
 
-# Java deployment (JDK7 for 5.6.0+, JDK6 for any previous version)
+# Java deployment
 # -----------------------------------------------------------------------------
-if constraint('>= 5.6.0').satisfied_by?(node['cq']['version'])
-  node.default['java']['jdk_version'] = '7'
-else
-  node.default['java']['jdk_version'] = '6'
-end
-
 include_recipe 'java'
 
 # CQ Unix Toolkit installation
