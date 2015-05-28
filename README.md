@@ -97,7 +97,13 @@ For factory configs:
   <tr>
     <td><tt>append</tt></td>
     <td>Boolean</td>
-    <td>Append defined values to existing regular OSGi config</td>
+    <td>Set to true if you'd like to specify just a subset of original
+    properties. For regular configs it means that your properties will be
+    eventually merged with the ones that are already configured in AEM. Merged
+    values will be used during idempotence test. Impact on factory configs is
+    slightly different. Properties will be also merged in the end, but during
+    idempotence test only values defined in your resource will be used, so
+    please make sure it will be enogugh for unique identification.</td>
   </tr>
   <tr>
     <td><tt>force</tt></td>
@@ -131,7 +137,7 @@ For factory configs:
 | `pid`         | :white_check_mark:  | :white_check_mark:  |
 | `factory_pid` | :no_entry:          | :white_check_mark:  |
 | `properties`  | :white_check_mark:  | :white_check_mark:  |
-| `append`      | :white_check_mark:  | :no_entry:          |
+| `append`      | :white_check_mark:  | :white_check_mark:  |
 | `force`       | :white_check_mark:  | :no_entry:          |
 | `username`    | :white_check_mark:  | :white_check_mark:  |
 | `password`    | :white_check_mark:  | :white_check_mark:  |
