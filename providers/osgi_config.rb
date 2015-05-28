@@ -310,7 +310,7 @@ end
 # Some attribute combinations are pointless and user should be warned
 def definition_correctness
   Chef::Log.warn(
-    "#{@new_resource} is a factory config and force attribute will be ignored."
+    "#{@new_resource} is a factory config, so force attribute will be ignored"
   ) if !@new_resource.factory_pid.nil? && @new_resource.force == true
 end
 
