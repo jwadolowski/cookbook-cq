@@ -144,17 +144,17 @@ describe 'Factory OSGi org.apache.sling.commons.log.LogManager.factory'\
     ).to eq(1)
   end
 
-  it 'there was NO attemtps to create it' do
+  it 'there was 1 CREATE request' do
     expect(
       @osgi_config_helper.factory_update_requests(
         'org.apache.sling.commons.log.LogManager.factory.config'
       ).length
-    ).to eq(0)
+    ).to eq(1)
   end
 
   # 1) Factory PID read
   # 2) - 7) iterate over existing configs
-  # 3) Re-read best PID
+  # 3) Create new instance
   it 'in total there were 8 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(

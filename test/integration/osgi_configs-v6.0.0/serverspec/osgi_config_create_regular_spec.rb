@@ -447,65 +447,20 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
 end
 
 describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
-  it 'there was single READ request' do
+  it 'there was 0 READ requests' do
     expect(
       @osgi_config_helper.read_requests(
         'com.adobe.mac.core.impl.DAMVolumeChecker'
       ).length
-    ).to eq(1)
+    ).to eq(0)
   end
 
-  it 'in total there was 1 HTTP request' do
+  it 'in total there was 0 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
         'com.adobe.mac.core.impl.DAMVolumeChecker'
       ).length
-    ).to eq(1)
-  end
-
-  it 'scheduler.expression is set to "0 0 0 * * ?"' do
-    expect(
-      @osgi_config_helper.config_value(
-        'com.adobe.mac.core.impl.DAMVolumeChecker',
-        'scheduler.expression'
-      )
-    ).to match(/^0\ 0\ 0\ \*\ \*\ \?\n$/)
-  end
-
-  it 'damRootPath is set to /content/dam/mac/' do
-    expect(
-      @osgi_config_helper.config_value(
-        'com.adobe.mac.core.impl.DAMVolumeChecker',
-        'damRootPath'
-      )
-    ).to match(%r{^/content/dam/mac/\n$})
-  end
-
-  it 'sizeThreshold is set to 500' do
-    expect(
-      @osgi_config_helper.config_value(
-        'com.adobe.mac.core.impl.DAMVolumeChecker',
-        'sizeThreshold'
-      )
-    ).to match(/^500\n$/)
-  end
-
-  it 'countThreshold is set to 1000' do
-    expect(
-      @osgi_config_helper.config_value(
-        'com.adobe.mac.core.impl.DAMVolumeChecker',
-        'countThreshold'
-      )
-    ).to match(/^1000\n$/)
-  end
-
-  it 'recipients is set to []' do
-    expect(
-      @osgi_config_helper.config_value(
-        'com.adobe.mac.core.impl.DAMVolumeChecker',
-        'recipients'
-      )
-    ).to match(/^\[\]\n$/)
+    ).to eq(0)
   end
 end
 
@@ -650,14 +605,5 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'sling.store.pattern.requests'
       )
     ).to match(/^\[\]\n$/)
-  end
-
-  it 'sling.default.parameter.encoding is empty' do
-    expect(
-      @osgi_config_helper.config_value(
-        'org.apache.sling.engine.impl.SlingMainServlet',
-        'sling.default.parameter.encoding'
-      )
-    ).to match(/^\n$/)
   end
 end
