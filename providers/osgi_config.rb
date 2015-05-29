@@ -282,6 +282,9 @@ end
 #
 # @return [Boolean] true if properties match, false otherwise
 def validate_properties
+  Chef::Log.error("New: #{baselined_values(sanitized_new_properties).to_a.sort.uniq}")
+  Chef::Log.error("Cur: #{baselined_values(current_resource.properties).to_a.sort.uniq}")
+
   baselined_values(sanitized_new_properties).to_a.sort.uniq ==
     baselined_values(current_resource.properties).to_a.sort.uniq
 end
@@ -474,7 +477,7 @@ def delete_regular_config
       # Not valid
       else
         Chef::Log.warn(
-          "#{@current_resource.pid} exists, but it doesn't match to "\
+          "#{@current_resource.pid} exists, but it doesn't fully match to "\
           "defined state, so delete action won't be executed! Please "\
           'either use force attribute or update defined properties.'
         )
@@ -499,8 +502,9 @@ def delete_factory_config
         end
       else
         Chef::Log.warn(
-          "#{@current_resource.pid} exists, but it doesn't match to "\
-          "defined state, so delete action won't be executed!"
+          "#{@current_resource.pid} exists, but it doesn't fully match to "\
+          "defined state, so delete action won't be executed! Please either "\
+          "use append attribute or add missing properties to your resource."
         )
       end
     end
