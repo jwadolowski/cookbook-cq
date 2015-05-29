@@ -41,42 +41,50 @@ describe 'OSGi com.adobe.cq.wcm.launches.impl.LaunchesEventHandler' do
     ).to eq(1)
   end
 
-  it 'there was 1 DELETE request' do
+  it 'there was 0 DELETE requests' do
     expect(
       @osgi_config_helper.delete_requests(
         'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler'
       ).length
-    ).to eq(1)
+    ).to eq(0)
   end
 
   # 1) Read current
   # 2) Update
   # 3) Read current
-  # 4) Delete
-  it 'in total there were 4 HTTP requests' do
+  it 'in total there were 3 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
         'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler'
       ).length
-    ).to eq(4)
+    ).to eq(3)
   end
 
-  it 'launches.eventhandler.threadpool.maxsize is set to 5' do
+  it 'launches.eventhandler.threadpool.maxsize is set to 100' do
     expect(
       @osgi_config_helper.config_value(
         'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
         'launches.eventhandler.threadpool.maxsize'
       )
-    ).to match(/^5\n$/)
+    ).to match(/^100\n$/)
   end
 
-  it 'launches.eventhandler.threadpool.priority is set to MIN' do
+  it 'launches.eventhandler.threadpool.priority is set to MAX' do
     expect(
       @osgi_config_helper.config_value(
         'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
         'launches.eventhandler.threadpool.priority'
       )
-    ).to match(/^MIN\n$/)
+    ).to match(/^MAX\n$/)
+  end
+
+  it 'launches.eventhandler.updatelastmodification is set to false' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
+        'launches.eventhandler.updatelastmodification'
+      )
+    ).to match(/^false\n$/)
   end
 end
 

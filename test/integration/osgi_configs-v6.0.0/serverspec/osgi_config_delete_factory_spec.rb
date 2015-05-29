@@ -89,31 +89,30 @@ describe 'Factory OSGi org.apache.sling.commons.log.LogManager.factory.'\
 end
 
 describe 'Factory OSGi org.apache.sling.event.jobs.QueueConfiguration' do
-  it 'there was 1 DELETE request' do
+  it 'there was 0 DELETE requests' do
     expect(
       @osgi_config_helper.delete_requests(
         'org.apache.sling.event.jobs.QueueConfiguration'
       ).length
-    ).to eq(1)
+    ).to eq(0)
   end
 
   # 1) Read factory PID
-  # 2) - 7) Read all instances
-  # 8) Re-read best pid
-  # 9) Delete request
-  it 'in total there were 9 HTTP requests' do
+  # 2) - 10) Read all instances
+  # 11) Re-read best pid
+  it 'in total there were 11 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
         'org.apache.sling.event.jobs.QueueConfiguration'
       ).length
-    ).to eq(9)
+    ).to eq(11)
   end
 
-  it '5 instances of org.apache.sling.event.jobs.QueueConfiguration exist' do
+  it '9 instances of org.apache.sling.event.jobs.QueueConfiguration exist' do
     expect(
       @osgi_config_helper.factory_instaces(
         'org.apache.sling.event.jobs.QueueConfiguration'
       ).length
-    ).to eq(5)
+    ).to eq(9)
   end
 end
