@@ -282,6 +282,9 @@ end
 #
 # @return [Boolean] true if properties match, false otherwise
 def validate_properties
+  Chef::Log.error("New: #{baselined_values(sanitized_new_properties).to_a.sort.uniq}")
+  Chef::Log.error("Cur: #{baselined_values(current_resource.properties).to_a.sort.uniq}")
+
   baselined_values(sanitized_new_properties).to_a.sort.uniq ==
     baselined_values(current_resource.properties).to_a.sort.uniq
 end
@@ -307,51 +310,46 @@ end
 
 # Checks correctness of cq_osgi_config definition
 #
-# Some attributes combination are not allowed. Such state should be detected.
-#
-# @return [Boolean] true when resource definition is correct, false otherwise
+# Some attribute combinations are pointless and user should be warned
 def definition_correctness
-  if !@new_resource.factory_pid.nil? &&
-      (@new_resource.append == true || @new_resource.force == true)
-    false
-  else
-    true
-  end
+  Chef::Log.warn(
+    "#{@new_resource} is a factory config, so force attribute will be ignored"
+  ) if !@new_resource.factory_pid.nil? && @new_resource.force == true
 end
 
 def load_current_resource
-  if definition_correctness
-    @current_resource = Chef::Resource::CqOsgiConfig.new(new_resource.pid)
+  definition_correctness
 
-    # Set attribute accessors
-    @current_resource.factory_pid_exists =
-      factory_pid_presence if @new_resource.factory_pid
-    @current_resource.exists = osgi_config_presence
+  @current_resource = Chef::Resource::CqOsgiConfig.new(new_resource.pid)
 
-    # Initialize current resource properties (will be overwritten later on if
-    # required)
-    @current_resource.properties({})
+  # Initialize current resource properties (will be overwritten later on if
+  # required)
+  @current_resource.properties({})
 
-    # For non-factory configs choose PID of current resource, otherwise look
-    # for best candidate
-    if new_resource.factory_pid.nil?
-      config_name = current_resource.pid
-    else
-      config_name = @best_candidate_pid
+  # Set attribute accessors
+  @current_resource.factory_pid_exists =
+    factory_pid_presence if @new_resource.factory_pid
+  @current_resource.exists = osgi_config_presence
 
-      # Update resource PID with best candidate's PID (but only if such
-      # exists)
-      @new_resource.pid(config_name) unless config_name.nil?
-      @current_resource.pid(config_name) unless config_name.nil?
-    end
+  # For non-factory configs choose PID of current resource, otherwise look
+  # for best candidate
+  if new_resource.factory_pid.nil?
+    config_name = current_resource.pid
+  else
+    config_name = @best_candidate_pid
 
-    # Load OSGi properties for existing configuration and check validity
-    if current_resource.exists
-      @current_resource.properties(
-        properties_hash(current_osgi_config_properties(config_name))
-      )
-      @current_resource.valid = validate_properties
-    end
+    # Update resource PID with best candidate's PID (but only if such
+    # exists)
+    @new_resource.pid(config_name) unless config_name.nil?
+    @current_resource.pid(config_name) unless config_name.nil?
+  end
+
+  # Load OSGi properties for existing configuration and check validity
+  if current_resource.exists
+    @current_resource.properties(
+      properties_hash(current_osgi_config_properties(config_name))
+    )
+    @current_resource.valid = validate_properties
   end
 end
 
@@ -479,7 +477,7 @@ def delete_regular_config
       # Not valid
       else
         Chef::Log.warn(
-          "#{@current_resource.pid} exists, but it doesn't match to "\
+          "#{@current_resource.pid} exists, but it doesn't fully match to "\
           "defined state, so delete action won't be executed! Please "\
           'either use force attribute or update defined properties.'
         )
@@ -504,8 +502,9 @@ def delete_factory_config
         end
       else
         Chef::Log.warn(
-          "#{@current_resource.pid} exists, but it doesn't match to "\
-          "defined state, so delete action won't be executed!"
+          "#{@current_resource.pid} exists, but it doesn't fully match to "\
+          "defined state, so delete action won't be executed! Please either "\
+          "use append attribute or add missing properties to your resource."
         )
       end
     end
@@ -513,31 +512,17 @@ def delete_factory_config
 end
 
 action :delete do # ~FC017
-  if definition_correctness
-    if @new_resource.factory_pid.nil?
-      delete_regular_config
-    else
-      delete_factory_config
-    end
+  if @new_resource.factory_pid.nil?
+    delete_regular_config
   else
-    Chef::Log.error(
-      "Defined #{new_resource.pid} is not valid - please refer to "\
-      'documentation for more details.'
-    )
+    delete_factory_config
   end
 end
 
 action :create do # ~FC017
-  if definition_correctness
-    if @new_resource.factory_pid.nil?
-      create_regular_config
-    else
-      create_factory_config
-    end
+  if @new_resource.factory_pid.nil?
+    create_regular_config
   else
-    Chef::Log.error(
-      "Defined #{new_resource.pid} is not valid - please refer to "\
-      'documentation for more details.'
-    )
+    create_factory_config
   end
 end

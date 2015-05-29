@@ -18,7 +18,7 @@
 #
 
 Chef::Log.warn(
-  'This is a test recipe and should not be used outside of test kitchen!'
+  'This is a test recipe and must not be used outside of test kitchen!'
 )
 
 osgi_config_wrapper 'not.existing.factory.config.to.delete' do

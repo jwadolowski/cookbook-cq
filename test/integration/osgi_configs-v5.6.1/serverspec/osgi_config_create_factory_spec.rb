@@ -109,22 +109,57 @@ describe 'Factory OSGi com.day.cq.mcm.impl.MCMConfiguration' do
 end
 
 describe 'Factory OSGi com.adobe.granite.auth.oauth.provider' do
-  it 'in total there was 0 HTTP requests' do
+  it 'there was a single check to verify factory PID presence' do
+    expect(
+      @osgi_config_helper.read_requests(
+        'com.adobe.granite.auth.oauth.provider'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'there was 1 UPDATE request' do
+    expect(
+      @osgi_config_helper.factory_update_requests(
+        'com.adobe.granite.auth.oauth.provider'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'in total there were 4 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
         'com.adobe.granite.auth.oauth.provider'
       ).length
-    ).to eq(0)
+    ).to eq(4)
   end
 end
 
 describe 'Factory OSGi org.apache.sling.commons.log.LogManager.factory'\
   '.config' do
-  it 'in total there was 0 HTTP requests' do
+  it 'there was a single check to verify factory PID presence' do
+    expect(
+      @osgi_config_helper.read_requests(
+        'org.apache.sling.commons.log.LogManager.factory.config'
+      ).length
+    ).to eq(1)
+  end
+
+  it 'there was NO attemtps to create it' do
+    expect(
+      @osgi_config_helper.factory_update_requests(
+        'org.apache.sling.commons.log.LogManager.factory.config'
+      ).length
+    ).to eq(0)
+  end
+
+  # 1) Factory PID read
+  # 2) - 7) iterate over existing configs
+  # 3) Re-read best PID
+  it 'in total there were 8 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
         'org.apache.sling.commons.log.LogManager.factory.config'
       ).length
-    ).to eq(0)
+    ).to eq(8)
   end
 end
