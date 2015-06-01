@@ -136,7 +136,14 @@ def package_path
     end
 
     # Run remote_file resource to download the CQ package
-    remote_file_resource.run_action(:create)
+    begin
+      remote_file_resource.run_action(:create)
+    rescue => e
+      Chef::Application.fatal!(
+        "Can't download file from #{remote_file_resource.source}!\n"\
+        "Error description: #{e}"
+      )
+    end
 
     # Return path to downloaded file
     @dst_path
