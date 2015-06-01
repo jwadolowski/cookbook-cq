@@ -250,8 +250,10 @@ def package_metadata
       Chef::Log.debug 'Package properties has been successfully extracted '\
                       'from metadata file.'
     rescue => e
-      Chef::Application.fatal!("Can't extract package properties from metadata"\
-                              " file!\nError description: #{e}")
+      Chef::Application.fatal!(
+        "Can't extract package properties from metadata"\
+        " file!\nError description: #{e}"
+      )
     end
 
     begin
