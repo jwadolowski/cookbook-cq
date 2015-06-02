@@ -142,11 +142,15 @@ define :cq_instance,
              :immediately
   end
 
-  # Start instance
+  # Enable & start CQ instance
   # ---------------------------------------------------------------------------
   service daemon_name do
+    action :enable
+  end
+
+  service daemon_name do
     supports :status => true, :restart => true
-    action [:enable, :start]
+    action :start
 
     notifies :run, "ruby_block[cq-#{local_id}-start-guard]", :immediately
   end
