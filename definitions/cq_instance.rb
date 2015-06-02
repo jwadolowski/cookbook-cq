@@ -144,7 +144,8 @@ define :cq_instance,
 
   # Enable & start CQ instance
   # ---------------------------------------------------------------------------
-  service daemon_name do
+  service "#{daemon_name} (enable)" do
+    service_name daemon_name
     action :enable
   end
 
