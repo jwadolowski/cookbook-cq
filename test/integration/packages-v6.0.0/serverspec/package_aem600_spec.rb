@@ -89,3 +89,65 @@ describe 'AEM Dash' do
     ).to be false
   end
 end
+
+describe 'AEM6 SP2' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'AEM\ 6\.0\ Service\ Pack\ 2',
+        '1\.0',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'AEM\ 6\.0\ Service\ Pack\ 2',
+        '1\.0',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'cq-service-content',
+        '1\.0\.21',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'cq-content',
+        '6\.0\.120',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'cq-platform-content',
+        '1\.0\.494',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'cq-dashboards-content',
+        '1\.0\.8',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'cq-ui-classic-content',
+        '1\.0\.160',
+        @package_list
+      )
+    ).to be true
+  end
+end
