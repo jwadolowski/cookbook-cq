@@ -151,3 +151,65 @@ describe 'AEM6 SP2' do
     ).to be true
   end
 end
+
+describe 'ACS AEM Commons' do
+  it 'version 1.9.6 is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'acs-aem-commons-content',
+        '1\.9\.6',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'version 1.9.6 is installed' do
+    expect(
+      @package_helper.package_installed(
+        'acs-aem-commons-content',
+        '1\.9\.6',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'version 1.10.0 is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'acs-aem-commons-content',
+        '1\.10\.0',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'version 1.10.0 was installed' do
+    expect(
+      @package_helper.package_installed(
+        'acs-aem-commons-content',
+        '1\.10\.0',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'version 1.10.2 is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'acs-aem-commons-content',
+        '1\.10\.2',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'version 1.10.2 is NOT installed' do
+    expect(
+      @package_helper.package_installed(
+        'acs-aem-commons-content',
+        '1\.10\.2',
+        @package_list
+      )
+    ).to be false
+  end
+end
