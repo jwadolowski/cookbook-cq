@@ -50,7 +50,68 @@ TBD
 
 ## cq_package
 
+### Actions
+
 TBD
+
+### Parameter Attributes
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>name</tt></td>
+    <td>String</td>
+    <td>Package name</td>
+  </tr>
+  <tr>
+    <td><tt>source</tt></td>
+    <td>String</td>
+    <td>URL to ZIP package. Accepted protocols: <tt>file://</tt>,
+    <tt>http://</tt>, <tt>https://</tt></td>
+  </tr>
+  <tr>
+    <td><tt>recursive_install</tt></td>
+    <td>Boolean</td>
+    <td>Wheter to use recursive flag when installing packages. Applies only to
+    install action.</td>
+  </tr>
+  <tr>
+    <td><tt>checksum</tt></td>
+    <td>String</td>
+    <td>ZIP file checksum (passed through to remote_file resource)</td>
+  </tr>
+  <tr>
+    <td><tt>http_user</tt></td>
+    <td>String</td>
+    <td>HTTP basic auth user. Use whenever <tt>source</tt> requires such
+    authentication.</td>
+  </tr>
+  <tr>
+    <td><tt>http_pass</tt></td>
+    <td>String</td>
+    <td>HTTP basic auth password. Use whenever <tt>source</tt> requires such
+    authentication.</td>
+  </tr>
+  <tr>
+    <td><tt>username</tt></td>
+    <td>String</td>
+    <td>Instance username</td>
+  </tr>
+  <tr>
+    <td><tt>password</tt></td>
+    <td>String</td>
+    <td>Instance password</td>
+  </tr>
+  <tr>
+    <td><tt>instance</tt></td>
+    <td>String</td>
+    <td>Instance URL</td>
+  </tr>
+</table>
 
 ## cq_osgi_config
 
