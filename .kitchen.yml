@@ -106,4 +106,6 @@ suites:
         packages:
           aem6:
             sp2: <%= ENV['CQ_V600_SP2_URL'] %>
+          aem561:
+            sec_sp1: <%= ENV['CQ_V561_SEC_SP1_URL'] %>
 <% end %>
