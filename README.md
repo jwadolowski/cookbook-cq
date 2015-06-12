@@ -271,7 +271,7 @@ phase.
 
 ## cq_osgi_config
 
-Provide an interface for CRUD operations in OSGi configs.
+Provides an interface for CRUD operations in OSGi configs.
 
 ### Actions
 
