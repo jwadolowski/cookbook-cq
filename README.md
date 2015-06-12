@@ -48,7 +48,23 @@ TBD
 
 # Lightweight Resource Providers
 
+---
+
+All LWRPs are idempotent, so action won't be taken if it is not required.
+
+---
+
 ## cq_package
+
+It allows for CRX package manipulation using CRX Package Manager API.
+
+Key features:
+* package specific details (name, group, version) are always extracted from its
+  metadata (`/META-INF/vault/properties.xml` inside ZIP file and CRX Package
+  Manager API for already uploaded/installed packages)
+* all packages are downloaded to Chef's cache (by default: `/var/chef/cache`)
+* `cq_package` resource is version aware, so defined actions are always
+  executed for given package version
 
 ### Actions
 
@@ -183,6 +199,71 @@ cq_package "Author: Service Pack 2 (install)" do
   notifies :restart, 'service[cq60-author]', :immediately
 end
 ```
+
+First `cq_package` resource will download Slice package from provided URL to
+Chef's cache and upload it to defined AEM Author instance.
+
+Second resource does the same as the first one, but for Oak 1.0.13 hotfix. The
+only difference is that provided URL requies basic auth, hence the `http_user`
+and `http_pass` attributes.
+
+Third package shows how to combine multiple actions in a single `cq_package`
+resource usage.
+
+4th & 5th `cq_package` resources presents how to deal with restarts after
+package installation. Please notice that both resources were named differently
+on purpose to avoid resource merge and 2 restarts. If you'd use:
+
+```ruby
+cq_package "Author: Service Pack 2" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem6']['sp2']
+  recursive_install true
+
+  action [:upload, :install]
+
+  notifies :restart, 'service[cq60-author]', :immediately
+end
+```
+
+or
+
+```ruby
+cq_package "Author: Service Pack 2" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem6']['sp2']
+
+  action :upload
+end
+
+cq_package "Author: Service Pack 2" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem6']['sp2']
+  recursive_install true
+
+  action :install
+
+  notifies :restart, 'service[cq60-author]', :immediately
+end
+```
+
+two restarts will be triggered.
+
+In the first case during compile phase Chef will generate 2 resources with the
+same name, but different actions.
+
+In second example restart still will be triggered after upload, even if it's
+not explicitly defined during 1st usage (upload action). The reason is quite
+simple - both resources are named the same (`Author: Service Pack 2`) and Chef
+will treat this as a single resource on resource collection. Notify parameter
+will be silently merged to the resource with upload action during compile
+phase.
 
 ## cq_osgi_config
 
