@@ -160,3 +160,4 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.9.6" do
 end
 
 # Checksum validation
+# TODO
