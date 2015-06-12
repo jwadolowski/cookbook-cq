@@ -178,7 +178,6 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.2" do
     '/acs-aem-commons-content-1.10.2.zip'
 
   action [:upload, :install]
-
 end
 
 cq_package "Author: Service Pack 2 (upload)" do
