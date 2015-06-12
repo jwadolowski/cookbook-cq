@@ -65,6 +65,9 @@ Key features:
 * all packages are downloaded to Chef's cache (by default: `/var/chef/cache`)
 * `cq_package` resource is version aware, so defined actions are always
   executed for given package version
+* installation process is considered finished only when both "foreground"
+  (Package Manager) and the "background" one (OSGi bundle/component restarts)
+  are over - no more 'wait until you see MESSAGE_X in `error.log` file'
 
 ### Actions
 
@@ -210,9 +213,10 @@ and `http_pass` attributes.
 Third package shows how to combine multiple actions in a single `cq_package`
 resource usage.
 
-4th & 5th `cq_package` resources presents how to deal with restarts after
-package installation. Please notice that both resources were named differently
-on purpose to avoid resource merge and 2 restarts. If you'd use:
+4th & 5th `cq_package` resources presents how to deal with AEM instance
+restarts after package installation as well as packages that require recursive
+extraction. Please notice that both resources were named differently on purpose
+to avoid resource merge and 2 restarts. If you'd use:
 
 ```ruby
 cq_package "Author: Service Pack 2" do
@@ -261,11 +265,13 @@ same name, but different actions.
 In second example restart still will be triggered after upload, even if it's
 not explicitly defined during 1st usage (upload action). The reason is quite
 simple - both resources are named the same (`Author: Service Pack 2`) and Chef
-will treat this as a single resource on resource collection. Notify parameter
+will treat this as a single resource on resource collection - notify parameter
 will be silently merged to the resource with upload action during compile
 phase.
 
 ## cq_osgi_config
+
+Provide an interface for CRUD operations in OSGi configs.
 
 ### Actions
 
