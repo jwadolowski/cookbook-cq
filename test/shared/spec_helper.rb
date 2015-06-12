@@ -136,9 +136,57 @@ class OSGiConfigHelper
   end
 end
 
+class CrxPackageHelper
+  # Get list of all packages from AEM instance
+  #
+  # @return [String] a list of packages
+  def package_list
+    `/opt/scripts/CQ-Unix-Toolkit/cqls \
+    -i http://localhost:4502 \
+    -u admin \
+    -p admin \
+    -l -m | tr '\t' '|'`
+  end
+
+  # Checks if package is installed on a given list (instance)
+  #
+  # @param name [String] regex for package name
+  # @param version [String] regex for package version
+  # @param list [String] a list of packages
+  # @return [Boolean] true if package is installed, false otherwise
+  def package_installed(name, version, list)
+    begin
+      dt = list.scan(/^#{name}.*#{version}.*/).first.split('|')[9]
+      DateTime.parse(dt)
+    rescue
+      return false
+    end
+
+    true
+  end
+
+  # Checks if package is uploaded on a given list (instance)
+  #
+  # @param name [String] regex for package name
+  # @param version [String] regex for package version
+  # @param list [String] a list of packages
+  # @return [Boolean] true if package is uploaded, false otherwise
+  def package_exists(name, version, list)
+    status = list.scan(/^#{name}.*#{version}.*/).first
+    if status.nil?
+      false
+    else
+      true
+    end
+  end
+end
+
 RSpec.configure do |c|
   c.before :all do
     @osgi_config_helper = OSGiConfigHelper.new
     @config_list = @osgi_config_helper.config_list
+
+    @package_helper = CrxPackageHelper.new
+    @package_list = @package_helper.package_list
   end
 end

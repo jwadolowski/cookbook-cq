@@ -282,9 +282,6 @@ end
 #
 # @return [Boolean] true if properties match, false otherwise
 def validate_properties
-  Chef::Log.error("New: #{baselined_values(sanitized_new_properties).to_a.sort.uniq}")
-  Chef::Log.error("Cur: #{baselined_values(current_resource.properties).to_a.sort.uniq}")
-
   baselined_values(sanitized_new_properties).to_a.sort.uniq ==
     baselined_values(current_resource.properties).to_a.sort.uniq
 end

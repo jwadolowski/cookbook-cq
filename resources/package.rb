@@ -17,9 +17,6 @@
 # limitations under the License.
 #
 
-# TODO: filter below actions
-# actions :create, :build, :download, :install, :delete, :upload, :activate,
-#         :uninstall
 actions :upload, :install
 
 default_action :nothing

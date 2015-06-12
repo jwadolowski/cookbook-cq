@@ -94,4 +94,18 @@ suites:
         version: <%= v %>
         jar:
           url: <%= ENV[env] %>
+  - name: packages-v<%= v %>
+    run_list:
+      - recipe[cq::author]
+      - recipe[cq::_package_aem<%= v.delete('.') %>]
+    attributes:
+      cq:
+        version: <%= v %>
+        jar:
+          url: <%= ENV[env] %>
+        packages:
+          aem6:
+            sp2: <%= ENV['CQ_V600_SP2_URL'] %>
+          aem561:
+            sec_sp1: <%= ENV['CQ_V561_SEC_SP1_URL'] %>
 <% end %>

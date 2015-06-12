@@ -136,7 +136,14 @@ def package_path
     end
 
     # Run remote_file resource to download the CQ package
-    remote_file_resource.run_action(:create)
+    begin
+      remote_file_resource.run_action(:create)
+    rescue => e
+      Chef::Application.fatal!(
+        "Can't download file from #{remote_file_resource.source}!\n"\
+        "Error description: #{e}"
+      )
+    end
 
     # Return path to downloaded file
     @dst_path
@@ -250,8 +257,10 @@ def package_metadata
       Chef::Log.debug 'Package properties has been successfully extracted '\
                       'from metadata file.'
     rescue => e
-      Chef::Application.fatal!("Can't extract package properties from metadata"\
-                              " file!\nError description: #{e}")
+      Chef::Application.fatal!(
+        "Can't extract package properties from metadata"\
+        " file!\nError description: #{e}"
+      )
     end
 
     begin
@@ -713,12 +722,18 @@ action :upload do
 end
 
 action :install do
-  if @current_resource.installed
-    Chef::Log.info("Package #{new_resource.name} is already installed - "\
-                   'nothing to do')
-  else
-    converge_by("Install #{ new_resource }") do
-      install_package
+  if @current_resource.uploaded
+    if @current_resource.installed
+      Chef::Log.info("Package #{new_resource.name} is already installed - "\
+                    'nothing to do')
+    else
+      converge_by("Install #{ new_resource }") do
+        install_package
+      end
     end
+  else
+    Chef::Log.error(
+      "#{@current_resource}: can't install not uploaded package!"
+    )
   end
 end
