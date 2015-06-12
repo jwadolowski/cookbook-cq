@@ -66,7 +66,7 @@ Key features:
 * `cq_package` resource is version aware, so defined actions are always
   executed for given package version
 * installation process is considered finished only when both "foreground"
-  (Package Manager) and the "background" ones (OSGi bundle/component restarts)
+  (Package Manager) and the "background" (OSGi bundle/component restarts) ones
   are over - no more 'wait until you see MESSAGE_X in `error.log` file'
 
 ### Actions
