@@ -52,7 +52,8 @@ TBD
 
 ### Actions
 
-TBD
+* `upload` - uploads package to given CQ instance
+* `install` - installs already uploaded package
 
 ### Parameter Attributes
 
@@ -67,9 +68,10 @@ TBD
     <td>String</td>
     <td>Package name. Can be anything as long as it means something to you.
     Actual package name is extracted from provided ZIP file. Whenever you use
-    <tt>notifies</tt> on your package resource make sure you named it uniquely
-    to avoid unexpected behaviour, i.e. instance restart after package upload
-    </td>
+    <tt>notifies</tt> on your package resource and more than single action was
+    defined (i.e. <tt> action [:upload, :install]</tt>), please make sure you
+    named it uniquely to avoid unexpected behaviour, i.e. instance restart
+    after package upload</td>
   </tr>
   <tr>
     <td><tt>source</tt></td>
@@ -120,7 +122,67 @@ TBD
 
 ### Usage
 
-TBD
+Detailed examples can be found in package test recipes:
+
+* [recipes/_package_aem561.rb](recipes/_package_aem561.rb)
+* [recipes/_package_aem600.rb](recipes/_package_aem600.rb)
+
+```ruby
+cq_package "Slice 4.2.1" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source 'https://oss.sonatype.org/content/groups/public/com/cognifide/slice'\
+    '/slice-assembly/4.2.1/slice-assembly-4.2.1-cq.zip'
+
+  action :upload
+end
+
+cq_package " Upgrade to Oak 1.0.13" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source 'https://artifacts.example.com/aem/6.0.0/hotfixes'\
+    '/cq-6.0.0-hotfix-6316-1.1.zip'
+  http_user 'john'
+  http_pass 'passw0rd'
+
+  action :upload
+end
+
+cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.2" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source 'https://github.com/Adobe-Consulting-Services/acs-aem-commons'\
+    '/releases/download/acs-aem-commons-1.10.2'\
+    '/acs-aem-commons-content-1.10.2.zip'
+
+  action [:upload, :install]
+
+end
+
+cq_package "Author: Service Pack 2 (upload)" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem6']['sp2']
+
+  action :upload
+end
+
+cq_package "Author: Service Pack 2 (install)" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem6']['sp2']
+  recursive_install true
+
+  action :install
+
+  notifies :restart, 'service[cq60-author]', :immediately
+end
+```
 
 ## cq_osgi_config
 
