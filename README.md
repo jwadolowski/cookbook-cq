@@ -65,7 +65,11 @@ TBD
   <tr>
     <td><tt>name</tt></td>
     <td>String</td>
-    <td>Package name</td>
+    <td>Package name. Can be anything as long as it means something to you.
+    Actual package name is extracted from provided ZIP file. Whenever you use
+    <tt>notifies</tt> on your package resource make sure you named it uniquely
+    to avoid unexpected behaviour, i.e. instance restart after package upload
+    </td>
   </tr>
   <tr>
     <td><tt>source</tt></td>
@@ -76,25 +80,26 @@ TBD
   <tr>
     <td><tt>recursive_install</tt></td>
     <td>Boolean</td>
-    <td>Wheter to use recursive flag when installing packages. Applies only to
-    install action.</td>
+    <td>Wheter to use recursive flag when installing packages (required for
+    service packs and some hotfixes). Applies only to install action</td>
   </tr>
   <tr>
     <td><tt>checksum</tt></td>
     <td>String</td>
-    <td>ZIP file checksum (passed through to remote_file resource)</td>
+    <td>ZIP file checksum (passed through to <<tt>remote_file</tt> resource
+    that is used under the hood by <tt>cq_package</tt> provider)</td>
   </tr>
   <tr>
     <td><tt>http_user</tt></td>
     <td>String</td>
     <td>HTTP basic auth user. Use whenever <tt>source</tt> requires such
-    authentication.</td>
+    authentication</td>
   </tr>
   <tr>
     <td><tt>http_pass</tt></td>
     <td>String</td>
     <td>HTTP basic auth password. Use whenever <tt>source</tt> requires such
-    authentication.</td>
+    authentication</td>
   </tr>
   <tr>
     <td><tt>username</tt></td>
@@ -112,6 +117,10 @@ TBD
     <td>Instance URL</td>
   </tr>
 </table>
+
+### Usage
+
+TBD
 
 ## cq_osgi_config
 
@@ -164,7 +173,7 @@ For factory configs:
     values will be used during idempotence test. Impact on factory configs is
     slightly different. Properties will be also merged in the end, but during
     idempotence test only values defined in your resource will be used, so
-    please make sure it will be enogugh for unique identification.</td>
+    please make sure it will be enogugh for unique identification</td>
   </tr>
   <tr>
     <td><tt>force</tt></td>
