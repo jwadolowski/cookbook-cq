@@ -557,7 +557,7 @@ def osgi_bundles_velocity_healthcheck
       cmd.error!
 
       # if the loop has just started assign initial previous state
-      previous_state == cmd.stdout if previous_state == ''
+      previous_state = cmd.stdout if previous_state == ''
 
       # Count same state occurrences or reset state counter if something has
       # changed
@@ -570,7 +570,7 @@ def osgi_bundles_velocity_healthcheck
       # Assign new state as a previous state
       previous_state = cmd.stdout
 
-      # Move on if the same state last 30 seconds (6 * 5 seconds)
+      # Move on if the same state occurred 3 times in a row
       break if same_state_counter == 3
     rescue => e
       Chef::Log.error "Unable to get OSGi bundles state.\n"\
