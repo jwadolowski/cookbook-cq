@@ -713,7 +713,7 @@ action :upload do
     Chef::Log.info("Package #{new_resource.name} is already uploaded - "\
                    'nothing to do')
   else
-    converge_by("Upload #{ new_resource }") do
+    converge_by("Upload #{new_resource}") do
       upload_package
     end
   end
@@ -725,13 +725,33 @@ action :install do
       Chef::Log.info("Package #{new_resource.name} is already installed - "\
                     'nothing to do')
     else
-      converge_by("Install #{ new_resource }") do
+      converge_by("Install #{new_resource}") do
         install_package
       end
     end
   else
     Chef::Log.error(
-      "#{@current_resource}: can't install not uploaded package!"
+      "#{@current_resource}: can't install not yet uploaded package!"
     )
+  end
+end
+
+action :deploy do
+  if @current_resource.uploaded
+    if @current_resource.installed
+      Chef::Log.info(
+        "Package #{new_resource.name} is already deployed (uploaded and "\
+        'installed).'
+      )
+    else
+      converge_by("Install #{new_resource}") do
+        install_package
+      end
+    end
+  else
+    converge_by("Upload and install #{new_resource}") do
+      upload_package
+      install_package
+    end
   end
 end
