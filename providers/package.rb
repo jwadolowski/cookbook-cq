@@ -531,9 +531,9 @@ def pkg_mgr_api_healthcheck
   Chef::Log.info('Package Manager API works correctly. Moving on...')
 end
 
-# Detect changes in bundle state. 30 seconds without changes is considered as a
+# Detect changes in bundle state. X seconds without changes is considered as a
 # "safe" state.
-def osgi_bundles_velocity_healthcheck
+def osgi_stability_healthcheck
   cmd_str = "curl -s -u #{new_resource.username}:#{new_resource.password} "\
             "#{new_resource.instance}/system/console/bundles/.json"
 
@@ -542,12 +542,11 @@ def osgi_bundles_velocity_healthcheck
   # Previous state of OSGi bundles (start with empty)
   previous_state = ''
 
-  # How many times the state hasn't changed
+  # How many times the state hasn't changed in a row
   same_state_counter = 0
 
-  # Timeout value (wait until i_max * 10 seconds and abort a chef run if OSGi
-  # bundles are still changing)
-  i_max = 60
+  # Number of iterations
+  i_max = 120
 
   (1..i_max).each do |i|
     cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
@@ -556,30 +555,29 @@ def osgi_bundles_velocity_healthcheck
     begin
       cmd.error!
 
-      # if the loop has just started assign initial previous state
-      previous_state == cmd.stdout if previous_state == ''
-
-      # Count same state occurrences or reset state counter if something has
-      # changed
       if cmd.stdout == previous_state
         same_state_counter += 1
       else
         same_state_counter = 0
       end
 
-      # Assign new state as a previous state
+      # Assign current state to previous state
       previous_state = cmd.stdout
 
-      # Move on if the same state last 30 seconds (6 * 5 seconds)
-      break if same_state_counter == 3
+      # Move on if the same state occurred N times in a row
+      break if same_state_counter == 4
     rescue => e
-      Chef::Log.error "Unable to get OSGi bundles state.\n"\
-        "Error description: #{e}"
+      Chef::Log.warn 'Unable to get OSGi bundles state. Retrying...'
+
+      # Let's start over in case of an error (clear indicator of flapping OSGi
+      # bundles)
+      previous_state = ''
+      same_state_counter = 0
     end
 
-    Chef::Application.fatal!('Cannot detect stable state for 10 minutes. '\
-                             'Aborting...') if i == i_max
-    sleep 10
+    Chef::Application.fatal!("Cannot detect stable state after #{i_max} "\
+                             'attempts. Aborting...') if i == i_max
+    sleep 5
   end
 
   Chef::Log.info('OSGi bundles seem to be stable. Moving on...')
@@ -705,9 +703,9 @@ def install_package
                             output[0]) if json_resp['success'] != true
 
   # Wait for stable state of OSGi bundles. Installation of a package (hotfixes/
-  # service packs in particular) may cause a lot bundle restarts, which prevents
-  # further operations against CQ/AEM APIs.
-  osgi_bundles_velocity_healthcheck
+  # service packs in particular) may cause a lot bundle restarts, which
+  # prevents further operations against CQ/AEM APIs.
+  osgi_stability_healthcheck
 end
 
 action :upload do
