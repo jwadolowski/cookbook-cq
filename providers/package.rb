@@ -569,7 +569,7 @@ def osgi_stability_healthcheck
     rescue => e
       Chef::Log.warn 'Unable to get OSGi bundles state. Retrying...'
 
-      # Let's start over in case of error (clear indicator of flapping OSGi
+      # Let's start over in case of an error (clear indicator of flapping OSGi
       # bundles)
       previous_state = ''
       same_state_counter = 0
