@@ -158,3 +158,63 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.9.6" do
 
   action [:upload, :install]
 end
+
+cq_package "#{node['cq']['author']['run_mode']}: HF6446" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem561']['hf6446']
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'service[cq56-author]', :immediately
+end
+
+cq_package "#{node['cq']['author']['run_mode']}: HF5122" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem561']['hf5122']
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'service[cq56-author]', :immediately
+end
+
+cq_package "#{node['cq']['author']['run_mode']}: HF5667" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem561']['hf5667']
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'service[cq56-author]', :immediately
+end
+
+cq_package "#{node['cq']['author']['run_mode']}: HF3527" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem561']['hf3527']
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'service[cq56-author]', :immediately
+end
+
+cq_package "#{node['cq']['author']['run_mode']}: HF4990" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem561']['hf4990']
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'service[cq56-author]', :immediately
+end

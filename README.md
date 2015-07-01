@@ -71,8 +71,17 @@ Key features:
 
 ### Actions
 
+---
+
+If your goal is to upload and install package, please use `deploy` action.
+
+---
+
 * `upload` - uploads package to given CQ instance
 * `install` - installs already uploaded package
+* `deploy` - uploads and installs given package as a single action. This action
+  is quicker than separate `upload` + `install` as less healthchecks have to be
+  executed.
 
 ### Parameter Attributes
 
@@ -180,6 +189,18 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.2" do
   action [:upload, :install]
 end
 
+cq_package "Author: HF 6316" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem6']['hf6316']
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'service[cq60-author]', :immediately
+end
+
 cq_package "Author: Service Pack 2 (upload)" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -212,9 +233,20 @@ and `http_pass` attributes.
 Third package shows how to combine multiple actions in a single `cq_package`
 resource usage.
 
-4th & 5th `cq_package` resources presents how to deal with AEM instance
-restarts after package installation as well as packages that require recursive
-extraction. Please notice that both resources were named differently on purpose
+4th `cq_package` presents how to use `deploy` action that combines both
+`upload` and `install` in a single execution. This is preferred way of doing
+package deployment, in particular for those that require AEM service restart
+as soon as installation is completed. `recursive_install` was also used here,
+which is required for majority of hotfixes and every service pack.
+
+5th & 6th `cq_package` resources explains how to deal with AEM instance
+restarts after package installation.
+
+Moreover it explains how to use combination of `upload` and `install` instead
+of `deploy`. Such procedure might be required sometimes, i.e. when some extra
+steps have to be done after package upload, but before its installation.
+
+Please notice that both resources were named differently on purpose
 to avoid resource merge and 2 restarts. If you'd use:
 
 ```ruby
@@ -264,9 +296,9 @@ same name, but different actions.
 In second example restart still will be triggered after upload, even if it's
 not explicitly defined during 1st usage (upload action). The reason is quite
 simple - both resources are named the same (`Author: Service Pack 2`) and Chef
-will treat this as a single resource on resource collection - notify parameter
-will be silently merged to the resource with upload action during compile
-phase.
+will treat this as a single resource on resource collection, which means that
+notify parameter will be silently merged to the resource with upload action
+during compile phase.
 
 ## cq_osgi_config
 

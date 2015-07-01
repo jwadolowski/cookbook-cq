@@ -583,6 +583,18 @@ def osgi_stability_healthcheck
   Chef::Log.info('OSGi bundles seem to be stable. Moving on...')
 end
 
+# Initializes CRX attributes for already uploaded packages
+def init_crx_attributes
+  @crx_name = package_attr_from_object(package_info, 'name')
+  @crx_version = package_attr_from_object(package_info, 'version')
+  @crx_group = package_attr_from_object(package_info, 'group')
+  # It turned out downloadName attr may contain blank characters (see AEM6
+  # Service Pack 1). Let's get rid of these before any interaction with CRX
+  # Package Manager.
+  @crx_downloadname =
+    package_attr_from_object(package_info, 'downloadName').gsub(' ', '%20')
+end
+
 # Loads current resource and all accessor attributes
 def load_current_resource
   # Pre-flight checks - make sure that everything is working as expected before
@@ -610,14 +622,9 @@ def load_current_resource
   # Set properties from CRX Package Manager (only possible when package is
   # uploaded)
   return unless @current_resource.uploaded
-  @crx_name = package_attr_from_object(package_info, 'name')
-  @crx_version = package_attr_from_object(package_info, 'version')
-  @crx_group = package_attr_from_object(package_info, 'group')
-  # It turned out downloadName attr may contain blank characters (see AEM6
-  # Service Pack 1). Let's get rid of these before any interaction with CRX
-  # Package Manager.
-  @crx_downloadname =
-    package_attr_from_object(package_info, 'downloadName').gsub(' ', '%20')
+
+  # Init CRX related attributes (already uploaded packages only)
+  init_crx_attributes
 end
 
 # Uploads package to a given CQ instance
@@ -635,6 +642,8 @@ def upload_package
     cmd.error!
     Chef::Log.info "Package #{new_resource.name} has been successfully "\
                    'uploaded'
+    # Invalidate internal cache after package upload
+    @package_list = nil
   rescue => e
     Chef::Application.fatal!("Can't upload package #{new_resource.name}!\n"\
                              "Error description: #{e}")
@@ -682,6 +691,9 @@ def install_package
                              "Error description: #{e}")
   end
 
+  # Invalidate internal cache after package installation
+  @package_list = nil
+
   # Split the output
   #
   # output[0] => JSON returned by CRX Package Manager API
@@ -713,7 +725,7 @@ action :upload do
     Chef::Log.info("Package #{new_resource.name} is already uploaded - "\
                    'nothing to do')
   else
-    converge_by("Upload #{ new_resource }") do
+    converge_by("Upload #{new_resource}") do
       upload_package
     end
   end
@@ -725,13 +737,37 @@ action :install do
       Chef::Log.info("Package #{new_resource.name} is already installed - "\
                     'nothing to do')
     else
-      converge_by("Install #{ new_resource }") do
+      converge_by("Install #{new_resource}") do
         install_package
       end
     end
   else
     Chef::Log.error(
-      "#{@current_resource}: can't install not uploaded package!"
+      "#{@current_resource}: can't install not yet uploaded package!"
     )
+  end
+end
+
+action :deploy do
+  if @current_resource.uploaded
+    if @current_resource.installed
+      Chef::Log.info(
+        "Package #{new_resource.name} is already deployed (uploaded and "\
+        'installed).'
+      )
+    else
+      converge_by("Install #{new_resource}") do
+        install_package
+      end
+    end
+  else
+    converge_by("Upload and install #{new_resource}") do
+      upload_package
+
+      # Populate not yet initialized variables
+      init_crx_attributes
+
+      install_package
+    end
   end
 end

@@ -213,3 +213,155 @@ describe 'ACS AEM Commons' do
     ).to be false
   end
 end
+
+describe 'Hotfix 6316' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'cq-6.0.0-hotfix-6316',
+        '1\.1',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'cq-6.0.0-hotfix-6316',
+        '1\.1',
+        @package_list
+      )
+    ).to be true
+  end
+end
+
+describe 'Hotfix 6167' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'cq-6.0.0-hotfix-6167-wrapper',
+        '1\.3',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_exists(
+        'cq-6.0.0-hotfix-6167',
+        '1\.3',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_exists(
+        'cq-6.0.0-hotfix-6167-bundles',
+        '1\.3',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_exists(
+        'cq-ui-classic-content',
+        '1\.0\.162',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'cq-6.0.0-hotfix-6167-wrapper',
+        '1\.3',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'cq-6.0.0-hotfix-6167',
+        '1\.3',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'cq-6.0.0-hotfix-6167-bundles',
+        '1\.3',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'cq-ui-classic-content',
+        '1\.0\.162',
+        @package_list
+      )
+    ).to be true
+  end
+end
+
+describe 'Hotfix 6446' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'cq-6.0.0-hotfix-6446',
+        '1\.0',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'cq-6.0.0-hotfix-6446',
+        '1\.0',
+        @package_list
+      )
+    ).to be true
+  end
+end
+
+describe 'Hotfix 6031' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'cq-6.0.0-hotfix-6031',
+        '1\.0',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_exists(
+        'cq-platform-content',
+        '1\.0\.524',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'cq-6.0.0-hotfix-6031',
+        '1\.0',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'cq-platform-content',
+        '1\.0\.524',
+        @package_list
+      )
+    ).to be true
+  end
+end
