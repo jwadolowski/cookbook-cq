@@ -158,3 +158,51 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.9.6" do
 
   action [:upload, :install]
 end
+
+cq_package "#{node['cq']['author']['run_mode']}: HF 6316" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem6']['hf6316']
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'service[cq60-author]', :immediately
+end
+
+cq_package "#{node['cq']['author']['run_mode']}: HF 6167" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem6']['hf6167']
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'service[cq60-author]', :immediately
+end
+
+cq_package "#{node['cq']['author']['run_mode']}: HF 6446" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem6']['hf6446']
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'service[cq60-author]', :immediately
+end
+
+cq_package "#{node['cq']['author']['run_mode']}: HF 6031" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem6']['hf6031']
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'service[cq60-author]', :immediately
+end

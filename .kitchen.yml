@@ -106,6 +106,15 @@ suites:
         packages:
           aem6:
             sp2: <%= ENV['CQ_V600_SP2_URL'] %>
+            hf6316: <%= ENV['CQ_V600_HF6316_URL'] %>
+            hf6167: <%= ENV['CQ_V600_HF6167_URL'] %>
+            hf6446: <%= ENV['CQ_V600_HF6446_URL'] %>
+            hf6031: <%= ENV['CQ_V600_HF6031_URL'] %>
           aem561:
             sec_sp1: <%= ENV['CQ_V561_SEC_SP1_URL'] %>
+            hf6446: <%= ENV['CQ_V561_HF6446_URL'] %>
+            hf5122: <%= ENV['CQ_V561_HF5122_URL'] %>
+            hf5667: <%= ENV['CQ_V561_HF5667_URL'] %>
+            hf3527: <%= ENV['CQ_V561_HF3527_URL'] %>
+            hf4990: <%= ENV['CQ_V561_HF4990_URL'] %>
 <% end %>

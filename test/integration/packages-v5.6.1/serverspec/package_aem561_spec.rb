@@ -213,3 +213,129 @@ describe 'ACS AEM Commons' do
     ).to be false
   end
 end
+
+describe 'Hotfix 6446' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'cq-5.6.1-hotfix-6446',
+        '1\.1',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'cq-5.6.1-hotfix-6446',
+        '1\.1',
+        @package_list
+      )
+    ).to be true
+  end
+end
+
+describe 'Hotfix 5122' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'cq-5.6.1-hotfix-5122',
+        '1\.0',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'cq-5.6.1-hotfix-5122',
+        '1\.0',
+        @package_list
+      )
+    ).to be true
+  end
+end
+
+describe 'Hotfix 5667' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'cq-5.6.1-hotfix-5667',
+        '1\.0',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'cq-5.6.1-hotfix-5667',
+        '1\.0',
+        @package_list
+      )
+    ).to be true
+  end
+end
+
+describe 'Hotfix 3527' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'cq-5.6.1-hotfix-3527',
+        '1\.0\.0',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_exists(
+        'com.adobe.granite.offloading.content',
+        '1\.0\.5\.CQ561-004',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'cq-5.6.1-hotfix-3527',
+        '1\.0\.0',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'com.adobe.granite.offloading.content',
+        '1\.0\.5\.CQ561-004',
+        @package_list
+      )
+    ).to be true
+  end
+end
+
+describe 'Hotfix 4990' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'cq-5.6.1-hotfix-4990',
+        '1\.2',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'cq-5.6.1-hotfix-4990',
+        '1\.2',
+        @package_list
+      )
+    ).to be true
+  end
+end
