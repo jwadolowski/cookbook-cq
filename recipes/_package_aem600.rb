@@ -80,7 +80,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Slice Extension for AEM6 "\
 end
 
 # Install already installed package
-cq_package "#{node['cq']['author']['run_mode']}: CQ Healthcheck (install) " do
+cq_package "#{node['cq']['author']['run_mode']}: CQ Healthcheck (install)" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
