@@ -47,7 +47,7 @@ describe 'CQ instance' do
     expect(
       command(
         'curl http://localhost:4503/libs/granite/core/content/login.html '\
-        '-sw "%{http_code}"'
+        '-sw "%{http_code}" -o /dev/null'
       ).stdout
     ).to match('200')
   end
