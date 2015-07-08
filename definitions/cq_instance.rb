@@ -139,6 +139,7 @@ define :cq_instance,
       :jvm_gc_opts => node['cq'][local_id]['jvm']['gc_opts'],
       :jvm_jmx_opts => node['cq'][local_id]['jvm']['jmx_opts'],
       :jvm_debug_opts => node['cq'][local_id]['jvm']['debug_opts'],
+      :jvm_crx_opts => node['cq'][local_id]['jvm']['crx_opts'],
       :jvm_extra_opts => node['cq'][local_id]['jvm']['extra_opts']
     )
 
