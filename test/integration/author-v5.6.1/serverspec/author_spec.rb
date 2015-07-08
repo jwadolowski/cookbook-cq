@@ -93,6 +93,9 @@ describe 'CQ init script' do
     ).to match('PID_DIR="\$CQ_HOME/crx-quickstart/conf"')
     expect(
       file('/etc/init.d/cq56-author').content
+    ).to match('KILL_DELAY=120')
+    expect(
+      file('/etc/init.d/cq56-author').content
     ).to match(
       'CQ_CONF_FILE=/opt/cq/author/crx-quickstart/conf/cq56-author.conf')
     expect(
@@ -178,7 +181,7 @@ describe 'CQ instance' do
     expect(
       command(
         'curl http://localhost:4502/libs/granite/core/content/login.html '\
-        '-sw "%{http_code}"'
+        '-sw "%{http_code}" -o /dev/null'
       ).stdout
     ).to match('200')
   end
