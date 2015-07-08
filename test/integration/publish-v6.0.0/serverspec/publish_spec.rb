@@ -93,7 +93,7 @@ describe 'CQ init script' do
     ).to match('PID_DIR="\$CQ_HOME/crx-quickstart/conf"')
     expect(
       file('/etc/init.d/cq60-publish').content
-    ).to match('KILL_DEALY=120')
+    ).to match('KILL_DELAY=120')
     expect(
       file('/etc/init.d/cq60-publish').content
     ).to match('sleep 5')
