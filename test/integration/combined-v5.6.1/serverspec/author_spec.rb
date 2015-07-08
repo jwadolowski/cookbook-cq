@@ -96,6 +96,9 @@ describe 'CQ init script' do
     ).to match('KILL_DELAY=120')
     expect(
       file('/etc/init.d/cq56-author').content
+    ).to match('sleep 5')
+    expect(
+      file('/etc/init.d/cq56-author').content
     ).to match(
       'CQ_CONF_FILE=/opt/cq/author/crx-quickstart/conf/cq56-author.conf')
     expect(

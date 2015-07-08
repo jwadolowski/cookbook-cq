@@ -96,6 +96,9 @@ describe 'CQ init script' do
     ).to match('KILL_DEALY=120')
     expect(
       file('/etc/init.d/cq60-publish').content
+    ).to match('sleep 5')
+    expect(
+      file('/etc/init.d/cq60-publish').content
     ).to match(
       'CQ_CONF_FILE=/opt/cq/publish/crx-quickstart/conf/cq60-publish.conf')
     expect(
