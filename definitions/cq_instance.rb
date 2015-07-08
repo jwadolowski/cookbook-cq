@@ -124,7 +124,9 @@ define :cq_instance,
     source 'cq.conf.erb'
     variables(
       :port => node['cq'][local_id]['port'],
+      :jmx_ip => node['cq'][local_id]['jmx_ip'],
       :jmx_port => node['cq'][local_id]['jmx_port'],
+      :debug_ip => node['cq'][local_id]['debug_ip'],
       :debug_port => node['cq'][local_id]['debug_port'],
       :instance_home => instance_home,
       :run_mode => node['cq'][local_id]['run_mode'],

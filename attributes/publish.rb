@@ -20,7 +20,9 @@
 # CQ publish attributes
 default['cq']['publish']['run_mode'] = 'publish'
 default['cq']['publish']['port'] = '4503'
+default['cq']['publish']['jmx_ip'] = ''
 default['cq']['publish']['jmx_port'] = ''
+default['cq']['publish']['debug_ip'] = ''
 default['cq']['publish']['debug_port'] = ''
 default['cq']['publish']['credentials']['login'] = 'admin'
 default['cq']['publish']['credentials']['password'] = 'admin'
