@@ -87,24 +87,36 @@ describe 'CQ init script' do
     expect(file('/etc/init.d/cq56-author')).to be_grouped_into('root')
   end
 
-  it 'contains valid content' do
+  it 'contains PID_DIR line' do
     expect(
       file('/etc/init.d/cq56-author').content
     ).to match('PID_DIR="\$CQ_HOME/crx-quickstart/conf"')
+  end
+
+  it 'contains KILL_DELAY line' do
     expect(
       file('/etc/init.d/cq56-author').content
     ).to match('KILL_DELAY=120')
+  end
+
+  it 'contains sleep between stop and start' do
     expect(
       file('/etc/init.d/cq56-author').content
     ).to match('sleep 5')
+  end
+
+  it 'contains CQ_CONF_FILE variable for author' do
     expect(
       file('/etc/init.d/cq56-author').content
     ).to match(
       'CQ_CONF_FILE=/opt/cq/author/crx-quickstart/conf/cq56-author.conf')
+  end
+
+  it 'does not contain CQ_CONF_FILE variable for publish' do
     expect(
       file('/etc/init.d/cq56-author').content
     ).not_to match(
-      'CQ_CONF_FILE=/opt/cq/publish/crx-quickstart/conf/cq56-author.conf')
+      'CQ_CONF_FILE=/opt/cq/author/crx-quickstart/conf/cq56-publish.conf')
   end
 end
 
