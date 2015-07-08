@@ -32,8 +32,9 @@ default['cq']['jar']['url'] = ''
 default['cq']['license']['url'] = ''
 # default['cq']['license']['checksum'] = ''
 
-default['cq']['start_timeout'] = 1800
-default['cq']['service_kill_delay'] = 120
+default['cq']['service']['start_timeout'] = 1800
+default['cq']['service']['kill_delay'] = 120
+default['cq']['service']['restart_sleep'] = 5
 
 # Java attributes
 # -----------------------------------------------------------------------------

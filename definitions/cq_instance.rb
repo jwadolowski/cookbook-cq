@@ -109,7 +109,8 @@ define :cq_instance,
                          node['cq']['home_dir'],
                          local_id
                        )}/#{daemon_name}.conf",
-      :kill_delay => node['cq']['service_kill_delay']
+      :kill_delay => node['cq']['service']['kill_delay'],
+      :restart_sleep => node['cq']['service']['restart_sleep']
     )
   end
 
@@ -170,7 +171,7 @@ define :cq_instance,
                       node['cq']['healthcheck_resource'])
 
       # Start timeout
-      timeout = node['cq']['start_timeout']
+      timeout = node['cq']['service']['start_timeout']
 
       response = '-1'
       start_time = Time.now
