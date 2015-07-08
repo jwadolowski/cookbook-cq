@@ -29,7 +29,7 @@ define :cq_instance,
   daemon_name = cq_daemon_name(local_id)
 
   Chef::Log.warn "Attribute node['cq']['#{params[:id]}']['mode'] is now "\
-    "deprecated and can be safely removed." if node['cq'][local_id]['mode']
+    'deprecated and can be safely removed.' if node['cq'][local_id]['mode']
 
   # Create CQ instance directory
   # ---------------------------------------------------------------------------
@@ -103,11 +103,13 @@ define :cq_instance,
     source 'cq.init.erb'
     variables(
       :daemon_name => daemon_name,
-      :full_name => "Adobe CQ #{node['cq']['version']}"\
-                    " #{local_id.to_s.capitalize}",
-      :conf_file => "#{cq_instance_conf_dir(node['cq']['home_dir'],
-                                            local_id)}/"\
-                                            "#{daemon_name}.conf"
+      :full_name => "Adobe CQ #{node['cq']['version']} "\
+                    "#{local_id.to_s.capitalize}",
+      :conf_file => "#{cq_instance_conf_dir(
+                         node['cq']['home_dir'],
+                         local_id
+                       )}/#{daemon_name}.conf",
+      :kill_delay => node['cq']['service_kill_delay']
     )
   end
 

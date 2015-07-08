@@ -44,7 +44,7 @@ LOG_DIR="$CQ_HOME/crx-quickstart/logs"
 EXEC=". $CQ_CONF_FILE; $EXP_PATH bash $CQ_HOME/crx-quickstart/bin/start 2>$LOG_DIR/start_error.log > $LOG_DIR/start.log"
 
 # Kill delay
-KILL_DELAY=60
+KILL_DELAY=<%= @kill_delay %>
 
 lockfile=/var/lock/subsys/$PROG
 
