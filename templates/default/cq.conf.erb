@@ -47,17 +47,10 @@ CQ_CODE_CACHE="-XX:ReservedCodeCacheSize=${CQ_CODE_CACHE}m"
 CQ_GC_OPTS="<%= @jvm_gc_opts %>"
 CQ_JMX_OPTS="<%= @jvm_jmx_opts %>"
 CQ_DEBUG_OPTS="<%= @jvm_debug_opts %>"
+CQ_CRX_OPTS="<%= @jvm_crx_opts %>"
 CQ_EXTRA_OPTS="<%= @jvm_extra_opts %>"
 
 # -----------------------------------------------------------------------------
 # do not configure below this point
 # -----------------------------------------------------------------------------
-export CQ_JVM_OPTS="${CQ_GENERAL_OPTS} \
-                    -Xms${CQ_MIN_HEAP}m \
-                    -Xmx${CQ_MAX_HEAP}m \
-                    -XX:MaxPermSize=${CQ_MAX_PERMSIZE}m \
-                    ${CQ_CODE_CACHE} \
-                    ${CQ_GC_OPTS} \
-                    ${CQ_JMX_OPTS} \
-                    ${CQ_DEBUG_OPTS} \
-                    ${CQ_EXTRA_OPTS}"
+export CQ_JVM_OPTS="${CQ_GENERAL_OPTS} -Xms${CQ_MIN_HEAP}m -Xmx${CQ_MAX_HEAP}m -XX:MaxPermSize=${CQ_MAX_PERMSIZE}m ${CQ_CODE_CACHE} ${CQ_GC_OPTS} ${CQ_JMX_OPTS} ${CQ_DEBUG_OPTS} ${CQ_CRX_OPTS} ${CQ_EXTRA_OPTS}"
