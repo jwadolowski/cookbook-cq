@@ -1,4 +1,0 @@
-source 'https://rubygems.org'
-
-gem 'serverspec', '2.19.0'
-gem 'specinfra',  '2.36.16'
