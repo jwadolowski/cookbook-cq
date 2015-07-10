@@ -157,7 +157,7 @@ Detailed examples can be found in package test recipes:
 * [recipes/_package_aem600.rb](recipes/_package_aem600.rb)
 
 ```ruby
-cq_package "Slice 4.2.1" do
+cq_package 'Slice 4.2.1' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -167,7 +167,7 @@ cq_package "Slice 4.2.1" do
   action :upload
 end
 
-cq_package " Upgrade to Oak 1.0.13" do
+cq_package 'Upgrade to Oak 1.0.13' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -179,7 +179,7 @@ cq_package " Upgrade to Oak 1.0.13" do
   action :upload
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.2" do
+cq_package 'ACS AEM Commons 1.10.2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -190,7 +190,7 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.2" do
   action [:upload, :install]
 end
 
-cq_package "Author: HF 6316" do
+cq_package 'AEM6 hotfix 6316' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -202,7 +202,7 @@ cq_package "Author: HF 6316" do
   notifies :restart, 'service[cq60-author]', :immediately
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: Geometrixx All" do
+cq_package 'Geometrixx All' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -214,7 +214,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Geometrixx All" do
   action :uninstall
 end
 
-cq_package "Author: Service Pack 2 (upload)" do
+cq_package 'Author: Service Pack 2 (upload)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -223,7 +223,7 @@ cq_package "Author: Service Pack 2 (upload)" do
   action :upload
 end
 
-cq_package "Author: Service Pack 2 (install)" do
+cq_package 'Author: Service Pack 2 (install)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -266,7 +266,7 @@ Please notice that both resources were named differently on purpose
 to avoid resource merge and 2 restarts. If you'd use:
 
 ```ruby
-cq_package "Author: Service Pack 2" do
+cq_package 'Author: Service Pack 2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -282,7 +282,7 @@ end
 or
 
 ```ruby
-cq_package "Author: Service Pack 2" do
+cq_package 'Author: Service Pack 2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -291,7 +291,7 @@ cq_package "Author: Service Pack 2" do
   action :upload
 end
 
-cq_package "Author: Service Pack 2" do
+cq_package 'Author: Service Pack 2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
