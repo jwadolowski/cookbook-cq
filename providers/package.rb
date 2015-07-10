@@ -711,12 +711,77 @@ def install_package
     Chef::Log.error("#{json_resp} is not a parsable JSON: #{e}")
   end
 
-  Chef::Application.fatal!('Not successful package installation: ' +
+  Chef::Application.fatal!('Not successful package operation: ' +
                             output[0]) if json_resp['success'] != true
 
   # Wait for stable state of OSGi bundles. Installation of a package (hotfixes/
   # service packs in particular) may cause a lot bundle restarts, which
   # prevents further operations against CQ/AEM APIs.
+  osgi_stability_healthcheck
+end
+
+# Uninstalls given CQ package
+#
+# cqrev command from CQ UNIX Toolkit uses old Package Manager API, hence it
+# can't be used here (same reasons as for install action)
+#
+# Stdout of curl command:
+# <response_json>;<http_status>
+#
+# Example:
+# {"msg": "Package uninstalled", "success": true};200
+def uninstall_package
+  require 'json'
+
+  cmd_str = "curl -s -X POST -w ';%{http_code}' "\
+            "-u #{new_resource.username}:#{new_resource.password} "\
+            "#{new_resource.instance}/crx/packmgr/service/.json/etc/packages"
+
+  # Empty group fix
+  if @crx_group.empty?
+    cmd_str += "/#{@crx_downloadname}?cmd=uninstall"
+  else
+    cmd_str += "/#{@crx_group}/#{@crx_downloadname}?cmd=uninstall"
+  end
+
+  cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 1800)
+  Chef::Log.info "Uninstalling package #{new_resource.name}"
+  cmd.run_command
+
+  begin
+    cmd.error!
+    Chef::Log.info "Package #{new_resource.name} has been successfully "\
+      'uninstalled.'
+  rescue => e
+    Chef::Application.fatal!("Can't uninstall package #{new_resource.name}!\n"\
+                             "Error description: #{e}")
+  end
+
+  # Invalidate internal cache after package uninstallation
+  @package_list = nil
+
+  # Split the output
+  #
+  # output[0] => JSON returned by CRX Package Manager API
+  # output[1] => response code
+  output = cmd.stdout.split(/;(?=[0-9]{3}$)/)
+
+  # Parse HTTP response status code
+  Chef::Application.fatal!('CRX Package Manager returned non-200 response '\
+                          "code: #{output[1]}!") if output[1] != '200'
+
+  # Parse JSON returned by API
+  begin
+    json_resp = JSON.parse(output[0])
+  rescue => e
+    Chef::Log.error("#{json_resp} is not a parsable JSON: #{e}")
+  end
+
+  Chef::Application.fatal!('Not successful package operation: ' +
+                            output[0]) if json_resp['success'] != true
+
+  # Wait for stable state of OSGi bundles (every operation that affects OSGi
+  # should do that)
   osgi_stability_healthcheck
 end
 
@@ -768,6 +833,20 @@ action :deploy do
       init_crx_attributes
 
       install_package
+    end
+  end
+end
+
+action :uninstall do
+  if @current_resource.installed
+    converge_by("Uninstall #{new_resource}") do
+      uninstall_package
+    end
+  else
+    if @current_resource.uploaded
+      Chef::Log.warn("Package #{new_resource} is already uninstalled")
+    else
+      Chef::Log.warn("Can't uninstall not existing package!")
     end
   end
 end
