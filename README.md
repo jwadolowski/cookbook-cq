@@ -80,9 +80,9 @@ Key features:
 
 ---
 
-If you'd like to upload and install package, in most cases please use `deploy`
-action instead of combined `upload` and `install`. Detailed explanation can be
-found below.
+If you'd like to upload and install a package, in most cases please use
+`deploy` action instead of combined `upload` and `install`. Detailed
+explanation can be found below.
 
 ---
 
@@ -160,7 +160,45 @@ found below.
 
 ### Usage
 
-Detailed examples can be found in package test recipes:
+---
+
+Whenever you need to deploy 2 or more CQ/AEM instances on a single server
+please mane sure you named `cq_package` resources differently, as you may get
+unexpected results, in particular when CQ/AEM restart is required afterwards.
+
+Bad:
+```ruby
+cq_package 'package1' do
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :deploy
+end
+
+cq_package 'package1' do
+  instance "http://localhost:#{node['cq']['publish']['port']}"
+
+  action :deploy
+end
+```
+
+Good:
+```ruby
+cq_package 'Author: package1' do
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :deploy
+end
+
+cq_package 'Publish: package1' do
+  instance "http://localhost:#{node['cq']['publish']['port']}"
+
+  action :deploy
+end
+```
+
+---
+
+More comprehensive examples can be found in package test recipes:
 
 * [recipes/_package_aem561.rb](recipes/_package_aem561.rb)
 * [recipes/_package_aem600.rb](recipes/_package_aem600.rb)
