@@ -4,7 +4,8 @@ This is CQ/AEM cookbook that is primarily a library cookbook. It heavily uses
 and relies on [CQ Unix Toolkit](https://github.com/Cognifide/CQ-Unix-Toolkit).
 
 FYI, this cookbook is not called `aem-coobkook` because of the fact when I
-started development there was no AEM yet and I simply like CQ name much better.
+started development there was no AEM yet and I simply like the old name much
+better.
 
 # Supported platforms
 
@@ -50,7 +51,7 @@ TBD
 
 ---
 
-All LWRPs are idempotent, so action won't be taken if it is not required.
+All LWRPs are idempotent, so action won't be taken if it's not required.
 
 ---
 
@@ -59,10 +60,15 @@ All LWRPs are idempotent, so action won't be taken if it is not required.
 It allows for CRX package manipulation using CRX Package Manager API.
 
 Key features:
-* package specific details (name, group, version) are always extracted from its
-  metadata (`/META-INF/vault/properties.xml` inside ZIP file and CRX Package
-  Manager API for already uploaded/installed packages)
-* all packages are downloaded to Chef's cache (by default: `/var/chef/cache`)
+* package specific details (name, group, version) are always extracted from
+  `/META-INF/vault/properties.xml` inside ZIP file and/or CRX Package
+  Manager API for already uploaded/installed packages, so you don't have to
+  define that anywhere else. All you need is an URL to your package
+* packages are automatically downloaded from remote (`http://`, `https://`) or
+  local (`file://`) sources. If HTTP(S) source requires basic auth it is also
+  supported (`http_user` and `http_pass` respectively for user and password)
+* be default all packages are downloaded to Chef's cache (`/var/chef/cache`),
+  but it can be easily reconfigured (`node['cq']['package_cache']`)
 * `cq_package` resource is version aware, so defined actions are always
   executed for given package version
 * installation process is considered finished only when both "foreground"
@@ -73,7 +79,9 @@ Key features:
 
 ---
 
-If your goal is to upload and install package, please use `deploy` action.
+If you'd like to upload and install package, in most cases please use `deploy`
+action instead of combined `upload` and `install`. Detailed explanation can be
+found below.
 
 ---
 
