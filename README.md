@@ -5,7 +5,8 @@ and relies on [CQ Unix Toolkit](https://github.com/Cognifide/CQ-Unix-Toolkit).
 
 FYI, this cookbook is not called `aem-coobkook` because of the fact when I
 started development there was no AEM yet and I simply like the old name much
-better.
+better. Nowadays it seems to be already taken anyway, so I no longer have a
+choice ;)
 
 # Supported platforms
 
@@ -51,13 +52,13 @@ TBD
 
 ---
 
-All LWRPs are idempotent, so action won't be taken if it's not required.
+All LWRPs are idempotent, so action won't be taken if not required.
 
 ---
 
 ## cq_package
 
-It allows for CRX package manipulation using CRX Package Manager API.
+Allows for CRX package manipulation using CRX Package Manager API.
 
 Key features:
 * package specific details (name, group, version) are always extracted from
@@ -244,8 +245,8 @@ cq_package 'Author: Service Pack 2 (install)' do
 end
 ```
 
-First `cq_package` resource will download Slice package from provided URL to
-Chef's cache and upload it to defined AEM Author instance.
+First `cq_package` resource will download Slice package from provided URL and
+upload it to defined AEM Author instance.
 
 Second resource does the same as the first one, but for Oak 1.0.13 hotfix. The
 only difference is that provided URL requires basic auth, hence the `http_user`
@@ -260,7 +261,7 @@ package deployment, in particular for those that require AEM service restart
 as soon as installation is completed. `recursive_install` was also used here,
 which is required for majority of hotfixes and every service pack.
 
-Next example describes usage of `uninstall` action. It this particular case
+Next example describes usage of `uninstall` action. In this particular case
 operation was executed against Geometrixx package.
 
 6th & 7th `cq_package` resources explain how to deal with AEM instance
@@ -557,7 +558,7 @@ resource definition.
 
 `Jobs Queue` resource will delete a factory instance of
 `org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
-properties. When there's no such instance already no action will be performed.
+properties. Nothing will happen when there's no such OSGi config.
 
 # Testing
 
