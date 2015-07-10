@@ -458,7 +458,15 @@ For factory configs:
 
 ### Usage
 
-More comprehensive examples can be found here:
+---
+
+Similar to `cq_package` please make sure you named your resources variously if
+more than a single CQ/AEM instance is deployed and managed by Chef on a single
+server.
+
+---
+
+Detailed examples can be found here:
 
 * [recipes/_osgi_config_create_regular.rb](recipes/_osgi_config_create_regular.rb)
 * [recipes/_osgi_config_create_factory.rb](recipes/_osgi_config_create_factory.rb)
