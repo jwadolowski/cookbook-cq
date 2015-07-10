@@ -81,7 +81,8 @@ If your goal is to upload and install package, please use `deploy` action.
 * `install` - installs already uploaded package
 * `deploy` - uploads and installs given package as a single action. This action
   is quicker than separate `upload` + `install` as less healthchecks have to be
-  executed.
+  executed
+* `uninstall` - uninstalls given CQ package
 
 ### Parameter Attributes
 
@@ -201,6 +202,18 @@ cq_package "Author: HF 6316" do
   notifies :restart, 'service[cq60-author]', :immediately
 end
 
+cq_package "#{node['cq']['author']['run_mode']}: Geometrixx All" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source "http://localhost:#{node['cq']['author']['port']}/etc/packages"\
+    '/day/cq60/product/cq-geometrixx-all-pkg-5.7.476.zip'
+  http_user node['cq']['author']['credentials']['login']
+  http_pass node['cq']['author']['credentials']['password']
+
+  action :uninstall
+end
+
 cq_package "Author: Service Pack 2 (upload)" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -227,7 +240,7 @@ First `cq_package` resource will download Slice package from provided URL to
 Chef's cache and upload it to defined AEM Author instance.
 
 Second resource does the same as the first one, but for Oak 1.0.13 hotfix. The
-only difference is that provided URL requies basic auth, hence the `http_user`
+only difference is that provided URL requires basic auth, hence the `http_user`
 and `http_pass` attributes.
 
 Third package shows how to combine multiple actions in a single `cq_package`
@@ -239,7 +252,10 @@ package deployment, in particular for those that require AEM service restart
 as soon as installation is completed. `recursive_install` was also used here,
 which is required for majority of hotfixes and every service pack.
 
-5th & 6th `cq_package` resources explains how to deal with AEM instance
+Next example describes usage of `uninstall` action. It this particular case
+operation was executed against Geometrixx package.
+
+6th & 7th `cq_package` resources explain how to deal with AEM instance
 restarts after package installation.
 
 Moreover it explains how to use combination of `upload` and `install` instead
