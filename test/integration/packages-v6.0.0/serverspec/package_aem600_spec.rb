@@ -375,14 +375,16 @@ describe 'Geometrixx package' do
         @package_list
       )
     ).to be true
+  end
 
+  it 'its subpackages are not uploaded' do
     expect(
       @package_helper.package_exists(
         'cq-geometrixx-media-ugc-pkg',
         '5\.7\.10',
         @package_list
       )
-    ).to be true
+    ).to be false
 
     expect(
       @package_helper.package_exists(
@@ -390,7 +392,7 @@ describe 'Geometrixx package' do
         '5\.7\.24',
         @package_list
       )
-    ).to be true
+    ).to be false
   end
 
   it 'is not installed' do
@@ -401,7 +403,9 @@ describe 'Geometrixx package' do
         @package_list
       )
     ).to be false
+  end
 
+  it 'its subpackages are not installed' do
     expect(
       @package_helper.package_installed(
         'cq-geometrixx-media-ugc-pkg',
