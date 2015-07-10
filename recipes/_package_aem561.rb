@@ -218,3 +218,16 @@ cq_package "#{node['cq']['author']['run_mode']}: HF4990" do
 
   notifies :restart, 'service[cq56-author]', :immediately
 end
+
+# Uninstall Geometrixx package
+cq_package "#{node['cq']['author']['run_mode']}: Geometrixx All" do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source "http://localhost:#{node['cq']['author']['port']}/etc/packages"\
+    '/day/cq561/product/cq-geometrixx-all-pkg-5.6.12.zip'
+  http_user node['cq']['author']['credentials']['login']
+  http_pass node['cq']['author']['credentials']['password']
+
+  action :uninstall
+end
