@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-actions :upload, :install, :deploy
+actions :upload, :install, :deploy, :uninstall
 
 default_action :nothing
 

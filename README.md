@@ -4,7 +4,9 @@ This is CQ/AEM cookbook that is primarily a library cookbook. It heavily uses
 and relies on [CQ Unix Toolkit](https://github.com/Cognifide/CQ-Unix-Toolkit).
 
 FYI, this cookbook is not called `aem-coobkook` because of the fact when I
-started development there was no AEM yet and I simply like CQ name much better.
+started development there was no AEM yet and I simply like the old name much
+better. Nowadays it seems to be already taken anyway, so I no longer have a
+choice ;)
 
 # Supported platforms
 
@@ -50,19 +52,24 @@ TBD
 
 ---
 
-All LWRPs are idempotent, so action won't be taken if it is not required.
+All LWRPs are idempotent, so action won't be taken if not required.
 
 ---
 
 ## cq_package
 
-It allows for CRX package manipulation using CRX Package Manager API.
+Allows for CRX package manipulation using CRX Package Manager API.
 
 Key features:
-* package specific details (name, group, version) are always extracted from its
-  metadata (`/META-INF/vault/properties.xml` inside ZIP file and CRX Package
-  Manager API for already uploaded/installed packages)
-* all packages are downloaded to Chef's cache (by default: `/var/chef/cache`)
+* package specific details (name, group, version) are always extracted from
+  `/META-INF/vault/properties.xml` inside ZIP file and/or CRX Package
+  Manager API for already uploaded/installed packages, so you don't have to
+  define that anywhere else. All you need is an URL to your package
+* packages are automatically downloaded from remote (`http://`, `https://`) or
+  local (`file://`) sources. If HTTP(S) source requires basic auth it is also
+  supported (`http_user` and `http_pass` respectively for user and password)
+* be default all packages are downloaded to Chef's cache (`/var/chef/cache`),
+  but it can be easily reconfigured (`node['cq']['package_cache']`)
 * `cq_package` resource is version aware, so defined actions are always
   executed for given package version
 * installation process is considered finished only when both "foreground"
@@ -73,7 +80,9 @@ Key features:
 
 ---
 
-If your goal is to upload and install package, please use `deploy` action.
+If you'd like to upload and install a package, in most cases please use
+`deploy` action instead of combined `upload` and `install`. Detailed
+explanation can be found below.
 
 ---
 
@@ -81,7 +90,8 @@ If your goal is to upload and install package, please use `deploy` action.
 * `install` - installs already uploaded package
 * `deploy` - uploads and installs given package as a single action. This action
   is quicker than separate `upload` + `install` as less healthchecks have to be
-  executed.
+  executed
+* `uninstall` - uninstalls given CQ package
 
 ### Parameter Attributes
 
@@ -150,13 +160,51 @@ If your goal is to upload and install package, please use `deploy` action.
 
 ### Usage
 
-Detailed examples can be found in package test recipes:
+---
+
+Whenever you need to deploy 2 or more CQ/AEM instances on a single server
+please mane sure you named `cq_package` resources differently, as you may get
+unexpected results, in particular when CQ/AEM restart is required afterwards.
+
+Bad:
+```ruby
+cq_package 'package1' do
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :deploy
+end
+
+cq_package 'package1' do
+  instance "http://localhost:#{node['cq']['publish']['port']}"
+
+  action :deploy
+end
+```
+
+Good:
+```ruby
+cq_package 'Author: package1' do
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :deploy
+end
+
+cq_package 'Publish: package1' do
+  instance "http://localhost:#{node['cq']['publish']['port']}"
+
+  action :deploy
+end
+```
+
+---
+
+More comprehensive examples can be found in package test recipes:
 
 * [recipes/_package_aem561.rb](recipes/_package_aem561.rb)
 * [recipes/_package_aem600.rb](recipes/_package_aem600.rb)
 
 ```ruby
-cq_package "Slice 4.2.1" do
+cq_package 'Slice 4.2.1' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -166,7 +214,7 @@ cq_package "Slice 4.2.1" do
   action :upload
 end
 
-cq_package " Upgrade to Oak 1.0.13" do
+cq_package 'Upgrade to Oak 1.0.13' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -178,7 +226,7 @@ cq_package " Upgrade to Oak 1.0.13" do
   action :upload
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.2" do
+cq_package 'ACS AEM Commons 1.10.2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -189,7 +237,7 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.2" do
   action [:upload, :install]
 end
 
-cq_package "Author: HF 6316" do
+cq_package 'AEM6 hotfix 6316' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -201,7 +249,19 @@ cq_package "Author: HF 6316" do
   notifies :restart, 'service[cq60-author]', :immediately
 end
 
-cq_package "Author: Service Pack 2 (upload)" do
+cq_package 'Geometrixx All' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source "http://localhost:#{node['cq']['author']['port']}/etc/packages"\
+    '/day/cq60/product/cq-geometrixx-all-pkg-5.7.476.zip'
+  http_user node['cq']['author']['credentials']['login']
+  http_pass node['cq']['author']['credentials']['password']
+
+  action :uninstall
+end
+
+cq_package 'Author: Service Pack 2 (upload)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -210,7 +270,7 @@ cq_package "Author: Service Pack 2 (upload)" do
   action :upload
 end
 
-cq_package "Author: Service Pack 2 (install)" do
+cq_package 'Author: Service Pack 2 (install)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -223,11 +283,11 @@ cq_package "Author: Service Pack 2 (install)" do
 end
 ```
 
-First `cq_package` resource will download Slice package from provided URL to
-Chef's cache and upload it to defined AEM Author instance.
+First `cq_package` resource will download Slice package from provided URL and
+upload it to defined AEM Author instance.
 
 Second resource does the same as the first one, but for Oak 1.0.13 hotfix. The
-only difference is that provided URL requies basic auth, hence the `http_user`
+only difference is that provided URL requires basic auth, hence the `http_user`
 and `http_pass` attributes.
 
 Third package shows how to combine multiple actions in a single `cq_package`
@@ -239,7 +299,10 @@ package deployment, in particular for those that require AEM service restart
 as soon as installation is completed. `recursive_install` was also used here,
 which is required for majority of hotfixes and every service pack.
 
-5th & 6th `cq_package` resources explains how to deal with AEM instance
+Next example describes usage of `uninstall` action. In this particular case
+operation was executed against Geometrixx package.
+
+6th & 7th `cq_package` resources explain how to deal with AEM instance
 restarts after package installation.
 
 Moreover it explains how to use combination of `upload` and `install` instead
@@ -250,7 +313,7 @@ Please notice that both resources were named differently on purpose
 to avoid resource merge and 2 restarts. If you'd use:
 
 ```ruby
-cq_package "Author: Service Pack 2" do
+cq_package 'Author: Service Pack 2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -266,7 +329,7 @@ end
 or
 
 ```ruby
-cq_package "Author: Service Pack 2" do
+cq_package 'Author: Service Pack 2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -275,7 +338,7 @@ cq_package "Author: Service Pack 2" do
   action :upload
 end
 
-cq_package "Author: Service Pack 2" do
+cq_package 'Author: Service Pack 2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -395,7 +458,15 @@ For factory configs:
 
 ### Usage
 
-More comprehensive examples can be found here:
+---
+
+Similar to `cq_package` please make sure you named your resources variously if
+more than a single CQ/AEM instance is deployed and managed by Chef on a single
+server.
+
+---
+
+Detailed examples can be found here:
 
 * [recipes/_osgi_config_create_regular.rb](recipes/_osgi_config_create_regular.rb)
 * [recipes/_osgi_config_create_factory.rb](recipes/_osgi_config_create_factory.rb)
@@ -533,7 +604,7 @@ resource definition.
 
 `Jobs Queue` resource will delete a factory instance of
 `org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
-properties. When there's no such instance already no action will be performed.
+properties. Nothing will happen when there's no such OSGi config.
 
 # Testing
 
