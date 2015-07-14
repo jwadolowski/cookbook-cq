@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cq
-# Recipe:: publish
+# Provider:: user
 #
 # Copyright (C) 2015 Jakub Wadolowski
 #
@@ -16,13 +16,3 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-# Make sure that all prerequisites are in place
-# -----------------------------------------------------------------------------
-include_recipe 'cq::commons'
-
-# Create publish instance
-# -----------------------------------------------------------------------------
-cq_instance "CQ Publish" do
-  id 'publish'
-end
