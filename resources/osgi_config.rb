@@ -21,32 +21,18 @@ actions :create, :delete
 
 default_action :create
 
-attribute :pid,
-          :kind_of => String,
-          :name_attribute => true,
-          :required => true
-attribute :factory_pid,
-          :kind_of => String,
-          :required => false
-attribute :properties,
-          :kind_of => Hash,
-          :required => true
-attribute :append,
-          :kind_of => [TrueClass, FalseClass],
-          :default => false,
-          :required => false
-attribute :force,
-          :kind_of => [TrueClass, FalseClass],
-          :default => false,
-          :required => false
-attribute :username,
-          :kind_of => String,
-          :required => true
-attribute :password,
-          :kind_of => String,
-          :required => true
-attribute :instance,
-          :kind_of => String,
-          :required => true
+attribute :pid,         :kind_of => String, :name_attribute => true,
+                        :required => true
+attribute :username,    :kind_of => String, :required => true
+attribute :password,    :kind_of => String, :required => true
+attribute :instance,    :kind_of => String, :required => true
+attribute :factory_pid, :kind_of => String, :required => false
+attribute :properties,  :kind_of => Hash, :required => true
+attribute :append,      :kind_of => [TrueClass, FalseClass],
+                        :required => false,
+                        :default => false
+attribute :force,       :kind_of => [TrueClass, FalseClass],
+                        :required => false,
+                        :default => false
 
 attr_accessor :exists, :factory_pid_exists, :valid
