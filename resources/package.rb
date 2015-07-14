@@ -22,7 +22,7 @@ actions :upload, :install, :deploy, :uninstall
 default_action :nothing
 
 attribute :name,              :kind_of => String, :required => true,
-                              :name_attribute => true,
+                              :name_attribute => true
 attribute :username,          :kind_of => String, :required => true
 attribute :password,          :kind_of => String, :required => true
 attribute :instance,          :kind_of => String, :required => true
