@@ -123,8 +123,6 @@ class Chef
           new_hash = digest.to_s.scan(/../).map(&:hex)
         end
 
-        Chef::Log.error("Calculated hash: #{digest}")
-
         digest.to_s
       end
 
