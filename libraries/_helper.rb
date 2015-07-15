@@ -48,5 +48,20 @@ module Cq
     rescue => e
       Chef::Application.fatal!("Unable to parse #{str} as JSON: #{e}")
     end
+
+    def http_post(addr, path, user, password, payload)
+      uri = uri_parser(addr, path)
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http_req = Net::HTTP::Post.new(uri.request_uri)
+      http_req.basic_auth(user, password)
+      http_req.set_form_data(payload)
+
+      begin
+        http.request(http_req)
+      rescue => e
+        Chef::Log.error("Unable to send POST request: #{e}")
+      end
+    end
   end
 end
