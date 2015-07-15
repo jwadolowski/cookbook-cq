@@ -95,10 +95,14 @@ class Chef
       #
       # https://gist.github.com/trekawek/9955166
       def hash_decoder
-        if current_resource.password_hash =~ /^\{(.+)\}(\w+)-((\d+)-)?(\w+)$/
-          @current_resource.hash_algo = $1
-          @current_resource.hash_salt = $2
-          @current_resource.hash_iter = $4.to_i if $4
+        m = current_resource.password_hash.match(
+          /^\{(?<algo>.+)\}(?<salt>\w+)-(?<iter>(\d+)-)?(?<hash>\w+)$/
+        )
+
+        if m
+          @current_resource.hash_algo = m['algo']
+          @current_resource.hash_salt = m['salt']
+          @current_resource.hash_iter = m['iter'].to_i if m['iter']
         else
           Chef::Application.fatal!('Unsupported hash format!')
         end
@@ -119,7 +123,7 @@ class Chef
           new_hash = digest.to_s.scan(/../).map(&:hex)
         end
 
-        Chef::Log.error("Calculated hash: #{digest.to_s}")
+        Chef::Log.error("Calculated hash: #{digest}")
 
         digest.to_s
       end
