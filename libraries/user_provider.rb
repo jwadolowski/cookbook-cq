@@ -51,6 +51,13 @@ class Chef
       end
 
       def action_modify
+        if password_update?
+          converge_by("Update user #{new_resource.id}") do
+            password_updater
+          end
+        else
+          Chef::Log.info("User #{new_resource.id} is already configured")
+        end
       end
 
       def user_path
@@ -134,6 +141,24 @@ class Chef
           hash_generator(new_resource.user_password)
         )
         true
+      end
+
+      def password_updater
+        req_path = current_resource.path + '.rw.userprops.html'
+
+        payload = {
+          'rep:password' => new_resource.user_password,
+          ':currentPassword' => new_resource.password,
+          '_charset_' => 'utf-8'
+        }
+
+        http_post(
+          new_resource.instance,
+          req_path,
+          new_resource.username,
+          new_resource.password,
+          payload
+        )
       end
     end
   end
