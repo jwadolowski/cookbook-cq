@@ -27,6 +27,7 @@ class Chef
       attr_accessor :hash_algo
       attr_accessor :hash_salt
       attr_accessor :hash_iter
+      attr_accessor :profile
 
       def initialize(name, run_context = nil)
         super
@@ -42,6 +43,16 @@ class Chef
         @email = nil
         @first_name = nil
         @last_name = nil
+        @phone_number = nil
+        @job_title = nil
+        @street = nil
+        @mobile = nil
+        @city = nil
+        @postal_code = nil
+        @country = nil
+        @state = nil
+        @gender = nil
+        @about = nil
         @user_password = nil
       end
 
@@ -73,12 +84,48 @@ class Chef
         set_or_return(:last_name, arg, :kind_of => String)
       end
 
-      def enable(arg = nil)
-        set_or_return(:last_name, arg, :kind_of => [TrueClass, FalseClass])
+      def phone_number(arg = nil)
+        set_or_return(:phone_number, arg, :kind_of => String)
+      end
+
+      def job_title(arg = nil)
+        set_or_return(:job_title, arg, :kind_of => String)
+      end
+
+      def street(arg = nil)
+        set_or_return(:street, arg, :kind_of => String)
+      end
+
+      def mobile(arg = nil)
+        set_or_return(:mobile, arg, :kind_of => String)
+      end
+
+      def city(arg = nil)
+        set_or_return(:city, arg, :kind_of => String)
+      end
+
+      def postal_code(arg = nil)
+        set_or_return(:postal_code, arg, :kind_of => String)
+      end
+
+      def country(arg = nil)
+        set_or_return(:country, arg, :kind_of => String)
+      end
+
+      def state(arg = nil)
+        set_or_return(:state, arg, :kind_of => String)
+      end
+
+      def gender(arg = nil)
+        set_or_return(:gender, arg, :kind_of => String)
+      end
+
+      def about(arg = nil)
+        set_or_return(:about, arg, :kind_of => String)
       end
 
       def user_password(arg = nil)
-        set_or_return(:last_name, arg, :kind_of => String)
+        set_or_return(:user_password, arg, :kind_of => String)
       end
     end
   end
