@@ -30,9 +30,6 @@ class Chef
       end
 
       def load_current_resource
-        Chef::Log.error("Resource name: #{new_resource.name}")
-        Chef::Log.error("ID: #{new_resource.id}")
-
         @current_resource = Chef::Resource::CqUser.new(new_resource.id)
 
         @current_resource.path = user_path
@@ -42,24 +39,17 @@ class Chef
         hash_decoder
 
         @current_resource.profile = normalized_user_profile
-
-        Chef::Log.error("Path: #{current_resource.path}")
-        Chef::Log.error("Password hash: #{current_resource.password_hash}")
-        Chef::Log.error("Hash algorithm: #{current_resource.hash_algo}")
-        Chef::Log.error("Hash salt: #{current_resource.hash_salt}")
-        Chef::Log.error("Hash iterations: #{current_resource.hash_iter}")
-        Chef::Log.error("Password update required? #{password_update?}")
-        Chef::Log.error("Current [profile]: #{current_resource.profile}")
-        Chef::Log.error("New [profile]: #{compacted_profile}")
       end
 
       def action_modify
-        if password_update?
+        if password_update? || !profile_diff.empty?
           converge_by("Update user #{new_resource.id}") do
-            password_updater
+            profile_update
           end
         else
-          Chef::Log.info("User #{new_resource.id} is already configured")
+          Chef::Log.info(
+            "User #{new_resource.id} is already configured as defined"
+          )
         end
       end
 
@@ -146,24 +136,6 @@ class Chef
         true
       end
 
-      def password_updater
-        req_path = current_resource.path + '.rw.userprops.html'
-
-        payload = {
-          'rep:password' => new_resource.user_password,
-          ':currentPassword' => new_resource.password,
-          '_charset_' => 'utf-8'
-        }
-
-        http_post(
-          new_resource.instance,
-          req_path,
-          new_resource.username,
-          new_resource.password,
-          payload
-        )
-      end
-
       def raw_user_profile
         req_path = current_resource.path + '/profile.json'
 
@@ -223,6 +195,67 @@ class Chef
 
       def compacted_profile
         profile_from_attr.delete_if { |_k, v| v.nil? }
+      end
+
+      def profile_diff
+        diff = {}
+
+        compacted_profile.each do |k, v|
+          diff[k] = v if compacted_profile[k] != current_resource.profile[k]
+        end
+
+        diff
+      end
+
+      def profile_payload_builder
+        mappings = {
+          'email' => './profile/email',
+          'first_name' => './profile/givenName',
+          'last_name' => './profile/familyName',
+          'phone_number' => './profile/phoneNumber',
+          'job_title' => './profile/jobTitle',
+          'street' => './profile/street',
+          'mobile' => './profile/mobile',
+          'city' => './profile/city',
+          'postal_code' => './profile/postalCode',
+          'country' => './profile/country',
+          'state' => './profile/state',
+          'gender' => './profile/gender',
+          'about' => './profile/aboutMe'
+        }
+
+        profile = profile_diff
+
+        profile.keys.each do |k|
+          profile[mappings[k]] = profile.delete(k) if mappings[k]
+        end
+
+        profile
+      end
+
+      def profile_update
+        req_path = current_resource.path + '.rw.userprops.html'
+
+        payload = { '_charset_' => 'utf-8' }
+
+        # Add new password if needed
+        payload = payload.merge(
+          'rep:password' => new_resource.user_password,
+          ':currentPassword' => new_resource.password
+        ) if password_update?
+
+        # Update user profile if any change was detected
+        payload = payload.merge(
+          profile_payload_builder
+        ) unless profile_diff.empty?
+
+        http_post(
+          new_resource.instance,
+          req_path,
+          new_resource.username,
+          new_resource.password,
+          payload
+        )
       end
     end
   end
