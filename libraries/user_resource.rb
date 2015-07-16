@@ -23,10 +23,7 @@ class Chef
       provides :cq_user, :on_platforms => :all
 
       attr_accessor :path
-      attr_accessor :password_hash
-      attr_accessor :hash_algo
-      attr_accessor :hash_salt
-      attr_accessor :hash_iter
+      attr_accessor :info
       attr_accessor :profile
 
       def initialize(name, run_context = nil)

@@ -33,12 +33,12 @@ class Chef
         @current_resource = Chef::Resource::CqUser.new(new_resource.id)
 
         @current_resource.path = user_path
-        @current_resource.password_hash = user_password_hash
-
-        # Populate password hash params to class variables
-        hash_decoder
-
+        @current_resource.info = user_info
         @current_resource.profile = normalized_user_profile
+
+        Chef::Log.error("Current [path]: #{current_resource.path}")
+        Chef::Log.error("Current [info]: #{current_resource.info}")
+        Chef::Log.error("Current [profile]: #{current_resource.profile}")
       end
 
       def action_modify
@@ -64,10 +64,10 @@ class Chef
           new_resource.password
         )
 
-        parse_querybuilder_response(http_resp.body)
+        path_extractor(http_resp.body)
       end
 
-      def parse_querybuilder_response(str)
+      def path_extractor(str)
         hash = json_to_hash(str)
 
         Chef::Application.fatal!(
@@ -78,7 +78,7 @@ class Chef
         hash['hits'][0]['path']
       end
 
-      def user_password_hash
+      def user_info
         req_path = current_resource.path + '.json'
 
         http_resp = http_get(
@@ -88,24 +88,20 @@ class Chef
           new_resource.password
         )
 
-        json_to_hash(http_resp.body)['rep:password']
+        json_to_hash(http_resp.body)
       end
 
       # All credits goes to Tomasz Rekawek
       #
       # https://gist.github.com/trekawek/9955166
       def hash_decoder
-        groups = current_resource.password_hash.match(
+        hash_params = current_resource.info['rep:password'].match(
           /^\{(?<algo>.+)\}(?<salt>\w+)-(?<iter>(\d+)-)?(?<hash>\w+)$/
         )
 
-        if groups
-          @current_resource.hash_algo = groups['algo']
-          @current_resource.hash_salt = groups['salt']
-          @current_resource.hash_iter = groups['iter'].to_i if groups['iter']
-        else
-          Chef::Application.fatal!('Unsupported hash format!')
-        end
+        Chef::Application.fatal!('Unsupported hash format!') unless hash_params
+
+        hash_params
       end
 
       # All credits goes to Tomasz Rekawek
@@ -114,10 +110,21 @@ class Chef
       def hash_generator(pass)
         require 'openssl'
 
-        new_hash = (current_resource.hash_salt + pass).bytes
-        digest = OpenSSL::Digest.new(current_resource.hash_algo.gsub('-', ''))
+        # Get hash parameters
+        params = hash_decoder
 
-        1.upto(current_resource.hash_iter) do
+        algo = params['algo']
+        salt = params['salt']
+        if params['iter']
+          iter = params['iter'].to_i
+        else
+          iter = 1
+        end
+
+        new_hash = (salt + pass).bytes
+        digest = OpenSSL::Digest.new(algo.gsub('-', ''))
+
+        1.upto(iter) do
           digest.reset
           digest << new_hash.pack('c*')
           new_hash = digest.to_s.scan(/../).map(&:hex)
@@ -130,7 +137,7 @@ class Chef
       #
       # https://gist.github.com/trekawek/9955166
       def password_update?
-        return false if current_resource.password_hash.end_with?(
+        return false if current_resource.info['rep:password'].end_with?(
           hash_generator(new_resource.user_password)
         )
         true
