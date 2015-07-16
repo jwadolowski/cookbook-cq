@@ -32,7 +32,7 @@ class Chef
         super
 
         @resource_name = :cq_user
-        @allowed_actions = [:modify]
+        @allowed_actions = [:modify, :enable]
         @action = :nothing
 
         @id = name
@@ -42,7 +42,6 @@ class Chef
         @email = nil
         @first_name = nil
         @last_name = nil
-        @enable = true
         @user_password = nil
       end
 
