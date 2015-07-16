@@ -51,7 +51,7 @@ class Chef
         @gender = nil
         @about = nil
         @user_password = nil
-        @enable = true
+        @enabled = true
       end
 
       def id(arg = nil)
@@ -126,8 +126,8 @@ class Chef
         set_or_return(:user_password, arg, :kind_of => String)
       end
 
-      def enable(arg = nil)
-        set_or_return(:enable, arg, :kind_of => [TrueClass, FalseClass])
+      def enabled(arg = nil)
+        set_or_return(:enabled, arg, :kind_of => [TrueClass, FalseClass])
       end
     end
   end

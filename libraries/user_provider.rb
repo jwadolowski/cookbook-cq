@@ -35,14 +35,18 @@ class Chef
         @current_resource.path = user_path
         @current_resource.info = user_info
         @current_resource.profile = normalized_user_profile
+        @current_resource.enabled(
+          false
+        ) if current_resource.info['rep:disabled'] == 'inactive'
 
         Chef::Log.error("Current [path]: #{current_resource.path}")
         Chef::Log.error("Current [info]: #{current_resource.info}")
         Chef::Log.error("Current [profile]: #{current_resource.profile}")
+        Chef::Log.error("Current [enabled]: #{current_resource.enabled}")
       end
 
       def action_modify
-        if password_update? || !profile_diff.empty?
+        if password_update? || !profile_diff.empty? || status_update?
           converge_by("Update user #{new_resource.id}") do
             profile_update
           end
@@ -240,6 +244,18 @@ class Chef
         profile
       end
 
+      def status_update?
+        current_resource.enabled != new_resource.enabled
+      end
+
+      def status_payload
+        if new_resource.enabled
+          { 'disableUser' => '' }
+        else
+          { 'disableUser' => 'inactive' }
+        end
+      end
+
       def profile_update
         req_path = current_resource.path + '.rw.userprops.html'
 
@@ -255,6 +271,9 @@ class Chef
         payload = payload.merge(
           profile_payload_builder
         ) unless profile_diff.empty?
+
+        # Update user status
+        payload = payload.merge(status_payload) if status_update?
 
         http_post(
           new_resource.instance,
