@@ -48,13 +48,9 @@ class Chef
         Chef::Log.error("Hash algorithm: #{current_resource.hash_algo}")
         Chef::Log.error("Hash salt: #{current_resource.hash_salt}")
         Chef::Log.error("Hash iterations: #{current_resource.hash_iter}")
-
         Chef::Log.error("Password update required? #{password_update?}")
-
-        Chef::Log.error("Current [email]: #{current_resource.email}")
-        Chef::Log.error("Current [first_name]: #{current_resource.first_name}")
-        Chef::Log.error("Current [last_name]: #{current_resource.last_name}")
         Chef::Log.error("Current [profile]: #{current_resource.profile}")
+        Chef::Log.error("New [profile]: #{compacted_profile}")
       end
 
       def action_modify
@@ -183,9 +179,9 @@ class Chef
 
       def filtered_user_profile
         keys = %w(jobTitle gender aboutMe phoneNumber mobile street city email
-        state familyName country givenName postalCode)
+                  state familyName country givenName postalCode)
 
-        raw_user_profile.delete_if {|k, _v| !keys.include?(k)}
+        raw_user_profile.delete_if { |k, _v| !keys.include?(k) }
       end
 
       def normalized_user_profile
@@ -205,6 +201,28 @@ class Chef
         end
 
         profile
+      end
+
+      def profile_from_attr
+        {
+          'email' => new_resource.email,
+          'first_name' => new_resource.first_name,
+          'last_name' => new_resource.last_name,
+          'phone_number' => new_resource.phone_number,
+          'job_title' => new_resource.job_title,
+          'street' => new_resource.street,
+          'mobile' => new_resource.mobile,
+          'city' => new_resource.city,
+          'postal_code' => new_resource.postal_code,
+          'country' => new_resource.country,
+          'state' => new_resource.state,
+          'gender' => new_resource.gender,
+          'about' => new_resource.about
+        }
+      end
+
+      def compacted_profile
+        profile_from_attr.delete_if { |_k, v| v.nil? }
       end
     end
   end
