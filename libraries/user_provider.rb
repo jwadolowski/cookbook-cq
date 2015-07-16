@@ -41,6 +41,8 @@ class Chef
         # Populate password hash params to class variables
         hash_decoder
 
+        @current_resource.profile = normalized_user_profile
+
         Chef::Log.error("Path: #{current_resource.path}")
         Chef::Log.error("Password hash: #{current_resource.password_hash}")
         Chef::Log.error("Hash algorithm: #{current_resource.hash_algo}")
@@ -48,6 +50,11 @@ class Chef
         Chef::Log.error("Hash iterations: #{current_resource.hash_iter}")
 
         Chef::Log.error("Password update required? #{password_update?}")
+
+        Chef::Log.error("Current [email]: #{current_resource.email}")
+        Chef::Log.error("Current [first_name]: #{current_resource.first_name}")
+        Chef::Log.error("Current [last_name]: #{current_resource.last_name}")
+        Chef::Log.error("Current [profile]: #{current_resource.profile}")
       end
 
       def action_modify
@@ -159,6 +166,45 @@ class Chef
           new_resource.password,
           payload
         )
+      end
+
+      def raw_user_profile
+        req_path = current_resource.path + '/profile.json'
+
+        http_resp = http_get(
+          new_resource.instance,
+          req_path,
+          new_resource.username,
+          new_resource.password
+        )
+
+        json_to_hash(http_resp.body)
+      end
+
+      def filtered_user_profile
+        keys = %w(jobTitle gender aboutMe phoneNumber mobile street city email
+        state familyName country givenName postalCode)
+
+        raw_user_profile.delete_if {|k, _v| !keys.include?(k)}
+      end
+
+      def normalized_user_profile
+        mappings = {
+          'givenName' => 'first_name',
+          'familyName' => 'last_name',
+          'phoneNumber' => 'phone_number',
+          'jobTitle' => 'job_title',
+          'postalCode' => 'postal_code',
+          'aboutMe' => 'about'
+        }
+
+        profile = filtered_user_profile
+
+        profile.keys.each do |k|
+          profile[mappings[k]] = profile.delete(k) if mappings[k]
+        end
+
+        profile
       end
     end
   end
