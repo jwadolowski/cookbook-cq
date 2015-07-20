@@ -34,7 +34,10 @@ class Chef
 
         @current_resource.path = user_path
         @current_resource.info = user_info
-        @current_resource.profile = normalized_user_profile
+        @current_resource.profile = user_profile(
+          new_resource.username,
+          new_resource.password
+        )
         @current_resource.enabled(
           false
         ) if current_resource.info['rep:disabled'] == 'inactive'
@@ -147,27 +150,27 @@ class Chef
         true
       end
 
-      def raw_user_profile
+      def raw_user_profile(user, pass)
         req_path = current_resource.path + '/profile.json'
 
         http_resp = http_get(
           new_resource.instance,
           req_path,
-          new_resource.username,
-          new_resource.password
+          user,
+          pass
         )
 
         json_to_hash(http_resp.body)
       end
 
-      def filtered_user_profile
+      def filter_user_profile(profile)
         keys = %w(jobTitle gender aboutMe phoneNumber mobile street city email
                   state familyName country givenName postalCode)
 
-        raw_user_profile.delete_if { |k, _v| !keys.include?(k) }
+        profile.delete_if { |k, _v| !keys.include?(k) }
       end
 
-      def normalized_user_profile
+      def normalize_user_profile(profile)
         mappings = {
           'givenName' => 'first_name',
           'familyName' => 'last_name',
@@ -177,13 +180,19 @@ class Chef
           'aboutMe' => 'about'
         }
 
-        profile = filtered_user_profile
-
         profile.keys.each do |k|
           profile[mappings[k]] = profile.delete(k) if mappings[k]
         end
 
         profile
+      end
+
+      def user_profile(user, pass)
+        profile = raw_user_profile(user, pass)
+
+        normalize_user_profile(
+          filter_user_profile(profile)
+        )
       end
 
       def profile_from_attr
