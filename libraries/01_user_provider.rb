@@ -55,11 +55,13 @@ class Chef
       end
 
       def action_modify
-        if password_update? || !profile_diff.empty? || status_update?
+        if password_update?(
+            new_resource.user_password
+        ) || !profile_diff.empty? || status_update?
           converge_by("Update user #{new_resource.id}") do
             profile_update(
               new_resource.username,
-              new_reosurce.password,
+              new_resource.password,
               new_resource.user_password
             )
           end
@@ -153,9 +155,9 @@ class Chef
       # All credits goes to Tomasz Rekawek
       #
       # https://gist.github.com/trekawek/9955166
-      def password_update?
+      def password_update?(new_pass)
         return false if current_resource.info['rep:password'].end_with?(
-          hash_generator(new_resource.user_password)
+          hash_generator(new_pass)
         )
         true
       end
@@ -284,7 +286,7 @@ class Chef
         payload = payload.merge(
           'rep:password' => new_pass,
           ':currentPassword' => auth_pass
-        ) if password_update?
+        ) if password_update?(new_pass)
 
         # Update user profile if any change was detected
         payload = payload.merge(
