@@ -57,7 +57,11 @@ class Chef
       def action_modify
         if password_update? || !profile_diff.empty? || status_update?
           converge_by("Update user #{new_resource.id}") do
-            profile_update
+            profile_update(
+              new_resource.username,
+              new_reosurce.password,
+              new_resource.user_password
+            )
           end
         else
           Chef::Log.info(
@@ -271,15 +275,15 @@ class Chef
         end
       end
 
-      def profile_update
+      def profile_update(auth_user, auth_pass, new_pass)
         req_path = current_resource.path + '.rw.userprops.html'
 
         payload = { '_charset_' => 'utf-8' }
 
         # Add new password if needed
         payload = payload.merge(
-          'rep:password' => new_resource.user_password,
-          ':currentPassword' => new_resource.password
+          'rep:password' => new_pass,
+          ':currentPassword' => auth_pass
         ) if password_update?
 
         # Update user profile if any change was detected
@@ -293,8 +297,8 @@ class Chef
         http_post(
           new_resource.instance,
           req_path,
-          new_resource.username,
-          new_resource.password,
+          auth_user,
+          auth_pass,
           payload
         )
       end
