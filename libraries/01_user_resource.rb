@@ -30,7 +30,7 @@ class Chef
         super
 
         @resource_name = :cq_user
-        @allowed_actions = [:modify, :enable]
+        @allowed_actions = [:modify]
         @action = :nothing
 
         @id = name
