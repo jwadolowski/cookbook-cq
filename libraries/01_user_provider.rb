@@ -32,8 +32,14 @@ class Chef
       def load_current_resource
         @current_resource = Chef::Resource::CqUser.new(new_resource.id)
 
-        @current_resource.path = user_path
-        @current_resource.info = user_info
+        @current_resource.path = user_path(
+          new_resource.username,
+          new_resource.password
+        )
+        @current_resource.info = user_info(
+          new_resource.username,
+          new_resource.password
+        )
         @current_resource.profile = user_profile(
           new_resource.username,
           new_resource.password
@@ -60,15 +66,15 @@ class Chef
         end
       end
 
-      def user_path
+      def user_path(user, pass)
         req_path = '/bin/querybuilder.json?path=/home/users&type=rep:User&'\
           "nodename=#{new_resource.id}&p.limit=-1"
 
         http_resp = http_get(
           new_resource.instance,
           req_path,
-          new_resource.username,
-          new_resource.password
+          user,
+          pass
         )
 
         path_extractor(http_resp.body)
@@ -85,14 +91,14 @@ class Chef
         hash['hits'][0]['path']
       end
 
-      def user_info
+      def user_info(user, pass)
         req_path = current_resource.path + '.json'
 
         http_resp = http_get(
           new_resource.instance,
           req_path,
-          new_resource.username,
-          new_resource.password
+          user,
+          pass
         )
 
         json_to_hash(http_resp.body)
