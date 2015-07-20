@@ -30,46 +30,11 @@ class Chef
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::CqUser.new(new_resource.id)
-
-        @current_resource.path = user_path(
-          new_resource.username,
-          new_resource.password
-        )
-        @current_resource.info = user_info(
-          new_resource.username,
-          new_resource.password
-        )
-        @current_resource.profile = user_profile(
-          new_resource.username,
-          new_resource.password
-        )
-        @current_resource.enabled(
-          false
-        ) if current_resource.info['rep:disabled'] == 'inactive'
-
-        Chef::Log.error("Current [path]: #{current_resource.path}")
-        Chef::Log.error("Current [info]: #{current_resource.info}")
-        Chef::Log.error("Current [profile]: #{current_resource.profile}")
-        Chef::Log.error("Current [enabled]: #{current_resource.enabled}")
       end
 
       def action_modify
-        if password_update?(
-            new_resource.user_password
-        ) || !profile_diff.empty? || status_update?
-          converge_by("Update user #{new_resource.id}") do
-            profile_update(
-              new_resource.username,
-              new_resource.password,
-              new_resource.user_password
-            )
-          end
-        else
-          Chef::Log.info(
-            "User #{new_resource.id} is already configured as defined"
-          )
-        end
+        raise Chef::Exceptions::UnsupportedAction,
+          "#{self.to_s} does not support :modify"
       end
 
       def user_path(user, pass)

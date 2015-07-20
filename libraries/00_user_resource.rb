@@ -25,6 +25,7 @@ class Chef
       attr_accessor :path
       attr_accessor :info
       attr_accessor :profile
+      attr_accessor :admin_password
 
       def initialize(name, run_context = nil)
         super
@@ -52,10 +53,23 @@ class Chef
         @about = nil
         @user_password = nil
         @enabled = true
+        @old_password = nil
+
+        if @id == 'admin'
+          @provider = Chef::Provider::CqAdminUser
+          @old_password = 'admin'
+        else
+          @provider = Chef::Provider::CqRegularUser
+        end
       end
 
       def id(arg = nil)
-        set_or_return(:id, arg, :kind_of => String)
+        if @id != 'admin'
+          set_or_return(:id, arg, :kind_of => String)
+        else
+          Chef::Log.warn("Admin's user id can't be changed!") if arg
+          'admin'
+        end
       end
 
       def username(arg = nil)
@@ -127,7 +141,18 @@ class Chef
       end
 
       def enabled(arg = nil)
-        set_or_return(:enabled, arg, :kind_of => [TrueClass, FalseClass])
+        if @id != 'admin'
+          set_or_return(:enabled, arg, :kind_of => [TrueClass, FalseClass])
+        else
+          Chef::Log.warn(
+            'enabled attribute is not supported by cq_admin resource'
+          ) if arg
+          true
+        end
+      end
+
+      def old_password(arg = nil)
+        set_or_return(:old_password, arg, :kind_of => String)
       end
     end
   end
