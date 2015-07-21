@@ -22,6 +22,8 @@ class Chef
     class CqUser < Chef::Resource
       provides :cq_user, :on_platforms => :all
 
+      attr_accessor :query_result
+      attr_accessor :exist
       attr_accessor :path
       attr_accessor :info
       attr_accessor :profile
