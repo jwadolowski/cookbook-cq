@@ -32,12 +32,20 @@ class Chef
       def load_current_resource
       end
 
-      def action_modify
+      def modify_user
         fail Chef::Exceptions::UnsupportedAction,
              "#{self} does not support :modify"
       end
 
-      def user_path(user, pass)
+      def action_modify
+        if current_resource.exist
+          modify_user
+        else
+          Chef::Log.error("User #{current_resource.id} does not exist!")
+        end
+      end
+
+      def crx_query(user, pass)
         req_path = '/bin/querybuilder.json?path=/home/users&type=rep:User&'\
           "nodename=#{new_resource.id}&p.limit=-1"
 
@@ -48,18 +56,25 @@ class Chef
           pass
         )
 
-        path_extractor(http_resp.body)
+        json_to_hash(http_resp.body)
       end
 
-      def path_extractor(str)
-        hash = json_to_hash(str)
+      def exist?(result_set)
+        case result_set['hits'].size
+        when 0
+          false
+        when 1
+          true
+        else
+          Chef::Application.fatal!(
+            'Query result set is neither 0 nor 1, which may indicate that '\
+            'more than a single user with given id was found!'
+          )
+        end
+      end
 
-        Chef::Application.fatal!(
-          'Query builder returned result set that does not contain just a '\
-          'single user'
-        ) if hash['hits'].size != 1
-
-        hash['hits'][0]['path']
+      def user_path(result_set)
+        result_set['hits'][0]['path']
       end
 
       def user_info(user, pass)
@@ -268,6 +283,15 @@ class Chef
           auth_pass,
           payload
         )
+      end
+
+      def populate_user_data(user, pass)
+        # Extract user path from CRX query
+        @current_resource.path = user_path(current_resource.query_result)
+        # Get user info (password hash and status)
+        @current_resource.info = user_info(user, pass)
+        # Get profile data (last name, email, job title, etc)
+        @current_resource.profile = user_profile(user, pass)
       end
     end
   end
