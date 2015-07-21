@@ -23,24 +23,25 @@ class Chef
       def load_current_resource
         @current_resource = Chef::Resource::CqUser.new(new_resource.id)
 
-        @current_resource.path = user_path(
+        # Query CRX to get admin node
+        @current_resource.query_result = crx_query(
           new_resource.username,
           new_resource.password
         )
-        @current_resource.info = user_info(
-          new_resource.username,
-          new_resource.password
-        )
-        @current_resource.profile = user_profile(
-          new_resource.username,
-          new_resource.password
-        )
-        @current_resource.enabled(
-          false
-        ) if current_resource.info['rep:disabled'] == 'inactive'
+        # Verify whether given user exists
+        @current_resource.exist = exist?(current_resource.query_result)
+
+        if current_resource.exist
+          populate_user_data(new_resource.username, new_resource.password)
+
+          # Mark current user as disabled if that's the case
+          @current_resource.enabled(
+            false
+          ) if current_resource.info['rep:disabled'] == 'inactive'
+        end
       end
 
-      def action_modify
+      def modify_user
         if password_update?(
             new_resource.user_password
         ) || !profile_diff.empty? || status_update?

@@ -23,16 +23,19 @@ class Chef
       def load_current_resource
         @current_resource = Chef::Resource::CqUser.new('admin')
 
+        # Determine current admin's password
         @current_resource.admin_password = current_password
-        @current_resource.path = user_path(
+
+        # Query CRX to get admin node
+        @current_resource.query_result = crx_query(
           new_resource.username,
           current_resource.admin_password
         )
-        @current_resource.info = user_info(
-          new_resource.username,
-          current_resource.admin_password
-        )
-        @current_resource.profile = user_profile(
+
+        # Admin must exist, so there's no point to look for that
+        @current_resource.exist = true
+
+        populate_user_data(
           new_resource.username,
           current_resource.admin_password
         )
@@ -56,7 +59,7 @@ class Chef
         )
       end
 
-      def action_modify
+      def modify_user
         if password_update?(new_resource.password) || !profile_diff.empty?
           converge_by("Update user #{new_resource.id}") do
             profile_update(
