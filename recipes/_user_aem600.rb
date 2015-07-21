@@ -67,3 +67,16 @@ cq_user 'author' do
 
   action :modify
 end
+
+cq_user 'random1' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  first_name 'Random'
+  last_name 'One'
+  about 'Totally random, not existing user'
+  user_password 'rand0m'
+
+  action :modify
+end
