@@ -19,41 +19,50 @@
 
 class Chef
   class Provider
-    class CqRegularUser < Chef::Provider::CqUser
+    class CqAdminUser < Chef::Provider::CqUser
       def load_current_resource
-        @current_resource = Chef::Resource::CqUser.new(new_resource.id)
+        @current_resource = Chef::Resource::CqUser.new('admin')
 
+        @current_resource.admin_password = current_password
         @current_resource.path = user_path(
           new_resource.username,
-          new_resource.password
+          current_resource.admin_password
         )
         @current_resource.info = user_info(
           new_resource.username,
-          new_resource.password
+          current_resource.admin_password
         )
         @current_resource.profile = user_profile(
           new_resource.username,
-          new_resource.password
+          current_resource.admin_password
         )
-        @current_resource.enabled(
-          false
-        ) if current_resource.info['rep:disabled'] == 'inactive'
+      end
 
-        Chef::Log.error("Current [path]: #{current_resource.path}")
-        Chef::Log.error("Current [info]: #{current_resource.info}")
-        Chef::Log.error("Current [profile]: #{current_resource.profile}")
-        Chef::Log.error("Current [enabled]: #{current_resource.enabled}")
+      def current_password
+        req_path = '/libs/granite/core/content/login.html'
+
+        [new_resource.password, new_resource.old_password, 'admin'].each do |p|
+          http_resp = http_get(new_resource.instance, req_path, 'admin', p)
+
+          return p if http_resp.code == '200'
+        end
+
+        Chef::Application.fatal!(
+          'Unable to determine valid admin credentials! The following '\
+          'user/pass pairs were checked: \n'\
+          '* admin / <password>\n'\
+          '* admin / <old_password>\n'\
+          '* admin / admin'
+        )
       end
 
       def action_modify
-        if password_update?(
-            new_resource.user_password
-        ) || !profile_diff.empty? || status_update?
+        if password_update?(new_resource.password) || !profile_diff.empty?
           converge_by("Update user #{new_resource.id}") do
             profile_update(
               new_resource.username,
-              new_resource.password,
-              new_resource.user_password
+              current_resource.admin_password,
+              new_resource.password
             )
           end
         else

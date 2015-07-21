@@ -67,7 +67,6 @@ class Chef
         if @id != 'admin'
           set_or_return(:id, arg, :kind_of => String)
         else
-          Chef::Log.warn("Admin's user id can't be changed!") if arg
           'admin'
         end
       end
@@ -137,7 +136,14 @@ class Chef
       end
 
       def user_password(arg = nil)
-        set_or_return(:user_password, arg, :kind_of => String)
+        if @id != 'admin'
+          set_or_return(:user_password, arg, :kind_of => String)
+        else
+          Chef::Log.warn(
+            'user_password is not supported by admin user and will be ignored'
+          )
+          nil
+        end
       end
 
       def enabled(arg = nil)
@@ -145,14 +151,22 @@ class Chef
           set_or_return(:enabled, arg, :kind_of => [TrueClass, FalseClass])
         else
           Chef::Log.warn(
-            'enabled attribute is not supported by cq_admin resource'
-          ) if arg
+            'enabled is not supported by admin user and will be ignored'
+          )
           true
         end
       end
 
       def old_password(arg = nil)
-        set_or_return(:old_password, arg, :kind_of => String)
+        if @id == 'admin'
+          set_or_return(:old_password, arg, :kind_of => String)
+        else
+          Chef::Log.warn(
+            'old_password is not supported by non-admin users and will be '\
+            'ignored'
+          )
+          nil
+        end
       end
     end
   end

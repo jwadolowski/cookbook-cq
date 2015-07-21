@@ -33,8 +33,8 @@ class Chef
       end
 
       def action_modify
-        raise Chef::Exceptions::UnsupportedAction,
-          "#{self.to_s} does not support :modify"
+        fail Chef::Exceptions::UnsupportedAction,
+             "#{self} does not support :modify"
       end
 
       def user_path(user, pass)
