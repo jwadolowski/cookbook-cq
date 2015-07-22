@@ -31,13 +31,13 @@ class Chef
           new_resource.username,
           current_resource.admin_password
         )
+        # Verify whether admin user exists
+        @current_resource.exist = exist?(current_resource.query_result)
 
         populate_user_data(
           new_resource.username,
           current_resource.admin_password
         )
-
-        @current_resource.exist = true
       end
 
       def current_password
