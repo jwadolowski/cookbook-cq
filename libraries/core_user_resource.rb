@@ -66,11 +66,7 @@ class Chef
       end
 
       def id(arg = nil)
-        if @id != 'admin'
-          set_or_return(:id, arg, :kind_of => String)
-        else
-          'admin'
-        end
+        set_or_return(:id, arg, :kind_of => String)
       end
 
       def username(arg = nil)
@@ -143,8 +139,7 @@ class Chef
         else
           Chef::Log.warn(
             'user_password is not supported by admin user and will be ignored'
-          )
-          nil
+          ) unless arg.nil?
         end
       end
 
@@ -154,8 +149,7 @@ class Chef
         else
           Chef::Log.warn(
             'enabled is not supported by admin user and will be ignored'
-          )
-          true
+          ) unless arg.nil?
         end
       end
 
@@ -166,8 +160,7 @@ class Chef
           Chef::Log.warn(
             'old_password is not supported by non-admin users and will be '\
             'ignored'
-          )
-          nil
+          ) unless arg.nil?
         end
       end
     end

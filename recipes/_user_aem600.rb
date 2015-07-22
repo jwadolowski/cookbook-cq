@@ -26,7 +26,7 @@ cq_user 'admin' do
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
 
-  email 'admins@cognifide.com'
+  email 'superman@mailinator.com'
   first_name 'Clark'
   last_name 'Kent'
   job_title 'Global Implementation Coordinator'
@@ -49,7 +49,7 @@ cq_user 'author' do
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
 
-  email 'author@adobe.com'
+  email 'author@mailinator.com'
   first_name 'John'
   last_name 'Doe'
   job_title 'Legacy Intranet Technician'
