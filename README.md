@@ -651,7 +651,7 @@ properties. Nothing will happen when there's no such OSGi config.
   <tr>
     <td><tt>id</tt></td>
     <td>String</td>
-    <td>User ID (login)<td>
+    <td>User ID (login)</td>
   </tr>
   <tr>
     <td><tt>username</tt></td>
@@ -671,79 +671,79 @@ properties. Nothing will happen when there's no such OSGi config.
   <tr>
     <td><tt>email</tt></td>
     <td>String</td>
-    <td>E-mail<td>
+    <td>E-mail</td>
   </tr>
   <tr>
     <td><tt>first_name</tt></td>
     <td>String</td>
-    <td>First name<td>
+    <td>First name</td>
   </tr>
   <tr>
     <td><tt>last_name</tt></td>
     <td>String</td>
-    <td>Last name<td>
+    <td>Last name</td>
   </tr>
   <tr>
     <td><tt>phone_number</tt></td>
     <td>String</td>
-    <td>Phone number<td>
+    <td>Phone number</td>
   </tr>
   <tr>
     <td><tt>job_title</tt></td>
     <td>String</td>
-    <td>Job title<td>
+    <td>Job title</td>
   </tr>
   <tr>
     <td><tt>street</tt></td>
     <td>String</td>
-    <td>Street<td>
+    <td>Street</td>
   </tr>
   <tr>
     <td><tt>mobile</tt></td>
     <td>String</td>
-    <td>Mobile<td>
+    <td>Mobile</td>
   </tr>
   <tr>
     <td><tt>city</tt></td>
     <td>String</td>
-    <td>City<td>
+    <td>City</td>
   </tr>
   <tr>
     <td><tt>postal_code</tt></td>
     <td>String</td>
-    <td>Postal code<td>
+    <td>Postal code</td>
   </tr>
   <tr>
     <td><tt>country</tt></td>
     <td>String</td>
-    <td>Country<td>
+    <td>Country</td>
   </tr>
   <tr>
     <td><tt>state</tt></td>
     <td>String</td>
-    <td>State<td>
+    <td>State</td>
   </tr>
   <tr>
     <td><tt>gender</tt></td>
     <td>String</td>
-    <td>Gender<td>
+    <td>Gender</td>
   </tr>
   <tr>
     <td><tt>about</tt></td>
     <td>String</td>
-    <td>About section<td>
+    <td>About section</td>
   </tr>
   <tr>
     <td><tt>user_password</tt></td>
     <td>String</td>
     <td>Desired password for non-admin user specified by <tt>id</tt>
-    attribute<td>
+    attribute</td>
   </tr>
   <tr>
     <td><tt>enabled</tt></td>
     <td>Boolean</td>
     <td>True by default, set to false to deactive given user. Has no effect
-    for admin user<td>
+    for admin user</td>
   </tr>
   <tr>
     <td><tt>old_password</tt></td>
