@@ -17,3 +17,6 @@ HashSyntax:
 
 Documentation:
   Enabled: false
+
+ClassLength:
+  Enabled: false
