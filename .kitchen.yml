@@ -119,7 +119,7 @@ suites:
   - name: users-v<%= v %>
     run_list:
       - recipe[cq::author]
-      - recipe[cq::_user_aem<%= v.delete('.') %>]
+      - recipe[cq::_users]
     attributes:
       cq:
         author:
