@@ -643,7 +643,7 @@ Exposes a resource for CQ/AEM user management. Supports:
 
 ## Actions
 
-* `modify` - use to modify an existing user. Action will be skipped if give
+* `modify` - use to modify an existing user. Action will be skipped if given
   user does not exist
 
 ## Parameter Attributes
@@ -785,7 +785,48 @@ Exposes a resource for CQ/AEM user management. Supports:
 
 ## Usage
 
-TBD
+More detailed examples are available [here](recipes/_users.rb).
+
+```ruby
+cq_user 'admin' do
+  username node['cq']['author']['credentials']['login']
+  password 'd4rk_kn1ght'
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  first_name 'Bruce'
+  last_name 'Wayne'
+  old_password 'passw0rd'
+
+  action :modify
+end
+
+cq_user 'author' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  first_name 'Peter'
+  last_name 'Parker'
+  job_title 'Spiderman'
+  gender 'male'
+  enabled false
+  user_password 'sp1d3r'
+
+  action :modify
+end
+```
+
+Modify action on `cq_user 'admin'` resource will change CQ/AEM admin's password
+to `d4rk_kn1ght` if the current one is either `passw0rd` or `admin` (the latter
+is automatically checked if both `password` and `old_password` are incorrect).
+Moreover admin's first name and last name will be updated (to `Bruce` and
+`Wayne` respectively) if needed.
+
+Second example (`cq_user 'author'`) also updates user password, but this time
+the old one doesn't have to be specified, as this operation will be executed on
+admin rights (auth credentials: `username`/`password`). Additionally `auhtor`'s
+profile will be updated and user will be disabled (`enabled false`), so you
+won't be able to log in as this user anymore.
 
 # Testing
 
