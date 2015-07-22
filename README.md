@@ -85,6 +85,45 @@ required.
 
 ---
 
+---
+
+Whenever you need to deploy 2 or more CQ/AEM instances on a single server
+please make sure you named all your custom resources differently, as you may
+get unexpected results otherwise (i.e. when CQ/AEM restart is required
+afterwards). Please find `cq_package` example below:
+
+*Bad*:
+```ruby
+cq_package 'package1' do
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :deploy
+end
+
+cq_package 'package1' do
+  instance "http://localhost:#{node['cq']['publish']['port']}"
+
+  action :deploy
+end
+```
+
+*Good*:
+```ruby
+cq_package 'Author: package1' do
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :deploy
+end
+
+cq_package 'Publish: package1' do
+  instance "http://localhost:#{node['cq']['publish']['port']}"
+
+  action :deploy
+end
+```
+
+---
+
 ## cq_package
 
 Allows for CRX package manipulation using CRX Package Manager API.
@@ -188,44 +227,6 @@ explanation can be found below.
 </table>
 
 ### Usage
-
----
-
-Whenever you need to deploy 2 or more CQ/AEM instances on a single server
-please mane sure you named `cq_package` resources differently, as you may get
-unexpected results, in particular when CQ/AEM restart is required afterwards.
-
-Bad:
-```ruby
-cq_package 'package1' do
-  instance "http://localhost:#{node['cq']['author']['port']}"
-
-  action :deploy
-end
-
-cq_package 'package1' do
-  instance "http://localhost:#{node['cq']['publish']['port']}"
-
-  action :deploy
-end
-```
-
-Good:
-```ruby
-cq_package 'Author: package1' do
-  instance "http://localhost:#{node['cq']['author']['port']}"
-
-  action :deploy
-end
-
-cq_package 'Publish: package1' do
-  instance "http://localhost:#{node['cq']['publish']['port']}"
-
-  action :deploy
-end
-```
-
----
 
 More comprehensive examples can be found in package test recipes:
 
@@ -487,14 +488,6 @@ For factory configs:
 
 ### Usage
 
----
-
-Similar to `cq_package` please make sure you named your resources variously if
-more than a single CQ/AEM instance is deployed and managed by Chef on a single
-server.
-
----
-
 Detailed examples can be found here:
 
 * [recipes/_osgi_config_create_regular.rb](recipes/_osgi_config_create_regular.rb)
@@ -641,4 +634,4 @@ TBD
 
 # Authors
 
-Author:: Jakub Wadolowski (<jakub.wadolowski@cognifide.com>)
+Jakub Wadolowski (<jakub.wadolowski@cognifide.com>)
