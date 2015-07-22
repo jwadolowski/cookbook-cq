@@ -91,7 +91,6 @@ class Chef
       end
 
       # All credits goes to Tomasz Rekawek
-      #
       # https://gist.github.com/trekawek/9955166
       def hash_decoder
         hash_params = current_resource.info['rep:password'].match(
@@ -103,9 +102,15 @@ class Chef
         hash_params
       end
 
-      # All credits goes to Tomasz Rekawek
+      # Calculate user hash using parameters decoded based on existing password
+      # hash (stored in CRX) and plain text password defined for given cq_user
+      # resource (user_password attribute)
       #
+      # All credits goes to Tomasz Rekawek
       # https://gist.github.com/trekawek/9955166
+      #
+      # @param pass [String] plain text password
+      # @return [String] hashed password
       def hash_generator(pass)
         require 'openssl'
 
@@ -133,7 +138,6 @@ class Chef
       end
 
       # All credits goes to Tomasz Rekawek
-      #
       # https://gist.github.com/trekawek/9955166
       def password_update?(new_pass)
         return false if current_resource.info['rep:password'].end_with?(
@@ -227,6 +231,11 @@ class Chef
         diff
       end
 
+      # Transform key-value structure to new format that is expected by CQ/AEM
+      # servlet that updates user profile. Diff between existing and new
+      # profile is always used as a source data.
+      #
+      # @return [Hash] transformed user profile
       def profile_payload_builder
         mappings = {
           'email' => './profile/email',
@@ -265,6 +274,7 @@ class Chef
         end
       end
 
+      # Assemble required POST payload and send update request to CQ/AEM
       def profile_update(auth_user, auth_pass, new_pass)
         req_path = current_resource.path + '.rw.userprops.html'
 

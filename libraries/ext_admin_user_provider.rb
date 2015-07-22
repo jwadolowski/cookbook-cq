@@ -32,13 +32,12 @@ class Chef
           current_resource.admin_password
         )
 
-        # Admin must exist, so there's no point to look for that
-        @current_resource.exist = true
-
         populate_user_data(
           new_resource.username,
           current_resource.admin_password
         )
+
+        @current_resource.exist = true
       end
 
       def current_password
@@ -61,7 +60,7 @@ class Chef
 
       def modify_user
         if password_update?(new_resource.password) || !profile_diff.empty?
-          converge_by("Update user #{new_resource.id}") do
+          converge_by("Update #{new_resource.id} user") do
             profile_update(
               new_resource.username,
               current_resource.admin_password,

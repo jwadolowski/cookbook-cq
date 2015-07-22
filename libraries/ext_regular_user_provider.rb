@@ -23,7 +23,7 @@ class Chef
       def load_current_resource
         @current_resource = Chef::Resource::CqUser.new(new_resource.id)
 
-        # Query CRX to get admin node
+        # Query CRX to get user node
         @current_resource.query_result = crx_query(
           new_resource.username,
           new_resource.password
@@ -44,10 +44,10 @@ class Chef
       end
 
       def modify_user
-        if password_update?(
-            new_resource.user_password
-        ) || !profile_diff.empty? || status_update?
-          converge_by("Update user #{new_resource.id}") do
+        if password_update?(new_resource.user_password) ||
+           !profile_diff.empty? ||
+           status_update?
+          converge_by("Update #{new_resource.id} user") do
             profile_update(
               new_resource.username,
               new_resource.password,
