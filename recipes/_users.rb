@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cq
-# Recipe:: _user_aem600
+# Recipe:: _users
 #
 # Copyright (C) 2015 Jakub Wadolowski
 #
