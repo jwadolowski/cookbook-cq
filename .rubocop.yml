@@ -20,3 +20,6 @@ Documentation:
 
 ClassLength:
   Enabled: false
+
+AbcSize:
+  Max: 30
