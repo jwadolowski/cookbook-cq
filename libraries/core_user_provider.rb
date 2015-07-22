@@ -125,7 +125,7 @@ class Chef
           iter = 1
         end
 
-        new_hash = (salt + pass).bytes
+        new_hash = (salt + pass).each_byte.to_a
         digest = OpenSSL::Digest.new(algo.gsub('-', ''))
 
         1.upto(iter) do
