@@ -1,5 +1,5 @@
 ---
-<% chef_versions = %w( 11 latest ) %>
+<% chef_versions = %w( 11 12 ) %>
 <% platforms = %w( centos-6.6 ) %>
 <% aem_versions = %w( 5.6.1 6.0.0 ) %>
 
@@ -116,4 +116,17 @@ suites:
             hf5667: <%= ENV['CQ_V561_HF5667_URL'] %>
             hf3527: <%= ENV['CQ_V561_HF3527_URL'] %>
             hf4990: <%= ENV['CQ_V561_HF4990_URL'] %>
+  - name: users-v<%= v %>
+    run_list:
+      - recipe[cq::author]
+      - recipe[cq::_users]
+    attributes:
+      cq:
+        author:
+          credentials:
+            password: 'passw0rd'
+            old_password: 'password1'
+        version: <%= v %>
+        jar:
+          url: <%= ENV[env] %>
 <% end %>

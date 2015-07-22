@@ -2,7 +2,7 @@
 # Cookbook Name:: cq
 # Resource:: package
 #
-# Copyright (C) 2014 Jakub Wadolowski
+# Copyright (C) 2015 Jakub Wadolowski
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,15 +21,19 @@ actions :upload, :install, :deploy, :uninstall
 
 default_action :nothing
 
-attribute :name, :kind_of => String, :name_attribute => true, :required => true
-attribute :username, :kind_of => String, :required => true
-attribute :password, :kind_of => String, :required => true
-attribute :instance, :kind_of => String, :required => true
-attribute :source, :kind_of => String, :required => true
-attribute :http_user, :kind_of => String, :default => '', :required => false
-attribute :http_pass, :kind_of => String, :default => '', :required => false
+attribute :name,              :kind_of => String, :required => true,
+                              :name_attribute => true
+attribute :username,          :kind_of => String, :required => true
+attribute :password,          :kind_of => String, :required => true
+attribute :instance,          :kind_of => String, :required => true
+attribute :source,            :kind_of => String, :required => true
+attribute :http_user,         :kind_of => String, :required => false,
+                              :default => ''
+attribute :http_pass,         :kind_of => String, :required => false,
+                              :default => ''
 attribute :recursive_install, :kind_of => [TrueClass, FalseClass],
-                              :default => false, :required => false
-attribute :checksum, :kind_of => String, :default => '', :required => false
+                              :required => false, :default => false
+attribute :checksum,          :kind_of => String, :required => false,
+                              :default => ''
 
 attr_accessor :uploaded, :installed, :downloaded

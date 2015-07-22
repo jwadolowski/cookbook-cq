@@ -8,6 +8,39 @@ started development there was no AEM yet and I simply like the old name much
 better. Nowadays it seems to be already taken anyway, so I no longer have a
 choice ;)
 
+# Table of Contents
+
+* [Supported platforms](#supported-platforms)
+    * [Operating systems](#operating-systems)
+    * [AEM/CQ versions](#aemcq-versions)
+* [Attributes](#attributes)
+    * [default.rb](#defaultrb)
+    * [author.rb](#authorrb)
+    * [publish.rb](#publishrb)
+* [Recipes](#recipes)
+    * [default.rb](#defaultrb-1)
+    * [author.rb](#authorrb-1)
+    * [publish.rb](#publishrb-1)
+* [Custom Resources](#custom-resources)
+    * [cq_package](#cq_package)
+        * [Actions](#actions)
+        * [Parameter Attributes](#parameter-attributes)
+        * [Usage](#usage)
+    * [cq_osgi_config](#cq_osgi_config)
+        * [Actions](#actions-1)
+        * [Parameter Attributes](#parameter-attributes-1)
+        * [Compatibility matrix](#compatibility-matrix)
+        * [Usage](#usage-1)
+            * [Regular OSGi configs](#regular-osgi-configs)
+            * [Factory OSGi configs](#factory-osgi-configs)
+    * [cq_user](#cq_user)
+        * [Actions](#actions-2)
+        * [Parameter Attributes](#parameter-attributes-2)
+        * [Compatibility matrix](#compatibility-matrix-1)
+        * [Usage](#usage-2)
+* [Testing](#testing)
+* [Authors](#authors)
+
 # Supported platforms
 
 ## Operating systems
@@ -48,11 +81,51 @@ TBD
 TBD
 
 
-# Lightweight Resource Providers
+# Custom resources
 
 ---
 
-All LWRPs are idempotent, so action won't be taken if not required.
+All CQ/AEM related resource are idempotent, so action won't be taken if not
+required.
+
+---
+
+---
+
+Whenever you need to deploy 2 or more CQ/AEM instances on a single server
+please make sure you named all your custom resources differently, as you may
+get unexpected results otherwise (i.e. when CQ/AEM restart is required
+afterwards). Please find `cq_package` example below:
+
+*Bad*:
+```ruby
+cq_package 'package1' do
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :deploy
+end
+
+cq_package 'package1' do
+  instance "http://localhost:#{node['cq']['publish']['port']}"
+
+  action :deploy
+end
+```
+
+*Good*:
+```ruby
+cq_package 'Author: package1' do
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :deploy
+end
+
+cq_package 'Publish: package1' do
+  instance "http://localhost:#{node['cq']['publish']['port']}"
+
+  action :deploy
+end
+```
 
 ---
 
@@ -159,44 +232,6 @@ explanation can be found below.
 </table>
 
 ### Usage
-
----
-
-Whenever you need to deploy 2 or more CQ/AEM instances on a single server
-please mane sure you named `cq_package` resources differently, as you may get
-unexpected results, in particular when CQ/AEM restart is required afterwards.
-
-Bad:
-```ruby
-cq_package 'package1' do
-  instance "http://localhost:#{node['cq']['author']['port']}"
-
-  action :deploy
-end
-
-cq_package 'package1' do
-  instance "http://localhost:#{node['cq']['publish']['port']}"
-
-  action :deploy
-end
-```
-
-Good:
-```ruby
-cq_package 'Author: package1' do
-  instance "http://localhost:#{node['cq']['author']['port']}"
-
-  action :deploy
-end
-
-cq_package 'Publish: package1' do
-  instance "http://localhost:#{node['cq']['publish']['port']}"
-
-  action :deploy
-end
-```
-
----
 
 More comprehensive examples can be found in package test recipes:
 
@@ -458,14 +493,6 @@ For factory configs:
 
 ### Usage
 
----
-
-Similar to `cq_package` please make sure you named your resources variously if
-more than a single CQ/AEM instance is deployed and managed by Chef on a single
-server.
-
----
-
 Detailed examples can be found here:
 
 * [recipes/_osgi_config_create_regular.rb](recipes/_osgi_config_create_regular.rb)
@@ -606,10 +633,205 @@ resource definition.
 `org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
 properties. Nothing will happen when there's no such OSGi config.
 
+# cq_user
+
+Exposes a resource for CQ/AEM user management. Supports:
+
+* password updates
+* profile updates (e-mail, job title, etc)
+* status updates (activate/deactivate given user)
+
+## Actions
+
+* `modify` - use to modify an existing user. Action will be skipped if given
+  user does not exist
+
+## Parameter Attributes
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>id</tt></td>
+    <td>String</td>
+    <td>User ID (login)</td>
+  </tr>
+  <tr>
+    <td><tt>username</tt></td>
+    <td>String</td>
+    <td>Instance username</td>
+  </tr>
+  <tr>
+    <td><tt>password</tt></td>
+    <td>String</td>
+    <td>Instance password</td>
+  </tr>
+  <tr>
+    <td><tt>instance</tt></td>
+    <td>String</td>
+    <td>Instance URL</td>
+  </tr>
+  <tr>
+    <td><tt>email</tt></td>
+    <td>String</td>
+    <td>E-mail</td>
+  </tr>
+  <tr>
+    <td><tt>first_name</tt></td>
+    <td>String</td>
+    <td>First name</td>
+  </tr>
+  <tr>
+    <td><tt>last_name</tt></td>
+    <td>String</td>
+    <td>Last name</td>
+  </tr>
+  <tr>
+    <td><tt>phone_number</tt></td>
+    <td>String</td>
+    <td>Phone number</td>
+  </tr>
+  <tr>
+    <td><tt>job_title</tt></td>
+    <td>String</td>
+    <td>Job title</td>
+  </tr>
+  <tr>
+    <td><tt>street</tt></td>
+    <td>String</td>
+    <td>Street</td>
+  </tr>
+  <tr>
+    <td><tt>mobile</tt></td>
+    <td>String</td>
+    <td>Mobile</td>
+  </tr>
+  <tr>
+    <td><tt>city</tt></td>
+    <td>String</td>
+    <td>City</td>
+  </tr>
+  <tr>
+    <td><tt>postal_code</tt></td>
+    <td>String</td>
+    <td>Postal code</td>
+  </tr>
+  <tr>
+    <td><tt>country</tt></td>
+    <td>String</td>
+    <td>Country</td>
+  </tr>
+  <tr>
+    <td><tt>state</tt></td>
+    <td>String</td>
+    <td>State</td>
+  </tr>
+  <tr>
+    <td><tt>gender</tt></td>
+    <td>String</td>
+    <td>Gender</td>
+  </tr>
+  <tr>
+    <td><tt>about</tt></td>
+    <td>String</td>
+    <td>About section</td>
+  </tr>
+  <tr>
+    <td><tt>user_password</tt></td>
+    <td>String</td>
+    <td>Desired password for non-admin user specified by <tt>id</tt>
+    attribute</td>
+  </tr>
+  <tr>
+    <td><tt>enabled</tt></td>
+    <td>Boolean</td>
+    <td>True by default, set to false to deactive given user. Has no effect
+    for admin user</td>
+  </tr>
+  <tr>
+    <td><tt>old_password</tt></td>
+    <td>String</td>
+    <td>Old password of admin user. Has no effect for non-admin ones</td>
+  </tr>
+</table>
+
+## Compatibility matrix
+
+| Attribute       | `admin` user        | All other users     |
+| --------------- | ------------------- | ------------------- |
+| `id`            | :white_check_mark:  | :white_check_mark:  |
+| `username`      | :white_check_mark:  | :white_check_mark:  |
+| `password`      | :white_check_mark:  | :white_check_mark:  |
+| `instance`      | :white_check_mark:  | :white_check_mark:  |
+| `email`         | :white_check_mark:  | :white_check_mark:  |
+| `first_name`    | :white_check_mark:  | :white_check_mark:  |
+| `last_name`     | :white_check_mark:  | :white_check_mark:  |
+| `phone_number`  | :white_check_mark:  | :white_check_mark:  |
+| `job_title`     | :white_check_mark:  | :white_check_mark:  |
+| `street`        | :white_check_mark:  | :white_check_mark:  |
+| `mobile`        | :white_check_mark:  | :white_check_mark:  |
+| `city`          | :white_check_mark:  | :white_check_mark:  |
+| `postal_code`   | :white_check_mark:  | :white_check_mark:  |
+| `country`       | :white_check_mark:  | :white_check_mark:  |
+| `state`         | :white_check_mark:  | :white_check_mark:  |
+| `gender`        | :white_check_mark:  | :white_check_mark:  |
+| `about`         | :white_check_mark:  | :white_check_mark:  |
+| `user_password` | :no_entry:          | :white_check_mark:  |
+| `enabled`       | :no_entry:          | :white_check_mark:  |
+| `old_password`  | :white_check_mark:  | :no_entry:          |
+
+## Usage
+
+More detailed examples are available [here](recipes/_users.rb).
+
+```ruby
+cq_user 'admin' do
+  username node['cq']['author']['credentials']['login']
+  password 'd4rk_kn1ght'
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  first_name 'Bruce'
+  last_name 'Wayne'
+  old_password 'passw0rd'
+
+  action :modify
+end
+
+cq_user 'author' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  first_name 'Peter'
+  last_name 'Parker'
+  job_title 'Spiderman'
+  gender 'male'
+  enabled false
+  user_password 'sp1d3r'
+
+  action :modify
+end
+```
+
+Modify action on `cq_user 'admin'` resource will change CQ/AEM admin's password
+to `d4rk_kn1ght` if the current one is either `passw0rd` or `admin` (the latter
+is automatically checked if both `password` and `old_password` are incorrect).
+Moreover admin's first name and last name will be updated (to `Bruce` and
+`Wayne` respectively) if needed.
+
+Second example (`cq_user 'author'`) also updates user password, but this time
+the old one doesn't have to be specified, as this operation will be executed on
+admin rights (auth credentials: `username`/`password`). Additionally `auhtor`'s
+profile will be updated and user will be disabled (`enabled false`), so you
+won't be able to log in as this user anymore.
+
 # Testing
 
 TBD
 
 # Authors
 
-Author:: Jakub Wadolowski (<jakub.wadolowski@cognifide.com>)
+Jakub Wadolowski (<jakub.wadolowski@cognifide.com>)
