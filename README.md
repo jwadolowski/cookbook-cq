@@ -33,6 +33,11 @@ choice ;)
         * [Usage](#usage-1)
             * [Regular OSGi configs](#regular-osgi-configs)
             * [Factory OSGi configs](#factory-osgi-configs)
+    * [cq_user](#cq_user)
+        * [Actions](#actions-2)
+        * [Parameter Attributes](#parameter-attributes-2)
+        * [Compatibility matrix](#compatibility-matrix-1)
+        * [Usage](#usage-2)
 * [Testing](#testing)
 * [Authors](#authors)
 
@@ -627,6 +632,129 @@ resource definition.
 `Jobs Queue` resource will delete a factory instance of
 `org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
 properties. Nothing will happen when there's no such OSGi config.
+
+# cq_user
+
+## Actions
+
+* `modify` - use to modify an existing user. Action will be skipped if give
+  user does not exist
+
+## Parameter Attributes
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>id</tt></td>
+    <td>String</td>
+    <td>User ID (login)<td>
+  </tr>
+  <tr>
+    <td><tt>username</tt></td>
+    <td>String</td>
+    <td>Instance username</td>
+  </tr>
+  <tr>
+    <td><tt>password</tt></td>
+    <td>String</td>
+    <td>Instance password</td>
+  </tr>
+  <tr>
+    <td><tt>instance</tt></td>
+    <td>String</td>
+    <td>Instance URL</td>
+  </tr>
+  <tr>
+    <td><tt>email</tt></td>
+    <td>String</td>
+    <td>E-mail<td>
+  </tr>
+  <tr>
+    <td><tt>first_name</tt></td>
+    <td>String</td>
+    <td>First name<td>
+  </tr>
+  <tr>
+    <td><tt>last_name</tt></td>
+    <td>String</td>
+    <td>Last name<td>
+  </tr>
+  <tr>
+    <td><tt>phone_number</tt></td>
+    <td>String</td>
+    <td>Phone number<td>
+  </tr>
+  <tr>
+    <td><tt>job_title</tt></td>
+    <td>String</td>
+    <td>Job title<td>
+  </tr>
+  <tr>
+    <td><tt>street</tt></td>
+    <td>String</td>
+    <td>Street<td>
+  </tr>
+  <tr>
+    <td><tt>mobile</tt></td>
+    <td>String</td>
+    <td>Mobile<td>
+  </tr>
+  <tr>
+    <td><tt>city</tt></td>
+    <td>String</td>
+    <td>City<td>
+  </tr>
+  <tr>
+    <td><tt>postal_code</tt></td>
+    <td>String</td>
+    <td>Postal code<td>
+  </tr>
+  <tr>
+    <td><tt>country</tt></td>
+    <td>String</td>
+    <td>Country<td>
+  </tr>
+  <tr>
+    <td><tt>state</tt></td>
+    <td>String</td>
+    <td>State<td>
+  </tr>
+  <tr>
+    <td><tt>gender</tt></td>
+    <td>String</td>
+    <td>Gender<td>
+  </tr>
+  <tr>
+    <td><tt>about</tt></td>
+    <td>String</td>
+    <td>About section<td>
+  </tr>
+  <tr>
+    <td><tt>user_password</tt></td>
+    <td>String</td>
+    <td>Desired password for non-admin user specified by <tt>id</tt>
+    attribute<td>
+  </tr>
+  <tr>
+    <td><tt>enabled</tt></td>
+    <td>Boolean</td>
+    <td>True by default, set to false to deactive given user. Has no effect
+    for admin user<td>
+  </tr>
+  <tr>
+    <td><tt>old_password</tt></td>
+    <td>String</td>
+    <td>Old password of admin user. Has no effect for non-admin ones</td>
+  </tr>
+</table>
+
+## Compatibility matrix
+
+## Usage
 
 # Testing
 
