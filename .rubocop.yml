@@ -1,16 +1,19 @@
 AllCops:
-    Exclude:
-        - 'Berksfile'
-        - 'Gemfile'
-        - 'metadata.rb'
-        - 'Thorfile'
-        - 'Vagrantfile'
+  Exclude:
+    - 'Berksfile'
+    - 'Gemfile'
+    - 'metadata.rb'
+    - 'Thorfile'
+    - 'Vagrantfile'
 
 Encoding:
-    Enabled: false
+  Enabled: false
 
 LineLength:
-    Max: 80
+  Max: 80
 
 HashSyntax:
-    EnforcedStyle: hash_rockets
+  EnforcedStyle: hash_rockets
+
+Documentation:
+  Enabled: false
