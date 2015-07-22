@@ -8,6 +8,34 @@ started development there was no AEM yet and I simply like the old name much
 better. Nowadays it seems to be already taken anyway, so I no longer have a
 choice ;)
 
+# Table of Contents
+
+* [Supported platforms](#supported-platforms)
+    * [Operating systems](#operating-systems)
+    * [AEM/CQ versions](#aemcq-versions)
+* [Attributes](#attributes)
+    * [default.rb](#defaultrb)
+    * [author.rb](#authorrb)
+    * [publish.rb](#publishrb)
+* [Recipes](#recipes)
+    * [default.rb](#defaultrb-1)
+    * [author.rb](#authorrb-1)
+    * [publish.rb](#publishrb-1)
+* [Custom Resources](#custom-resources)
+    * [cq_package](#cq_package)
+        * [Actions](#actions)
+        * [Parameter Attributes](#parameter-attributes)
+        * [Usage](#usage)
+    * [cq_osgi_config](#cq_osgi_config)
+        * [Actions](#actions-1)
+        * [Parameter Attributes](#parameter-attributes-1)
+        * [Compatibility matrix](#compatibility-matrix)
+        * [Usage](#usage-1)
+            * [Regular OSGi configs](#regular-osgi-configs)
+            * [Factory OSGi configs](#factory-osgi-configs)
+* [Testing](#testing)
+* [Authors](#authors)
+
 # Supported platforms
 
 ## Operating systems
@@ -48,11 +76,12 @@ TBD
 TBD
 
 
-# Lightweight Resource Providers
+# Custom resources
 
 ---
 
-All LWRPs are idempotent, so action won't be taken if not required.
+All CQ/AEM related resource are idempotent, so action won't be taken if not
+required.
 
 ---
 
