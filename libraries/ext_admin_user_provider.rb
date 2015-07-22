@@ -34,6 +34,11 @@ class Chef
         # Verify whether admin user exists
         @current_resource.exist = exist?(current_resource.query_result)
 
+        Chef::Application.fatal!(
+          "admin user does not exist! It's either a bug in this cookbook or "\
+          'your AEM instance behaves really odd'
+        ) unless current_resource.exist
+
         populate_user_data(
           new_resource.username,
           current_resource.admin_password
