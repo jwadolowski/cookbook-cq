@@ -29,6 +29,7 @@ class Chef
       attr_accessor :profile
       attr_accessor :admin_password
 
+      # rubocop:disable Metrics/MethodLength
       def initialize(name, run_context = nil)
         super
 

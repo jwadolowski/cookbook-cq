@@ -31,14 +31,16 @@ class Chef
         # Verify whether given user exists
         @current_resource.exist = exist?(current_resource.query_result)
 
-        if current_resource.exist
-          populate_user_data(new_resource.username, new_resource.password)
+        populate_user_data(
+          new_resource.username,
+          new_resource.password
+        ) if current_resource.exist
 
-          # Mark current user as disabled if that's the case
-          @current_resource.enabled(
-            false
-          ) if current_resource.info['rep:disabled'] == 'inactive'
-        end
+        # Mark current user as disabled if that's the case
+        @current_resource.enabled(
+          false
+        ) if current_resource.exist &&
+             current_resource.info['rep:disabled'] == 'inactive'
       end
 
       def modify_user

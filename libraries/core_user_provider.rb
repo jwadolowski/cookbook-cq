@@ -155,6 +155,10 @@ class Chef
         json_to_hash(http_resp.body)
       end
 
+      # Remove unwanted keys from user profile
+      #
+      # @param profile [Hash] raw user profile
+      # @return [Hash] filtered user profile
       def filter_user_profile(profile)
         keys = %w(jobTitle gender aboutMe phoneNumber mobile street city email
                   state familyName country givenName postalCode)
@@ -162,6 +166,10 @@ class Chef
         profile.delete_if { |k, _v| !keys.include?(k) }
       end
 
+      # Transform original property names to the ones used by cq_user resource
+      #
+      # @param profile [Hash] user profile
+      # @return [Hash] transformed user profile
       def normalize_user_profile(profile)
         mappings = {
           'givenName' => 'first_name',
