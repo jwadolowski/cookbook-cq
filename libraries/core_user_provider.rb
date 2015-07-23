@@ -46,8 +46,15 @@ class Chef
       end
 
       def crx_query(user, pass)
-        req_path = '/bin/querybuilder.json?path=/home/users&type=rep:User&'\
-          "nodename=#{new_resource.id}&p.limit=-1"
+        req_path = '/bin/querybuilder.json?'\
+          'path=/home/users&'\
+          'type=rep:User&'\
+          'group.p.or=true&'\
+          'group.1_property=rep:authorizableId&'\
+          "group.1_property.value=#{new_resource.id}&"\
+          'group.2_property=rep:principalName&'\
+          "group.2_property_value=#{new_resource.id}&"\
+          'p.limit=-1'
 
         http_resp = http_get(
           new_resource.instance,
