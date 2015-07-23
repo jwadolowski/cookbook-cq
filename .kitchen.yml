@@ -6,7 +6,7 @@
 driver:
   name: vagrant
   customize:
-      memory: 3072
+    memory: 3072
 
 provisioner:
   name: chef_zero
@@ -25,10 +25,10 @@ platforms:
         license:
           url: <%= ENV['CQ_LICENSE_URL'] %>
       java:
-          '7':
-            x86_64:
-              url: <%= ENV['JAVA_JDK_7_X86_64_URL'] || "http://download.oracle.com/otn-pub/java/jdk/7u80-b15/jdk-7u80-linux-x64.tar.gz" %>
-              checksum: <%= ENV['JAVA_JDK_7_X86_64_CHECKSUM'] || '6152f8a7561acf795ca4701daa10a965' %>
+        '7':
+          x86_64:
+            url: <%= ENV['JAVA_JDK_7_X86_64_URL'] || "http://download.oracle.com/otn-pub/java/jdk/7u80-b15/jdk-7u80-linux-x64.tar.gz" %>
+            checksum: <%= ENV['JAVA_JDK_7_X86_64_CHECKSUM'] || '6152f8a7561acf795ca4701daa10a965' %>
 <%   end %>
 <% end %>
 
