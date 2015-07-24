@@ -141,13 +141,13 @@ Key features:
 * packages are automatically downloaded from remote (`http://`, `https://`) or
   local (`file://`) sources. If HTTP(S) source requires basic auth it is also
   supported (`http_user` and `http_pass` respectively for user and password)
-* be default all packages are downloaded to Chef's cache (`/var/chef/cache`),
+* by default all packages are downloaded to Chef's cache (`/var/chef/cache`),
   but it can be easily reconfigured (`node['cq']['package_cache']`)
 * `cq_package` resource is version aware, so defined actions are always
   executed for given package version
 * installation process is considered finished only when both "foreground"
-  (Package Manager) and the "background" (OSGi bundle/component restarts) ones
-  are over - no more 'wait until you see MESSAGE_X in `error.log` file'
+  (Package Manager) and "background" (OSGi bundle/component restarts) ones are
+  over - no more 'wait until you see MESSAGE_X in `error.log` file'
 
 ### Actions
 
