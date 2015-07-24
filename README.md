@@ -179,10 +179,10 @@ explanation can be found below.
     <td>String</td>
     <td>Package name. Can be anything as long as it means something to you.
     Actual package name is extracted from provided ZIP file. Whenever you use
-    <tt>notifies</tt> on your package resource and more than single action was
-    defined (i.e. <tt> action [:upload, :install]</tt>), please make sure you
-    named it uniquely to avoid unexpected behaviour, i.e. instance restart
-    after package upload</td>
+    <tt>notifies</tt> on your package resource and more than a single action
+    was defined (i.e. <tt>action [:upload, :install]</tt>), two notifications
+    will be triggered (after <tt>:upload</tt> and <tt>:install</tt>
+    respectively)</td>
   </tr>
   <tr>
     <td><tt>source</tt></td>
@@ -193,7 +193,7 @@ explanation can be found below.
   <tr>
     <td><tt>recursive_install</tt></td>
     <td>Boolean</td>
-    <td>Wheter to use recursive flag when installing packages (required for
+    <td>Whether to use recursive flag when installing packages (required for
     service packs and some hotfixes). Applies only to install action</td>
   </tr>
   <tr>
