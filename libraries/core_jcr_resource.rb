@@ -30,6 +30,9 @@ class Chef
         @action = :nothing
 
         @path = name
+        @username = nil
+        @password = nil
+        @instance = nil
         @type = 'nt:unstructured'
         @properties = {}
         @append = false
@@ -37,6 +40,18 @@ class Chef
 
       def path(arg = nil)
         set_or_return(:path, arg, :kind_of => String)
+      end
+
+      def username(arg = nil)
+        set_or_return(:username, arg, :kind_of => String)
+      end
+
+      def password(arg = nil)
+        set_or_return(:password, arg, :kind_of => String)
+      end
+
+      def instance(arg = nil)
+        set_or_return(:instance, arg, :kind_of => String)
       end
 
       def type(arg = nil)
