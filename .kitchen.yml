@@ -132,6 +132,7 @@ suites:
   - name: jcr_nodes-v<%= v %>
     run_list:
       - recipe[cq::author]
+      - recipe[cq::_jcr_nodes]
     attributes:
       cq:
         version: <%= v %>
