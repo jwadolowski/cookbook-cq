@@ -30,21 +30,46 @@ class Chef
       end
 
       def load_current_resource
+        @current_resource = Chef::Resource::CqJcr.new(new_resource.path)
+
+        @raw_node_info = raw_node_info
+        @current_resource.exist = exist?(@raw_node_info)
+
+        @current_resource.info = node_info(
+          @raw_node_info
+        ) if current_resource.exist
+
+        Chef::Log.error("Current [exist]: #{current_resource.exist}")
+        Chef::Log.error("Current [info]: #{current_resource.info}")
       end
 
       def action_create
-        fail Chef::Exceptions::UnsupportedAction,
-             "#{self} does not support :create"
       end
 
       def action_delete
-        fail Chef::Exceptions::UnsupportedAction,
-             "#{self} does not support :delete"
       end
 
       def action_modify
-        fail Chef::Exceptions::UnsupportedAction,
-             "#{self} does not support :modify"
+      end
+
+      def raw_node_info
+        req_path = "#{new_resource.path}.json"
+
+        http_get(
+          new_resource.instance,
+          req_path,
+          new_resource.username,
+          new_resource.password
+        )
+      end
+
+      def exist?(http_resp)
+        return true if http_resp.code == '200'
+        false
+      end
+
+      def node_info(http_resp)
+        json_to_hash(http_resp.body)
       end
     end
   end
