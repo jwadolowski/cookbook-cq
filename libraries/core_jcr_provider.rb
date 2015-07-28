@@ -35,12 +35,16 @@ class Chef
         @raw_node_info = raw_node_info
         @current_resource.exist = exist?(@raw_node_info)
 
-        @current_resource.info = node_info(
-          @raw_node_info
-        ) if current_resource.exist
+        if current_resource.exist
+          @node_info = node_info(@raw_node_info)
+
+          @current_resource.type(@node_info['jcr:primaryType'])
+          @current_resource.properties(filtered_properties(@node_info))
+        end
 
         Chef::Log.error("Current [exist]: #{current_resource.exist}")
-        Chef::Log.error("Current [info]: #{current_resource.info}")
+        Chef::Log.error("Current [type]: #{current_resource.type}")
+        Chef::Log.error("Current [properties]: #{current_resource.properties}")
       end
 
       def action_create
@@ -70,6 +74,10 @@ class Chef
 
       def node_info(http_resp)
         json_to_hash(http_resp.body)
+      end
+
+      def filtered_properties(hash)
+        hash.delete_if { |k, _v| k == 'jcr:primaryType' }
       end
     end
   end

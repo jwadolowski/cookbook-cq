@@ -22,7 +22,6 @@ class Chef
     class CqJcr < Chef::Resource
       provides :cq_jcr, :on_platforms => :all
 
-      attr_accessor :info
       attr_accessor :exist
 
       def initialize(name, run_context = nil)
