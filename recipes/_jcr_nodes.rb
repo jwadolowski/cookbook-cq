@@ -20,3 +20,19 @@
 Chef::Log.warn(
   'This is a test recipe and must not be used outside of test kitchen!'
 )
+
+cq_jcr '/content/test1' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :create
+end
+
+cq_jcr '/content/geometrixx/en/company/jcr:content' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :create
+end
