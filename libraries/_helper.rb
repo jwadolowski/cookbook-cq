@@ -63,5 +63,20 @@ module Cq
         Chef::Log.error("Unable to send POST request: #{e}")
       end
     end
+
+    def http_multipart_post(addr, path, user, password, payload)
+      require 'net/http/post/multipart'
+
+      uri = uri_parser(addr, path)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http_req = Net::HTTP::Post::Multipart.new(uri.request_uri, payload)
+      http_req.basic_auth(user, password)
+
+      begin
+        http.request(http_req)
+      rescue => e
+        Chef::Log.error("Unable to send POST request: #{e}")
+      end
+    end
   end
 end
