@@ -48,6 +48,13 @@ class Chef
       end
 
       def action_create
+        if !current_resource.exist
+          converge_by("Create #{new_resource.path} node") do
+            create_new_node
+          end
+        else
+          # TODO
+        end
       end
 
       def action_delete
@@ -78,6 +85,34 @@ class Chef
 
       def filtered_properties(hash)
         hash.delete_if { |k, _v| k == 'jcr:primaryType' }
+      end
+
+      def multipart_payload
+        new_resource.properties.merge(
+          'jcr:primaryType' => new_resource.type
+        )
+      end
+
+      def create_new_node
+        http_multipart_post(
+          new_resource.instance,
+          new_resource.path,
+          new_resource.username,
+          new_resource.password,
+          multipart_payload
+        )
+      end
+
+      def properties_update?
+        # TODO
+      end
+
+      def current_properties?
+        if new_resource.append
+          current_resource.
+        else
+
+        end
       end
     end
   end
