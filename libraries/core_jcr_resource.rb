@@ -35,7 +35,6 @@ class Chef
         @username = nil
         @password = nil
         @instance = nil
-        @type = 'nt:unstructured'
         @properties = {}
         @append = false
       end
@@ -54,10 +53,6 @@ class Chef
 
       def instance(arg = nil)
         set_or_return(:instance, arg, :kind_of => String)
-      end
-
-      def type(arg = nil)
-        set_or_return(:type, arg, :kind_of => String)
       end
 
       def properties(arg = nil)

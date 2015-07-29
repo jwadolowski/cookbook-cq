@@ -35,16 +35,13 @@ class Chef
         @raw_node_info = raw_node_info
         @current_resource.exist = exist?(@raw_node_info)
 
-        if current_resource.exist
-          @node_info = node_info(@raw_node_info)
-
-          @current_resource.type(@node_info['jcr:primaryType'])
-          @current_resource.properties(filtered_properties(@node_info))
-        end
+        @current_resource.properties(
+          node_info(@raw_node_info)
+        ) if current_resource.exist
 
         Chef::Log.error("Current [exist]: #{current_resource.exist}")
-        Chef::Log.error("Current [type]: #{current_resource.type}")
         Chef::Log.error("Current [properties]: #{current_resource.properties}")
+        Chef::Log.error("Properties diff: #{properties_diff}")
       end
 
       def action_create
@@ -83,36 +80,45 @@ class Chef
         json_to_hash(http_resp.body)
       end
 
-      def filtered_properties(hash)
-        hash.delete_if { |k, _v| k == 'jcr:primaryType' }
-      end
-
-      def multipart_payload
-        new_resource.properties.merge(
-          'jcr:primaryType' => new_resource.type
-        )
+      def merged_new_resource_properties
+        current_resource.properties
+          .merge(new_resource.properties)
       end
 
       def create_new_node
-        http_multipart_post(
+        http_resp = http_multipart_post(
           new_resource.instance,
           new_resource.path,
           new_resource.username,
           new_resource.password,
-          multipart_payload
+          new_resource.properties
         )
+
+        Chef::Application.fatal!(
+          "Something went wrong during #{new_resource.path} node creation: \n"\
+          "HTTP response code: #{http_resp.code}\n"\
+          "HTTP response body: #{http_resp.body}\n"\
+          'Please check error.log file to get more info.'
+        ) unless http_resp.code.start_with?('20')
       end
 
-      def properties_update?
-        # TODO
-      end
+      def properties_diff
+        diff = {}
 
-      def current_properties?
         if new_resource.append
-          current_resource.
-        else
+          properties = merged_new_resource_properties
 
+          properties.each do |k, v|
+            diff[k] = v if properties[k] != current_resource.properties[k]
+          end
+        else
+          new_resource.properties.each do |k, v|
+            diff[k] = v if new_resource.properties[k] !=
+              current_resource.properties[k]
+          end
         end
+
+        diff
       end
     end
   end
