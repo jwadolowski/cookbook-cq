@@ -24,20 +24,24 @@ choice ;)
 * [Custom Resources](#custom-resources)
     * [cq_package](#cq_package)
         * [Actions](#actions)
-        * [Parameter Attributes](#parameter-attributes)
+        * [Attributes](#attributes-1)
         * [Usage](#usage)
     * [cq_osgi_config](#cq_osgi_config)
         * [Actions](#actions-1)
-        * [Parameter Attributes](#parameter-attributes-1)
+        * [Attributes](#attributes-2)
         * [Compatibility matrix](#compatibility-matrix)
         * [Usage](#usage-1)
             * [Regular OSGi configs](#regular-osgi-configs)
             * [Factory OSGi configs](#factory-osgi-configs)
     * [cq_user](#cq_user)
         * [Actions](#actions-2)
-        * [Parameter Attributes](#parameter-attributes-2)
+        * [Attributes](#attributes-3)
         * [Compatibility matrix](#compatibility-matrix-1)
         * [Usage](#usage-2)
+    * [cq_jcr](#cq_jcr)
+        * [Actions](#actions-3)
+        * [Attributes](#attributes-4)
+        * [Usage](#usage-4)
 * [Testing](#testing)
 * [Authors](#authors)
 
@@ -166,7 +170,7 @@ explanation can be found below.
   executed
 * `uninstall` - uninstalls given CQ package
 
-### Parameter Attributes
+### Attributes
 
 <table>
   <tr>
@@ -419,7 +423,7 @@ For factory configs:
   defined state
 
 
-### Parameter Attributes
+### Attributes
 
 <table>
   <tr>
@@ -646,7 +650,7 @@ Exposes a resource for CQ/AEM user management. Supports:
 * `modify` - use to modify an existing user. Action will be skipped if given
   user does not exist
 
-## Parameter Attributes
+## Attributes
 
 <table>
   <tr>
@@ -827,6 +831,22 @@ the old one doesn't have to be specified, as this operation will be executed on
 admin rights (auth credentials: `username`/`password`). Additionally `auhtor`'s
 profile will be updated and user will be disabled (`enabled false`), so you
 won't be able to log in as this user anymore.
+
+# cq_jcr
+
+TBD
+
+## Attributes
+
+TBD
+
+## Actions
+
+TBD
+
+## Usage
+
+TBD
 
 # Testing
 
