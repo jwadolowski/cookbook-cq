@@ -29,10 +29,41 @@ cq_jcr '/content/test1' do
   action :create
 end
 
+cq_jcr '/content/test2' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'property_one' => 'first',
+    'property_two' => 'second',
+    'property_three' => 'third'
+  )
+
+  action :create
+end
+
 cq_jcr '/content/geometrixx/en/company/jcr:content' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'jcr:title' => 'Geometrixx Company'
+  )
+
+  action :create
+end
+
+cq_jcr '/content/geometrixx/en/products/jcr:content' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  append false
+  properties(
+    'jcr:primaryType' => 'cq:PageContent',
+    'jcr:title' => 'New title',
+    'subtitle' => 'New subtitle',
+    'new_property' => 'Randome value'
+  )
 
   action :create
 end
