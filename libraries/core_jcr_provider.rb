@@ -47,10 +47,19 @@ class Chef
       def action_create
         if !current_resource.exist
           converge_by("Create #{new_resource.path} node") do
-            create_new_node
+            modify_node(new_resource.properties)
           end
         else
-          # TODO
+          payload = properties_diff
+          if payload.empty?
+            Chef::Log.info(
+              "Node #{new_resource.path} is already configured as defined"
+            )
+          else
+            converge_by("Update #{new_resource.path} node") do
+              modify_node(payload)
+            end
+          end
         end
       end
 
@@ -85,7 +94,7 @@ class Chef
           .merge(new_resource.properties)
       end
 
-      def create_new_node
+      def modify_node(payload)
         http_resp = http_multipart_post(
           new_resource.instance,
           new_resource.path,
@@ -95,30 +104,56 @@ class Chef
         )
 
         Chef::Application.fatal!(
-          "Something went wrong during #{new_resource.path} node creation: \n"\
+          "Something went wrong during operation on #{new_resource.path}\n"\
           "HTTP response code: #{http_resp.code}\n"\
           "HTTP response body: #{http_resp.body}\n"\
           'Please check error.log file to get more info.'
         ) unless http_resp.code.start_with?('20')
       end
 
-      def properties_diff
+      def regular_diff
         diff = {}
 
-        if new_resource.append
-          properties = merged_new_resource_properties
-
-          properties.each do |k, v|
-            diff[k] = v if properties[k] != current_resource.properties[k]
-          end
-        else
-          new_resource.properties.each do |k, v|
-            diff[k] = v if new_resource.properties[k] !=
-              current_resource.properties[k]
-          end
+        merged_new_resource_properties.each do |k, v|
+          diff[k] = v if current_resource.properties[k] != v
         end
 
         diff
+      end
+
+      def force_replace_diff
+        diff = {}
+
+        excluded_properties = %w(
+          jcr:created
+          jcr:createdBy
+          cq:lastModified
+          cq:lastModifiedBy
+        )
+
+        # Iterate over desired (new) properties first to see if update is
+        # required
+        new_resource.properties.each do |k, v|
+          diff[k] = v if current_resource.properties[k] != v
+        end
+
+        # Mark for deletion all properties that
+        # * are currently present, but are not defined in desired (new) state
+        # * are not generated/updated automatically
+        current_resource.properties.each do |k, _v|
+          diff["#{k}@Delete"] = '' if !new_resource.properties[k] &&
+                                      !excluded_properties.include?(k)
+        end
+
+        diff
+      end
+
+      def properties_diff
+        if new_resource.append
+          regular_diff
+        else
+          force_replace_diff
+        end
       end
     end
   end
