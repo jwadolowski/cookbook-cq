@@ -100,7 +100,7 @@ class Chef
           new_resource.path,
           new_resource.username,
           new_resource.password,
-          new_resource.properties
+          payload
         )
 
         Chef::Application.fatal!(
