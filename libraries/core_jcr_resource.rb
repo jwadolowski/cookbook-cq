@@ -29,7 +29,7 @@ class Chef
 
         @resource_name = :cq_jcr
         @allowed_actions = [:create, :delete, :modify]
-        @action = :nothing
+        @action = :create
 
         @path = name
         @username = nil
