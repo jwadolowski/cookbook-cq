@@ -36,7 +36,7 @@ class Chef
         @password = nil
         @instance = nil
         @properties = {}
-        @append = false
+        @append = true
       end
 
       def path(arg = nil)
