@@ -121,15 +121,51 @@ class Chef
         diff
       end
 
-      def force_replace_diff
-        diff = {}
-
-        excluded_properties = %w(
+      # Sling documentation says that jcr:lastModified and jcr:lastModifiedBy
+      # are created automaticall, but but I haven't encountered them in CQ/AEM.
+      # Instead cq:lastModified and cq:lastModified are created. Just in case I
+      # decided to exclude both.
+      #
+      # http://sling.apache.org/documentation/bundles/manipulating-content-the-
+      # slingpostservlet-servlets-post.html#automatic-property-values-last-
+      # modified-and-created-by
+      def auto_properties
+        %w(
           jcr:created
           jcr:createdBy
+          jcr:lastModified
+          jcr:lastModifiedBy
           cq:lastModified
           cq:lastModifiedBy
         )
+      end
+
+      def protected_properties(type)
+        req_path = "/jcr:system/jcr:nodeTypes/#{type}.json"
+
+        http_resp = http_get(
+          new_resource.instance,
+          req_path,
+          new_resource.username,
+          new_resource.password
+        )
+
+        # Even though jcr:primaryType is protected in most cases (if not all)
+        # it can be changed w/o any issues (hence it gets deleted)
+        json_to_hash(
+          http_resp.body
+        )['rep:protectedProperties'].delete_if {|k, v| k == 'jcr:primaryType'}
+      end
+
+      def editable_property(name)
+        !auto_properties.include?(name) &&
+          !protected_properties(
+            new_resource.properties['jcr:primaryType']
+        ).include?(name)
+      end
+
+      def force_replace_diff
+        diff = {}
 
         # Iterate over desired (new) properties first to see if update is
         # required
@@ -137,15 +173,17 @@ class Chef
           diff[k] = v if current_resource.properties[k] != v
         end
 
-        # Mark for deletion all properties that
-        # * are currently present, but are not defined in desired (new) state
-        # * are not generated/updated automatically
+        # Mark for deletion all properties that are currently present, but are
+        # not defined in desired (new) state
         current_resource.properties.each do |k, _v|
-          diff["#{k}@Delete"] = '' if !new_resource.properties[k] &&
-                                      !excluded_properties.include?(k)
+          diff["#{k}@Delete"] = '' if !new_resource.properties[k]
         end
 
-        diff
+        # Finally get rid of keys (properties) that are protected or
+        # automatically created
+        diff.delete_if do |k, _v|
+          !editable_property(k.gsub(/@Delete/, ''))
+        end
       end
 
       def properties_diff
