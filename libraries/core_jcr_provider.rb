@@ -179,18 +179,22 @@ class Chef
           diff["#{k}@Delete"] = '' if !new_resource.properties[k]
         end
 
-        # Finally get rid of keys (properties) that are protected or
-        # automatically created
-        diff.delete_if do |k, _v|
-          !editable_property(k.gsub(/@Delete/, ''))
-        end
+        diff
       end
 
       def properties_diff
+        diff = {}
+
         if new_resource.append
-          regular_diff
+          diff = regular_diff
         else
-          force_replace_diff
+          diff = force_replace_diff
+        end
+
+        # Get rid of keys (properties) that are protected or automatically
+        # created
+        diff.delete_if do |k, _v|
+          !editable_property(k.gsub(/@Delete/, ''))
         end
       end
     end
