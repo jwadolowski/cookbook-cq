@@ -51,6 +51,13 @@ class Chef
       end
 
       def action_delete
+        if current_resource.exist
+          delete_node
+        else
+          Chef::Log.error(
+            "Node #{new_resource.path} does not exist, so can't be deleted!"
+          )
+        end
       end
 
       def action_modify
@@ -59,6 +66,17 @@ class Chef
         else
           Chef::Log.error("Node #{new_resource.path} does not exist!")
         end
+      end
+
+      def delete_node
+        http_resp = http_delete(
+          new_resource.instance,
+          new_resource.path,
+          new_resource.username,
+          new_resource.password
+        )
+
+        http_response_validator(http_resp)
       end
 
       def apply_update
@@ -109,6 +127,10 @@ class Chef
           payload
         )
 
+        http_response_validator(http_resp)
+      end
+
+      def http_response_validator(http_resp)
         Chef::Application.fatal!(
           "Something went wrong during operation on #{new_resource.path}\n"\
           "HTTP response code: #{http_resp.code}\n"\
