@@ -52,7 +52,9 @@ class Chef
 
       def action_delete
         if current_resource.exist
-          delete_node
+          converge_by("Delete #{new_resource.path} node") do
+            delete_node
+          end
         else
           Chef::Log.error(
             "Node #{new_resource.path} does not exist, so can't be deleted!"
