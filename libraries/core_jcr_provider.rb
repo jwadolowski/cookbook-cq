@@ -38,28 +38,15 @@ class Chef
         @current_resource.properties(
           node_info(@raw_node_info)
         ) if current_resource.exist
-
-        Chef::Log.error("Current [exist]: #{current_resource.exist}")
-        Chef::Log.error("Current [properties]: #{current_resource.properties}")
-        Chef::Log.error("Properties diff: #{properties_diff}")
       end
 
       def action_create
         if !current_resource.exist
           converge_by("Create #{new_resource.path} node") do
-            modify_node(new_resource.properties)
+            update_via_sling(new_resource.properties)
           end
         else
-          payload = properties_diff
-          if payload.empty?
-            Chef::Log.info(
-              "Node #{new_resource.path} is already configured as defined"
-            )
-          else
-            converge_by("Update #{new_resource.path} node") do
-              modify_node(payload)
-            end
-          end
+          apply_update
         end
       end
 
@@ -67,6 +54,25 @@ class Chef
       end
 
       def action_modify
+        if current_resource.exist
+          apply_update
+        else
+          Chef::Log.error("Node #{new_resource.path} does not exist!")
+        end
+      end
+
+      def apply_update
+        payload = properties_diff
+
+        if payload.empty?
+          Chef::Log.info(
+            "#{new_resource.path} node is already configured as defined"
+          )
+        else
+          converge_by("Update #{new_resource.path} node") do
+            update_via_sling(payload)
+          end
+        end
       end
 
       def raw_node_info
@@ -94,7 +100,7 @@ class Chef
           .merge(new_resource.properties)
       end
 
-      def modify_node(payload)
+      def update_via_sling(payload)
         http_resp = http_multipart_post(
           new_resource.instance,
           new_resource.path,
@@ -122,7 +128,7 @@ class Chef
       end
 
       # Sling documentation says that jcr:lastModified and jcr:lastModifiedBy
-      # are created automaticall, but but I haven't encountered them in CQ/AEM.
+      # are created automatically, but but I haven't seen them in CQ/AEM.
       # Instead cq:lastModified and cq:lastModified are created. Just in case I
       # decided to exclude both.
       #
@@ -140,28 +146,56 @@ class Chef
         )
       end
 
+      # Get protected properties of given JCR node type
       def protected_properties(type)
-        req_path = "/jcr:system/jcr:nodeTypes/#{type}.json"
+        if type.nil? || type.empty?
+          {}
+        else
+          req_path = "/jcr:system/jcr:nodeTypes/#{type}.json"
 
-        http_resp = http_get(
-          new_resource.instance,
-          req_path,
-          new_resource.username,
-          new_resource.password
-        )
+          http_resp = http_get(
+            new_resource.instance,
+            req_path,
+            new_resource.username,
+            new_resource.password
+          )
 
-        # Even though jcr:primaryType is protected in most cases (if not all)
-        # it can be changed w/o any issues (hence it gets deleted)
-        json_to_hash(
-          http_resp.body
-        )['rep:protectedProperties'].delete_if {|k, v| k == 'jcr:primaryType'}
+          protected_properties = json_to_hash(
+            http_resp.body
+          )['rep:protectedProperties']
+
+          # Even though jcr:primaryType is protected in most cases (if not all)
+          # it can be changed w/o any issues (hence it gets deleted)
+          protected_properties.delete_if {|k, v| k == 'jcr:primaryType'}
+        end
       end
 
+      # Get jcr:primaryType from (order matters):
+      # * new resource (if defined)
+      # * current resource (in case of existing resouruce update)
+      #
+      # Return nil if none of above is possible (completely new JCR node)
+      def best_primary_type
+        primary_types = [
+          new_resource.properties['jcr:primaryType'],
+          current_resource.properties['jcr:primaryType']
+        ]
+
+        primary_types.each do |t|
+          return t if t
+        end
+
+        return nil
+      end
+
+      # Check whether given property is editable
       def editable_property(name)
+        # Get protected properties of given JCR type. Has to be fetched just
+        # once
+        @protected_properties ||= protected_properties(best_primary_type)
+
         !auto_properties.include?(name) &&
-          !protected_properties(
-            new_resource.properties['jcr:primaryType']
-        ).include?(name)
+          !@protected_properties.include?(name)
       end
 
       def force_replace_diff
