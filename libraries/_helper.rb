@@ -19,18 +19,34 @@
 
 require 'net/http'
 require 'uri'
-require 'json'
 
 module Cq
   module Helper
-    def uri_parser(addr, path)
-      URI.parse(addr + path)
+    def parse_uri(addr, path)
+      uri = escape_uri(addr + path)
+      URI.parse(uri)
     rescue => e
       Chef::Application.fatal!("Invalid URI: #{e}")
     end
 
+    def escape_uri(str)
+      require 'addressable/uri'
+
+      Addressable::URI.escape(str)
+    rescue => e
+      Chef::Application.fatal!("Unable to escape #{str}: #{e}")
+    end
+
+    def json_to_hash(str)
+      require 'json'
+
+      JSON.parse(str)
+    rescue => e
+      Chef::Application.fatal!("Unable to parse #{str} as JSON: #{e}")
+    end
+
     def http_get(addr, path, user, password)
-      uri = uri_parser(addr, path)
+      uri = parse_uri(addr, path)
 
       http = Net::HTTP.new(uri.host, uri.port)
       http_req = Net::HTTP::Get.new(uri.request_uri)
@@ -43,14 +59,8 @@ module Cq
       end
     end
 
-    def json_to_hash(str)
-      JSON.parse(str)
-    rescue => e
-      Chef::Application.fatal!("Unable to parse #{str} as JSON: #{e}")
-    end
-
     def http_post(addr, path, user, password, payload)
-      uri = uri_parser(addr, path)
+      uri = parse_uri(addr, path)
 
       http = Net::HTTP.new(uri.host, uri.port)
       http_req = Net::HTTP::Post.new(uri.request_uri)
@@ -67,7 +77,7 @@ module Cq
     def http_multipart_post(addr, path, user, password, payload)
       require 'net/http/post/multipart'
 
-      uri = uri_parser(addr, path)
+      uri = parse_uri(addr, path)
       http = Net::HTTP.new(uri.host, uri.port)
       http_req = Net::HTTP::Post::Multipart.new(uri.request_uri, payload)
       http_req.basic_auth(user, password)
@@ -76,6 +86,20 @@ module Cq
         http.request(http_req)
       rescue => e
         Chef::Log.error("Unable to send POST request: #{e}")
+      end
+    end
+
+    def http_delete(addr, path, user, password)
+      uri = parse_uri(addr, path)
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http_req = Net::HTTP::Delete.new(uri.request_uri)
+      http_req.basic_auth(user, password)
+
+      begin
+        http.request(http_req)
+      rescue => e
+        Chef::Log.error("Unable to send DELETE request: #{e}")
       end
     end
   end

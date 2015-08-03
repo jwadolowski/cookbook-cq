@@ -19,6 +19,10 @@
 
 include_recipe 'chef-sugar::default'
 
+chef_gem 'addressable' do
+  compile_time false if respond_to?(:compile_time)
+end
+
 chef_gem 'multipart-post' do
   compile_time false if respond_to?(:compile_time)
 end
