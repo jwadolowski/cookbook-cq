@@ -67,3 +67,19 @@ cq_jcr '/content/geometrixx/en/products/jcr:content' do
 
   action :create
 end
+
+cq_jcr '/content/dam/geometrixx-media/articles/en/2012' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :delete
+end
+
+cq_jcr '/content/dam/geometrixx-outdoors/products/glasses/Raja Ampat.jpg' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :delete
+end
