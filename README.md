@@ -834,17 +834,64 @@ won't be able to log in as this user anymore.
 
 # cq_jcr
 
-TBD
+Enables CRUD operations on JCR nodes. Currently supports:
+
+* nodes creation
+* nodes modification
+* nodes deletion
 
 ## Attributes
 
-TBD
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>path</tt></td>
+    <td>String</td>
+    <td>Node path</td>
+  </tr>
+  <tr>
+    <td><tt>username</tt></td>
+    <td>String</td>
+    <td>Instance username</td>
+  </tr>
+  <tr>
+    <td><tt>password</tt></td>
+    <td>String</td>
+    <td>Instance password</td>
+  </tr>
+  <tr>
+    <td><tt>instance</tt></td>
+    <td>String</td>
+    <td>Instance URL</td>
+  </tr>
+  <tr>
+    <td><tt>properties</tt></td>
+    <td>Hash</td>
+    <td>Node properties</td>
+  </tr>
+  <tr>
+    <td><tt>append</tt></td>
+    <td>Boolean</td>
+    <td>By default set to <tt>true</tt>. If full overwrite of properties is
+    required please change <tt>append</tt> attribute to <tt>false</tt></td>
+  </tr>
+</table>
 
 ## Actions
 
-TBD
+* `create` - creates new node under given path if it doesn't exist. Otherwise
+  it modifies its properties if required
+* `delete` - deletes node if it exists. Prints error otherwise
+* `modify` - modifies properties of existing JCR node
 
 ## Usage
+
+More examples of `cq_jcr` are available in [this](recipes/_jcr_nodes.rb)
+recipe.
 
 TBD
 
