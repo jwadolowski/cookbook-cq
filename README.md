@@ -24,20 +24,24 @@ choice ;)
 * [Custom Resources](#custom-resources)
     * [cq_package](#cq_package)
         * [Actions](#actions)
-        * [Parameter Attributes](#parameter-attributes)
+        * [Attributes](#attributes-1)
         * [Usage](#usage)
     * [cq_osgi_config](#cq_osgi_config)
         * [Actions](#actions-1)
-        * [Parameter Attributes](#parameter-attributes-1)
+        * [Attributes](#attributes-2)
         * [Compatibility matrix](#compatibility-matrix)
         * [Usage](#usage-1)
             * [Regular OSGi configs](#regular-osgi-configs)
             * [Factory OSGi configs](#factory-osgi-configs)
     * [cq_user](#cq_user)
         * [Actions](#actions-2)
-        * [Parameter Attributes](#parameter-attributes-2)
+        * [Attributes](#attributes-3)
         * [Compatibility matrix](#compatibility-matrix-1)
         * [Usage](#usage-2)
+    * [cq_jcr](#cq_jcr)
+        * [Actions](#actions-3)
+        * [Attributes](#attributes-4)
+        * [Usage](#usage-4)
 * [Testing](#testing)
 * [Authors](#authors)
 
@@ -141,13 +145,13 @@ Key features:
 * packages are automatically downloaded from remote (`http://`, `https://`) or
   local (`file://`) sources. If HTTP(S) source requires basic auth it is also
   supported (`http_user` and `http_pass` respectively for user and password)
-* be default all packages are downloaded to Chef's cache (`/var/chef/cache`),
+* by default all packages are downloaded to Chef's cache (`/var/chef/cache`),
   but it can be easily reconfigured (`node['cq']['package_cache']`)
 * `cq_package` resource is version aware, so defined actions are always
   executed for given package version
 * installation process is considered finished only when both "foreground"
-  (Package Manager) and the "background" (OSGi bundle/component restarts) ones
-  are over - no more 'wait until you see MESSAGE_X in `error.log` file'
+  (Package Manager) and "background" (OSGi bundle/component restarts) ones are
+  over - no more 'wait until you see MESSAGE_X in `error.log` file'
 
 ### Actions
 
@@ -166,7 +170,7 @@ explanation can be found below.
   executed
 * `uninstall` - uninstalls given CQ package
 
-### Parameter Attributes
+### Attributes
 
 <table>
   <tr>
@@ -179,10 +183,10 @@ explanation can be found below.
     <td>String</td>
     <td>Package name. Can be anything as long as it means something to you.
     Actual package name is extracted from provided ZIP file. Whenever you use
-    <tt>notifies</tt> on your package resource and more than single action was
-    defined (i.e. <tt> action [:upload, :install]</tt>), please make sure you
-    named it uniquely to avoid unexpected behaviour, i.e. instance restart
-    after package upload</td>
+    <tt>notifies</tt> on your package resource and more than a single action
+    was defined (i.e. <tt>action [:upload, :install]</tt>), two notifications
+    will be triggered (after <tt>:upload</tt> and <tt>:install</tt>
+    respectively)</td>
   </tr>
   <tr>
     <td><tt>source</tt></td>
@@ -193,7 +197,7 @@ explanation can be found below.
   <tr>
     <td><tt>recursive_install</tt></td>
     <td>Boolean</td>
-    <td>Wheter to use recursive flag when installing packages (required for
+    <td>Whether to use recursive flag when installing packages (required for
     service packs and some hotfixes). Applies only to install action</td>
   </tr>
   <tr>
@@ -419,7 +423,7 @@ For factory configs:
   defined state
 
 
-### Parameter Attributes
+### Attributes
 
 <table>
   <tr>
@@ -646,7 +650,7 @@ Exposes a resource for CQ/AEM user management. Supports:
 * `modify` - use to modify an existing user. Action will be skipped if given
   user does not exist
 
-## Parameter Attributes
+## Attributes
 
 <table>
   <tr>
@@ -827,6 +831,69 @@ the old one doesn't have to be specified, as this operation will be executed on
 admin rights (auth credentials: `username`/`password`). Additionally `auhtor`'s
 profile will be updated and user will be disabled (`enabled false`), so you
 won't be able to log in as this user anymore.
+
+# cq_jcr
+
+Enables CRUD operations on JCR nodes. Currently supports:
+
+* nodes creation
+* nodes modification
+* nodes deletion
+
+## Attributes
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>path</tt></td>
+    <td>String</td>
+    <td>Node path</td>
+  </tr>
+  <tr>
+    <td><tt>username</tt></td>
+    <td>String</td>
+    <td>Instance username</td>
+  </tr>
+  <tr>
+    <td><tt>password</tt></td>
+    <td>String</td>
+    <td>Instance password</td>
+  </tr>
+  <tr>
+    <td><tt>instance</tt></td>
+    <td>String</td>
+    <td>Instance URL</td>
+  </tr>
+  <tr>
+    <td><tt>properties</tt></td>
+    <td>Hash</td>
+    <td>Node properties</td>
+  </tr>
+  <tr>
+    <td><tt>append</tt></td>
+    <td>Boolean</td>
+    <td>By default set to <tt>true</tt>. If full overwrite of properties is
+    required please change <tt>append</tt> attribute to <tt>false</tt></td>
+  </tr>
+</table>
+
+## Actions
+
+* `create` - creates new node under given path if it doesn't exist. Otherwise
+  it modifies its properties if required
+* `delete` - deletes node if it exists. Prints error otherwise
+* `modify` - modifies properties of existing JCR node
+
+## Usage
+
+More examples of `cq_jcr` are available in [this](recipes/_jcr_nodes.rb)
+recipe.
+
+TBD
 
 # Testing
 

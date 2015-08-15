@@ -129,4 +129,13 @@ suites:
         version: <%= v %>
         jar:
           url: <%= ENV[env] %>
+  - name: jcr_nodes-v<%= v %>
+    run_list:
+      - recipe[cq::author]
+      - recipe[cq::_jcr_nodes]
+    attributes:
+      cq:
+        version: <%= v %>
+        jar:
+          url: <%= ENV[env] %>
 <% end %>
