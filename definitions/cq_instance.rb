@@ -122,7 +122,7 @@ define :cq_instance,
     owner node['cq']['user']
     group node['cq']['group']
     mode '0644'
-    cookbook ['cq']['conf_template_cookbook']
+    cookbook node['cq']['conf_template_cookbook']
     source 'cq.conf.erb'
     variables(
       :port => node['cq'][local_id]['port'],
