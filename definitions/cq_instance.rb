@@ -100,6 +100,7 @@ define :cq_instance,
     owner 'root'
     group 'root'
     mode '0755'
+    cookbook node['cq']['init_template_cookbook']
     source 'cq.init.erb'
     variables(
       :daemon_name => daemon_name,
@@ -121,6 +122,7 @@ define :cq_instance,
     owner node['cq']['user']
     group node['cq']['group']
     mode '0644'
+    cookbook ['cq']['conf_template_cookbook']
     source 'cq.conf.erb'
     variables(
       :port => node['cq'][local_id]['port'],
