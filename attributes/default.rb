@@ -36,6 +36,9 @@ default['cq']['service']['start_timeout'] = 1800
 default['cq']['service']['kill_delay'] = 120
 default['cq']['service']['restart_sleep'] = 5
 
+default['cq']['init_template_cookbook'] = 'cq'
+default['cq']['conf_template_cookbook'] = 'cq'
+
 # Java attributes
 # -----------------------------------------------------------------------------
 default['java']['jdk_version'] = '7'
