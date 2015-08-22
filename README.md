@@ -877,7 +877,8 @@ Enables CRUD operations on JCR nodes. Currently supports:
     <td><tt>append</tt></td>
     <td>Boolean</td>
     <td>By default set to <tt>true</tt>. If full overwrite of properties is
-    required please change <tt>append</tt> attribute to <tt>false</tt></td>
+    required please set <tt>append</tt> attribute to <tt>false</tt>. Applies
+    only to <tt>:create</tt> and <tt>:modify</tt> actions</td>
   </tr>
 </table>
 
