@@ -27,15 +27,6 @@ chef_gem 'multipart-post' do
   compile_time false if respond_to?(:compile_time)
 end
 
-# Set healtcheck endpoints based on CQ/AEM version
-if constraint('>= 5.6.0').satisfied_by?(node['cq']['version'])
-  node.default['cq']['healthcheck_resource'] =
-    '/libs/granite/core/content/login.html'
-elsif constraint('~> 5.5.0').satisfied_by?(node['cq']['version'])
-  node.default['cq']['healthcheck_resource'] =
-    '/libs/cq/core/content/login.html'
-end
-
 # Create base directory if necessary
 # -----------------------------------------------------------------------------
 directory node['cq']['base_dir'] do

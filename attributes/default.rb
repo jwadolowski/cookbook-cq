@@ -36,6 +36,8 @@ default['cq']['service']['start_timeout'] = 1800
 default['cq']['service']['kill_delay'] = 120
 default['cq']['service']['restart_sleep'] = 5
 
+default['cq']['healthcheck_resource'] = '/libs/granite/core/content/login.html'
+
 # Java attributes
 # -----------------------------------------------------------------------------
 default['java']['jdk_version'] = '7'
