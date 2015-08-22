@@ -21,6 +21,10 @@ Chef::Log.warn(
   'This is a test recipe and must not be used outside of test kitchen!'
 )
 
+# CREATE
+# -----------------------------------------------------------------------------
+
+# Create new node w/o properties
 cq_jcr '/content/test1' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -29,6 +33,17 @@ cq_jcr '/content/test1' do
   action :create
 end
 
+# Create new node w/o properties and custom resource name
+cq_jcr 'New node at /content/testXYZ' do
+  path '/content/testXYZ'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :create
+end
+
+# Create new node w/ some properties
 cq_jcr '/content/test2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -42,6 +57,30 @@ cq_jcr '/content/test2' do
   action :create
 end
 
+# Create new node w/ some properties
+cq_jcr '/content/Special_%characters (test)' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'p1' => '100',
+    'p2' => '200',
+    'p3' => '300'
+  )
+
+  action :create
+end
+
+# Create action on exsiting node w/o properties (append == true)
+cq_jcr '/content/geometrixx/en/events/userconf/jcr:content' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :create
+end
+
+# Create action on existing node w/ some properties (append == true)
 cq_jcr '/content/geometrixx/en/company/jcr:content' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -53,6 +92,17 @@ cq_jcr '/content/geometrixx/en/company/jcr:content' do
   action :create
 end
 
+# Create action on existing node w/o proeprties (append == false)
+cq_jcr '/content/geometrixx/de/support/jcr:content' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  append false
+
+  action :create
+end
+
+# Create action on exsiting node w/ properties (append == false)
 cq_jcr '/content/geometrixx/en/products/jcr:content' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -62,12 +112,16 @@ cq_jcr '/content/geometrixx/en/products/jcr:content' do
     'jcr:primaryType' => 'cq:PageContent',
     'jcr:title' => 'New title',
     'subtitle' => 'New subtitle',
-    'new_property' => 'Randome value'
+    'new_property' => 'Random value'
   )
 
   action :create
 end
 
+# DELETE
+# -----------------------------------------------------------------------------
+
+# Delete existing node w/o special characters in its path
 cq_jcr '/content/dam/geometrixx-media/articles/en/2012' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -76,6 +130,7 @@ cq_jcr '/content/dam/geometrixx-media/articles/en/2012' do
   action :delete
 end
 
+# Delete existing node w/ special characters in its path
 cq_jcr '/content/dam/geometrixx-outdoors/products/glasses/Raja Ampat.jpg' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -83,3 +138,16 @@ cq_jcr '/content/dam/geometrixx-outdoors/products/glasses/Raja Ampat.jpg' do
 
   action :delete
 end
+
+# Delete not exisitng node
+cq_jcr '/path/to/not/exising/node' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :delete
+end
+
+# MODIFY
+# -----------------------------------------------------------------------------
+# TODO
