@@ -56,7 +56,7 @@ class Chef
             delete_node
           end
         else
-          Chef::Log.error(
+          Chef::Log.warn(
             "Node #{new_resource.path} does not exist, so can't be deleted!"
           )
         end
@@ -66,7 +66,7 @@ class Chef
         if current_resource.exist
           apply_update
         else
-          Chef::Log.error("Node #{new_resource.path} does not exist!")
+          Chef::Log.warn("Node #{new_resource.path} does not exist!")
         end
       end
 
