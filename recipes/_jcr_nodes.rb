@@ -150,4 +150,57 @@ end
 
 # MODIFY
 # -----------------------------------------------------------------------------
-# TODO
+
+# Modify existing w/o properties (append == true)
+cq_jcr '/content/geometrixx/en/services/banking/jcr:content' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :modify
+end
+
+# Modify existing w/ properties (append == true)
+cq_jcr '/content/geometrixx/en/services/certification/jcr:content' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'jcr:title' => 'New Certification Services',
+    'brand_new_prop' => 'ValueX'
+  )
+
+  action :modify
+end
+
+# Modify existing w/o properties (append == false)
+cq_jcr '/content/dam/geometrixx/portraits/scott_reynolds.jpg' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  append false
+
+  action :modify
+end
+
+# Modify existing w/ properties (append == false)
+cq_jcr '/content/dam/geometrixx/portraits/john_doe.jpg/jcr:content/metadata' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  append false
+  properties(
+    'my_property' => 'my_value'
+  )
+
+  action :modify
+end
+
+# Modify not exisitng
+cq_jcr '/modify/on/fake/jcr/node' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :modify
+end

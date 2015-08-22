@@ -188,14 +188,22 @@ class Chef
             http_resp.body
           )['rep:protectedProperties']
 
-          # There's no 'rep:protectedProperties' element in CQ 5.6.1
-          if protected_properties
-            # Even though jcr:primaryType is protected in most cases (if not
-            # all) it can be changed w/o any issues (hence it gets deleted)
-            protected_properties.delete_if {|k, v| k == 'jcr:primaryType'}
-          else
-            {}
-          end
+          # There is no 'rep:protectedProperties' element in CQ 5.6.1 under
+          # /jcr:system/jcr:nodeTypes/<type>.json but jcr:primaryType can be
+          # always assumed as protected
+          protected_properties = [
+            'jcr:primaryType'
+          ] if protected_properties.nil?
+
+          # Even though jcr:primaryType is protected for most types (if not
+          # all) it can be updated w/o any issues. It gets deleted from
+          # protected properties only if it's explicitly specified in
+          # new_resource properties
+          protected_properties = protected_properties.delete_if do |k, v|
+            k == 'jcr:primaryType'
+          end if new_resource.properties.include?('jcr:primaryType')
+
+          protected_properties
         end
       end
 

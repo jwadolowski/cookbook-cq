@@ -282,3 +282,153 @@ describe '/path/to/not/exising/node' do
     ).to match(/^404$/)
   end
 end
+
+describe '/content/geometrixx/en/services/banking/jcr:content' do
+  it 'exists' do
+    expect(
+      command(
+        "curl -s -o /dev/null -w '%{http_code}' -u admin:admin "\
+        'http://localhost:4502'\
+        '/content/geometrixx/en/services/banking/jcr:content.json'
+      ).stdout
+    ).to match(/^200$/)
+  end
+
+  it 'was modified in 2010' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502'\
+        '/content/geometrixx/en/services/banking/jcr:content.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)[\"cq:lastModified\"]'"\
+        "| grep '2010'"
+      ).exit_status
+    ).to eq 0
+  end
+end
+
+describe '/content/geometrixx/en/services/certification/jcr:content' do
+  it 'exists' do
+    expect(
+      command(
+        "curl -s -o /dev/null -w '%{http_code}' -u admin:admin "\
+        'http://localhost:4502'\
+        '/content/geometrixx/en/services/certification/jcr:content.json'
+      ).stdout
+    ).to match(/^200$/)
+  end
+
+  it 'property jcr:title equals New Certification Services' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502'\
+        '/content/geometrixx/en/services/certification/jcr:content.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)[\"jcr:title\"]'"
+      ).stdout
+    ).to match(/^New\ Certification\ Services$/)
+  end
+
+  it 'property brand_new_prop equals ValueX' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502'\
+        '/content/geometrixx/en/services/certification/jcr:content.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)[\"brand_new_prop\"]'"
+      ).stdout
+    ).to match(/^ValueX$/)
+  end
+end
+
+describe '/content/dam/geometrixx/portraits/scott_reynolds.jpg' do
+  it 'exists' do
+    expect(
+      command(
+        "curl -s -o /dev/null -w '%{http_code}' -u admin:admin "\
+        'http://localhost:4502'\
+        '/content/dam/geometrixx/portraits/scott_reynolds.jpg'
+      ).stdout
+    ).to match(/^200$/)
+  end
+end
+
+describe '/content/dam/geometrixx/portraits/john_doe.jpg'\
+  '/jcr:content/metadata' do
+  it 'exists' do
+    expect(
+      command(
+        "curl -s -o /dev/null -w '%{http_code}' -u admin:admin "\
+        'http://localhost:4502'\
+        '/content/dam/geometrixx/portraits/john_doe.jpg/jcr:content'\
+        '/metadata.json'
+      ).stdout
+    ).to match(/^200$/)
+  end
+
+  it 'property my_property equals my_value' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502'\
+        '/content/dam/geometrixx/portraits/john_doe.jpg/jcr:content'\
+        '/metadata.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)[\"my_property\"]'"
+      ).stdout
+    ).to match(/^my_value$/)
+  end
+
+  it 'there is no exif:Sharpness property' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502'\
+        '/content/dam/geometrixx/portraits/john_doe.jpg/jcr:content'\
+        '/metadata.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)[\"exif:Sharpness\"]'"
+      ).stdout
+    ).to match(/^$/)
+  end
+
+  it 'there is no dam:ModifyDate property' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502'\
+        '/content/dam/geometrixx/portraits/john_doe.jpg/jcr:content'\
+        '/metadata.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)[\"dam:ModifyDate\"]'"
+      ).stdout
+    ).to match(/^$/)
+  end
+
+  it 'there is no tiff:Make property' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502'\
+        '/content/dam/geometrixx/portraits/john_doe.jpg/jcr:content'\
+        '/metadata.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)[\"tiff:Make\"]'"
+      ).stdout
+    ).to match(/^$/)
+  end
+end
+
+describe '/modify/on/fake/jcr/node' do
+  it 'does not exist' do
+    expect(
+      command(
+        "curl -s -o /dev/null -w '%{http_code}' -u admin:admin "\
+        'http://localhost:4502/modify/on/fake/jcr/node.json'
+      ).stdout
+    ).to match(/^404$/)
+  end
+end
