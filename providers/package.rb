@@ -565,7 +565,7 @@ def osgi_stability_healthcheck
       previous_state = cmd.stdout
 
       # Move on if the same state occurred N times in a row
-      break if same_state_counter == 4
+      break if same_state_counter == 3
     rescue => e
       Chef::Log.warn 'Unable to get OSGi bundles state. Retrying...'
 
@@ -577,7 +577,7 @@ def osgi_stability_healthcheck
 
     Chef::Application.fatal!("Cannot detect stable state after #{i_max} "\
                              'attempts. Aborting...') if i == i_max
-    sleep 5
+    sleep 10
   end
 
   Chef::Log.info('OSGi bundles seem to be stable. Moving on...')
