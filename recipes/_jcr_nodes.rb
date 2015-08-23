@@ -57,7 +57,7 @@ cq_jcr '/content/test2' do
   action :create
 end
 
-# Create new node w/ some properties
+# Create new node w/ some properties and special characters in its name
 cq_jcr '/content/Special_%characters (test)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -66,6 +66,19 @@ cq_jcr '/content/Special_%characters (test)' do
     'p1' => '100',
     'p2' => '200',
     'p3' => '300'
+  )
+
+  action :create
+end
+
+# Create new node with multivalue properties
+cq_jcr '/content/multivalue_test' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'simple_key' => 'simple_value',
+    'array_key' => ['i99', 'i1', 'i1', 'last element']
   )
 
   action :create
@@ -201,6 +214,34 @@ cq_jcr '/modify/on/fake/jcr/node' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :modify
+end
+
+# Modify existing node with multi-value property (append == true)
+cq_jcr '/apps/social/facebookprovider/config/com.adobe.granite.auth.oauth.'\
+  'provider-geometrixx-outdoorsfacebookapp.config' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'oauth.create.users.groups' => ['secret-group'],
+    'oauth.scope' => ['find_me']
+  )
+
+  action :modify
+end
+
+# Modify existing node with multi-value property (append == false)
+cq_jcr '/apps/commerce/gui/content/catalogs/importblueprintswizard/importers'\
+  '/geometrixx/items/file-picker/button' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  append false
+  properties(
+    'variant' => ['one', 'two']
+  )
 
   action :modify
 end

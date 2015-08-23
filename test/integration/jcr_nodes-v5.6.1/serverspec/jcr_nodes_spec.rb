@@ -115,6 +115,39 @@ describe '/content/Special_%characters (test)' do
   end
 end
 
+describe '/content/multivalue_test' do
+  it 'exists' do
+    expect(
+      command(
+        "curl -s -o /dev/null -w '%{http_code}' -u admin:admin "\
+        'http://localhost:4502/content/multivalue_test.json'
+      ).stdout
+    ).to match(/^200$/)
+  end
+
+  it 'property simple_key equals simple_value' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502/content/multivalue_test.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)[\"simple_key\"]'"
+      ).stdout
+    ).to match(/^simple_value$/)
+  end
+
+  it 'property array_key equals [i1, i99, last_element]' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502/content/multivalue_test.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)[\"array_key\"]'"
+      ).stdout
+    ).to match(/^\[u'i1',\ u'i99',\ u'last\ element'\]$/)
+  end
+end
+
 describe '/content/geometrixx/en/events/userconf/jcr:content' do
   it 'exists' do
     expect(
@@ -428,6 +461,62 @@ describe '/modify/on/fake/jcr/node' do
       command(
         "curl -s -o /dev/null -w '%{http_code}' -u admin:admin "\
         'http://localhost:4502/modify/on/fake/jcr/node.json'
+      ).stdout
+    ).to match(/^404$/)
+  end
+end
+
+describe '/apps/social/facebookprovider/config/com.adobe.granite.auth.oauth.'\
+  'provider-geometrixx-outdoorsfacebookapp.config' do
+  it 'exists' do
+    expect(
+      command(
+        "curl -s -o /dev/null -w '%{http_code}' -u admin:admin "\
+        'http://localhost:4502'\
+        '/apps/social/facebookprovider/config/com.adobe.granite.auth.oauth.'\
+        'provider-geometrixx-outdoorsfacebookapp.config.json'
+      ).stdout
+    ).to match(/^200$/)
+  end
+
+  it 'property oauth.create.users.groups equals '\
+    '[geometrixx-facebook, secret-group]' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502'\
+        '/apps/social/facebookprovider/config/com.adobe.granite.auth.oauth.'\
+        'provider-geometrixx-outdoorsfacebookapp.config.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)"\
+        "[\"oauth.create.users.groups\"]'"
+      ).stdout
+    ).to match(/^\[u'geometrixx-facebook',\ u'secret-group'\]$/)
+  end
+
+  it 'property oauth.scope was updated' do
+    expect(
+      command(
+        'curl -s -u admin:admin '\
+        'http://localhost:4502'\
+        '/apps/social/facebookprovider/config/com.adobe.granite.auth.oauth.'\
+        'provider-geometrixx-outdoorsfacebookapp.config.json'\
+        '| python -c '\
+        "'import sys, json; print json.load(sys.stdin)[\"oauth.scope\"]'"
+      ).stdout
+    ).to match(/^\[u'email',\ u'find_me',.+\ u'user_work_history'\]$/)
+  end
+end
+
+describe '/apps/commerce/gui/content/catalogs/importblueprintswizard'\
+  '/importers/geometrixx/items/file-picker/button' do
+  it 'does not exist' do
+    expect(
+      command(
+        "curl -s -o /dev/null -w '%{http_code}' -u admin:admin "\
+        'http://localhost:4502'\
+        '/apps/commerce/gui/content/catalogs/importblueprintswizard'\
+        '/importers/geometrixx/items/file-picker/button.json'
       ).stdout
     ).to match(/^404$/)
   end
