@@ -36,8 +36,14 @@ class Chef
         @current_resource.exist = exist?(@raw_node_info)
 
         @current_resource.properties(
-          node_info(@raw_node_info)
+          standardize_properties(
+            node_info(@raw_node_info)
+          )
         ) if current_resource.exist
+
+        @new_resource.properties(
+          standardize_properties(new_resource.properties)
+        ) if new_resource.properties
       end
 
       def action_create
@@ -56,7 +62,7 @@ class Chef
             delete_node
           end
         else
-          Chef::Log.error(
+          Chef::Log.warn(
             "Node #{new_resource.path} does not exist, so can't be deleted!"
           )
         end
@@ -66,7 +72,7 @@ class Chef
         if current_resource.exist
           apply_update
         else
-          Chef::Log.error("Node #{new_resource.path} does not exist!")
+          Chef::Log.warn("Node #{new_resource.path} does not exist!")
         end
       end
 
@@ -95,6 +101,17 @@ class Chef
         end
       end
 
+      # To make comparison easier sort and uniq all arrays in properties hash
+      #
+      # By default ['a', 'b'] != ['b', 'a'], hence it's required
+      def standardize_properties(hash)
+        hash.each do |k, v|
+          hash[k] = v.sort.uniq if v.is_a?(Array)
+        end
+
+        hash
+      end
+
       def raw_node_info
         req_path = "#{new_resource.path}.json"
 
@@ -116,8 +133,15 @@ class Chef
       end
 
       def merged_new_resource_properties
-        current_resource.properties
-          .merge(new_resource.properties)
+        current_resource.properties.merge(
+          new_resource.properties
+        ) do |_key, oldval, newval|
+          if oldval.is_a?(Array)
+            (oldval + newval).sort.uniq
+          else
+            newval
+          end
+        end
       end
 
       def update_via_sling(payload)
@@ -172,31 +196,37 @@ class Chef
 
       # Get protected properties of given JCR node type
       def protected_properties(type)
-        if type.nil? || type.empty?
-          {}
-        else
-          req_path = "/jcr:system/jcr:nodeTypes/#{type}.json"
+        return {} if type.nil? || type.empty?
 
-          http_resp = http_get(
-            new_resource.instance,
-            req_path,
-            new_resource.username,
-            new_resource.password
-          )
+        req_path = "/jcr:system/jcr:nodeTypes/#{type}.json"
 
-          protected_properties = json_to_hash(
-            http_resp.body
-          )['rep:protectedProperties']
+        http_resp = http_get(
+          new_resource.instance,
+          req_path,
+          new_resource.username,
+          new_resource.password
+        )
 
-          # There's no 'rep:protectedProperties' element in CQ 5.6.1
-          if protected_properties
-            # Even though jcr:primaryType is protected in most cases (if not
-            # all) it can be changed w/o any issues (hence it gets deleted)
-            protected_properties.delete_if {|k, v| k == 'jcr:primaryType'}
-          else
-            {}
-          end
-        end
+        protected_properties = json_to_hash(
+          http_resp.body
+        )['rep:protectedProperties']
+
+        # There is no 'rep:protectedProperties' element in CQ 5.6.1 under
+        # /jcr:system/jcr:nodeTypes/<type>.json but jcr:primaryType can be
+        # always assumed as protected
+        protected_properties = [
+          'jcr:primaryType'
+        ] if protected_properties.nil?
+
+        # Even though jcr:primaryType is protected for most types (if not
+        # all) it can be updated w/o any issues. It gets deleted from
+        # protected properties only if it's explicitly specified in
+        # new_resource properties
+        protected_properties = protected_properties.delete_if do |k, _v|
+          k == 'jcr:primaryType'
+        end if new_resource.properties.include?('jcr:primaryType')
+
+        protected_properties
       end
 
       # Get jcr:primaryType from (order matters):
@@ -214,7 +244,7 @@ class Chef
           return t if t
         end
 
-        return nil
+        nil
       end
 
       # Check whether given property is editable
@@ -239,7 +269,7 @@ class Chef
         # Mark for deletion all properties that are currently present, but are
         # not defined in desired (new) state
         current_resource.properties.each do |k, _v|
-          diff["#{k}@Delete"] = '' if !new_resource.properties[k]
+          diff["#{k}@Delete"] = '' unless new_resource.properties[k]
         end
 
         diff
@@ -248,17 +278,21 @@ class Chef
       def properties_diff
         diff = {}
 
-        if new_resource.append
-          diff = regular_diff
-        else
-          diff = force_replace_diff
+        unless new_resource.properties.empty?
+          if new_resource.append
+            diff = regular_diff
+          else
+            diff = force_replace_diff
+          end
+
+          # Get rid of keys (properties) that are protected or automatically
+          # created
+          diff.delete_if do |k, _v|
+            !editable_property(k.gsub(/@Delete/, ''))
+          end
         end
 
-        # Get rid of keys (properties) that are protected or automatically
-        # created
-        diff.delete_if do |k, _v|
-          !editable_property(k.gsub(/@Delete/, ''))
-        end
+        diff
       end
     end
   end

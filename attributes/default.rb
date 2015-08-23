@@ -39,6 +39,8 @@ default['cq']['service']['restart_sleep'] = 5
 default['cq']['init_template_cookbook'] = 'cq'
 default['cq']['conf_template_cookbook'] = 'cq'
 
+default['cq']['healthcheck_resource'] = '/libs/granite/core/content/login.html'
+
 # Java attributes
 # -----------------------------------------------------------------------------
 default['java']['jdk_version'] = '7'
