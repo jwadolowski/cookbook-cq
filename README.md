@@ -894,7 +894,74 @@ Enables CRUD operations on JCR nodes. Currently supports:
 More examples of `cq_jcr` are available in [this](recipes/_jcr_nodes.rb)
 recipe.
 
-TBD
+```ruby
+cq_jcr '/content/test_node' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'property_one' => 'first',
+    'property_two' => 'second',
+    'property_three' => ['item1', 'item2', 'item3']
+  )
+
+  action :create
+end
+
+cq_jcr '/content/geometrixx/en/products/jcr:content' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  append false
+  properties(
+    'jcr:primaryType' => 'cq:PageContent',
+    'jcr:title' => 'New title',
+    'subtitle' => 'New subtitle',
+    'new_property' => 'Random value'
+  )
+
+  action :create
+end
+
+cq_jcr '/content/dam/geometrixx-media/articles/en/2012' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :delete
+end
+
+cq_jcr '/content/geometrixx/en/services/certification/jcr:content' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'jcr:title' => 'New Certification Services',
+    'brand_new_prop' => 'ValueX'
+  )
+
+  action :modify
+end
+```
+
+Create action on `cq_jcr '/content/test_node'` will create such node with
+given properties if it doesn't exist yet. Otherwise its properties will be
+updated if necessary. By default `append` is set to `true`, which means
+existing properties of `/content/test_node` will stay untouched unless the same
+properties are specified in your `cq_jcr` resource.
+
+2nd example sets `append` attribute to `false`, which means that all
+properties except those specified in your resource should be removed. It will
+act as a full overwrite (keep in mind that some properties are protected and
+can't be deleted, moreover Sling API automatically adds things like
+`jcr:createdBy`).
+
+Next example is very simple - `/content/dam/geometrixx-media/articles/en/2012`
+will get deleted if it exists. Otherwise warning message will be printed.
+
+Last `cq_jcr` resource uses `:modify` action. It applies updates to existing
+nodes only. If specified path does not exist warning message will be
+displayed.
 
 # Testing
 
