@@ -241,7 +241,7 @@ describe 'Hotfix 6167' do
     expect(
       @package_helper.package_exists(
         'cq-6.0.0-hotfix-6167-wrapper',
-        '1\.3',
+        '1\.4',
         @package_list
       )
     ).to be true
@@ -249,7 +249,7 @@ describe 'Hotfix 6167' do
     expect(
       @package_helper.package_exists(
         'cq-6.0.0-hotfix-6167',
-        '1\.3',
+        '1\.4',
         @package_list
       )
     ).to be true
@@ -257,7 +257,7 @@ describe 'Hotfix 6167' do
     expect(
       @package_helper.package_exists(
         'cq-6.0.0-hotfix-6167-bundles',
-        '1\.3',
+        '1\.4',
         @package_list
       )
     ).to be true
@@ -275,7 +275,7 @@ describe 'Hotfix 6167' do
     expect(
       @package_helper.package_installed(
         'cq-6.0.0-hotfix-6167-wrapper',
-        '1\.3',
+        '1\.4',
         @package_list
       )
     ).to be true
@@ -283,7 +283,7 @@ describe 'Hotfix 6167' do
     expect(
       @package_helper.package_installed(
         'cq-6.0.0-hotfix-6167',
-        '1\.3',
+        '1\.4',
         @package_list
       )
     ).to be true
@@ -291,7 +291,7 @@ describe 'Hotfix 6167' do
     expect(
       @package_helper.package_installed(
         'cq-6.0.0-hotfix-6167-bundles',
-        '1\.3',
+        '1\.4',
         @package_list
       )
     ).to be true
