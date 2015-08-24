@@ -265,7 +265,7 @@ describe 'Hotfix 6167' do
     expect(
       @package_helper.package_exists(
         'cq-ui-classic-content',
-        '1\.0\.162',
+        '1\.0\.170',
         @package_list
       )
     ).to be true
@@ -299,7 +299,7 @@ describe 'Hotfix 6167' do
     expect(
       @package_helper.package_installed(
         'cq-ui-classic-content',
-        '1\.0\.162',
+        '1\.0\.170',
         @package_list
       )
     ).to be true
