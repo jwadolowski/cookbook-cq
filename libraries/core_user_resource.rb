@@ -28,8 +28,8 @@ class Chef
       attr_accessor :info
       attr_accessor :profile
       attr_accessor :admin_password
+      attr_accessor :my_password
 
-      # rubocop:disable Metrics/MethodLength
       def initialize(name, run_context = nil)
         super
 
@@ -57,13 +57,6 @@ class Chef
         @user_password = nil
         @enabled = true
         @old_password = nil
-
-        if @id == 'admin'
-          @provider = Chef::Provider::CqAdminUser
-          @old_password = 'admin'
-        else
-          @provider = Chef::Provider::CqRegularUser
-        end
       end
 
       def id(arg = nil)
@@ -135,34 +128,15 @@ class Chef
       end
 
       def user_password(arg = nil)
-        if @id != 'admin'
-          set_or_return(:user_password, arg, :kind_of => String)
-        else
-          Chef::Log.warn(
-            'user_password is not supported by admin user and will be ignored'
-          ) unless arg.nil?
-        end
+        set_or_return(:user_password, arg, :kind_of => String)
       end
 
       def enabled(arg = nil)
-        if @id != 'admin'
-          set_or_return(:enabled, arg, :kind_of => [TrueClass, FalseClass])
-        else
-          Chef::Log.warn(
-            'enabled is not supported by admin user and will be ignored'
-          ) unless arg.nil?
-        end
+        set_or_return(:enabled, arg, :kind_of => [TrueClass, FalseClass])
       end
 
       def old_password(arg = nil)
-        if @id == 'admin'
-          set_or_return(:old_password, arg, :kind_of => String)
-        else
-          Chef::Log.warn(
-            'old_password is not supported by non-admin users and will be '\
-            'ignored'
-          ) unless arg.nil?
-        end
+        set_or_return(:old_password, arg, :kind_of => String)
       end
     end
   end
