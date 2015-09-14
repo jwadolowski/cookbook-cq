@@ -30,11 +30,33 @@ class Chef
       end
 
       def load_current_resource
-      end
+        @current_resource = Chef::Resource::CqUser.new(new_resource.id)
 
-      def modify_user
-        fail Chef::Exceptions::UnsupportedAction,
-             "#{self} does not support :modify"
+        # Validate resource attributes
+        resource_validation
+
+        # Initialize all the credentials based on user privileges (admin vs
+        # non-admin)
+        init_credentials
+
+        # Query CRX to get user node
+        @current_resource.query_result = crx_query(
+          new_resource.username,
+          new_resource.admin_password
+        )
+
+        # Verify whether given user exists
+        @current_resource.exist = exist?(current_resource.query_result)
+
+        Chef::Application.fatal!(
+          "admin user does not exist! It's either a bug in this cookbook or "\
+          'your AEM instance behaves really odd'
+        ) if current_resource.id == 'admin' && !current_resource.exist
+
+        populate_user_data(
+          new_resource.username,
+          new_resource.admin_password
+        ) if current_resource.exist
       end
 
       def action_modify
@@ -42,6 +64,80 @@ class Chef
           modify_user
         else
           Chef::Log.error("User #{current_resource.id} does not exist!")
+        end
+      end
+
+      def modify_user
+        if password_update?(new_resource.my_password) ||
+           !profile_diff.empty? ||
+           status_update?
+          converge_by("Update #{new_resource.id} user") do
+            profile_update(
+              new_resource.username,
+              new_resource.admin_password,
+              new_resource.my_password
+            )
+          end
+        else
+          Chef::Log.info(
+            "User #{new_resource.id} is already configured as defined"
+          )
+        end
+      end
+
+      def current_admin_password
+        req_path = '/libs/granite/core/content/login.html'
+
+        [new_resource.password, new_resource.old_password, 'admin'].each do |p|
+          http_resp = http_get(new_resource.instance, req_path, 'admin', p)
+
+          return p if http_resp.code == '200'
+        end
+
+        Chef::Application.fatal!(
+          'Unable to determine valid admin credentials! The following '\
+          'user/pass pairs were checked: \n'\
+          '* admin / <password>\n'\
+          '* admin / <old_password>\n'\
+          '* admin / admin'
+        )
+      end
+
+      def resource_validation
+        if new_resource.id == 'admin'
+          begin
+            Chef::Log.warn(
+              'user_password is not supported by admin user and will be '\
+              'ignored'
+            )
+            @new_resource.user_password(nil)
+          end unless new_resource.user_password.nil?
+
+          begin
+            Chef::Log.warn(
+              'enabled is not supported by admin user and will be ignored'
+            )
+            @new_resource.enabled(true)
+          end if new_resource.enabled == false
+        else
+          begin
+            Chef::Log.warn(
+              'old_password is not supported by non-admin users and will be '\
+              'ignored'
+            )
+            @new_resource.old_password(nil)
+          end unless new_resource.old_password.nil?
+        end
+      end
+
+      def init_credentials
+        if new_resource.id == 'admin'
+          @new_resource.admin_password = current_admin_password
+          @new_resource.my_password = new_resource.password
+          @new_resource.old_password('admin') if new_resource.old_password.nil?
+        else
+          @new_resource.admin_password = new_resource.password
+          @new_resource.my_password = new_resource.user_password
         end
       end
 
@@ -75,7 +171,7 @@ class Chef
         else
           Chef::Application.fatal!(
             'Query result set is neither 0 nor 1, which may indicate that '\
-            'more than a single user with given id was found!'
+            'more than a single user with given id was found'
           )
         end
       end
@@ -170,7 +266,7 @@ class Chef
       #
       # @param profile [Hash] raw user profile
       # @return [Hash] filtered user profile
-      def filter_user_profile(profile)
+      def clean_user_profile(profile)
         keys = %w(jobTitle gender aboutMe phoneNumber mobile street city email
                   state familyName country givenName postalCode)
 
@@ -202,7 +298,7 @@ class Chef
         profile = raw_user_profile(user, pass)
 
         normalize_user_profile(
-          filter_user_profile(profile)
+          clean_user_profile(profile)
         )
       end
 
@@ -230,9 +326,10 @@ class Chef
 
       def profile_diff
         diff = {}
+        profile = compacted_profile
 
-        compacted_profile.each do |k, v|
-          diff[k] = v if compacted_profile[k] != current_resource.profile[k]
+        profile.each do |k, v|
+          diff[k] = v if profile[k] != current_resource.profile[k]
         end
 
         diff
@@ -281,7 +378,7 @@ class Chef
         end
       end
 
-      # Assemble required POST payload and send update request to CQ/AEM
+      # Assemble required POST payload and send user update request to CQ/AEM
       def profile_update(auth_user, auth_pass, new_pass)
         req_path = current_resource.path + '.rw.userprops.html'
 
@@ -317,6 +414,10 @@ class Chef
         @current_resource.info = user_info(user, pass)
         # Get profile data (last name, email, job title, etc)
         @current_resource.profile = user_profile(user, pass)
+        # Mark current user as disabled if that's the case
+        @current_resource.enabled(
+          false
+        ) if current_resource.info['rep:disabled'] == 'inactive'
       end
     end
   end
