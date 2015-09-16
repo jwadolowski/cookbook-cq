@@ -107,7 +107,9 @@ describe 'JDK' do
     expect(file('/usr/bin/java')).to be_symlink
     expect(file('/usr/bin/java')).to be_linked_to('/etc/alternatives/java')
     expect(file('/etc/alternatives/java')).to be_symlink
-    expect(file('/etc/alternatives/java')).to be_linked_to('/usr/lib/jvm/java')
+    expect(file('/etc/alternatives/java')).to be_linked_to(
+      '/usr/lib/jvm/java/bin/java'
+    )
     expect(file('/usr/lib/jvm/java')).to be_symlink
     expect(
       command('ls -l /usr/lib/jvm/java').stdout
