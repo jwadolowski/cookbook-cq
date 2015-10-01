@@ -17,8 +17,7 @@ platforms:
 <%   chef_versions.each do |chef_version| %>
   - name: <%= p %>-chef-<%= chef_version %>
     driver_config:
-      box: opscode-<%= p %>
-      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_<%= p %>_chef-provisionerless.box
+      box: bento/<%= p %>
       require_chef_omnibus: <%= chef_version %>
     attributes:
       cq:
