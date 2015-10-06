@@ -210,8 +210,13 @@ explanation can be found below.
     is not responding over HTTP. After CQ/AEM restart everyting works
     perfectly fine again.
     This flag allows Chef to continue processing if it is not able to get OSGi
-    bundles state 6 times in a row. Applies only to install and deploy
-    actions</td>
+    bundles state 6 times in a row. In most (if not all) cases it should be
+    combined with restart notification (please see examples below).
+    It is highly discouraged to use this property, as 99% of CRX packages
+    shouldn't require such configuration. Unfortunately that 1% does. This is
+    rather a safety switch than a common pattern that should be used in every
+    single case.
+    Applies only to install and deploy actions.</td>
   </tr>
   <tr>
     <td><tt>checksum</tt></td>
@@ -313,6 +318,20 @@ cq_package 'Geometrixx All' do
   action :uninstall
 end
 
+cq_package 'Not really well-thought-out package' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['myapp']
+  http_user node['cq']['author']['credentials']['login']
+  http_pass node['cq']['author']['credentials']['password']
+  rescue_mode true
+
+  action :deploy
+
+  notifies :restart, 'service[cq60-author]', :immediately
+end
+
 cq_package 'Author: Service Pack 2 (upload)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -354,7 +373,22 @@ which is required for majority of hotfixes and every service pack.
 Next example describes usage of `uninstall` action. In this particular case
 operation was executed against Geometrixx package.
 
-6th & 7th `cq_package` resources explain how to deal with AEM instance
+6th `cq_package` presents usage of `rescue_mode` property. Imagine that this
+package provides new OSGi bundles and right after its installation some serious
+issue occurs (i.e. unresolvable OSGi dependency, conflict or cycle). As a
+result of this event all (or almost all) bundles will be turned off and
+effectively instance will stop responding or start serving 404s for all
+resources (including `/system/console`). The java process though will still be
+running. The only solution to that problem is AEM restart, after which all work
+perfectly fine again. Without `rescue_mode` property `cq_package` provider will
+keep checking OSGi bundles to detect their stable state, but none of these
+attempts will end successfully, as nothing is reachable over HTTP. After 30
+requests Chef run will be aborted. If `rescue_mode` was activated (set to
+`true`) then after 6 unsuccessful attempts an error will be printed and the
+processing will be continued (restart will be triggered on `cq60-author`
+service in this case).
+
+7th & 8th `cq_package` resources explain how to deal with AEM instance
 restarts after package installation.
 
 Moreover it explains how to use combination of `upload` and `install` instead
