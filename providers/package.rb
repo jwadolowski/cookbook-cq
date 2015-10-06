@@ -546,7 +546,7 @@ def osgi_stability_healthcheck
   same_state_counter = 0
 
   # Number of iterations
-  i_max = 120
+  i_max = 30
 
   (1..i_max).each do |i|
     cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
