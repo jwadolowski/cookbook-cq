@@ -33,6 +33,8 @@ attribute :http_pass,         :kind_of => String, :required => false,
                               :default => ''
 attribute :recursive_install, :kind_of => [TrueClass, FalseClass],
                               :required => false, :default => false
+attribute :rescue_mode,       :kind_of => [TrueClass, FalseClass],
+                              :required => false, :default => false
 attribute :checksum,          :kind_of => String, :required => false,
                               :default => ''
 
