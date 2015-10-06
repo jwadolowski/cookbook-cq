@@ -545,8 +545,11 @@ def osgi_stability_healthcheck
   # How many times the state hasn't changed in a row
   same_state_counter = 0
 
+  # How many times an error occurred in a row
+  error_state_counter = 0
+
   # Number of iterations
-  i_max = 120
+  i_max = 30
 
   (1..i_max).each do |i|
     cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
@@ -554,6 +557,9 @@ def osgi_stability_healthcheck
 
     begin
       cmd.error!
+
+      # Reset error counter whnever request ended successfully
+      error_state_counter = 0
 
       if cmd.stdout == previous_state
         same_state_counter += 1
@@ -566,13 +572,26 @@ def osgi_stability_healthcheck
 
       # Move on if the same state occurred N times in a row
       break if same_state_counter == 3
-    rescue => e
-      Chef::Log.warn 'Unable to get OSGi bundles state. Retrying...'
+    rescue
+      Chef::Log.warn('Unable to get OSGi bundles state. Retrying...')
 
       # Let's start over in case of an error (clear indicator of flapping OSGi
       # bundles)
       previous_state = ''
       same_state_counter = 0
+
+      # Increment error_state_counter in case of an error
+      error_state_counter += 1
+
+      # If error occurred 6 times in a row and rescue_mode is active then log
+      # such event and break the loop
+      if new_resource.rescue_mode && error_state_counter == 6
+        Chef::Log.error(
+          '6 recent attempts to get OSGi bundles state ended with a failure! '\
+          'Rescuing, because rescue_mode is active...'
+        )
+        break
+      end
     end
 
     Chef::Application.fatal!("Cannot detect stable state after #{i_max} "\
