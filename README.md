@@ -204,7 +204,7 @@ explanation can be found below.
   <tr>
     <td><tt>rescue_mode</tt></td>
     <td>Boolean</td>
-    <td>Some packages may cause shutdown of entire OSGi because of
+    <td>Some packages may cause shutdown of the entire OSGi because of
     dependecy (i.e. cycle) or bundle priority issues. In such case after
     package installation java process is still running, however the instance
     is not responding over HTTP. After CQ/AEM restart everyting works
