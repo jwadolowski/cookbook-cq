@@ -198,7 +198,20 @@ explanation can be found below.
     <td><tt>recursive_install</tt></td>
     <td>Boolean</td>
     <td>Whether to use recursive flag when installing packages (required for
-    service packs and some hotfixes). Applies only to install action</td>
+    service packs and some hotfixes). Applies only to install and deploy
+    actions</td>
+  </tr>
+  <tr>
+    <td><tt>rescue_mode</tt></td>
+    <td>Boolean</td>
+    <td>Some packages may cause shutdown of entire OSGi because of
+    dependecy (i.e. cycle) or bundle priority issues. In such case after
+    package installation java process is still running, however the instance
+    is not responding over HTTP. After CQ/AEM restart everyting works
+    perfectly fine again.
+    This flag allows Chef to continue processing if it is not able to get OSGi
+    bundles state 6 times in a row. Applies only to install and deploy
+    actions</td>
   </tr>
   <tr>
     <td><tt>checksum</tt></td>
