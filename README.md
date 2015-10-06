@@ -385,8 +385,7 @@ keep checking OSGi bundles to detect their stable state, but none of these
 attempts will end successfully, as nothing is reachable over HTTP. After 30
 requests Chef run will be aborted. If `rescue_mode` was activated (set to
 `true`) then after 6 unsuccessful attempts an error will be printed and the
-processing will be continued (restart will be triggered on `cq60-author`
-service in this case).
+processing will be continued (restart of `cq60-author` service in this case).
 
 7th & 8th `cq_package` resources explain how to deal with AEM instance
 restarts after package installation.
