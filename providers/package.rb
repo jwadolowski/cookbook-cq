@@ -572,8 +572,8 @@ def osgi_stability_healthcheck
 
       # Move on if the same state occurred N times in a row
       break if same_state_counter == 3
-    rescue => e
-      Chef::Log.warn("Unable to get OSGi bundles state: #{e}. Retrying...")
+    rescue
+      Chef::Log.warn('Unable to get OSGi bundles state. Retrying...')
 
       # Let's start over in case of an error (clear indicator of flapping OSGi
       # bundles)
