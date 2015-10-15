@@ -886,6 +886,13 @@ Enables CRUD operations on JCR nodes. Currently supports:
 * nodes modification
 * nodes deletion
 
+## Actions
+
+* `create` - creates new node under given path if it doesn't exist. Otherwise
+  it modifies its properties if required
+* `delete` - deletes node if it exists. Prints error otherwise
+* `modify` - modifies properties of existing JCR node
+
 ## Attributes
 
 <table>
@@ -927,13 +934,6 @@ Enables CRUD operations on JCR nodes. Currently supports:
     only to <tt>:create</tt> and <tt>:modify</tt> actions</td>
   </tr>
 </table>
-
-## Actions
-
-* `create` - creates new node under given path if it doesn't exist. Otherwise
-  it modifies its properties if required
-* `delete` - deletes node if it exists. Prints error otherwise
-* `modify` - modifies properties of existing JCR node
 
 ## Usage
 
