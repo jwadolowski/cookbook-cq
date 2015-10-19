@@ -138,4 +138,13 @@ suites:
         version: <%= v %>
         jar:
           url: <%= ENV[env] %>
+  - name: agents-v<%= v %>
+    run_list:
+      - recipe[cq::author]
+      - recipe[cq::_agents]
+    attributes:
+      cq:
+        version: <%= v %>
+        jar:
+          url: <%= ENV[env] %>
 <% end %>
