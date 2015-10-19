@@ -207,7 +207,7 @@ explanation can be found below.
     <td>Some packages may cause shutdown of the entire OSGi because of
     dependecy (i.e. cycle) or bundle priority issues. In such case after
     package installation java process is still running, however the instance
-    is not responding over HTTP. After CQ/AEM restart everyting works
+    is not responding over HTTP. After CQ/AEM restart everything works
     perfectly fine again.
     This flag allows Chef to continue processing if it is not able to get OSGi
     bundles state 6 times in a row. In most (if not all) cases it should be
