@@ -30,6 +30,16 @@ class Chef
       end
 
       def load_current_resource
+        @current_resource = Chef::Resource::CqAgent.new(new_resource.path)
+      end
+
+      def action_create
+      end
+
+      def action_delete
+      end
+
+      def action_modify
       end
     end
   end
