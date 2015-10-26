@@ -20,3 +20,47 @@
 Chef::Log.warn(
   'This is a test recipe and must not be used outside of test kitchen!'
 )
+
+cq_agent 'Author: /etc/replication/agents.author/publish' do
+  path '/etc/replication/agents.author/publish'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'sling:resourceType' => 'cq/replication/components/agent',
+    'jcr:title' => '2nd replication agent',
+    'jcr:description' => 'Agent that replicates content to 2nd publish',
+    'enabled' => false,
+    'serializationType' => 'durbo',
+    'retryDelay' => 60000,
+    'logLevel' => 'info',
+    'transportUri' =>
+      'http://localhost:4503/bin/receive?sling:authRequestLogin=1',
+    'transportUser' => 'admin',
+    'transportPassword' => 'passw0rd'
+  )
+
+  action :modify
+end
+
+cq_agent 'Author: /etc/replication/agents.author/publish2' do
+  path '/etc/replication/agents.author/publish2'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'sling:resourceType' => 'cq/replication/components/agent',
+    'jcr:title' => '2nd replication agent',
+    'jcr:description' => 'Agent that replicates content to 2nd publish',
+    'enabled' => false,
+    'serializationType' => 'durbo',
+    'retryDelay' => 60000,
+    'logLevel' => 'info',
+    'transportUri' =>
+      'http://publish2:4503/bin/receive?sling:authRequestLogin=1',
+    'transportUser' => 'admin',
+    'transportPassword' => 'PUB2_passw0rd'
+  )
+
+  action :create
+end
