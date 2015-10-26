@@ -2,6 +2,17 @@ require 'serverspec'
 
 set :backend, :exec
 
+describe '/content/nothing' do
+  it "doesn't exist" do
+    expect(
+      command(
+        "curl -s -o /dev/null -w '%{http_code}' -u admin:admin "\
+        'http://localhost:4502/content/nothing.json'
+      ).stdout
+    ).to match(/^404$/)
+  end
+end
+
 describe '/content/test1' do
   it 'exists' do
     expect(
