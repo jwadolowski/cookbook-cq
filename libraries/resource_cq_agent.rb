@@ -22,7 +22,15 @@ class Chef
     class CqAgent < Chef::Resource
       provides :cq_agent, :on_platforms => :all
 
-      attr_accessor :exist
+      attr_accessor :jcr_node
+
+      attr_accessor :jcr_child_path
+      attr_accessor :jcr_child
+
+      attr_accessor :jcr_parent_path
+      attr_accessor :jcr_parent
+
+      attr_accessor :decrypted_password
 
       def initialize(name, run_context = nil)
         super
