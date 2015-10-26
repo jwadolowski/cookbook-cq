@@ -21,6 +21,16 @@ Chef::Log.warn(
   'This is a test recipe and must not be used outside of test kitchen!'
 )
 
+# NOTHING
+# -----------------------------------------------------------------------------
+cq_jcr '/content/nothing' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :nothing
+end
+
 # CREATE
 # -----------------------------------------------------------------------------
 
