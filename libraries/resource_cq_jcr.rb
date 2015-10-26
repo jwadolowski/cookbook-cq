@@ -28,7 +28,7 @@ class Chef
         super
 
         @resource_name = :cq_jcr
-        @allowed_actions = [:create, :delete, :modify]
+        @allowed_actions = [:nothing, :create, :delete, :modify]
         @action = :create
 
         @path = name
