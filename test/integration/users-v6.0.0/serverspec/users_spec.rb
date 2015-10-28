@@ -2,6 +2,17 @@ require 'serverspec'
 
 set :backend, :exec
 
+describe 'User test1' do
+  it 'does not exist' do
+    expect(
+      command(
+        "curl -s -o /dev/null -w '%{http_code}' -u admin:passw0rd "\
+        'http://localhost:4502/home/users/t/test1.json'
+      ).stdout
+    ).to match(/^404$/)
+  end
+end
+
 describe 'Admin user' do
   it "has password set to 'passw0rd'" do
     expect(
