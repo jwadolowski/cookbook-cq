@@ -21,6 +21,14 @@ Chef::Log.warn(
   'This is a test recipe and must not be used outside of test kitchen!'
 )
 
+cq_user 'test1' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :nothing
+end
+
 cq_user 'Update admin user' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
