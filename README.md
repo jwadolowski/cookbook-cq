@@ -182,7 +182,7 @@ installs Oracle's JDK7.
   <tr>
     <td><tt>['cq']['healthcheck_resource']</tt></td>
     <td>String</td>
-    <td><tt>/libs/granite/core/content/login.html</tt></td>
+    <td>/libs/granite/core/content/login.html</td>
     <td>Resource that's queried during instance start to determine whether
     CQ/AEM is fully operational</td>
   </tr>
@@ -213,103 +213,123 @@ installs Oracle's JDK7.
     <td><tt>['cq']['author']['jmx_ip']</tt></td>
     <td>String</td>
     <td><tt>''</tt></td>
-    <td></td>
+    <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
+    reference to <tt>${CQ_JMX_IP}</tt> shell variable in
+    <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
+    </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jmx_port']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
+    <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
+    reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
+    <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
+    </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['debug_ip']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>IP to listen on with debug interface. Requires reference to
+    <tt>${CQ_DEBUG_IP}</tt> in <tt>['cq']['author']['jvm']['debug_opts']</tt>
+    attribute to be effective</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['debug_port']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>Port of JVM debug interface. Requires reference to
+    <tt>${CQ_DEBUG_PORT}</tt> shell variable in
+    <tt>['cq']['author']['jvm']['debug_opts']</tt> attribute to be effective
+    </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['credentials']['login']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>admin</tt></td>
+    <td>User that's used to perform actions agains your author instance. The
+    most typical scenarios require <tt>admin</tt></td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['credentials']['password']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>admin</tt></td>
+    <td>Passowrd of user specified in
+    <tt>['cq']['author']['credentials']['login']</tt></td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['min_heap']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>256</tt></td>
+    <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
+    </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['max_heap']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>1024</tt></td>
+    <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
+    </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['max_perm_size']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>320</tt></td>
+    <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
+    parameter</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['code_cache_size']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>64</tt></td>
+    <td>Number of megabytes that's passed on to
+    <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['general_opts']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>
+    -server -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true
+    </tt></td>
+    <td>Generic JVM parameters</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['code_cache_opts']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>JVM parameters related to its code cache</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['gc_opts']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>JVM parameters related to garbage collection</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['jmx_opts']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>JVM parameres related to JMX settings</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['debug_opts']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>JVM parameters related to debug interface</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['crx_opts']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>CRX related JVM parameters</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['extra_opts']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>All other JVM patameters</td>
   </tr>
 </table>
 
