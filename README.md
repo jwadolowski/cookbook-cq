@@ -195,7 +195,7 @@ All attributes in this file refer to CQ/AEM author instance (
   <tr>
     <td><tt>['cq']['author']['jmx_ip']</tt></td>
     <td>String</td>
-    <td>Value of <tt>\-Djava.rmi.server.hostname</tt> JVM parameter. Requires
+    <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
     reference to <tt>${CQ_JMX_IP}</tt> shell variable in
     <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
     </td>
@@ -203,8 +203,8 @@ All attributes in this file refer to CQ/AEM author instance (
   <tr>
     <td><tt>['cq']['author']['jmx_port']</tt></td>
     <td>String</td>
-    <td>Value of <tt>\-Dcom.sun.management.jmxremote.port</tt> and/or
-    <tt>\-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
+    <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
+    <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
     reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
     <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
     </td>
@@ -239,26 +239,26 @@ All attributes in this file refer to CQ/AEM author instance (
   <tr>
     <td><tt>['cq']['author']['jvm']['min_heap']</tt></td>
     <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>\-Xms</tt> JVM parameter
+    <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
     </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['max_heap']</tt></td>
     <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>\-Xmx</tt> JVM parameter
+    <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
     </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['max_perm_size']</tt></td>
     <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>\-XX:MaxPermSize</tt> JVM
+    <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
     parameter</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['code_cache_size']</tt></td>
     <td>String</td>
     <td>Number of megabytes that's passed on to
-    <tt>\-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
+    <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['general_opts']</tt></td>
@@ -321,7 +321,7 @@ All attributes in this file refer to CQ/AEM publish instance (
   <tr>
     <td><tt>['cq']['publish']['jmx_ip']</tt></td>
     <td>String</td>
-    <td>Value of <tt>\-Djava.rmi.server.hostname</tt> JVM parameter. Requires
+    <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
     reference to <tt>${CQ_JMX_IP}</tt> shell variable in
     <tt>['cq']['publish']['jvm']['jmx_opts'] attribute to be effective</tt>
     </td>
@@ -329,8 +329,8 @@ All attributes in this file refer to CQ/AEM publish instance (
   <tr>
     <td><tt>['cq']['publish']['jmx_port']</tt></td>
     <td>String</td>
-    <td>Value of <tt>\-Dcom.sun.management.jmxremote.port</tt> and/or
-    <tt>\-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
+    <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
+    <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
     reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
     <tt>['cq']['publish']['jvm']['jmx_opts'] attribute to be effective</tt>
     </td>
@@ -365,26 +365,26 @@ All attributes in this file refer to CQ/AEM publish instance (
   <tr>
     <td><tt>['cq']['publish']['jvm']['min_heap']</tt></td>
     <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>\-Xms</tt> JVM parameter
+    <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
     </td>
   </tr>
   <tr>
     <td><tt>['cq']['publish']['jvm']['max_heap']</tt></td>
     <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>\-Xmx</tt> JVM parameter
+    <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
     </td>
   </tr>
   <tr>
     <td><tt>['cq']['publish']['jvm']['max_perm_size']</tt></td>
     <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>\-XX:MaxPermSize</tt> JVM
+    <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
     parameter</td>
   </tr>
   <tr>
     <td><tt>['cq']['publish']['jvm']['code_cache_size']</tt></td>
     <td>String</td>
     <td>Number of megabytes that's passed on to
-    <tt>\-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
+    <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
   </tr>
   <tr>
     <td><tt>['cq']['publish']['jvm']['general_opts']</tt></td>
