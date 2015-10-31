@@ -58,6 +58,8 @@ choice ;)
 
 # Attributes
 
+For default values please refer to appropriate files.
+
 ## default.rb
 
 ---
@@ -72,117 +74,98 @@ installs Oracle's JDK7.
   <tr>
     <th>Attribute</th>
     <th>Type</th>
-    <th>Default</th>
     <th>Description</th>
   </tr>
   <tr>
     <td><tt>['cq']['user']</tt></td>
     <td>String</td>
-    <td><tt>cq</tt></td>
     <td>System user for CQ/AEM</td>
   </tr>
   <tr>
     <td><tt>['cq']['group']</tt></td>
     <td>String</td>
-    <td><tt>cq</tt></td>
     <td>System group for CQ/AEM</td>
   </tr>
   <tr>
     <td><tt>['cq']['limits']['file_descriptors']</tt></td>
     <td>String</td>
-    <td><tt>16384</tt></td>
     <td>Max number of open file descriptor for CQ/AEM user</td>
   </tr>
   <tr>
     <td><tt>['cq']['base_dir']</tt></td>
     <td>String</td>
-    <td><tt>/opt</tt></td>
     <td>Base directory for CQ/AEM instance(s)</td>
   </tr>
   <tr>
     <td><tt>['cq']['home_dir']</tt></td>
     <td>String</td>
-    <td><tt>"#{node['cq']['base_dir']}/cq"</tt></td>
     <td>Home directory under wich CQ/AEM instances are deployed</td>
   </tr>
   <tr>
     <td><tt>['cq']['version']</tt></td>
     <td>String</td>
-    <td><tt>5.6.1</tt></td>
     <td>CQ/AEM version</td>
   </tr>
   <tr>
     <td><tt>['cq']['custom_tmp_dir']</tt></td>
     <td>String</td>
-    <td><tt>/opt/tmp</tt></td>
     <td>Custom directory that JVM uses for temporary files</td>
   </tr>
   <tr>
     <td><tt>['cq']['package_cache']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>Directory where CRX packages are downloaded to</td>
   </tr>
   <tr>
     <td><tt>['cq']['jar']['url']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>URL from which CQ/AEM JAR file is downloaded</td>
   </tr>
   <tr>
     <td><tt>['cq']['jar']['checksum']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>SHA256 checksum of CQ/AEM JAR file</td>
   </tr>
   <tr>
     <td><tt>['cq']['license']['url']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>URL from which CQ/AEM license is downloaded</td>
   </tr>
   <tr>
     <td><tt>['cq']['license']['checksum']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>SHA256 checksum of CQ/AEM license file</td>
   </tr>
   <tr>
     <td><tt>['cq']['service']['start_timeout']</tt></td>
     <td>Fixnum</td>
-    <td><tt>1800</tt></td>
     <td>Max number of seconds to wait until CQ/AEM instance is fully
     operational after service start</td>
   </tr>
   <tr>
     <td><tt>['cq']['service']['kill_delay']</tt></td>
     <td>Fixnum</td>
-    <td><tt>120</tt></td>
     <td>Max number of seconds for greceful instance stop before kill signal is
     sent to the process</td>
   </tr>
   <tr>
     <td><tt>['cq']['service']['restart_sleep']</tt></td>
     <td>Fixnum</td>
-    <td><tt>5</tt></td>
     <td>Number of seconds to wait between service stop and start</td>
   </tr>
   <tr>
     <td><tt>['cq']['init_template_cookbook']</tt></td>
     <td>String</td>
-    <td><tt>cq</tt></td>
     <td>Cookbook which is a source for init script template</td>
   </tr>
   <tr>
     <td><tt>['cq']['conf_template_cookbook']</tt></td>
     <td>String</td>
-    <td><tt>cq</tt></td>
     <td>Cookbook which is a source for conf file template</td>
   </tr>
   <tr>
     <td><tt>['cq']['healthcheck_resource']</tt></td>
     <td>String</td>
-    <td>/libs/granite/core/content/login.html</td>
     <td>Resource that's queried during instance start to determine whether
     CQ/AEM is fully operational</td>
   </tr>
@@ -194,25 +177,21 @@ installs Oracle's JDK7.
   <tr>
     <th>Attribute</th>
     <th>Type</th>
-    <th>Default</th>
     <th>Description</th>
   </tr>
   <tr>
     <td><tt>['cq']['author']['run_mode']</tt></td>
     <td>String</td>
-    <td><tt>author</tt></td>
     <td>Author run mode</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['port']</tt></td>
     <td>String</td>
-    <td><tt>4502</tt></td>
     <td>Main port of CQ/AEM author instance</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jmx_ip']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
     reference to <tt>${CQ_JMX_IP}</tt> shell variable in
     <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
@@ -221,7 +200,6 @@ installs Oracle's JDK7.
   <tr>
     <td><tt>['cq']['author']['jmx_port']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
     <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
     reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
@@ -231,7 +209,6 @@ installs Oracle's JDK7.
   <tr>
     <td><tt>['cq']['author']['debug_ip']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>IP to listen on with debug interface. Requires reference to
     <tt>${CQ_DEBUG_IP}</tt> in <tt>['cq']['author']['jvm']['debug_opts']</tt>
     attribute to be effective</td>
@@ -239,7 +216,6 @@ installs Oracle's JDK7.
   <tr>
     <td><tt>['cq']['author']['debug_port']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>Port of JVM debug interface. Requires reference to
     <tt>${CQ_DEBUG_PORT}</tt> shell variable in
     <tt>['cq']['author']['jvm']['debug_opts']</tt> attribute to be effective
@@ -248,85 +224,72 @@ installs Oracle's JDK7.
   <tr>
     <td><tt>['cq']['author']['credentials']['login']</tt></td>
     <td>String</td>
-    <td><tt>admin</tt></td>
     <td>User that's used to perform actions agains your author instance. The
     most typical scenarios require <tt>admin</tt></td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['credentials']['password']</tt></td>
     <td>String</td>
-    <td><tt>admin</tt></td>
     <td>Passowrd of user specified in
     <tt>['cq']['author']['credentials']['login']</tt></td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['min_heap']</tt></td>
     <td>String</td>
-    <td><tt>256</tt></td>
     <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
     </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['max_heap']</tt></td>
     <td>String</td>
-    <td><tt>1024</tt></td>
     <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
     </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['max_perm_size']</tt></td>
     <td>String</td>
-    <td><tt>320</tt></td>
     <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
     parameter</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['code_cache_size']</tt></td>
     <td>String</td>
-    <td><tt>64</tt></td>
     <td>Number of megabytes that's passed on to
     <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['general_opts']</tt></td>
     <td>String</td>
-    <td>-server -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true</td>
     <td>Generic JVM parameters</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['code_cache_opts']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>JVM parameters related to its code cache</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['gc_opts']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>JVM parameters related to garbage collection</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['jmx_opts']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>JVM parameres related to JMX settings</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['debug_opts']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>JVM parameters related to debug interface</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['crx_opts']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>CRX related JVM parameters</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['extra_opts']</tt></td>
     <td>String</td>
-    <td><tt>''</tt></td>
     <td>All other JVM patameters</td>
   </tr>
 </table>
