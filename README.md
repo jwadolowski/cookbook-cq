@@ -60,6 +60,14 @@ choice ;)
 
 ## default.rb
 
+---
+
+To set Java related attributes please refer to [java
+cookbook](https://github.com/agileorbit-cookbooks/java). By default it
+installs Oracle's JDK7.
+
+---
+
 <table>
   <tr>
     <th>Attribute</th>
@@ -160,28 +168,150 @@ choice ;)
     <td>Number of seconds to wait between service stop and start</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['init_template_cookbook']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>cq</tt></td>
+    <td>Cookbook which is a source for init script template</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['conf_template_cookbook']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>cq</tt></td>
+    <td>Cookbook which is a source for conf file template</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['healthcheck_resource']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>/libs/granite/core/content/login.html</tt></td>
+    <td>Resource that's queried during instance start to determine whether
+    CQ/AEM is fully operational</td>
   </tr>
 </table>
 
 ## author.rb
 
-TBD
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Type</th>
+    <th>Default</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['run_mode']</tt></td>
+    <td>String</td>
+    <td><tt>author</tt></td>
+    <td>Author run mode</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['port']</tt></td>
+    <td>String</td>
+    <td><tt>4502</tt></td>
+    <td>Main port of CQ/AEM author instance</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jmx_ip']</tt></td>
+    <td>String</td>
+    <td><tt>''</tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jmx_port']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['debug_ip']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['debug_port']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['credentials']['login']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['credentials']['password']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['min_heap']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['max_heap']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['max_perm_size']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['code_cache_size']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['general_opts']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['code_cache_opts']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['gc_opts']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['jmx_opts']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['debug_opts']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['crx_opts']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['extra_opts']</tt></td>
+    <td>String</td>
+    <td><tt></tt></td>
+    <td></td>
+  </tr>
+</table>
 
 ## publish.rb
 
