@@ -19,6 +19,7 @@ choice ;)
     * [publish.rb](#publishrb)
 * [Recipes](#recipes)
     * [default.rb](#defaultrb-1)
+    * [commons.rb](#connonsrb)
     * [author.rb](#authorrb-1)
     * [publish.rb](#publishrb-1)
 * [Custom resources](#custom-resources)
@@ -213,8 +214,9 @@ All attributes in this file refer to CQ/AEM author instance (
     <td><tt>['cq']['author']['debug_ip']</tt></td>
     <td>String</td>
     <td>IP to listen on with debug interface. Requires reference to
-    <tt>${CQ_DEBUG_IP}</tt> in <tt>['cq']['author']['jvm']['debug_opts']</tt>
-    attribute to be effective</td>
+    <tt>${CQ_DEBUG_IP}</tt> shell variable in
+    <tt>['cq']['author']['jvm']['debug_opts']</tt> attribute to be effective
+    </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['debug_port']</tt></td>
@@ -339,8 +341,9 @@ All attributes in this file refer to CQ/AEM publish instance (
     <td><tt>['cq']['publish']['debug_ip']</tt></td>
     <td>String</td>
     <td>IP to listen on with debug interface. Requires reference to
-    <tt>${CQ_DEBUG_IP}</tt> in <tt>['cq']['publish']['jvm']['debug_opts']</tt>
-    attribute to be effective</td>
+    <tt>${CQ_DEBUG_IP}</tt> shell variable in
+    <tt>['cq']['publish']['jvm']['debug_opts']</tt> attribute to be effective
+    </td>
   </tr>
   <tr>
     <td><tt>['cq']['publish']['debug_port']</tt></td>
@@ -427,16 +430,57 @@ All attributes in this file refer to CQ/AEM publish instance (
 
 ## default.rb
 
-TBD
+Empty for now.
+
+## commons.rb
+
+Takes care of common elements of every CQ/AEM deployment, including:
+
+* Ruby gems
+* system user and its configuration
+* required directory structure
+* Java installation
+* CQ Unix Toolkit installation
 
 ## author.rb
 
-TBD
+Installs CQ/AEM author instance.
 
 ## publish.rb
 
-TBD
+Installs CQ/AEM publish instance.
 
+## _package_aem561.rb
+
+Private recipe to test `cq_package` resource on AEM 5.6.1.
+
+## _package_aem600.rb
+
+Private recipe to test `cq_package` resource on AEM 6.0.0.
+
+## _osgi_config_create_regular.rb
+
+Private recipe that tests `:create` action on regular `cq_osgi_config`s.
+
+## _osgi_config_create_factory.rb
+
+Private recipe that tests `:create` action on factory `cq_osgi_config`s.
+
+## _osgi_config_delete_regular.rb
+
+Private recipe that tests `:delete` action on regular `cq_osgi_config`s.
+
+## _osgi_config_delete_factory.rb
+
+Private recipe that tests `:delete` action on factory `cq_osgi_config`s.
+
+## _users.rb
+
+Private recipe that tests `cq_user` resource.
+
+## _jcr_nodes.rb
+
+Private recipe that tests `cq_jcr` resource.
 
 # Custom resources
 
