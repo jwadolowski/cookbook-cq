@@ -8,7 +8,7 @@ started development there was no AEM yet and I simply like the old name much
 better. Nowadays it seems to be already taken anyway, so I no longer have a
 choice ;)
 
-# Table of Contents
+# Table of contents
 
 * [Supported platforms](#supported-platforms)
     * [Operating systems](#operating-systems)
@@ -21,29 +21,29 @@ choice ;)
     * [default.rb](#defaultrb-1)
     * [author.rb](#authorrb-1)
     * [publish.rb](#publishrb-1)
-* [Custom Resources](#custom-resources)
+* [Custom resources](#custom-resources)
     * [cq_package](#cq_package)
         * [Actions](#actions)
-        * [Attributes](#attributes-1)
+        * [Properties](#properties)
         * [Usage](#usage)
     * [cq_osgi_config](#cq_osgi_config)
         * [Actions](#actions-1)
-        * [Attributes](#attributes-2)
+        * [Properties](#properties-1)
         * [Compatibility matrix](#compatibility-matrix)
         * [Usage](#usage-1)
             * [Regular OSGi configs](#regular-osgi-configs)
             * [Factory OSGi configs](#factory-osgi-configs)
     * [cq_user](#cq_user)
         * [Actions](#actions-2)
-        * [Attributes](#attributes-3)
+        * [Properties](#properties-2)
         * [Compatibility matrix](#compatibility-matrix-1)
         * [Usage](#usage-2)
     * [cq_jcr](#cq_jcr)
         * [Actions](#actions-3)
-        * [Attributes](#attributes-4)
+        * [Properties](#properties-3)
         * [Usage](#usage-4)
 * [Testing](#testing)
-* [Authors](#authors)
+* [Author](#author)
 
 # Supported platforms
 
@@ -170,11 +170,11 @@ explanation can be found below.
   executed
 * `uninstall` - uninstalls given CQ package
 
-### Attributes
+### Properties
 
 <table>
   <tr>
-    <th>Attribute</th>
+    <th>Property</th>
     <th>Type</th>
     <th>Description</th>
   </tr>
@@ -359,7 +359,7 @@ upload it to defined AEM Author instance.
 
 Second resource does the same as the first one, but for Oak 1.0.13 hotfix. The
 only difference is that provided URL requires basic auth, hence the `http_user`
-and `http_pass` attributes.
+and `http_pass` properties.
 
 Third package shows how to combine multiple actions in a single `cq_package`
 resource usage.
@@ -469,11 +469,11 @@ For factory configs:
   defined state
 
 
-### Attributes
+### Properties
 
 <table>
   <tr>
-    <th>Attribute</th>
+    <th>Property</th>
     <th>Type</th>
     <th>Description</th>
   </tr>
@@ -530,7 +530,7 @@ For factory configs:
 
 ### Compatibility matrix
 
-| Attribute     | Regular OSGi config | Factory OSGi config |
+| Property      | Regular OSGi config | Factory OSGi config |
 | ------------- | ------------------- | ------------------- |
 | `pid`         | :white_check_mark:  | :white_check_mark:  |
 | `factory_pid` | :no_entry:          | :white_check_mark:  |
@@ -606,7 +606,7 @@ end
 already set.
 
 `Event Admin` merges defined properties with the ones that are already set
-(because of `append` attribute). This is how `Event Admin` will look like
+(because of `append` property). This is how `Event Admin` will look like
 before:
 
 | ID                                         | VALUE |
@@ -696,11 +696,11 @@ Exposes a resource for CQ/AEM user management. Supports:
 * `modify` - use to modify an existing user. Action will be skipped if given
   user does not exist
 
-## Attributes
+## Properties
 
 <table>
   <tr>
-    <th>Attribute</th>
+    <th>Property</th>
     <th>Type</th>
     <th>Description</th>
   </tr>
@@ -793,7 +793,7 @@ Exposes a resource for CQ/AEM user management. Supports:
     <td><tt>user_password</tt></td>
     <td>String</td>
     <td>Desired password for non-admin user specified by <tt>id</tt>
-    attribute</td>
+    property</td>
   </tr>
   <tr>
     <td><tt>enabled</tt></td>
@@ -810,7 +810,7 @@ Exposes a resource for CQ/AEM user management. Supports:
 
 ## Compatibility matrix
 
-| Attribute       | `admin` user        | All other users     |
+| Property        | `admin` user        | All other users     |
 | --------------- | ------------------- | ------------------- |
 | `id`            | :white_check_mark:  | :white_check_mark:  |
 | `username`      | :white_check_mark:  | :white_check_mark:  |
@@ -893,11 +893,11 @@ Enables CRUD operations on JCR nodes. Currently supports:
 * `delete` - deletes node if it exists. Prints error otherwise
 * `modify` - modifies properties of existing JCR node
 
-## Attributes
+## Properties
 
 <table>
   <tr>
-    <th>Attribute</th>
+    <th>Property</th>
     <th>Type</th>
     <th>Description</th>
   </tr>
@@ -930,7 +930,7 @@ Enables CRUD operations on JCR nodes. Currently supports:
     <td><tt>append</tt></td>
     <td>Boolean</td>
     <td>By default set to <tt>true</tt>. If full overwrite of properties is
-    required please set <tt>append</tt> attribute to <tt>false</tt>. Applies
+    required please set <tt>append</tt> property to <tt>false</tt>. Applies
     only to <tt>:create</tt> and <tt>:modify</tt> actions</td>
   </tr>
 </table>
@@ -996,7 +996,7 @@ updated if necessary. By default `append` is set to `true`, which means
 existing properties of `/content/test_node` will stay untouched unless the same
 properties are specified in your `cq_jcr` resource.
 
-2nd example sets `append` attribute to `false`, which means that all
+2nd example sets `append` property to `false`, which means that all
 properties except those specified in your resource should be removed. It will
 act as a full overwrite (keep in mind that some properties are protected and
 can't be deleted, moreover Sling API automatically adds things like
@@ -1013,6 +1013,6 @@ displayed.
 
 TBD
 
-# Authors
+# Author
 
 Jakub Wadolowski (<jakub.wadolowski@cognifide.com>)
