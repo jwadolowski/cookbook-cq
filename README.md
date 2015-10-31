@@ -8,7 +8,7 @@ started development there was no AEM yet and I simply like the old name much
 better. Nowadays it seems to be already taken anyway, so I no longer have a
 choice ;)
 
-# Table of Contents
+# Table of contents
 
 * [Supported platforms](#supported-platforms)
     * [Operating systems](#operating-systems)
@@ -19,31 +19,40 @@ choice ;)
     * [publish.rb](#publishrb)
 * [Recipes](#recipes)
     * [default.rb](#defaultrb-1)
+    * [commons.rb](#commonsrb)
     * [author.rb](#authorrb-1)
     * [publish.rb](#publishrb-1)
-* [Custom Resources](#custom-resources)
+    * [\_package_aem561.rb](#_package_aem561rb)
+    * [\_package_aem600.rb](#_package_aem600rb)
+    * [\_osgi_config_create_regular.rb](#_osgi_config_create_regularrb)
+    * [\_osgi_config_create_factory.rb](#_osgi_config_create_factoryrb)
+    * [\_osgi_config_delete_regular.rb](#_osgi_config_delete_regularrb)
+    * [\_osgi_config_delete_factory.rb](#_osgi_config_delete_factoryrb)
+    * [\_users.rb](#_usersrb)
+    * [\_jcr_nodes.rb](#_jcr_nodesrb)
+* [Custom resources](#custom-resources)
     * [cq_package](#cq_package)
         * [Actions](#actions)
-        * [Attributes](#attributes-1)
+        * [Properties](#properties)
         * [Usage](#usage)
     * [cq_osgi_config](#cq_osgi_config)
         * [Actions](#actions-1)
-        * [Attributes](#attributes-2)
+        * [Properties](#properties-1)
         * [Compatibility matrix](#compatibility-matrix)
         * [Usage](#usage-1)
             * [Regular OSGi configs](#regular-osgi-configs)
             * [Factory OSGi configs](#factory-osgi-configs)
     * [cq_user](#cq_user)
         * [Actions](#actions-2)
-        * [Attributes](#attributes-3)
+        * [Properties](#properties-2)
         * [Compatibility matrix](#compatibility-matrix-1)
         * [Usage](#usage-2)
     * [cq_jcr](#cq_jcr)
         * [Actions](#actions-3)
-        * [Attributes](#attributes-4)
+        * [Properties](#properties-3)
         * [Usage](#usage-4)
 * [Testing](#testing)
-* [Authors](#authors)
+* [Author](#author)
 
 # Supported platforms
 
@@ -58,32 +67,432 @@ choice ;)
 
 # Attributes
 
+For default values please refer to appropriate files.
+
 ## default.rb
 
-TBD
+---
+
+To set Java related attributes please refer to [java
+cookbook](https://github.com/agileorbit-cookbooks/java). By default it
+installs Oracle's JDK7.
+
+---
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>['cq']['user']</tt></td>
+    <td>String</td>
+    <td>System user for CQ/AEM</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['group']</tt></td>
+    <td>String</td>
+    <td>System group for CQ/AEM</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['limits']['file_descriptors']</tt></td>
+    <td>String</td>
+    <td>Max number of open file descriptor for CQ/AEM user</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['base_dir']</tt></td>
+    <td>String</td>
+    <td>Base directory for CQ/AEM instance(s)</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['home_dir']</tt></td>
+    <td>String</td>
+    <td>Home directory under wich CQ/AEM instances are deployed</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['version']</tt></td>
+    <td>String</td>
+    <td>CQ/AEM version</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['custom_tmp_dir']</tt></td>
+    <td>String</td>
+    <td>Custom directory that JVM uses for temporary files</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['package_cache']</tt></td>
+    <td>String</td>
+    <td>Directory where CRX packages are downloaded to</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['jar']['url']</tt></td>
+    <td>String</td>
+    <td>URL from which CQ/AEM JAR file is downloaded</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['jar']['checksum']</tt></td>
+    <td>String</td>
+    <td>SHA256 checksum of CQ/AEM JAR file</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['license']['url']</tt></td>
+    <td>String</td>
+    <td>URL from which CQ/AEM license is downloaded</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['license']['checksum']</tt></td>
+    <td>String</td>
+    <td>SHA256 checksum of CQ/AEM license file</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['service']['start_timeout']</tt></td>
+    <td>Fixnum</td>
+    <td>Max number of seconds to wait until CQ/AEM instance is fully
+    operational after service start</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['service']['kill_delay']</tt></td>
+    <td>Fixnum</td>
+    <td>Max number of seconds for greceful instance stop before kill signal is
+    sent to the process</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['service']['restart_sleep']</tt></td>
+    <td>Fixnum</td>
+    <td>Number of seconds to wait between service stop and start</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['init_template_cookbook']</tt></td>
+    <td>String</td>
+    <td>Cookbook which is a source for init script template</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['conf_template_cookbook']</tt></td>
+    <td>String</td>
+    <td>Cookbook which is a source for conf file template</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['healthcheck_resource']</tt></td>
+    <td>String</td>
+    <td>Resource that's queried during instance start to determine whether
+    CQ/AEM is fully operational</td>
+  </tr>
+</table>
 
 ## author.rb
 
-TBD
+All attributes in this file refer to CQ/AEM author instance (
+`['cq']['author']` namespace).
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['run_mode']</tt></td>
+    <td>String</td>
+    <td>Instance run mode</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['port']</tt></td>
+    <td>String</td>
+    <td>Main port of CQ/AEM instance</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jmx_ip']</tt></td>
+    <td>String</td>
+    <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
+    reference to <tt>${CQ_JMX_IP}</tt> shell variable in
+    <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jmx_port']</tt></td>
+    <td>String</td>
+    <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
+    <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
+    reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
+    <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['debug_ip']</tt></td>
+    <td>String</td>
+    <td>IP to listen on with debug interface. Requires reference to
+    <tt>${CQ_DEBUG_IP}</tt> shell variable in
+    <tt>['cq']['author']['jvm']['debug_opts']</tt> attribute to be effective
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['debug_port']</tt></td>
+    <td>String</td>
+    <td>Port of JVM debug interface. Requires reference to
+    <tt>${CQ_DEBUG_PORT}</tt> shell variable in
+    <tt>['cq']['author']['jvm']['debug_opts']</tt> attribute to be effective
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['credentials']['login']</tt></td>
+    <td>String</td>
+    <td>User that's used to perform actions agains your CQ/AEM instance. The
+    most typical scenarios require <tt>admin</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['credentials']['password']</tt></td>
+    <td>String</td>
+    <td>Passowrd of user specified in
+    <tt>['cq']['author']['credentials']['login']</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['min_heap']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['max_heap']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['max_perm_size']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
+    parameter</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['code_cache_size']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to
+    <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['general_opts']</tt></td>
+    <td>String</td>
+    <td>Generic JVM parameters</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['code_cache_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameters related to its code cache</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['gc_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameters related to garbage collection</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['jmx_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameres related to JMX settings</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['debug_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameters related to debug interface</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['crx_opts']</tt></td>
+    <td>String</td>
+    <td>CRX related JVM parameters</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['jvm']['extra_opts']</tt></td>
+    <td>String</td>
+    <td>All other JVM patameters</td>
+  </tr>
+</table>
 
 ## publish.rb
 
-TBD
+All attributes in this file refer to CQ/AEM publish instance (
+`['cq']['publish']` namespace).
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['run_mode']</tt></td>
+    <td>String</td>
+    <td>Instance run mode</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['port']</tt></td>
+    <td>String</td>
+    <td>Main port of CQ/AEM instance</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jmx_ip']</tt></td>
+    <td>String</td>
+    <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
+    reference to <tt>${CQ_JMX_IP}</tt> shell variable in
+    <tt>['cq']['publish']['jvm']['jmx_opts'] attribute to be effective</tt>
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jmx_port']</tt></td>
+    <td>String</td>
+    <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
+    <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
+    reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
+    <tt>['cq']['publish']['jvm']['jmx_opts'] attribute to be effective</tt>
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['debug_ip']</tt></td>
+    <td>String</td>
+    <td>IP to listen on with debug interface. Requires reference to
+    <tt>${CQ_DEBUG_IP}</tt> shell variable in
+    <tt>['cq']['publish']['jvm']['debug_opts']</tt> attribute to be effective
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['debug_port']</tt></td>
+    <td>String</td>
+    <td>Port of JVM debug interface. Requires reference to
+    <tt>${CQ_DEBUG_PORT}</tt> shell variable in
+    <tt>['cq']['publish']['jvm']['debug_opts']</tt> attribute to be effective
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['credentials']['login']</tt></td>
+    <td>String</td>
+    <td>User that's used to perform actions agains your CQ/AEM instance. The
+    most typical scenarios require <tt>admin</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['credentials']['password']</tt></td>
+    <td>String</td>
+    <td>Passowrd of user specified in
+    <tt>['cq']['publish']['credentials']['login']</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['min_heap']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['max_heap']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['max_perm_size']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
+    parameter</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['code_cache_size']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to
+    <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['general_opts']</tt></td>
+    <td>String</td>
+    <td>Generic JVM parameters</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['code_cache_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameters related to its code cache</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['gc_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameters related to garbage collection</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['jmx_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameres related to JMX settings</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['debug_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameters related to debug interface</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['crx_opts']</tt></td>
+    <td>String</td>
+    <td>CRX related JVM parameters</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['extra_opts']</tt></td>
+    <td>String</td>
+    <td>All other JVM patameters</td>
+  </tr>
+</table>
 
 # Recipes
 
 ## default.rb
 
-TBD
+Empty for now.
+
+## commons.rb
+
+Takes care of common elements of every CQ/AEM deployment, including:
+
+* Ruby gems
+* system user and its configuration
+* required directory structure
+* Java installation
+* CQ Unix Toolkit installation
 
 ## author.rb
 
-TBD
+Installs CQ/AEM author instance.
 
 ## publish.rb
 
-TBD
+Installs CQ/AEM publish instance.
 
+## _package_aem561.rb
+
+Private recipe to test `cq_package` resource on AEM 5.6.1.
+
+## _package_aem600.rb
+
+Private recipe to test `cq_package` resource on AEM 6.0.0.
+
+## _osgi_config_create_regular.rb
+
+Private recipe that tests `:create` action on regular `cq_osgi_config`
+resources.
+
+## _osgi_config_create_factory.rb
+
+Private recipe that tests `:create` action on factory `cq_osgi_config`
+resources.
+
+## _osgi_config_delete_regular.rb
+
+Private recipe that tests `:delete` action on regular `cq_osgi_config`
+resources.
+
+## _osgi_config_delete_factory.rb
+
+Private recipe that tests `:delete` action on factory `cq_osgi_config`
+resources.
+
+## _users.rb
+
+Private recipe that tests `cq_user` resource.
+
+## _jcr_nodes.rb
+
+Private recipe that tests `cq_jcr` resource.
 
 # Custom resources
 
@@ -170,11 +579,11 @@ explanation can be found below.
   executed
 * `uninstall` - uninstalls given CQ package
 
-### Attributes
+### Properties
 
 <table>
   <tr>
-    <th>Attribute</th>
+    <th>Property</th>
     <th>Type</th>
     <th>Description</th>
   </tr>
@@ -359,7 +768,7 @@ upload it to defined AEM Author instance.
 
 Second resource does the same as the first one, but for Oak 1.0.13 hotfix. The
 only difference is that provided URL requires basic auth, hence the `http_user`
-and `http_pass` attributes.
+and `http_pass` properties.
 
 Third package shows how to combine multiple actions in a single `cq_package`
 resource usage.
@@ -469,11 +878,11 @@ For factory configs:
   defined state
 
 
-### Attributes
+### Properties
 
 <table>
   <tr>
-    <th>Attribute</th>
+    <th>Property</th>
     <th>Type</th>
     <th>Description</th>
   </tr>
@@ -530,7 +939,7 @@ For factory configs:
 
 ### Compatibility matrix
 
-| Attribute     | Regular OSGi config | Factory OSGi config |
+| Property      | Regular OSGi config | Factory OSGi config |
 | ------------- | ------------------- | ------------------- |
 | `pid`         | :white_check_mark:  | :white_check_mark:  |
 | `factory_pid` | :no_entry:          | :white_check_mark:  |
@@ -606,7 +1015,7 @@ end
 already set.
 
 `Event Admin` merges defined properties with the ones that are already set
-(because of `append` attribute). This is how `Event Admin` will look like
+(because of `append` property). This is how `Event Admin` will look like
 before:
 
 | ID                                         | VALUE |
@@ -696,11 +1105,11 @@ Exposes a resource for CQ/AEM user management. Supports:
 * `modify` - use to modify an existing user. Action will be skipped if given
   user does not exist
 
-## Attributes
+## Properties
 
 <table>
   <tr>
-    <th>Attribute</th>
+    <th>Property</th>
     <th>Type</th>
     <th>Description</th>
   </tr>
@@ -793,7 +1202,7 @@ Exposes a resource for CQ/AEM user management. Supports:
     <td><tt>user_password</tt></td>
     <td>String</td>
     <td>Desired password for non-admin user specified by <tt>id</tt>
-    attribute</td>
+    property</td>
   </tr>
   <tr>
     <td><tt>enabled</tt></td>
@@ -810,7 +1219,7 @@ Exposes a resource for CQ/AEM user management. Supports:
 
 ## Compatibility matrix
 
-| Attribute       | `admin` user        | All other users     |
+| Property        | `admin` user        | All other users     |
 | --------------- | ------------------- | ------------------- |
 | `id`            | :white_check_mark:  | :white_check_mark:  |
 | `username`      | :white_check_mark:  | :white_check_mark:  |
@@ -893,11 +1302,11 @@ Enables CRUD operations on JCR nodes. Currently supports:
 * `delete` - deletes node if it exists. Prints error otherwise
 * `modify` - modifies properties of existing JCR node
 
-## Attributes
+## Properties
 
 <table>
   <tr>
-    <th>Attribute</th>
+    <th>Property</th>
     <th>Type</th>
     <th>Description</th>
   </tr>
@@ -930,7 +1339,7 @@ Enables CRUD operations on JCR nodes. Currently supports:
     <td><tt>append</tt></td>
     <td>Boolean</td>
     <td>By default set to <tt>true</tt>. If full overwrite of properties is
-    required please set <tt>append</tt> attribute to <tt>false</tt>. Applies
+    required please set <tt>append</tt> property to <tt>false</tt>. Applies
     only to <tt>:create</tt> and <tt>:modify</tt> actions</td>
   </tr>
 </table>
@@ -996,7 +1405,7 @@ updated if necessary. By default `append` is set to `true`, which means
 existing properties of `/content/test_node` will stay untouched unless the same
 properties are specified in your `cq_jcr` resource.
 
-2nd example sets `append` attribute to `false`, which means that all
+2nd example sets `append` property to `false`, which means that all
 properties except those specified in your resource should be removed. It will
 act as a full overwrite (keep in mind that some properties are protected and
 can't be deleted, moreover Sling API automatically adds things like
@@ -1013,6 +1422,6 @@ displayed.
 
 TBD
 
-# Authors
+# Author
 
 Jakub Wadolowski (<jakub.wadolowski@cognifide.com>)
