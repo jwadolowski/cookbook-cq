@@ -19,9 +19,17 @@ choice ;)
     * [publish.rb](#publishrb)
 * [Recipes](#recipes)
     * [default.rb](#defaultrb-1)
-    * [commons.rb](#connonsrb)
+    * [commons.rb](#commonsrb)
     * [author.rb](#authorrb-1)
     * [publish.rb](#publishrb-1)
+    * [\_package_aem561.rb](#_package_aem561rb)
+    * [\_package_aem600.rb](#_package_aem600rb)
+    * [\_osgi_config_create_regular.rb](#_osgi_config_create_regularrb)
+    * [\_osgi_config_create_factory.rb](#_osgi_config_create_factoryrb)
+    * [\_osgi_config_delete_regular.rb](#_osgi_config_delete_regularrb)
+    * [\_osgi_config_delete_factory.rb](#_osgi_config_delete_factoryrb)
+    * [\_users.rb](#_usersrb)
+    * [\_jcr_nodesrb.rb](#_jcr_nodesrb)
 * [Custom resources](#custom-resources)
     * [cq_package](#cq_package)
         * [Actions](#actions)
@@ -460,19 +468,23 @@ Private recipe to test `cq_package` resource on AEM 6.0.0.
 
 ## _osgi_config_create_regular.rb
 
-Private recipe that tests `:create` action on regular `cq_osgi_config`s.
+Private recipe that tests `:create` action on regular `cq_osgi_config`
+resources.
 
 ## _osgi_config_create_factory.rb
 
-Private recipe that tests `:create` action on factory `cq_osgi_config`s.
+Private recipe that tests `:create` action on factory `cq_osgi_config`
+resources.
 
 ## _osgi_config_delete_regular.rb
 
-Private recipe that tests `:delete` action on regular `cq_osgi_config`s.
+Private recipe that tests `:delete` action on regular `cq_osgi_config`
+resources.
 
 ## _osgi_config_delete_factory.rb
 
-Private recipe that tests `:delete` action on factory `cq_osgi_config`s.
+Private recipe that tests `:delete` action on factory `cq_osgi_config`
+resources.
 
 ## _users.rb
 
