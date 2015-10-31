@@ -80,82 +80,84 @@ choice ;)
     <td>System group for CQ/AEM</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['limits']['file_descriptors']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>16384</tt></td>
+    <td>Max number of open file descriptor for CQ/AEM user</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['base_dir']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>/opt</tt></td>
+    <td>Base directory for CQ/AEM instance(s)</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['home_dir']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>"#{node['cq']['base_dir']}/cq"</tt></td>
+    <td>Home directory under wich CQ/AEM instances are deployed</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['version']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>5.6.1</tt></td>
+    <td>CQ/AEM version</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['custom_tmp_dir']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>/opt/tmp</tt></td>
+    <td>Custom directory that JVM uses for temporary files</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['package_cache']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>Directory where CRX packages are downloaded to</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['jar']['url']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>URL from which CQ/AEM JAR file is downloaded</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['jar']['checksum']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>SHA256 checksum of CQ/AEM JAR file</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['license']['url']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>URL from which CQ/AEM license is downloaded</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
+    <td><tt>['cq']['license']['checksum']</tt></td>
     <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>''</tt></td>
+    <td>SHA256 checksum of CQ/AEM license file</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
-    <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>['cq']['service']['start_timeout']</tt></td>
+    <td>Fixnum</td>
+    <td><tt>1800</tt></td>
+    <td>Max number of seconds to wait until CQ/AEM instance is fully
+    operational after service start</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
-    <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>['cq']['service']['kill_delay']</tt></td>
+    <td>Fixnum</td>
+    <td><tt>120</tt></td>
+    <td>Max number of seconds for greceful instance stop before kill signal is
+    sent to the process</td>
   </tr>
   <tr>
-    <td><tt></tt></td>
-    <td>String</td>
-    <td><tt></tt></td>
-    <td></td>
+    <td><tt>['cq']['service']['restart_sleep']</tt></td>
+    <td>Fixnum</td>
+    <td><tt>5</tt></td>
+    <td>Number of seconds to wait between service stop and start</td>
   </tr>
   <tr>
     <td><tt></tt></td>
