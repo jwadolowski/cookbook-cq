@@ -173,6 +173,9 @@ installs Oracle's JDK7.
 
 ## author.rb
 
+All attributes in this file refer to CQ/AEM author instance (
+`['cq']['author']` namespace).
+
 <table>
   <tr>
     <th>Attribute</th>
@@ -182,17 +185,17 @@ installs Oracle's JDK7.
   <tr>
     <td><tt>['cq']['author']['run_mode']</tt></td>
     <td>String</td>
-    <td>Author run mode</td>
+    <td>Instance run mode</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['port']</tt></td>
     <td>String</td>
-    <td>Main port of CQ/AEM author instance</td>
+    <td>Main port of CQ/AEM instance</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jmx_ip']</tt></td>
     <td>String</td>
-    <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
+    <td>Value of <tt>\-Djava.rmi.server.hostname</tt> JVM parameter. Requires
     reference to <tt>${CQ_JMX_IP}</tt> shell variable in
     <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
     </td>
@@ -200,8 +203,8 @@ installs Oracle's JDK7.
   <tr>
     <td><tt>['cq']['author']['jmx_port']</tt></td>
     <td>String</td>
-    <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
-    <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
+    <td>Value of <tt>\-Dcom.sun.management.jmxremote.port</tt> and/or
+    <tt>\-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
     reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
     <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
     </td>
@@ -224,7 +227,7 @@ installs Oracle's JDK7.
   <tr>
     <td><tt>['cq']['author']['credentials']['login']</tt></td>
     <td>String</td>
-    <td>User that's used to perform actions agains your author instance. The
+    <td>User that's used to perform actions agains your CQ/AEM instance. The
     most typical scenarios require <tt>admin</tt></td>
   </tr>
   <tr>
@@ -236,26 +239,26 @@ installs Oracle's JDK7.
   <tr>
     <td><tt>['cq']['author']['jvm']['min_heap']</tt></td>
     <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
+    <td>Number of megabytes that's passed on to <tt>\-Xms</tt> JVM parameter
     </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['max_heap']</tt></td>
     <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
+    <td>Number of megabytes that's passed on to <tt>\-Xmx</tt> JVM parameter
     </td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['max_perm_size']</tt></td>
     <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
+    <td>Number of megabytes that's passed on to <tt>\-XX:MaxPermSize</tt> JVM
     parameter</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['code_cache_size']</tt></td>
     <td>String</td>
     <td>Number of megabytes that's passed on to
-    <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
+    <tt>\-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
   </tr>
   <tr>
     <td><tt>['cq']['author']['jvm']['general_opts']</tt></td>
@@ -296,7 +299,129 @@ installs Oracle's JDK7.
 
 ## publish.rb
 
-TBD
+All attributes in this file refer to CQ/AEM publish instance (
+`['cq']['publish']` namespace).
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['run_mode']</tt></td>
+    <td>String</td>
+    <td>Instance run mode</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['port']</tt></td>
+    <td>String</td>
+    <td>Main port of CQ/AEM instance</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jmx_ip']</tt></td>
+    <td>String</td>
+    <td>Value of <tt>\-Djava.rmi.server.hostname</tt> JVM parameter. Requires
+    reference to <tt>${CQ_JMX_IP}</tt> shell variable in
+    <tt>['cq']['publish']['jvm']['jmx_opts'] attribute to be effective</tt>
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jmx_port']</tt></td>
+    <td>String</td>
+    <td>Value of <tt>\-Dcom.sun.management.jmxremote.port</tt> and/or
+    <tt>\-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
+    reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
+    <tt>['cq']['publish']['jvm']['jmx_opts'] attribute to be effective</tt>
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['debug_ip']</tt></td>
+    <td>String</td>
+    <td>IP to listen on with debug interface. Requires reference to
+    <tt>${CQ_DEBUG_IP}</tt> in <tt>['cq']['publish']['jvm']['debug_opts']</tt>
+    attribute to be effective</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['debug_port']</tt></td>
+    <td>String</td>
+    <td>Port of JVM debug interface. Requires reference to
+    <tt>${CQ_DEBUG_PORT}</tt> shell variable in
+    <tt>['cq']['publish']['jvm']['debug_opts']</tt> attribute to be effective
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['credentials']['login']</tt></td>
+    <td>String</td>
+    <td>User that's used to perform actions agains your CQ/AEM instance. The
+    most typical scenarios require <tt>admin</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['credentials']['password']</tt></td>
+    <td>String</td>
+    <td>Passowrd of user specified in
+    <tt>['cq']['publish']['credentials']['login']</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['min_heap']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to <tt>\-Xms</tt> JVM parameter
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['max_heap']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to <tt>\-Xmx</tt> JVM parameter
+    </td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['max_perm_size']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to <tt>\-XX:MaxPermSize</tt> JVM
+    parameter</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['code_cache_size']</tt></td>
+    <td>String</td>
+    <td>Number of megabytes that's passed on to
+    <tt>\-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['general_opts']</tt></td>
+    <td>String</td>
+    <td>Generic JVM parameters</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['code_cache_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameters related to its code cache</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['gc_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameters related to garbage collection</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['jmx_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameres related to JMX settings</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['debug_opts']</tt></td>
+    <td>String</td>
+    <td>JVM parameters related to debug interface</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['crx_opts']</tt></td>
+    <td>String</td>
+    <td>CRX related JVM parameters</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['jvm']['extra_opts']</tt></td>
+    <td>String</td>
+    <td>All other JVM patameters</td>
+  </tr>
+</table>
 
 # Recipes
 
