@@ -290,11 +290,7 @@ installs Oracle's JDK7.
   <tr>
     <td><tt>['cq']['author']['jvm']['general_opts']</tt></td>
     <td>String</td>
-    <td>
-    <tt>-server</tt><br>
-    <tt>-Djava.awt.headless=true</tt><br>
-    <tt>-Djava.net.preferIPv4Stack=true</tt>
-    </tt></td>
+    <td>-server -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true</td>
     <td>Generic JVM parameters</td>
   </tr>
   <tr>
