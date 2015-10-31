@@ -630,7 +630,7 @@ explanation can be found below.
   <tr>
     <td><tt>checksum</tt></td>
     <td>String</td>
-    <td>ZIP file checksum (passed through to <<tt>remote_file</tt> resource
+    <td>ZIP file checksum (passed through to <tt>remote_file</tt> resource
     that is used under the hood by <tt>cq_package</tt> provider)</td>
   </tr>
   <tr>
