@@ -571,7 +571,7 @@ def osgi_stability_healthcheck
       previous_state = cmd.stdout
 
       # Move on if the same state occurred N times in a row
-      break if same_state_counter == 3
+      break if same_state_counter == 6
     rescue
       Chef::Log.warn('Unable to get OSGi bundles state. Retrying...')
 
