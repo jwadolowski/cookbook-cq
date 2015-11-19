@@ -77,11 +77,16 @@ class Chef
       end
 
       def delete_node
-        http_resp = http_delete(
+        payload = {
+          ':operation' => 'delete'
+        }
+
+        http_resp = http_multipart_post(
           new_resource.instance,
           new_resource.path,
           new_resource.username,
-          new_resource.password
+          new_resource.password,
+          payload
         )
 
         http_response_validator(http_resp)
