@@ -206,7 +206,7 @@ All attributes in this file refer to CQ/AEM author instance (
     <td>String</td>
     <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
     reference to <tt>${CQ_JMX_IP}</tt> shell variable in
-    <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
+    <tt>['cq']['author']['jvm']['jmx_opts']</tt> attribute to be effective
     </td>
   </tr>
   <tr>
@@ -215,7 +215,7 @@ All attributes in this file refer to CQ/AEM author instance (
     <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
     <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
     reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
-    <tt>['cq']['author']['jvm']['jmx_opts'] attribute to be effective</tt>
+    <tt>['cq']['author']['jvm']['jmx_opts']</tt> attribute to be effective
     </td>
   </tr>
   <tr>
@@ -333,7 +333,7 @@ All attributes in this file refer to CQ/AEM publish instance (
     <td>String</td>
     <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
     reference to <tt>${CQ_JMX_IP}</tt> shell variable in
-    <tt>['cq']['publish']['jvm']['jmx_opts'] attribute to be effective</tt>
+    <tt>['cq']['publish']['jvm']['jmx_opts']</tt> attribute to be effective
     </td>
   </tr>
   <tr>
@@ -342,7 +342,7 @@ All attributes in this file refer to CQ/AEM publish instance (
     <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
     <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
     reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
-    <tt>['cq']['publish']['jvm']['jmx_opts'] attribute to be effective</tt>
+    <tt>['cq']['publish']['jvm']['jmx_opts']</tt> attribute to be effective
     </td>
   </tr>
   <tr>
