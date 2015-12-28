@@ -1,5 +1,5 @@
 ---
-<% chef_versions = %w( 11 12 ) %>
+<% chef_versions = %w( 12 ) %>
 <% platforms = %w( centos-6.7 ) %>
 <% aem_versions = %w( 5.6.1 6.0.0 ) %>
 
