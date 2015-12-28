@@ -175,8 +175,8 @@ def package_list
     # Get list of packages using CQ UNIX Toolkit
     cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqls -x "\
               "-i #{new_resource.instance} "\
-              "-u #{new_resource.username} "\
-              "-p #{new_resource.password}"
+              "-u '#{new_resource.username}' "\
+              "-p '#{new_resource.password}'"
     Chef::Log.debug('Listing packages present in CRX Package Manager')
     cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 180)
     cmd.run_command
@@ -428,7 +428,7 @@ end
 # 1st requirement - CQ works fine
 def instance_healthcheck
   cmd_str = "curl -s -o /dev/null -w '%{http_code}' "\
-            "-u #{new_resource.username}:#{new_resource.password} "\
+            "-u '#{new_resource.username}':'#{new_resource.password}' "\
             "#{new_resource.instance}#{node['cq']['healthcheck_resource']}"
 
   Chef::Log.info('Verifying general instance state before proceeding with '\
@@ -463,8 +463,8 @@ end
 def pkg_mgr_bundle_healthcheck
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqosgi -m "\
             "-i #{new_resource.instance} "\
-            "-u #{new_resource.username} "\
-            "-p #{new_resource.password} "\
+            "-u '#{new_resource.username}' "\
+            "-p '#{new_resource.password}' "\
             "| grep 'com.adobe.granite.crx-packagemgr' "\
             "| awk '{printf \"%s\", $3}'"
 
@@ -503,7 +503,7 @@ end
 # 3rd requirement: package listing using API works correctly
 def pkg_mgr_api_healthcheck
   cmd_str = "curl -s -o /dev/null -w '%{http_code}' "\
-            "-u #{new_resource.username}:#{new_resource.password} "\
+            "-u '#{new_resource.username}':'#{new_resource.password}' "\
             "#{new_resource.instance}/crx/packmgr/service.jsp -F cmd=ls"
 
   Chef::Log.info('Verifying CRX Package Manager API status code')
@@ -534,8 +534,8 @@ end
 # Detect changes in bundle state. X seconds without changes is considered as a
 # "safe" state.
 def osgi_stability_healthcheck
-  cmd_str = "curl -s -u #{new_resource.username}:#{new_resource.password} "\
-            "#{new_resource.instance}/system/console/bundles/.json"
+  cmd_str = "curl -s -u '#{new_resource.username}':'#{new_resource.password}'"\
+            " #{new_resource.instance}/system/console/bundles/.json"
 
   Chef::Log.info('Waiting for stable state of OSGi bundles...')
 
@@ -650,8 +650,8 @@ end
 def upload_package
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqput "\
             "-i #{new_resource.instance} "\
-            "-u #{new_resource.username} "\
-            "-p #{new_resource.password} " +
+            "-u '#{new_resource.username}' "\
+            "-p '#{new_resource.password}' " +
             package_path
   cmd = Mixlib::ShellOut.new(cmd_str, :timeout => 600)
   Chef::Log.info "Uploading package #{new_resource.name}"
@@ -684,7 +684,7 @@ def install_package
   require 'json'
 
   cmd_str = "curl -s -X POST -w ';%{http_code}' "\
-            "-u #{new_resource.username}:#{new_resource.password} "\
+            "-u '#{new_resource.username}':'#{new_resource.password}' "\
             "#{new_resource.instance}/crx/packmgr/service/.json/etc/packages"
 
   # Empty group fix
@@ -753,7 +753,7 @@ def uninstall_package
   require 'json'
 
   cmd_str = "curl -s -X POST -w ';%{http_code}' "\
-            "-u #{new_resource.username}:#{new_resource.password} "\
+            "-u '#{new_resource.username}':'#{new_resource.password}' "\
             "#{new_resource.instance}/crx/packmgr/service/.json/etc/packages"
 
   # Empty group fix

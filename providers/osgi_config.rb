@@ -27,8 +27,8 @@ end
 def osgi_config_list
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfgls "\
             "-i #{new_resource.instance} "\
-            "-u #{new_resource.username} "\
-            "-p #{new_resource.password} "
+            "-u '#{new_resource.username}' "\
+            "-p '#{new_resource.password}' "
 
   cmd = Mixlib::ShellOut.new(cmd_str)
   cmd.run_command
@@ -198,8 +198,8 @@ end
 def raw_config_info(name)
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg "\
             "-i #{new_resource.instance} "\
-            "-u #{new_resource.username} "\
-            "-p #{new_resource.password} "\
+            "-u '#{new_resource.username}' "\
+            "-p '#{new_resource.password}' "\
             '-j ' +
             name
 
@@ -377,8 +377,8 @@ def create_osgi_config(factory_flag = false)
   cmd_str_base = "#{node['cq-unix-toolkit']['install_dir']}/cqcfg " +
                  cqcfg_params +
                  "-i #{new_resource.instance} "\
-                 "-u #{new_resource.username} "\
-                 "-p #{new_resource.password} "
+                 "-u '#{new_resource.username}' "\
+                 "-p '#{new_resource.password}' "
 
   if factory_flag
     cmd_str = cmd_str_base + "-f #{new_resource.factory_pid}"
@@ -400,8 +400,8 @@ end
 def delete_osgi_config
   cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfgdel " +
             "-i #{new_resource.instance} "\
-            "-u #{new_resource.username} "\
-            "-p #{new_resource.password} " +
+            "-u '#{new_resource.username}' "\
+            "-p '#{new_resource.password}' " +
             @current_resource.pid
 
   cmd = Mixlib::ShellOut.new(cmd_str)
