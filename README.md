@@ -12,6 +12,7 @@ choice ;)
 
 * [Supported platforms](#supported-platforms)
     * [Operating systems](#operating-systems)
+    * [Chef versions](#chef-versions)
     * [AEM/CQ versions](#aemcq-versions)
 * [Attributes](#attributes)
     * [default.rb](#defaultrb)
@@ -59,6 +60,10 @@ choice ;)
 ## Operating systems
 
 * CentOS/RHEL 6.x
+
+## Chef versions
+
+* Chef 12.x
 
 ## AEM/CQ versions
 
