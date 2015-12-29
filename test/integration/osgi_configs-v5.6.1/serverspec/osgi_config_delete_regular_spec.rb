@@ -67,7 +67,7 @@ describe 'OSGi com.adobe.cq.wcm.launches.impl.LaunchesEventHandler' do
         'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
         'launches.eventhandler.threadpool.maxsize'
       )
-    ).to match(/^5\n$/)
+    ).to eq('5')
   end
 
   it 'launches.eventhandler.threadpool.priority is set to MIN' do
@@ -76,7 +76,7 @@ describe 'OSGi com.adobe.cq.wcm.launches.impl.LaunchesEventHandler' do
         'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
         'launches.eventhandler.threadpool.priority'
       )
-    ).to match(/^MIN\n$/)
+    ).to eq('MIN')
   end
 end
 
@@ -104,7 +104,7 @@ describe 'OSGi com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl' do
         'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl',
         'cq.commerce.promotion.root'
       )
-    ).to match(%r{^/content/campaigns\n$})
+    ).to eq('/content/campaigns')
   end
 end
 
@@ -133,6 +133,6 @@ describe 'OSGi com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
         'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl',
         'oauth.provider.id'
       )
-    ).to match(/^twitter\n$/)
+    ).to eq('twitter')
   end
 end
