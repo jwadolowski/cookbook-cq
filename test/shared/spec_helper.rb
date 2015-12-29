@@ -29,11 +29,18 @@ class OSGiConfigHelper
   # @param key [String] name of configuration key/id
   # @return [String] value for a given key
   def config_value(pid, key)
-    `/opt/scripts/CQ-Unix-Toolkit/cqcfg \
+    require 'json'
+
+    raw_json = `/opt/scripts/CQ-Unix-Toolkit/cqcfg \
      -u admin \
      -p admin \
      -i http://localhost:4502 \
-     -m #{pid} | grep #{key} | cut -d$'\t' -f2`
+     -j #{pid}`
+
+    out = JSON.parse(raw_json)['properties'][key]['value']
+    out = JSON.parse(raw_json)['properties'][key]['values'] if out.nil?
+
+    out
   end
 
   # Get all POST requests that read settings given PID
