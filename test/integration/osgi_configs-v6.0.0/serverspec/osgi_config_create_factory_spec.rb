@@ -154,8 +154,8 @@ describe 'Factory OSGi org.apache.sling.commons.log.LogManager.factory'\
 
   # 1) Factory PID read
   # 2) - 7) iterate over existing configs
-  # 3) Create new instance
-  it 'in total there were 8 HTTP requests' do
+  # 8) Create new instance
+  it 'in total there were 9 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
         'org.apache.sling.commons.log.LogManager.factory.config'

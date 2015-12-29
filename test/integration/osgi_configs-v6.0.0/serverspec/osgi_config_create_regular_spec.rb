@@ -56,7 +56,7 @@ describe 'OSGi config '\
         'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener',
         'cq.dam.s7dam.damchangeeventlistener.enabled'
       )
-    ).to match(/^false\n$/)
+    ).to eq(false)
   end
 end
 
@@ -84,7 +84,7 @@ describe 'OSGi config '\
         'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener',
         'cq.dam.scene7.configurationeventlistener.enabled'
       )
-    ).to match(/^true\n$/)
+    ).to eq(true)
   end
 end
 
@@ -143,7 +143,9 @@ describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
         'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet',
         'adapt.supported.widths'
       )
-    ).to match(/^\["325","476","480","620","720"\]\n$/)
+    ).to eq (
+      ["325", "476", "480", "620", "720"]
+    )
   end
 end
 
@@ -175,7 +177,7 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSPagesUpdateHandler',
         'cq.pagesupdatehandler.imageresourcetypes'
       )
-    ).to match(%r{^\["foundation/components/image"\]\n$})
+    ).to eq(["foundation/components/image"])
   end
 end
 
@@ -216,9 +218,7 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSSubPagesUpdateHandler',
         'cq.pagesupdatehandler.imageresourcetypes'
       )
-    ).to match(
-      %r{^\["foundation/components/image","test/append/value"\]\n$}
-    )
+    ).to eq(["foundation/components/image", "test/append/value"])
   end
 end
 
@@ -245,14 +245,18 @@ describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
         'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl',
         'cq.dam.scene7.assetmimetypeservice.mapping'
       )
-    ).to match(%r{^\["Generic=image/s7asset",
-               "Template=image/s7template",
-               "Flash=image/s7flashtemplate",
-               "Image=image/jpeg",
-               "Video=video/\*",
-               "Video\.mp4=video/mp4",
-               "Video\.f4v=video/mp4",
-               "Video\.flv=video/x-flv"\]\n$}x)
+    ).to eq(
+      [
+       "Generic=image/s7asset",
+       "Template=image/s7template",
+       "Flash=image/s7flashtemplate",
+       "Image=image/jpeg",
+       "Video=video/*",
+       "Video\.mp4=video/mp4",
+       "Video\.f4v=video/mp4",
+       "Video\.flv=video/x-flv"
+      ]
+    )
   end
 end
 
@@ -311,7 +315,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'scheduler.period'
       )
-    ).to match(/^5\n$/)
+    ).to eq(5)
   end
 
   it 'scheduler.concurrent is set to false' do
@@ -320,7 +324,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'scheduler.concurrent'
       )
-    ).to match(/^false\n$/)
+    ).to eq(false)
   end
 
   it 'service.bad_link_tolerance_interval is set to 24' do
@@ -329,7 +333,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.bad_link_tolerance_interval'
       )
-    ).to match(/^24\n$/)
+    ).to eq(24)
   end
 
   it 'service.check_override_patterns is set to "^system/"' do
@@ -338,7 +342,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.check_override_patterns'
       )
-    ).to match(/^\[\"\^system\/\"\]\n$/)
+    ).to eq(["^system/"])
   end
 
   it 'service.cache_broken_internal_links is set to true' do
@@ -347,7 +351,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.cache_broken_internal_links'
       )
-    ).to match(/^true\n$/)
+    ).to eq(true)
   end
 
   it 'service.special_link_prefix is set to ["#","${","<!--","data:",'\
@@ -357,8 +361,8 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.special_link_prefix'
       )
-    ).to match(
-      /^\["#","\${","<!--","data:","javascript:","mailto:","rx:","z:"\]\n$/
+    ).to eq(
+      ["#", "${", "<!--", "data:", "javascript:", "mailto:", "rx:", "z:"]
     )
   end
 
@@ -368,7 +372,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.special_link_patterns'
       )
-    ).to match(/^\n$/)
+    ).to match(/^$/)
   end
 end
 
@@ -403,7 +407,7 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
         'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
         'sling.servlet.paths'
       )
-    ).to match(%r{^/libs/dam/health_check\n$})
+    ).to match(%r{^/libs/dam/health_check$})
   end
 
   it 'sling.servlet.methods is set to ["GET", "POST", "CUSTOM", "-stop",'\
@@ -413,7 +417,7 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
         'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
         'sling.servlet.methods'
       )
-    ).to match(/^\["-i NJECT","-stop","CUSTOM","GET","POST"\]\n$/)
+    ).to eq(["-i NJECT", "-stop", "CUSTOM", "GET", "POST"])
   end
 
   it 'sling.servlet.extensions is set to json' do
@@ -422,7 +426,7 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
         'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
         'sling.servlet.extensions'
       )
-    ).to match(/^json\n$/)
+    ).to match(/^json$/)
   end
 
   it 'cq.dam.sync.workflow.id is set to /some/path/to/model' do
@@ -431,7 +435,7 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
         'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
         'cq.dam.sync.workflow.id'
       )
-    ).to match(%r{^/some/path/to/model\n$})
+    ).to match(%r{^/some/path/to/model$})
   end
 
   it 'cq.dam.sync.folder.types is set to valid array' do
@@ -440,8 +444,8 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
         'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
         'cq.dam.sync.folder.types'
       )
-    ).to match(
-      %r{^\["-i","-i X","-iX","-p","-p Y","-pY","-u","-u Z","-uZ","sth"\]}
+    ).to eq(
+      ["-i", "-i X", "-iX", "-p", "-p Y", "-pY", "-u", "-u Z", "-uZ", "sth"]
     )
   end
 end
@@ -495,7 +499,7 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
         'org.apache.felix.eventadmin.impl.EventAdmin',
         'org.apache.felix.eventadmin.ThreadPoolSize'
       )
-    ).to match(/^20\n$/)
+    ).to eq(20)
   end
 
   it 'org.apache.felix.eventadmin.Timeout is set to 5000' do
@@ -504,7 +508,7 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
         'org.apache.felix.eventadmin.impl.EventAdmin',
         'org.apache.felix.eventadmin.Timeout'
       )
-    ).to match(/^5000\n$/)
+    ).to eq(5000)
   end
 
   it 'org.apache.felix.eventadmin.RequireTopic is set to true' do
@@ -513,7 +517,7 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
         'org.apache.felix.eventadmin.impl.EventAdmin',
         'org.apache.felix.eventadmin.RequireTopic'
       )
-    ).to match(/^true\n$/)
+    ).to eq(true)
   end
 
   it 'org.apache.felix.eventadmin.IgnoreTimeout is set to '\
@@ -524,14 +528,14 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
         'org.apache.felix.eventadmin.impl.EventAdmin',
         'org.apache.felix.eventadmin.IgnoreTimeout'
       )
-    ).to match(
-      %r{
-      ^\["com\.adobe\*",
-      "com\.day\*",
-      "com\.example\*",
-      "org\.apache.felix\*",
-      "org\.apache.sling\*"
-      \]\n$}x
+    ).to eq(
+      [
+       "com.adobe*",
+       "com.day*",
+       "com.example*",
+       "org.apache.felix*",
+       "org.apache.sling*"
+      ]
     )
   end
 end
@@ -559,7 +563,7 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.max.calls'
       )
-    ).to match(/^1500\n$/)
+    ).to eq(1500)
   end
 
   it 'sling.max.inclusions is set to 50' do
@@ -568,7 +572,7 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.max.inclusions'
       )
-    ).to match(/^50\n$/)
+    ).to eq("50")
   end
 
   it 'sling.trace.allow is set to false' do
@@ -577,7 +581,7 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.trace.allow'
       )
-    ).to match(/^false\n$/)
+    ).to eq("false")
   end
 
   it 'sling.filter.compat.mode is set to false' do
@@ -586,7 +590,7 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.filter.compat.mode'
       )
-    ).to match(/^false\n$/)
+    ).to eq("false")
   end
 
   it 'sling.max.record.requests is set to 20' do
@@ -595,7 +599,7 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.max.record.requests'
       )
-    ).to match(/^20\n$/)
+    ).to eq("20")
   end
 
   it 'sling.store.pattern.requests is set to []' do
@@ -604,6 +608,6 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.store.pattern.requests'
       )
-    ).to match(/^\[\]\n$/)
+    ).to eq([])
   end
 end
