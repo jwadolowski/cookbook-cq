@@ -70,6 +70,7 @@ choice ;)
 
 * AEM 5.6.1
 * AEM 6.0.0
+* AEM 6.1.0
 
 # Attributes
 
