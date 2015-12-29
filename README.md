@@ -31,6 +31,7 @@ choice ;)
     * [\_osgi_config_delete_factory.rb](#_osgi_config_delete_factoryrb)
     * [\_users.rb](#_usersrb)
     * [\_jcr_nodes.rb](#_jcr_nodesrb)
+* [Getting started](#getting-started)
 * [Custom resources](#custom-resources)
     * [cq_package](#cq_package)
         * [Actions](#actions)
@@ -498,6 +499,10 @@ Private recipe that tests `cq_user` resource.
 ## _jcr_nodes.rb
 
 Private recipe that tests `cq_jcr` resource.
+
+# Getting started
+
+TBD
 
 # Custom resources
 
