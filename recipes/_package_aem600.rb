@@ -108,7 +108,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Service Pack 2 (upload)" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem6']['sp2']
+  source node['cq']['packages']['aem60']['sp2']
 
   action :upload
 end
@@ -117,7 +117,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Service Pack 2 (install)" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem6']['sp2']
+  source node['cq']['packages']['aem60']['sp2']
   recursive_install true
 
   action :install
@@ -163,7 +163,7 @@ cq_package "#{node['cq']['author']['run_mode']}: HF 6316" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem6']['hf6316']
+  source node['cq']['packages']['aem60']['hf6316']
   recursive_install true
 
   action :deploy
@@ -175,7 +175,7 @@ cq_package "#{node['cq']['author']['run_mode']}: HF 6167" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem6']['hf6167']
+  source node['cq']['packages']['aem60']['hf6167']
   recursive_install true
 
   action :deploy
@@ -187,7 +187,7 @@ cq_package "#{node['cq']['author']['run_mode']}: HF 6446" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem6']['hf6446']
+  source node['cq']['packages']['aem60']['hf6446']
   recursive_install true
 
   action :deploy
@@ -199,7 +199,7 @@ cq_package "#{node['cq']['author']['run_mode']}: HF 6031" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem6']['hf6031']
+  source node['cq']['packages']['aem60']['hf6031']
   recursive_install true
 
   action :deploy
