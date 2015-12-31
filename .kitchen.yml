@@ -70,7 +70,6 @@ suites:
         version: <%= v %>
         jar:
           url: <%= ENV[env] %>
-
   - name: publish-run_mode-v<%= v %>
     run_list:
       - recipe[cq::publish]
