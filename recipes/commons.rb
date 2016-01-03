@@ -79,8 +79,8 @@ directory node['cq']['custom_tmp_dir'] do
 
   only_if do
     !node['cq']['custom_tmp_dir'].nil? &&
-    !node['cq']['custom_tmp_dir'].empty? &&
-    node['cq']['custom_tmp_dir'] != '/tmp'
+      !node['cq']['custom_tmp_dir'].empty? &&
+      node['cq']['custom_tmp_dir'] != '/tmp'
   end
 end
 

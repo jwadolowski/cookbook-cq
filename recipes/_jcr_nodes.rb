@@ -250,7 +250,7 @@ cq_jcr '/apps/commerce/gui/content/catalogs/importblueprintswizard/importers'\
   instance "http://localhost:#{node['cq']['author']['port']}"
   append false
   properties(
-    'variant' => ['one', 'two']
+    'variant' => %w(one two)
   )
 
   action :modify

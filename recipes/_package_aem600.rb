@@ -69,7 +69,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Slice 4.2.1 (install)" do
 end
 
 cq_package "#{node['cq']['author']['run_mode']}: Slice Extension for AEM6 "\
-  "(install)" do
+  '(install)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
