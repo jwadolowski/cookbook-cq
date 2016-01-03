@@ -25,6 +25,7 @@ choice ;)
     * [publish.rb](#publishrb-1)
     * [\_package_aem561.rb](#_package_aem561rb)
     * [\_package_aem600.rb](#_package_aem600rb)
+    * [\_package_aem610.rb](#_package_aem610rb)
     * [\_osgi_config_create_regular.rb](#_osgi_config_create_regularrb)
     * [\_osgi_config_create_factory.rb](#_osgi_config_create_factoryrb)
     * [\_osgi_config_delete_regular.rb](#_osgi_config_delete_regularrb)
@@ -472,6 +473,10 @@ Private recipe to test `cq_package` resource on AEM 5.6.1.
 ## _package_aem600.rb
 
 Private recipe to test `cq_package` resource on AEM 6.0.0.
+
+## _package_aem610.rb
+
+Private recipe to test `cq_package` resource on AEM 6.1.0.
 
 ## _osgi_config_create_regular.rb
 
