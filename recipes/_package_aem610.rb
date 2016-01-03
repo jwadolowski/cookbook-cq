@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cq
-# Recipe:: _package_aem600
+# Recipe:: _package_aem610
 #
 # Copyright (C) 2015 Jakub Wadolowski
 #
@@ -44,13 +44,13 @@ cq_package "#{node['cq']['author']['run_mode']}: Slice Extension for AEM6 "\
 end
 
 # Upload already uploaded package
-cq_package "#{node['cq']['author']['run_mode']}: Granite Platform Users "\
+cq_package "#{node['cq']['author']['run_mode']}: CQ Security content "\
   '(upload)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
   source "http://localhost:#{node['cq']['author']['port']}/etc/packages"\
-    '/adobe/granite/com.adobe.granite.platform.users-1.1.4.zip'
+    '/day/cq60/product/cq-security-content-1.1.6.zip'
   http_user node['cq']['author']['credentials']['login']
   http_pass node['cq']['author']['credentials']['password']
 
@@ -80,12 +80,13 @@ cq_package "#{node['cq']['author']['run_mode']}: Slice Extension for AEM6 "\
 end
 
 # Install already installed package
-cq_package "#{node['cq']['author']['run_mode']}: CQ Healthcheck (install)" do
+cq_package "#{node['cq']['author']['run_mode']}: CQ Compat Content"\
+  '(install)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
   source "http://localhost:#{node['cq']['author']['port']}/etc/packages"\
-    '/day/cq60/product/cq-healthcheck-content-1.0.12.zip'
+    '/day/cq60/product/cq-compat-content-1.1.44.zip'
   http_user node['cq']['author']['credentials']['login']
   http_pass node['cq']['author']['credentials']['password']
 
@@ -104,25 +105,25 @@ cq_package "#{node['cq']['author']['run_mode']}: AEM Dash (install)" do
 end
 
 # Upload & install (recursive) + reboot
-cq_package "#{node['cq']['author']['run_mode']}: Service Pack 2 (upload)" do
+cq_package "#{node['cq']['author']['run_mode']}: Oak 1.2.7 (upload)" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem60']['sp2']
+  source node['cq']['packages']['aem61']['hf7700']
 
   action :upload
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: Service Pack 2 (install)" do
+cq_package "#{node['cq']['author']['run_mode']}: Oak 1.2.7 (install)" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem60']['sp2']
+  source node['cq']['packages']['aem61']['hf7700']
   recursive_install true
 
   action :install
 
-  notifies :restart, 'service[cq60-author]', :immediately
+  notifies :restart, 'service[cq61-author]', :immediately
 end
 
 # Upload 3 versions of the same package, install 1st and 2nd, but not 3rd
@@ -159,52 +160,52 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.9.6" do
   action [:upload, :install]
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: HF 6316" do
+cq_package "#{node['cq']['author']['run_mode']}: HF 6449" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem60']['hf6316']
+  source node['cq']['packages']['aem61']['hf6449']
   recursive_install true
 
   action :deploy
 
-  notifies :restart, 'service[cq60-author]', :immediately
+  notifies :restart, 'service[cq61-author]', :immediately
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: HF 6167" do
+cq_package "#{node['cq']['author']['run_mode']}: HF 7085" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem60']['hf6167']
+  source node['cq']['packages']['aem61']['hf7085']
   recursive_install true
 
   action :deploy
 
-  notifies :restart, 'service[cq60-author]', :immediately
+  notifies :restart, 'service[cq61-author]', :immediately
 end
 
 cq_package "#{node['cq']['author']['run_mode']}: HF 6446" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem60']['hf6446']
+  source node['cq']['packages']['aem61']['hf6446']
   recursive_install true
 
   action :deploy
 
-  notifies :restart, 'service[cq60-author]', :immediately
+  notifies :restart, 'service[cq61-author]', :immediately
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: HF 6031" do
+cq_package "#{node['cq']['author']['run_mode']}: HF 6500" do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source node['cq']['packages']['aem60']['hf6031']
+  source node['cq']['packages']['aem61']['hf6500']
   recursive_install true
 
   action :deploy
 
-  notifies :restart, 'service[cq60-author]', :immediately
+  notifies :restart, 'service[cq61-author]', :immediately
 end
 
 # Uninstall Geometrixx package
@@ -213,7 +214,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Geometrixx All" do
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
   source "http://localhost:#{node['cq']['author']['port']}/etc/packages"\
-    '/day/cq60/product/cq-geometrixx-all-pkg-5.7.476.zip'
+    '/day/cq60/product/cq-geometrixx-all-pkg-5.8.392.zip'
   http_user node['cq']['author']['credentials']['login']
   http_pass node['cq']['author']['credentials']['password']
 

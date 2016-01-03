@@ -1,7 +1,7 @@
 ---
 <% chef_versions = %w( 12 ) %>
 <% platforms = %w( centos-6.7 ) %>
-<% aem_versions = %w( 5.6.1 6.0.0 ) %>
+<% aem_versions = %w( 5.6.1 6.0.0 6.1.0 ) %>
 
 driver:
   name: vagrant
@@ -70,7 +70,6 @@ suites:
         version: <%= v %>
         jar:
           url: <%= ENV[env] %>
-
   - name: publish-run_mode-v<%= v %>
     run_list:
       - recipe[cq::publish]
@@ -103,12 +102,6 @@ suites:
         jar:
           url: <%= ENV[env] %>
         packages:
-          aem6:
-            sp2: <%= ENV['CQ_V600_SP2_URL'] %>
-            hf6316: <%= ENV['CQ_V600_HF6316_URL'] %>
-            hf6167: <%= ENV['CQ_V600_HF6167_URL'] %>
-            hf6446: <%= ENV['CQ_V600_HF6446_URL'] %>
-            hf6031: <%= ENV['CQ_V600_HF6031_URL'] %>
           aem561:
             sec_sp1: <%= ENV['CQ_V561_SEC_SP1_URL'] %>
             hf6446: <%= ENV['CQ_V561_HF6446_URL'] %>
@@ -116,6 +109,18 @@ suites:
             hf5667: <%= ENV['CQ_V561_HF5667_URL'] %>
             hf3527: <%= ENV['CQ_V561_HF3527_URL'] %>
             hf4990: <%= ENV['CQ_V561_HF4990_URL'] %>
+          aem60:
+            sp2: <%= ENV['CQ_V600_SP2_URL'] %>
+            hf6316: <%= ENV['CQ_V600_HF6316_URL'] %>
+            hf6167: <%= ENV['CQ_V600_HF6167_URL'] %>
+            hf6446: <%= ENV['CQ_V600_HF6446_URL'] %>
+            hf6031: <%= ENV['CQ_V600_HF6031_URL'] %>
+          aem61:
+            hf7700: <%= ENV['CQ_V610_HF7700_URL'] %>
+            hf6449: <%= ENV['CQ_V610_HF6449_URL'] %>
+            hf7085: <%= ENV['CQ_V610_HF7085_URL'] %>
+            hf6446: <%= ENV['CQ_V610_HF6446_URL'] %>
+            hf6500: <%= ENV['CQ_V610_HF6500_URL'] %>
   - name: users-v<%= v %>
     run_list:
       - recipe[cq::author]
