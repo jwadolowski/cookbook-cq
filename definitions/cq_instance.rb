@@ -104,8 +104,8 @@ define :cq_instance,
     source 'cq.init.erb'
     variables(
       :daemon_name => daemon_name,
-      :full_name => "Adobe CQ #{node['cq']['version']} "\
-                    "#{local_id.to_s.capitalize}",
+      :full_name => "Adobe CQ #{node['cq']['version']} " +
+                    local_id.to_s.capitalize,
       :conf_file => "#{cq_instance_conf_dir(
                          node['cq']['home_dir'],
                          local_id
