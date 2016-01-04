@@ -18,7 +18,7 @@ class OSGiConfigHelper
   # @param pid [String] factory PID to look for
   # @return [Array] a list of all instances of a given OSGi factory
   def factory_instaces(pid)
-    regex = pid.gsub(/\./, '\.') + '\.' +
+    regex = pid.gsub(/\./, '\.') + '\.'\
       '[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'
     config_list.scan(/#{regex}/)
   end
@@ -127,16 +127,16 @@ class OSGiConfigHelper
       regex_groups = line.match(line_regex)
 
       next if regex_groups.nil? ||
-        regex_groups['date'].nil? ||
-        regex_groups['time'].nil?
+              regex_groups['date'].nil? ||
+              regex_groups['time'].nil?
 
       line_time = DateTime.parse(
         regex_groups['date'] + ' ' + regex_groups['time']
       )
 
       array.push(line) if line.match(/#{msg}/) &&
-        line_time >= start_time &&
-        line_time <= stop_time
+                          line_time >= start_time &&
+                          line_time <= stop_time
     end
 
     array

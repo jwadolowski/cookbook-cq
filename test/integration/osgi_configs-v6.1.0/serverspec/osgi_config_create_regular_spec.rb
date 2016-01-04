@@ -143,9 +143,7 @@ describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
         'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet',
         'adapt.supported.widths'
       )
-    ).to eq (
-      ["325", "476", "480", "620", "720"]
-    )
+    ).to eq(%w(325 476 480 620 720))
   end
 end
 
@@ -180,7 +178,7 @@ end
 #         'DPSPagesUpdateHandler',
 #         'cq.pagesupdatehandler.imageresourcetypes'
 #       )
-#     ).to eq(["foundation/components/image"])
+#     ).to eq(['foundation/components/image'])
 #   end
 # end
 
@@ -224,7 +222,7 @@ end
 #         'DPSSubPagesUpdateHandler',
 #         'cq.pagesupdatehandler.imageresourcetypes'
 #       )
-#     ).to eq(["foundation/components/image", "test/append/value"])
+#     ).to eq(['foundation/components/image', 'test/append/value'])
 #   end
 # end
 
@@ -253,17 +251,17 @@ describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
       )
     ).to eq(
       [
-       'Flash=image/s7flashtemplate',
-       'Generic=image/s7asset',
-       'Image.jpeg=image/jpeg',
-       'Image=image/*',
-       'Image=image/jpeg',
-       'PDF=application/pdf',
-       'Template=image/s7template',
-       'Video.f4v=video/mp4',
-       'Video.flv=video/x-flv',
-       'Video.mp4=video/mp4',
-       'Video=video/*'
+        'Flash=image/s7flashtemplate',
+        'Generic=image/s7asset',
+        'Image.jpeg=image/jpeg',
+        'Image=image/*',
+        'Image=image/jpeg',
+        'PDF=application/pdf',
+        'Template=image/s7template',
+        'Video.f4v=video/mp4',
+        'Video.flv=video/x-flv',
+        'Video.mp4=video/mp4',
+        'Video=video/*'
       ]
     )
   end
@@ -351,7 +349,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.check_override_patterns'
       )
-    ).to eq(["^system/"])
+    ).to eq(['^system/'])
   end
 
   it 'service.cache_broken_internal_links is set to true' do
@@ -371,7 +369,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'service.special_link_prefix'
       )
     ).to eq(
-      ["#", "${", "<!--", "data:", "javascript:", "mailto:", "rx:", "z:"]
+      ['#', '${', '<!--', 'data:', 'javascript:', 'mailto:', 'rx:', 'z:']
     )
   end
 
@@ -426,7 +424,7 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
         'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
         'sling.servlet.methods'
       )
-    ).to eq(["-i NJECT", "-stop", "CUSTOM", "GET", "POST"])
+    ).to eq(['-i NJECT', '-stop', 'CUSTOM', 'GET', 'POST'])
   end
 
   it 'sling.servlet.extensions is set to json' do
@@ -454,7 +452,7 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
         'cq.dam.sync.folder.types'
       )
     ).to eq(
-      ["-i", "-i X", "-iX", "-p", "-p Y", "-pY", "-u", "-u Z", "-uZ", "sth"]
+      ['-i', '-i X', '-iX', '-p', '-p Y', '-pY', '-u', '-u Z', '-uZ', 'sth']
     )
   end
 end
@@ -539,11 +537,11 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
       )
     ).to eq(
       [
-       "com.adobe*",
-       "com.day*",
-       "com.example*",
-       "org.apache.felix*",
-       "org.apache.sling*"
+        'com.adobe*',
+        'com.day*',
+        'com.example*',
+        'org.apache.felix*',
+        'org.apache.sling*'
       ]
     )
   end
@@ -581,7 +579,7 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.max.inclusions'
       )
-    ).to eq("50")
+    ).to eq('50')
   end
 
   it 'sling.trace.allow is set to false' do
@@ -590,7 +588,7 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.trace.allow'
       )
-    ).to eq("false")
+    ).to eq('false')
   end
 
   it 'sling.filter.compat.mode is set to false' do
@@ -599,7 +597,7 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.filter.compat.mode'
       )
-    ).to eq("false")
+    ).to eq('false')
   end
 
   it 'sling.max.record.requests is set to 20' do
@@ -608,7 +606,7 @@ describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.max.record.requests'
       )
-    ).to eq("20")
+    ).to eq('20')
   end
 
   it 'sling.store.pattern.requests is set to []' do
