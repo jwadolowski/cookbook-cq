@@ -107,9 +107,9 @@ define :cq_instance,
       :full_name => "Adobe CQ #{node['cq']['version']} " +
                     local_id.to_s.capitalize,
       :conf_file => "#{cq_instance_conf_dir(
-                         node['cq']['home_dir'],
-                         local_id
-                       )}/#{daemon_name}.conf",
+        node['cq']['home_dir'],
+        local_id
+      )}/#{daemon_name}.conf",
       :kill_delay => node['cq']['service']['kill_delay'],
       :restart_sleep => node['cq']['service']['restart_sleep']
     )

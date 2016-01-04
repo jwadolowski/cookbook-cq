@@ -24,11 +24,11 @@
 # -----------------------------------------------------------------------------
 
 define :osgi_config_wrapper,
-  :properties => nil,
-  :append => false,
-  :factory => false,
-  :force => false,
-  :action => :create do
+       :properties => nil,
+       :append => false,
+       :factory => false,
+       :force => false,
+       :action => :create do
   ruby_block "start timestamp for #{params[:name]}" do
     block do
       File.write(
