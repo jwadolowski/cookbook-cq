@@ -124,10 +124,10 @@ def package_path
     @dst_path = (cache_dir + file_name).to_s
 
     # Add HTTP Authorization header if necessary
-    unless new_resource.http_user.empty? &&
-        new_resource.http_pass.empty?
-      remote_file_resource.headers('Authorization' =>
-                                  "Basic #{auth_header_value}")
+    unless new_resource.http_user.empty? && new_resource.http_pass.empty?
+      remote_file_resource.headers(
+        'Authorization' => "Basic #{auth_header_value}"
+      )
     end
 
     # Add checksum validation if necessary
@@ -215,9 +215,10 @@ def package_search
 
   # Iterate thorugh packages and get info about package you're looking for
   package_list.elements.each('package') do |pkg|
-    packages.push(pkg) if package_attr_from_object(pkg, 'name') ==
-      @metadata_name && package_attr_from_object(pkg, 'group') ==
-      @metadata_group
+    packages.push(
+      pkg
+    ) if package_attr_from_object(pkg, 'name') == @metadata_name &&
+         package_attr_from_object(pkg, 'group') == @metadata_group
   end
 
   packages
@@ -369,7 +370,7 @@ def package_installed?
   installed_pkgs.each_cons(2) do |pkg1, pkg2|
     newest_pkg = pkg1
     if DateTime.parse(package_attr_from_object(pkg1, 'lastUnpacked')) <
-      DateTime.parse(package_attr_from_object(pkg2, 'lastUnpacked'))
+       DateTime.parse(package_attr_from_object(pkg2, 'lastUnpacked'))
       newest_pkg = pkg2
     end
   end
@@ -720,8 +721,9 @@ def install_package
   output = cmd.stdout.split(/;(?=[0-9]{3}$)/)
 
   # Parse HTTP response status code
-  Chef::Application.fatal!('CRX Package Manager returned non-200 response '\
-                          "code: #{output[1]}!") if output[1] != '200'
+  Chef::Application.fatal!(
+    "CRX Package Manager returned non-200 response code: #{output[1]}!"
+  ) if output[1] != '200'
 
   # Parse JSON returned by API
   begin
@@ -730,8 +732,9 @@ def install_package
     Chef::Log.error("#{json_resp} is not a parsable JSON: #{e}")
   end
 
-  Chef::Application.fatal!('Not successful package operation: ' +
-                            output[0]) if json_resp['success'] != true
+  Chef::Application.fatal!(
+    "Not successful package operation: #{output[0]}"
+  ) if json_resp['success'] != true
 
   # Wait for stable state of OSGi bundles. Installation of a package (hotfixes/
   # service packs in particular) may cause a lot bundle restarts, which
