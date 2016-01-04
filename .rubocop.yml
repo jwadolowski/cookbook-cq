@@ -1,10 +1,7 @@
 AllCops:
   Exclude:
     - 'Berksfile'
-    - 'Gemfile'
     - 'metadata.rb'
-    - 'Thorfile'
-    - 'Vagrantfile'
 
 Encoding:
   Enabled: false
