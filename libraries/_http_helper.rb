@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cq
-# Libraries:: helper
+# Libraries:: HttpHelper
 #
 # Copyright (C) 2015 Jakub Wadolowski
 #
@@ -21,7 +21,7 @@ require 'net/http'
 require 'uri'
 
 module Cq
-  module Helper
+  module HttpHelper
     def parse_uri(addr, path)
       uri = escape_uri(addr + path)
       URI.parse(uri)
