@@ -22,8 +22,8 @@ require 'uri'
 
 module Cq
   module HttpHelper
-    def parse_uri(addr, path)
-      uri = escape_uri(addr + path)
+    def parse_uri(str)
+      uri = escape_uri(str)
       URI.parse(uri)
     rescue => e
       Chef::Application.fatal!("Invalid URI: #{e}")
@@ -46,7 +46,7 @@ module Cq
     end
 
     def http_get(addr, path, user, password)
-      uri = parse_uri(addr, path)
+      uri = parse_uri(addr + path)
 
       http = Net::HTTP.new(uri.host, uri.port)
       http_req = Net::HTTP::Get.new(uri.request_uri)
@@ -60,7 +60,7 @@ module Cq
     end
 
     def http_post(addr, path, user, password, payload)
-      uri = parse_uri(addr, path)
+      uri = parse_uri(addr + path)
 
       http = Net::HTTP.new(uri.host, uri.port)
       http_req = Net::HTTP::Post.new(uri.request_uri)
@@ -77,7 +77,7 @@ module Cq
     def http_multipart_post(addr, path, user, password, payload)
       require 'net/http/post/multipart'
 
-      uri = parse_uri(addr, path)
+      uri = parse_uri(addr + path)
       http = Net::HTTP.new(uri.host, uri.port)
       http_req = Net::HTTP::Post::Multipart.new(uri.request_uri, payload)
       http_req.basic_auth(user, password)
@@ -90,7 +90,7 @@ module Cq
     end
 
     def http_delete(addr, path, user, password)
-      uri = parse_uri(addr, path)
+      uri = parse_uri(addr + path)
 
       http = Net::HTTP.new(uri.host, uri.port)
       http_req = Net::HTTP::Delete.new(uri.request_uri)
@@ -101,6 +101,14 @@ module Cq
       rescue => e
         Chef::Log.error("Unable to send DELETE request: #{e}")
       end
+    end
+
+    def auth_header_required?(user, pass)
+      !(user.to_s == '') && !(pass.to_s == '')
+    end
+
+    def uri_basename(str)
+      ::File.basename(parse_uri(str).path)
     end
   end
 end
