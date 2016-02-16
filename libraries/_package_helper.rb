@@ -23,20 +23,34 @@ module Cq
   module PackageHelper
     include Cq::HttpHelper
 
+    def xmlify(str)
+      REXML::Document.new(str)
+    rescue => e
+      Chef::Application.fatal!("Can't serialize #{str} to XML: #{e}")
+    end
+
     def package_list(addr, user, password)
       xml_str = http_get(
         addr,
-        '/crx/packmgr/service.jsp?cmd=ls',
+        '/crx/packmgr/service.jsp',
         user,
-        password
+        password,
+        'cmd' => 'ls'
       ).body
-      REXML::Document.new(xml_str)
-    rescue => e
-      Chef::Log.error("Unable to parse #{xml_str} as XML: #{e}")
+
+      xml = xmlify(xml_str)
+
+      begin
+        REXML::XPath.first(xml, '//packages')
+      rescue => e
+        Chef::Application.fatal!(
+          "Can't find <packages> element in #{xml}: #{e}"
+        )
+      end
     end
 
     def package_download(src, dst, http_user, http_pass)
-      auth_header = "Basic " + Base64.encode64("#{http_user}:#{http_pass}")
+      auth_header = 'Basic ' + Base64.encode64("#{http_user}:#{http_pass}")
 
       remote_file = Chef::Resource::RemoteFile.new(dst, run_context)
       remote_file.source(src)
@@ -48,7 +62,123 @@ module Cq
       remote_file.run_action(:create)
     end
 
-    def zip_metadata(path)
+    def package_upload(instance, user, pass, path)
+      req_path = '/crx/packmgr/service/.json/'
+      query_params = { 'cmd' => 'upload' }
+      payload = file_upload_payload(
+        'package',
+        path,
+        'application/zip'
+      )
+
+      http_resp = http_multipart_post(
+        instance,
+        req_path,
+        user,
+        pass,
+        payload,
+        query_params
+      )
+
+      response_validator(http_resp.body)
+    end
+
+    def package_install(instance, user, pass, pkg_path, recursive)
+      req_path = '/crx/packmgr/service/.json' + pkg_path
+      query_params = { 'cmd' => 'install', 'recursive' => recursive }
+
+      http_resp = http_post(
+        instance,
+        req_path,
+        user,
+        pass,
+        {},
+        query_params
+      )
+
+      response_validator(http_resp.body)
+    end
+
+    def package_uninstall(instance, user, pass, pkg_path)
+      req_path = '/crx/packmgr/service/.json' + pkg_path
+      query_params = { 'cmd' => 'uninstall' }
+
+      http_resp = http_post(
+        instance,
+        req_path,
+        user,
+        pass,
+        {},
+        query_params
+      )
+
+      response_validator(http_resp.body)
+    end
+
+    def response_validator(str)
+      response = json_to_hash(str)
+
+      if response['success']
+        Chef::Log.debug("CRX Package Manager response: #{response}")
+      else
+        Chef::Application.fatal!(
+          "Not successful package operation: #{response}"
+        )
+      end
+    end
+
+    def crx_path(group, name)
+      pkg_path = '/etc/packages'
+      pkg_path += "/#{group}" unless group.to_s.empty?
+      pkg_path += "/#{name}"
+      pkg_path
+    end
+
+    def properties_xml_file(path)
+      cmd_str = "unzip -p #{path} META-INF/vault/properties.xml"
+      cmd = Mixlib::ShellOut.new(cmd_str)
+      cmd.run_command
+
+      begin
+        cmd.error!
+        xmlify(cmd.stdout)
+      rescue => e
+        Chef::Application.fatal!(
+          "Can't extract properties.xml from #{path} file: #{e}"
+        )
+      end
+    end
+
+    def xml_property(xml, name)
+      begin
+        element = REXML::XPath.first(xml, "//entry[@key='#{name}']")
+      rescue => e
+        Chef::Application.fatal!(
+          "Can't extract #{name} from properties.xml: #{e}"
+        )
+      end
+
+      if element.nil?
+        element
+      else
+        element.text
+      end
+    end
+
+    def crx_property(xml, name)
+      begin
+        element = xml.elements[name]
+      rescue => e
+        Chef::Application.fatal!(
+          "Can't extract #{name} from package object: #{e}"
+        )
+      end
+
+      if element.nil?
+        element
+      else
+        element.text
+      end
     end
   end
 end
