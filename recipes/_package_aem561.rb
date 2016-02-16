@@ -156,7 +156,7 @@ cq_package 'ACS AEM Commons 1.9.6' do
   action [:upload, :install]
 end
 
-cq_package 'HF6446' do
+cq_package 'HF 6446' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -168,7 +168,7 @@ cq_package 'HF6446' do
   notifies :restart, 'service[cq56-author]', :immediately
 end
 
-cq_package 'HF5122' do
+cq_package 'HF 5122' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -180,7 +180,7 @@ cq_package 'HF5122' do
   notifies :restart, 'service[cq56-author]', :immediately
 end
 
-cq_package 'HF5667' do
+cq_package 'HF 5667' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -192,7 +192,7 @@ cq_package 'HF5667' do
   notifies :restart, 'service[cq56-author]', :immediately
 end
 
-cq_package 'HF3527' do
+cq_package 'HF 3527' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -204,7 +204,7 @@ cq_package 'HF3527' do
   notifies :restart, 'service[cq56-author]', :immediately
 end
 
-cq_package 'HF4990' do
+cq_package 'HF 4990' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
