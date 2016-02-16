@@ -22,7 +22,7 @@ Chef::Log.warn(
 )
 
 # Upload new packages
-cq_package "#{node['cq']['author']['run_mode']}: Slice 4.2.1 (upload)" do
+cq_package 'Slice 4.2.1 (upload)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -32,8 +32,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Slice 4.2.1 (upload)" do
   action :upload
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: Slice Extension for AEM6 "\
-  '(upload)' do
+cq_package 'Slice Extension for AEM6 (upload)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -44,8 +43,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Slice Extension for AEM6 "\
 end
 
 # Upload already uploaded package
-cq_package "#{node['cq']['author']['run_mode']}: CQ Security content "\
-  '(upload)' do
+cq_package 'CQ Security content (upload)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -58,7 +56,7 @@ cq_package "#{node['cq']['author']['run_mode']}: CQ Security content "\
 end
 
 # Install new packages (non-recursive)
-cq_package "#{node['cq']['author']['run_mode']}: Slice 4.2.1 (install)" do
+cq_package 'Slice 4.2.1 (install)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -68,8 +66,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Slice 4.2.1 (install)" do
   action :install
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: Slice Extension for AEM6 "\
-  '(install)' do
+cq_package 'Slice Extension for AEM6 (install)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -80,8 +77,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Slice Extension for AEM6 "\
 end
 
 # Install already installed package
-cq_package "#{node['cq']['author']['run_mode']}: CQ Compat Content"\
-  '(install)' do
+cq_package 'CQ Compat Content (install)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -94,7 +90,7 @@ cq_package "#{node['cq']['author']['run_mode']}: CQ Compat Content"\
 end
 
 # Install not yet uploaded package
-cq_package "#{node['cq']['author']['run_mode']}: AEM Dash (install)" do
+cq_package 'AEM Dash (install)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -105,7 +101,7 @@ cq_package "#{node['cq']['author']['run_mode']}: AEM Dash (install)" do
 end
 
 # Upload & install (recursive) + reboot
-cq_package "#{node['cq']['author']['run_mode']}: Oak 1.2.7 (upload)" do
+cq_package 'Oak 1.2.7 (upload)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -114,7 +110,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Oak 1.2.7 (upload)" do
   action :upload
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: Oak 1.2.7 (install)" do
+cq_package 'Oak 1.2.7 (install)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -127,7 +123,7 @@ cq_package "#{node['cq']['author']['run_mode']}: Oak 1.2.7 (install)" do
 end
 
 # Upload 3 versions of the same package, install 1st and 2nd, but not 3rd
-cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.2" do
+cq_package 'ACS AEM Commons 1.10.2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -138,7 +134,7 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.2" do
   action :upload
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.0" do
+cq_package 'ACS AEM Commons 1.10.0' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -149,7 +145,7 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.10.0" do
   action [:upload, :install]
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.9.6" do
+cq_package 'ACS AEM Commons 1.9.6' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -160,7 +156,7 @@ cq_package "#{node['cq']['author']['run_mode']}: ACS AEM Commons 1.9.6" do
   action [:upload, :install]
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: HF 6449" do
+cq_package 'HF 6449' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -172,7 +168,7 @@ cq_package "#{node['cq']['author']['run_mode']}: HF 6449" do
   notifies :restart, 'service[cq61-author]', :immediately
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: HF 7085" do
+cq_package 'HF 7085' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -184,7 +180,7 @@ cq_package "#{node['cq']['author']['run_mode']}: HF 7085" do
   notifies :restart, 'service[cq61-author]', :immediately
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: HF 6446" do
+cq_package 'HF 6446' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -196,7 +192,7 @@ cq_package "#{node['cq']['author']['run_mode']}: HF 6446" do
   notifies :restart, 'service[cq61-author]', :immediately
 end
 
-cq_package "#{node['cq']['author']['run_mode']}: HF 6500" do
+cq_package 'HF 6500' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -209,7 +205,7 @@ cq_package "#{node['cq']['author']['run_mode']}: HF 6500" do
 end
 
 # Uninstall Geometrixx package
-cq_package "#{node['cq']['author']['run_mode']}: Geometrixx All" do
+cq_package 'Geometrixx All' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -219,4 +215,18 @@ cq_package "#{node['cq']['author']['run_mode']}: Geometrixx All" do
   http_pass node['cq']['author']['credentials']['password']
 
   action :uninstall
+end
+
+# Deploy SP1 with rescue_mode
+cq_package 'SP1' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source node['cq']['packages']['aem61']['sp1']
+  recursive_install true
+  rescue_mode true
+
+  action :deploy
+
+  notifies :restart, 'service[cq61-author]', :immediately
 end
