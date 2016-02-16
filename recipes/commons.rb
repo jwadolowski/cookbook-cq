@@ -25,6 +25,8 @@ chef_gem 'multipart-post' do
   compile_time false if respond_to?(:compile_time)
 end
 
+package 'unzip'
+
 # Create base directory if necessary
 # -----------------------------------------------------------------------------
 directory node['cq']['base_dir'] do
