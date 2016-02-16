@@ -23,3 +23,6 @@ AbcSize:
 
 MethodLength:
   Max: 30
+
+ParameterLists:
+  Enabled: false
