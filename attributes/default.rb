@@ -41,6 +41,8 @@ default['cq']['conf_template_cookbook'] = 'cq'
 
 default['cq']['healthcheck_resource'] = '/libs/granite/core/content/login.html'
 
+default['cq']['http_read_timeout'] = 300
+
 # Java attributes
 # -----------------------------------------------------------------------------
 default['java']['jdk_version'] = '7'
