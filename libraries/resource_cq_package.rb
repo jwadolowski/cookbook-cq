@@ -23,18 +23,20 @@ class Chef
       provides :cq_package
 
       attr_accessor :local_path
-      attr_accessor :remote_path
 
       attr_accessor :uploaded
       attr_accessor :installed
 
-      attr_accessor :metadata_name
-      attr_accessor :metadata_group
-      attr_accessor :metadata_version
+      # Package metadata from properties.xml
+      attr_accessor :xml_name
+      attr_accessor :xml_group
+      attr_accessor :xml_version
 
+      # Package metadata from CRX Package Manager
       attr_accessor :crx_name
       attr_accessor :crx_group
       attr_accessor :crx_version
+      attr_accessor :crx_download_name
 
       def initialize(name, run_context = nil)
         super
@@ -53,6 +55,10 @@ class Chef
         @recursive_install = false
         @rescue_mode = false
         @checksum = nil
+        @same_state_barrier = 6
+        @error_state_barrier = 6
+        @max_attempts = 30
+        @sleep_time = 10
       end
 
       def name(arg = nil)
@@ -101,6 +107,22 @@ class Chef
 
       def checksum(arg = nil)
         set_or_return(:checksum, arg, :kind_of => String)
+      end
+
+      def same_state_barrier(arg = nil)
+        set_or_return(:same_state_barrier, arg, :kind_of => Integer)
+      end
+
+      def error_state_barrier(arg = nil)
+        set_or_return(:error_state_barrier, arg, :kind_of => Integer)
+      end
+
+      def max_attempts(arg = nil)
+        set_or_return(:max_attempts, arg, :kind_of => Integer)
+      end
+
+      def sleep_time(arg = nil)
+        set_or_return(:sleep_time, arg, :kind_of => Integer)
       end
     end
   end
