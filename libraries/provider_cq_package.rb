@@ -370,14 +370,12 @@ class Chef
 
             osgi_stability_healthcheck
           end
+        elsif new_resource.uploaded
+          Chef::Log.warn(
+            "Package #{new_resource.name} is already uninstalled"
+          )
         else
-          if new_resource.uploaded
-            Chef::Log.warn(
-              "Package #{new_resource.name} is already uninstalled"
-            )
-          else
-            Chef::Log.warn("Can't uninstall not existing package!")
-          end
+          Chef::Log.warn("Can't uninstall not existing package!")
         end
       end
     end
