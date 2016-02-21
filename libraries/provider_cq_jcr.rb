@@ -284,11 +284,11 @@ class Chef
         diff = {}
 
         unless new_resource.properties.empty?
-          if new_resource.append
-            diff = regular_diff
-          else
-            diff = force_replace_diff
-          end
+          diff = if new_resource.append
+                   regualr_diff
+                 else
+                   force_replace_diff
+                 end
 
           # Get rid of keys (properties) that are protected or automatically
           # created
