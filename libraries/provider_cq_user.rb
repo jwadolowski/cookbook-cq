@@ -222,14 +222,15 @@ class Chef
 
         algo = params['algo']
         salt = params['salt']
-        if params['iter']
-          iter = params['iter'].to_i
-        else
-          iter = 1
-        end
+
+        iter = if params['iter']
+                 params['iter'].to_i
+               else
+                 1
+               end
 
         new_hash = (salt + pass).each_byte.to_a
-        digest = OpenSSL::Digest.new(algo.gsub('-', ''))
+        digest = OpenSSL::Digest.new(algo.delete('-'))
 
         1.upto(iter) do
           digest.reset
