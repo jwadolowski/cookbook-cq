@@ -576,7 +576,7 @@ Key features:
   executed for given package version
 * installation process is considered finished only when both "foreground"
   (Package Manager) and "background" (OSGi bundle/component restarts) ones are
-  over - no more 'wait until you see MESSAGE_X in `error.log` file'
+  over - no more 'wait until you see X in `error.log` file'
 
 ### Actions
 
@@ -614,10 +614,37 @@ explanation can be found below.
     respectively)</td>
   </tr>
   <tr>
+    <td><tt>username</tt></td>
+    <td>String</td>
+    <td>Instance username</td>
+  </tr>
+  <tr>
+    <td><tt>password</tt></td>
+    <td>String</td>
+    <td>Instance password</td>
+  </tr>
+  <tr>
+    <td><tt>instance</tt></td>
+    <td>String</td>
+    <td>Instance URL</td>
+  </tr>
+  <tr>
     <td><tt>source</tt></td>
     <td>String</td>
     <td>URL to ZIP package. Accepted protocols: <tt>file://</tt>,
     <tt>http://</tt>, <tt>https://</tt></td>
+  </tr>
+  <tr>
+    <td><tt>http_user</tt></td>
+    <td>String</td>
+    <td>HTTP basic auth user. Use whenever <tt>source</tt> requires such
+    authentication</td>
+  </tr>
+  <tr>
+    <td><tt>http_pass</tt></td>
+    <td>String</td>
+    <td>HTTP basic auth password. Use whenever <tt>source</tt> requires such
+    authentication</td>
   </tr>
   <tr>
     <td><tt>recursive_install</tt></td>
@@ -635,8 +662,9 @@ explanation can be found below.
     is not responding over HTTP. After CQ/AEM restart everyting works
     perfectly fine again.
     This flag allows Chef to continue processing if it is not able to get OSGi
-    bundles state 6 times in a row. In most (if not all) cases it should be
-    combined with restart notification (please see examples below).
+    bundles state <tt>error_state_barrier</tt> times in a row.
+    In most (if not all) cases it should be combined with restart notification
+    (please see examples below).
     It is highly discouraged to use this property, as 99% of CRX packages
     shouldn't require such configuration. Unfortunately that 1% does. This is
     rather a safety switch than a common pattern that should be used in every
@@ -650,31 +678,29 @@ explanation can be found below.
     that is used under the hood by <tt>cq_package</tt> provider)</td>
   </tr>
   <tr>
-    <td><tt>http_user</tt></td>
-    <td>String</td>
-    <td>HTTP basic auth user. Use whenever <tt>source</tt> requires such
-    authentication</td>
+    <td><tt>same_state_barrier</tt></td>
+    <td>Integer</td>
+    <td>How many times in a row the same OSGi state should occur after package
+    (un)installation to consider this process successful. Default is 6</td>
   </tr>
   <tr>
-    <td><tt>http_pass</tt></td>
-    <td>String</td>
-    <td>HTTP basic auth password. Use whenever <tt>source</tt> requires such
-    authentication</td>
+    <td><tt>error_state_barrier</tt></td>
+    <td>Integer</td>
+    <td>How many times in a row the OSGi console was unavailable after package
+    (un)installation. Useful only when combined with <tt>rescue_mode</tt>. By
+    default set to 6</td>
   </tr>
   <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
+    <td><tt>max_attempts</tt></td>
+    <td>Integer</td>
+    <td>Number of attempts while waiting for stable OSGi state after package
+    (un)installation. Set to 30 by default</td>
   </tr>
   <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
+    <td><tt>sleep_time</tt></td>
+    <td>Integer</td>
+    <td>Sleep time between OSGi status checks (in seconds) after package
+    (un)installation. Set to 10 by default</td>
   </tr>
 </table>
 
