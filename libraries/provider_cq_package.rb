@@ -207,7 +207,9 @@ class Chef
 
             # Raise an error if state object is not an instance of
             # Net::HTTPResponse
-            fail('Invalid HTTP response') unless state.is_a?(Net::HTTPResponse)
+            raise(
+              'Invalid HTTP response'
+            ) unless state.is_a?(Net::HTTPResponse)
 
             # Reset error counter whenever request ended successfully
             error_state_counter = 0
