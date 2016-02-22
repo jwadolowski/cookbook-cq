@@ -115,6 +115,22 @@ module Cq
       response_validator(http_resp.body)
     end
 
+    def package_delete(instance, user, pass, pkg_path)
+      req_path = '/crx/packmgr/service/.json' + pkg_path
+      query_params = { 'cmd' => 'delete' }
+
+      http_resp = http_post(
+        instance,
+        req_path,
+        user,
+        pass,
+        {},
+        query_params
+      )
+
+      response_validator(http_resp.body)
+    end
+
     def response_validator(str)
       response = json_to_hash(str)
 

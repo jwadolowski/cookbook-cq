@@ -378,6 +378,24 @@ class Chef
           Chef::Log.warn("Can't uninstall not existing package!")
         end
       end
+
+      def action_delete
+        if new_resource.uploaded
+          converge_by("Delete #{new_resource.name}") do
+            package_delete(
+              new_resource.instance,
+              new_resource.username,
+              new_resource.password,
+              crx_path(
+                current_resource.crx_group,
+                current_resource.crx_download_name
+              )
+            )
+          end
+        else
+          Chef::Log.warn("Package #{new_resource.name} is already deleted")
+        end
+      end
     end
   end
 end

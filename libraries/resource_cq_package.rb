@@ -42,7 +42,14 @@ class Chef
         super
 
         @resource_name = :cq_package
-        @allowed_actions = [:nothing, :upload, :install, :deploy, :uninstall]
+        @allowed_actions = [
+          :nothing,
+          :upload,
+          :install,
+          :deploy,
+          :uninstall,
+          :delete
+        ]
         @action = :nothing
 
         @name = name
