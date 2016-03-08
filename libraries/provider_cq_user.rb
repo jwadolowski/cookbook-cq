@@ -142,8 +142,8 @@ class Chef
       end
 
       def crx_query(user, pass)
-        req_path = '/bin/querybuilder.json?'\
-          'path=/home/users&'\
+        req_path = '/bin/querybuilder.json'
+        query_params = 'path=/home/users&'\
           'type=rep:User&'\
           'group.p.or=true&'\
           'group.1_property=rep:authorizableId&'\
@@ -156,7 +156,8 @@ class Chef
           new_resource.instance,
           req_path,
           user,
-          pass
+          pass,
+          query_params
         )
 
         json_to_hash(http_resp.body)
