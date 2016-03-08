@@ -143,14 +143,16 @@ class Chef
 
       def crx_query(user, pass)
         req_path = '/bin/querybuilder.json'
-        query_params = 'path=/home/users&'\
-          'type=rep:User&'\
-          'group.p.or=true&'\
-          'group.1_property=rep:authorizableId&'\
-          "group.1_property.value=#{new_resource.id}&"\
-          'group.2_property=rep:principalName&'\
-          "group.2_property_value=#{new_resource.id}&"\
-          'p.limit=-1'
+        query_params = {
+          'path' => '/home/users',
+          'type' => 'rep:User',
+          'group.p.or' => 'true',
+          'group.1_property' => 'rep:authorizableId',
+          'group.1_property.value' => new_resource.id,
+          'group.2_property' => 'rep:principalName',
+          'group.2_property_value' => new_resource.id,
+          'p.limit' => '-1'
+        }
 
         http_resp = http_get(
           new_resource.instance,
