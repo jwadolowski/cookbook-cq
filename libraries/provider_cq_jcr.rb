@@ -285,7 +285,7 @@ class Chef
 
         unless new_resource.properties.empty?
           diff = if new_resource.append
-                   regualr_diff
+                   regular_diff
                  else
                    force_replace_diff
                  end
