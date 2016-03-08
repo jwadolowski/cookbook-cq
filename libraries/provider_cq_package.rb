@@ -272,7 +272,7 @@ class Chef
 
       def local_path
         ::File.join(
-          node['cq']['package_cache'],
+         Chef::Config[:file_cache_path],
           uri_basename(new_resource.source)
         )
       end
