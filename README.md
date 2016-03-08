@@ -594,6 +594,7 @@ explanation can be found below.
   is quicker than separate `upload` + `install` as less healthchecks have to be
   executed
 * `uninstall` - uninstalls given CQ package
+* `delete` - deletes given CQ package
 
 ### Properties
 
