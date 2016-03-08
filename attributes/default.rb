@@ -26,7 +26,7 @@ default['cq']['base_dir'] = '/opt'
 default['cq']['home_dir'] = "#{node['cq']['base_dir']}/cq"
 default['cq']['version'] = '5.6.1'
 default['cq']['custom_tmp_dir'] = '/opt/tmp'
-default['cq']['package_cache'] = ''
+default['cq']['package_cache'] = Chef::Config[:file_cache_path]
 default['cq']['jar']['url'] = ''
 # default['cq']['jar']['checksum'] = ''
 default['cq']['license']['url'] = ''
@@ -40,6 +40,8 @@ default['cq']['init_template_cookbook'] = 'cq'
 default['cq']['conf_template_cookbook'] = 'cq'
 
 default['cq']['healthcheck_resource'] = '/libs/granite/core/content/login.html'
+
+default['cq']['http_read_timeout'] = 300
 
 # Java attributes
 # -----------------------------------------------------------------------------

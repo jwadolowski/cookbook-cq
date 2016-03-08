@@ -20,7 +20,7 @@
 class Chef
   class Resource
     class CqUser < Chef::Resource
-      provides :cq_user, :on_platforms => :all
+      provides :cq_user
 
       attr_accessor :query_result
       attr_accessor :exist

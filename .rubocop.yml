@@ -1,10 +1,7 @@
 AllCops:
   Exclude:
     - 'Berksfile'
-    - 'Gemfile'
     - 'metadata.rb'
-    - 'Thorfile'
-    - 'Vagrantfile'
 
 Encoding:
   Enabled: false
@@ -26,3 +23,6 @@ AbcSize:
 
 MethodLength:
   Max: 30
+
+ParameterLists:
+  Enabled: false

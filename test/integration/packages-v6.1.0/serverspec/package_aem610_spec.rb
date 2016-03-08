@@ -297,7 +297,7 @@ describe 'Geometrixx package' do
     ).to be true
   end
 
-  it 'its subpackages are not uploaded' do
+  it 'its subpackages are NOT uploaded' do
     expect(
       @package_helper.package_exists(
         'cq-geometrixx-media-ugc-pkg',
@@ -315,7 +315,7 @@ describe 'Geometrixx package' do
     ).to be false
   end
 
-  it 'is not installed' do
+  it 'is NOT installed' do
     expect(
       @package_helper.package_installed(
         'cq-geometrixx-all-pkg',
@@ -325,7 +325,7 @@ describe 'Geometrixx package' do
     ).to be false
   end
 
-  it 'its subpackages are not installed' do
+  it 'its subpackages are NOT installed' do
     expect(
       @package_helper.package_installed(
         'cq-geometrixx-media-ugc-pkg',
@@ -341,5 +341,63 @@ describe 'Geometrixx package' do
         @package_list
       )
     ).to be false
+  end
+end
+
+describe 'SP1' do
+  it 'is uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'aem-service-pkg',
+        '6\.1\.SP1',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'its subpackages are uploaded' do
+    expect(
+      @package_helper.package_exists(
+        'cq-serialization-agent-acl-content',
+        '1\.0\.8',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_exists(
+        'cq-platform-content',
+        '1\.1\.864',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'is installed' do
+    expect(
+      @package_helper.package_installed(
+        'aem-service-pkg',
+        '6\.1\.SP1',
+        @package_list
+      )
+    ).to be true
+  end
+
+  it 'its subpackages are installed' do
+    expect(
+      @package_helper.package_installed(
+        'cq-address-content',
+        '1\.1\.16',
+        @package_list
+      )
+    ).to be true
+
+    expect(
+      @package_helper.package_installed(
+        'cq-dam-bundles-content',
+        '1\.0\.290',
+        @package_list
+      )
+    ).to be true
   end
 end

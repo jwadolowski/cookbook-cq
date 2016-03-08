@@ -20,7 +20,7 @@
 class Chef
   class Resource
     class CqJcr < Chef::Resource
-      provides :cq_jcr, :on_platforms => :all
+      provides :cq_jcr
 
       attr_accessor :exist
 

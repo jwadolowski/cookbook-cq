@@ -142,8 +142,8 @@ describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
       @osgi_config_helper.config_value(
         'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet',
         'adapt.supported.widths'
-       )
-    ).to match(["325", "476", "480", "620", "720"])
+      )
+    ).to match(%w(325 476 480 620 720))
   end
 end
 
@@ -175,7 +175,7 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSPagesUpdateHandler',
         'cq.pagesupdatehandler.imageresourcetypes'
       )
-    ).to eq(["foundation/components/image"])
+    ).to eq(['foundation/components/image'])
   end
 end
 
@@ -216,7 +216,7 @@ describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
         'DPSSubPagesUpdateHandler',
         'cq.pagesupdatehandler.imageresourcetypes'
       )
-    ).to eq(["foundation/components/image", "test/append/value"])
+    ).to eq(['foundation/components/image', 'test/append/value'])
   end
 end
 
@@ -245,14 +245,14 @@ describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
       )
     ).to eq(
       [
-        "Generic=image/s7asset",
-        "Template=image/s7template",
-        "Flash=image/s7flashtemplate",
-        "Image=image/jpeg",
-        "Video=video/*",
-        "Video.mp4=video/mp4",
-        "Video.f4v=video/mp4",
-        "Video.flv=video/x-flv"
+        'Generic=image/s7asset',
+        'Template=image/s7template',
+        'Flash=image/s7flashtemplate',
+        'Image=image/jpeg',
+        'Video=video/*',
+        'Video.mp4=video/mp4',
+        'Video.f4v=video/mp4',
+        'Video.flv=video/x-flv'
       ]
     )
   end
@@ -340,7 +340,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.check_override_patterns'
       )
-    ).to eq(["\^system/"])
+    ).to eq(['\^system/'])
   end
 
   it 'service.cache_broken_internal_links is set to true' do
@@ -360,7 +360,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'service.special_link_prefix'
       )
     ).to eq(
-      ["#", "${", "<!--", "data:", "javascript:", "mailto:", "rx:", "z:"]
+      ['#', '${', '<!--', 'data:', 'javascript:', 'mailto:', 'rx:', 'z:']
     )
   end
 
@@ -415,7 +415,7 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
         'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
         'sling.servlet.methods'
       )
-    ).to eq(["-i NJECT", "-stop", "CUSTOM", "GET", "POST"])
+    ).to eq(['-i NJECT', '-stop', 'CUSTOM', 'GET', 'POST'])
   end
 
   it 'sling.servlet.extensions is set to json' do
@@ -433,7 +433,7 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
         'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
         'cq.dam.sync.workflow.id'
       )
-    ).to eq("/some/path/to/model")
+    ).to eq('/some/path/to/model')
   end
 
   it 'cq.dam.sync.folder.types is set to valid array' do
@@ -443,7 +443,7 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
         'cq.dam.sync.folder.types'
       )
     ).to eq(
-      ["-i","-i X","-iX","-p","-p Y","-pY","-u","-u Z","-uZ","sth"]
+      ['-i', '-i X', '-iX', '-p', '-p Y', '-pY', '-u', '-u Z', '-uZ', 'sth']
     )
   end
 end
@@ -480,7 +480,7 @@ describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
         'com.adobe.mac.core.impl.DAMVolumeChecker',
         'damRootPath'
       )
-    ).to eq("/content/dam/mac/")
+    ).to eq('/content/dam/mac/')
   end
 
   it 'sizeThreshold is set to 500' do
@@ -573,11 +573,11 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
       )
     ).to eq(
       [
-        "com.adobe*",
-        "com.day*",
-        "com.example*",
-        "org.apache.felix*",
-        "org.apache.sling*"
+        'com.adobe*',
+        'com.day*',
+        'com.example*',
+        'org.apache.felix*',
+        'org.apache.sling*'
       ]
     )
   end

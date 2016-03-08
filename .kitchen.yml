@@ -121,6 +121,7 @@ suites:
             hf7085: <%= ENV['CQ_V610_HF7085_URL'] %>
             hf6446: <%= ENV['CQ_V610_HF6446_URL'] %>
             hf6500: <%= ENV['CQ_V610_HF6500_URL'] %>
+            sp1: <%= ENV['CQ_V610_SP1_URL'] %>
   - name: users-v<%= v %>
     run_list:
       - recipe[cq::author]

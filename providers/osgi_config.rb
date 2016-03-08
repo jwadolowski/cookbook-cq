@@ -50,7 +50,7 @@ def factory_config_list
   # instances and not the factory pid itself.
   #
   # Format: <factory_pid>\.<uuid>
-  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\.' +
+  regex = new_resource.factory_pid.gsub(/\./, '\.') + '\.'\
     '[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'
 
   osgi_config_list.scan(/#{regex}/)
@@ -220,7 +220,7 @@ end
 # @param name [String] config name (PID)
 # @return [Hash] properties of given OSGi configuration
 def current_osgi_config_properties(name)
-    raw_config_info(name)['properties']
+  raw_config_info(name)['properties']
 end
 
 # Parse OSGi config properties to get a simple hash (key-value) from all items.
@@ -342,12 +342,12 @@ def load_current_resource
   end
 
   # Load OSGi properties for existing configuration and check validity
-  if current_resource.exists
+  begin
     @current_resource.properties(
       properties_hash(current_osgi_config_properties(config_name))
     )
     @current_resource.valid = validate_properties
-  end
+  end if current_resource.exists
 end
 
 # Converts properties hash to -s KEY -v VALUE string for cqcfg execution
@@ -398,7 +398,7 @@ def create_osgi_config(factory_flag = false)
 end
 
 def delete_osgi_config
-  cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfgdel " +
+  cmd_str = "#{node['cq-unix-toolkit']['install_dir']}/cqcfgdel "\
             "-i #{new_resource.instance} "\
             "-u '#{new_resource.username}' "\
             "-p '#{new_resource.password}' " +
@@ -501,7 +501,7 @@ def delete_factory_config
         Chef::Log.warn(
           "#{@current_resource.pid} exists, but it doesn't fully match to "\
           "defined state, so delete action won't be executed! Please either "\
-          "use append attribute or add missing properties to your resource."
+          'use append attribute or add missing properties to your resource.'
         )
       end
     end

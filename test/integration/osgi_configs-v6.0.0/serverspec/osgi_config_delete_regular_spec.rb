@@ -116,7 +116,6 @@ describe 'OSGi com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl' do
   end
 end
 
-
 describe 'OSGi com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
   it 'there was 1 DELETE request' do
     expect(

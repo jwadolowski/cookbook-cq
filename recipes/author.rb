@@ -23,6 +23,6 @@ include_recipe 'cq::commons'
 
 # Create author instance
 # -----------------------------------------------------------------------------
-cq_instance "CQ Author" do
+cq_instance 'CQ Author' do
   id 'author'
 end
