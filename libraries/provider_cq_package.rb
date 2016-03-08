@@ -271,6 +271,9 @@ class Chef
       end
 
       def local_path
+        Chef::Log.debug("Package cache: #{node['cq']['package_cache']}")
+        Chef::Log.debug("File basename: #{uri_basename(new_resource.source)}")
+
         ::File.join(
           node['cq']['package_cache'],
           uri_basename(new_resource.source)
