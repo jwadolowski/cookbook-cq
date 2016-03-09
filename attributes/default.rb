@@ -26,8 +26,6 @@ default['cq']['base_dir'] = '/opt'
 default['cq']['home_dir'] = "#{node['cq']['base_dir']}/cq"
 default['cq']['version'] = '5.6.1'
 default['cq']['custom_tmp_dir'] = '/opt/tmp'
-# Custom package cache has been temporarily disabled
-# default['cq']['package_cache'] = Chef::Config[:file_cache_path]
 default['cq']['jar']['url'] = ''
 # default['cq']['jar']['checksum'] = ''
 default['cq']['license']['url'] = ''

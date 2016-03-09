@@ -129,11 +129,6 @@ installs Oracle's JDK7.
     <td>Custom directory that JVM uses for temporary files</td>
   </tr>
   <tr>
-    <td><tt>['cq']['package_cache']</tt></td>
-    <td>String</td>
-    <td>Directory where CRX packages are downloaded to</td>
-  </tr>
-  <tr>
     <td><tt>['cq']['jar']['url']</tt></td>
     <td>String</td>
     <td>URL from which CQ/AEM JAR file is downloaded</td>
@@ -570,8 +565,7 @@ Key features:
 * packages are automatically downloaded from remote (`http://`, `https://`) or
   local (`file://`) sources. If HTTP(S) source requires basic auth it is also
   supported (`http_user` and `http_pass` respectively for user and password)
-* by default all packages are downloaded to Chef's cache (`/var/chef/cache`),
-  but it can be easily reconfigured (`node['cq']['package_cache']`)
+* by default all packages are downloaded to Chef's cache (`/var/chef/cache`)
 * `cq_package` resource is version aware, so defined actions are always
   executed for given package version
 * installation process is considered finished only when both "foreground"
