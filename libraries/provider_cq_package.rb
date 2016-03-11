@@ -220,7 +220,7 @@ class Chef
               same_state_counter = 0
             end
 
-            Chef::Log.debug("Same state counter: #{same_state_counter}")
+            Chef::Log.info("Same state counter: #{same_state_counter}")
 
             # Assign current state to previous state
             previous_state = state.body
@@ -232,7 +232,7 @@ class Chef
             end
           rescue => e
             Chef::Log.warn(
-              "Unable to get OSGi bundles state: #{e}.\n Retrying..."
+              "Unable to get OSGi bundles state: #{e}. Retrying..."
             )
 
             # Let's start over in case of an error (clear indicator of flapping
@@ -242,7 +242,7 @@ class Chef
 
             # Increment error_state_counter in case of an error
             error_state_counter += 1
-            Chef::Log.debug("Error state counter: #{error_state_counter}")
+            Chef::Log.info("Error state counter: #{error_state_counter}")
 
             # If error occurred N times in a row and rescue_mode is active then
             # log such event and break the loop
@@ -262,10 +262,11 @@ class Chef
             'attempts. Aborting...'
           ) if i == new_resource.max_attempts
 
-          Chef::Log.debug(
+          Chef::Log.info(
             "[#{i}/#{new_resource.max_attempts}] Next OSGi status check in "\
             "#{new_resource.sleep_time} seconds..."
           )
+
           sleep new_resource.sleep_time
         end
       end
