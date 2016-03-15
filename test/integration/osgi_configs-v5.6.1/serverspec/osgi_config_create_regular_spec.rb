@@ -340,7 +340,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.check_override_patterns'
       )
-    ).to eq(['\^system/'])
+    ).to eq(['^system/'])
   end
 
   it 'service.cache_broken_internal_links is set to true' do
