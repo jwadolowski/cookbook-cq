@@ -58,7 +58,7 @@ osgi_config_wrapper 'com.day.cq.mcm.impl.MCMConfiguration' do
   properties(
     'experience.indirection' => %w(geometrixx/components/newsletterpage
                                    mcm/components/newsletter/page),
-    'touchpoint.indirection' => %w(exampleGeometrixxAddedComp'
+    'touchpoint.indirection' => %w(exampleGeometrixxAddedComp
                                    exampleMCMSuperTouchpoint)
   )
   factory true
