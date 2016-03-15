@@ -250,9 +250,9 @@ describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
         'Flash=image/s7flashtemplate',
         'Image=image/jpeg',
         'Video=video/*',
-        'Video\.mp4=video/mp4',
-        'Video\.f4v=video/mp4',
-        'Video\.flv=video/x-flv'
+        'Video.mp4=video/mp4',
+        'Video.f4v=video/mp4',
+        'Video.flv=video/x-flv'
       ]
     )
   end
