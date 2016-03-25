@@ -313,9 +313,12 @@ class Chef
           #
           # 1. lazy load Decrypt.java (extract files and all remaining stuff)
           #      - go for it only if encrypted_fields is not empty
+          #      - create directory structure in cache
+          #      - cookbook_file
           #      - trigger all processing if Decrypt.class is missing
           #      - trigger all processing if required jars (extracted and
-          #        downloaded ones) are missing
+          #        downloaded ones) are missing. Check for empty dir should be
+          #        fine
           #      - trigger all processing if cookbook_file changed
           #      - cleanup intermediates?
           # 2. if decrypt(current_resource.properties['f'] ==
@@ -324,6 +327,9 @@ class Chef
           #    else
           #      diff['f'] = encrypt(new_resource.properties['f'])
           #    end
+
+          load_decryptor unless new_resource.encrypted_fields.empty?
+
           new_resource.encrypted_fields.each do |f|
 
           end
