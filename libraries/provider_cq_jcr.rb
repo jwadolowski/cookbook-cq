@@ -35,15 +35,28 @@ class Chef
         @raw_node_info = raw_node_info
         @current_resource.exist = exist?(@raw_node_info)
 
+        Chef::Log.debug("Raw node info: #{@raw_node_info}")
+        Chef::Log.debug("Exists? #{current_resource.exist}")
+
         @current_resource.properties(
           standardize_properties(
             node_info(@raw_node_info)
           )
         ) if current_resource.exist
 
+        Chef::Log.debug(
+          'Standardized properties of current resource: ' +
+          current_resource.properties
+        )
+
         @new_resource.properties(
           standardize_properties(new_resource.properties)
         ) if new_resource.properties
+
+        Chef::Log.debug(
+          'Standardized properties of new resource: ' +
+          new_resource.properties
+        )
       end
 
       def action_create
@@ -296,6 +309,8 @@ class Chef
             !editable_property(k.gsub(/@Delete/, ''))
           end
         end
+
+        Chef::Log.debug("Properties diff: #{diff}")
 
         diff
       end
