@@ -21,6 +21,7 @@ class Chef
   class Provider
     class CqJcr < Chef::Provider
       include Cq::HttpHelper
+      include Cq::CryptoHelper
 
       # Chef 12.4.0 support
       provides :cq_jcr if Chef::Provider.respond_to?(:provides)

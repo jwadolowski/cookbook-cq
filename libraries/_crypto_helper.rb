@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+require_relative '_http_helper'
+
 module Cq
   module CryptoHelper
     include Cq::HttpHelper
@@ -32,34 +34,33 @@ module Cq
     rescue => e
       Chef::Application.fatal!("Can't extract content out of JAR file: #{e}")
     end
-  end
 
-  # Makes sure the following elements are in place
-  #
-  # /path/to/chef/cache/crypto
-  # ├── Decrypt.class
-  # ├── Decrypt.java
-  # ├── key
-  # │   └── master
-  # ├── libs
-  # │   ├── aem
-  # │   │   ├── com.adobe.granite.crypto-3.0.18-CQ610-B0004.jar
-  # │   │   ├── cryptojce-6.0.0.jar
-  # │   │   ├── cryptojcommon-6.0.0.jar
-  # │   │   ├── jcmFIPS-6.0.0.jar
-  # │   │   └── jSafeCryptoSupport.jar
-  # │   └── log
-  # │       ├── slf4j-api-1.7.12.jar
-  # │       └── slf4j-simple-1.7.12.jar
-  # └── tmp
-  #
-  def load_decryptor
+    # Makes sure the following elements are in place
+    #
+    # /path/to/chef/cache/crypto
+    # ├── Decrypt.class
+    # ├── Decrypt.java
+    # ├── key
+    # │   └── master
+    # ├── libs
+    # │   ├── aem
+    # │   │   ├── com.adobe.granite.crypto-3.0.18-CQ610-B0004.jar
+    # │   │   ├── cryptojce-6.0.0.jar
+    # │   │   ├── cryptojcommon-6.0.0.jar
+    # │   │   ├── jcmFIPS-6.0.0.jar
+    # │   │   └── jSafeCryptoSupport.jar
+    # │   └── log
+    # │       ├── slf4j-api-1.7.12.jar
+    # │       └── slf4j-simple-1.7.12.jar
+    # └── tmp
+    #
+    def load_decryptor
+    end
 
-  end
+    def decrypt(str)
+    end
 
-  def decrypt(str)
-  end
-
-  def encrypt(str)
+    def encrypt(str)
+    end
   end
 end
