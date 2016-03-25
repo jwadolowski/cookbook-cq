@@ -310,6 +310,23 @@ class Chef
           end
 
           # TODO: placeholder for encrypted values
+          #
+          # 1. lazy load Decrypt.java (extract files and all remaining stuff)
+          #      - go for it only if encrypted_fields is not empty
+          #      - trigger all processing if Decrypt.class is missing
+          #      - trigger all processing if required jars (extracted and
+          #        downloaded ones) are missing
+          #      - trigger all processing if cookbook_file changed
+          #      - cleanup intermediates?
+          # 2. if decrypt(current_resource.properties['f'] ==
+          #         new_resource.properties['f']
+          #       delete f from diff
+          #    else
+          #      diff['f'] = encrypt(new_resource.properties['f'])
+          #    end
+          new_resource.encrypted_fields.each do |f|
+
+          end
         end
 
         Chef::Log.debug("Properties diff: #{diff}")
