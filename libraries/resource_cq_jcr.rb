@@ -37,6 +37,7 @@ class Chef
         @instance = nil
         @properties = {}
         @append = true
+        @encrypted_fields = []
       end
 
       def path(arg = nil)
@@ -61,6 +62,10 @@ class Chef
 
       def append(arg = nil)
         set_or_return(:append, arg, :kind_of => [TrueClass, FalseClass])
+      end
+
+      def encrypted_fields(arg = nil)
+        set_or_return(:encrypted_fields, arg, :kind_of => Array)
       end
     end
   end
