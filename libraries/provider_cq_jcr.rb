@@ -236,7 +236,7 @@ class Chef
 
       # Get jcr:primaryType from (order matters):
       # * new resource (if defined)
-      # * current resource (in case of existing resouruce update)
+      # * current resource (in case of existing resource update)
       #
       # Return nil if none of above is possible (completely new JCR node)
       def best_primary_type
