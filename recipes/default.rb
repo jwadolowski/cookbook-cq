@@ -25,4 +25,4 @@ chef_gem 'multipart-post' do
   compile_time false if respond_to?(:compile_time)
 end
 
-ackage 'unzip'
+package 'unzip'
