@@ -35,7 +35,7 @@ class Chef
         @raw_node_info = raw_node_info
         @current_resource.exist = exist?(@raw_node_info)
 
-        Chef::Log.debug("Raw node info: #{@raw_node_info}")
+        Chef::Log.debug("Raw node info: #{@raw_node_info.body}")
         Chef::Log.debug("Exists? #{current_resource.exist}")
 
         @current_resource.properties(
@@ -46,7 +46,7 @@ class Chef
 
         Chef::Log.debug(
           'Standardized properties of current resource: ' +
-          current_resource.properties
+          current_resource.properties.to_s
         )
 
         @new_resource.properties(
@@ -55,7 +55,7 @@ class Chef
 
         Chef::Log.debug(
           'Standardized properties of new resource: ' +
-          new_resource.properties
+          new_resource.properties.to_s
         )
       end
 
@@ -308,6 +308,8 @@ class Chef
           diff.delete_if do |k, _v|
             !editable_property(k.gsub(/@Delete/, ''))
           end
+
+          # TODO: placeholder for encrypted values
         end
 
         Chef::Log.debug("Properties diff: #{diff}")
