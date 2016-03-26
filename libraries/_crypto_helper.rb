@@ -168,7 +168,7 @@ module Cq
         extract_jar(granite_crypto_jar, 'META-INF/lib/*', crypto_aem_dir)
       end
 
-      Chef::Log.debug('All crypto AEM libraries are in place')
+      Chef::Log.debug('All AEM crypto libraries are in place')
     end
 
     def download_log_libs
@@ -221,7 +221,7 @@ module Cq
     # Downloads master key from AEM and saves it into crypto tmp directory
     #
     # Returns key name
-    def master_key(instance, username, password)
+    def load_master_key(instance, username, password)
       http_resp = http_get(
         instance,
         '/etc/key/master',
@@ -241,13 +241,29 @@ module Cq
 
       uuid = SecureRandom.uuid
       path = ::File.join(crypto_tmp_dir, uuid)
-      ::File.write(path, content)
+
+      Chef::Log.debug("Master key name: #{uuid}")
+      Chef::Log.debug("Master key path: #{path}")
+
+      begin
+        ::File.write(path, content)
+      rescue => e
+        Chef::Application.fatal!("Can't write master key to #{path}: #{e}")
+      end
 
       uuid
     end
 
-    def delete_key(name)
-      ::File.delete(::File.join(crypto_tmp_dir, name))
+    def unload_master_key(name)
+      path = ::File.join(crypto_tmp_dir, name)
+
+      Chef::Log.info("Deleting #{path}...")
+
+      ::File.delete(path)
+
+      Chef::Log.info('Master key file has been successfully deleted')
+    rescue => e
+      Chef::Log.error("Can't delete #{path} file: #{e}")
     end
 
     def decrypt(key, str)
@@ -257,7 +273,10 @@ module Cq
       cmd.error!
 
       Chef::Log.debug("Decryption command: #{cmd_str}")
-      cmd.stdout
+      Chef::Log.debug("Decrypted value: #{cmd.stdout}")
+
+      # Get rid of leading/trailing whitespaces from the output
+      cmd.stdout.strip
     rescue => e
       Chef::Log.debug("Decryption error: #{e}")
       case cmd.exitstatus
@@ -277,7 +296,22 @@ module Cq
       end
     end
 
-    def encrypt(str)
+    def encrypt(instance, username, password, str)
+      http_resp = http_post(
+        instance,
+        '/system/console/crypto/.json',
+        username,
+        password,
+        'datum' => str
+      )
+
+      Chef::Application.fatal!(
+        "Crypto console returned #{http_resp.code}!"
+      ) if http_resp.code != '200'
+
+      Chef::Log.debug("Crypto console response: #{http_resp.body}")
+
+      json_to_hash(http_resp.body)['protected']
     end
   end
 end
