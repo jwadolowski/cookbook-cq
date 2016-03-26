@@ -55,6 +55,39 @@ module Cq
     # └── tmp
     #
     def load_decryptor
+      crypto_dir_structure
+      deploy_decryptor
+    end
+
+    def crypto_dir_structure
+      dirs = %w(crypto/key crypto/aem/libs crypto/aem/log crypto/tmp)
+
+      dirs.each do |d|
+        path = ::File.join(Chef::Config[:file_cache_path], d)
+
+        directory = Chef::Resource::Directory.new(path, run_context)
+        directory.owner('root')
+        directory.group('root')
+        directory.mode(d == 'crypto/key' ? '0600' : '0755') # keep key secure
+        directory.recursive(true)
+        directory.run_action(:create)
+      end
+    end
+
+    def deploy_decryptor
+      path = ::File.join(
+        Chef::Config[:file_cache_path], 'crypto', 'Decrypt.java'
+      )
+
+      cookbook_file = Chef::Resource::CookbookFile.new(path, run_context)
+      cookbook_file.source('Decrypt.java')
+      cookbook_file.owner('root')
+      cookbook_file.group('root')
+      cookbook_file.mode('0644')
+      cookbook_file.cookbook('cq')
+      cookbook_file.run_action(:create)
+
+      # TODO: compile_decryptor if cookbook_file.updated_by_last_action?(true)
     end
 
     def decrypt(str)
