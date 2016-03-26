@@ -320,7 +320,7 @@ class Chef
           #      - trigger all processing if required jars (extracted and
           #        downloaded ones) are missing. Check for empty dir should be
           #        fine
-          #      - trigger all processing if cookbook_file changed
+          #      - trigger compile if cookbook_file changed
           #      - cleanup intermediates?
           # 2. if decrypt(current_resource.properties['f'] ==
           #         new_resource.properties['f']
