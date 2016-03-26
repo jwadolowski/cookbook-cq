@@ -51,11 +51,20 @@ module Cq
       ::Dir[::File.join(crypto_log_dir, '*')]
     end
 
+    def crypto_classpath
+      (crypto_aem_libs | crypto_log_libs).join(':')
+    end
+
     def primary_jar
       ::File.join(
         Chef::Config[:file_cache_path],
         uri_basename(node['cq']['jar']['url'])
       )
+    end
+
+    # Path to Decrypt file (w/o extension)
+    def decryptor_path
+      ::File.join(crypto_root_dir, 'Decrypt')
     end
 
     def extract_jar(jar, filter, dst)
@@ -94,6 +103,11 @@ module Cq
       extract_aem_libs
       download_log_libs
       deploy_decryptor
+
+      # Recompile Decrypt.java if cookbook_file's postprocessing didn't finish
+      # successfully or wasn't triggered at all as Decrypt.java was already in
+      # place
+      compile_decryptor unless File.exist?(decryptor_path + '.class')
     end
 
     def crypto_dir_structure
@@ -179,7 +193,7 @@ module Cq
     end
 
     def deploy_decryptor
-      path = ::File.join(crypto_root_dir, 'Decrypt.java')
+      path = decryptor_path + '.java'
 
       cookbook_file = Chef::Resource::CookbookFile.new(path, run_context)
       cookbook_file.source('Decrypt.java')
@@ -189,7 +203,19 @@ module Cq
       cookbook_file.cookbook('cq')
       cookbook_file.run_action(:create)
 
-      # TODO: compile_decryptor if cookbook_file.updated_by_last_action?(true)
+      compile_decryptor if cookbook_file.updated_by_last_action?
+    end
+
+    def compile_decryptor
+      cmd_str = "javac -cp #{crypto_classpath} #{decryptor_path + '.java'}"
+      cmd = Mixlib::ShellOut.new(cmd_str)
+      cmd.run_command
+      cmd.error!
+
+      Chef::Log.debug("Compilation command: #{cmd_str}")
+      Chef::Log.debug('Decryptor successfully compiled')
+    rescue => e
+      Chef::Application.fatal!("Compilation error: #{e}")
     end
 
     def decrypt(str)
