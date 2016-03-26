@@ -39,10 +39,6 @@ module Cq
       ::File.join(crypto_root_dir, 'libs', 'log')
     end
 
-    def crypto_key_dir
-      ::File.join(crypto_root_dir, 'key')
-    end
-
     def crypto_aem_libs
       ::Dir[::File.join(crypto_aem_dir, '*')]
     end
@@ -51,8 +47,14 @@ module Cq
       ::Dir[::File.join(crypto_log_dir, '*')]
     end
 
+    # Combines:
+    # * current dir (java commands are executed from crypto root dir)
+    # * crypto tmp dir (needs to be there, as master key is fetched from
+    #   classpath)
+    # * all AEM libs
+    # * all log libs
     def crypto_classpath
-      (crypto_aem_libs | crypto_log_libs).join(':')
+      (['.'] | [crypto_tmp_dir] | crypto_aem_libs | crypto_log_libs).join(':')
     end
 
     def primary_jar
@@ -84,7 +86,6 @@ module Cq
     # /path/to/chef/cache/crypto
     # |-- Decrypt.class
     # |-- Decrypt.java
-    # |-- key
     # |   |-- master
     # |-- libs
     # |   |-- aem
@@ -112,7 +113,6 @@ module Cq
 
     def crypto_dir_structure
       dirs = [
-        crypto_key_dir,
         crypto_aem_dir,
         crypto_log_dir,
         crypto_tmp_dir
@@ -122,7 +122,7 @@ module Cq
         directory = Chef::Resource::Directory.new(d, run_context)
         directory.owner('root')
         directory.group('root')
-        directory.mode(d.end_with?('key') ? '0600' : '0755') # keep key secure
+        directory.mode('0755')
         directory.recursive(true)
         directory.run_action(:create)
       end
@@ -207,8 +207,8 @@ module Cq
     end
 
     def compile_decryptor
-      cmd_str = "javac -cp #{crypto_classpath} #{decryptor_path + '.java'}"
-      cmd = Mixlib::ShellOut.new(cmd_str)
+      cmd_str = "javac -cp '#{crypto_classpath}' Decrypt.java"
+      cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
       cmd.run_command
       cmd.error!
 
@@ -218,7 +218,63 @@ module Cq
       Chef::Application.fatal!("Compilation error: #{e}")
     end
 
-    def decrypt(str)
+    # Downloads master key from AEM and saves it into crypto tmp directory
+    #
+    # Returns key name
+    def master_key(instance, username, password)
+      http_resp = http_get(
+        instance,
+        '/etc/key/master',
+        username,
+        password
+      )
+
+      Chef::Application.fatal!(
+        "Can't download master key! Response code: #{http_resp.code}"
+      ) if http_resp.code != '200'
+
+      save_key(http_resp.body)
+    end
+
+    def save_key(content)
+      require 'securerandom'
+
+      uuid = SecureRandom.uuid
+      path = ::File.join(crypto_tmp_dir, uuid)
+      ::File.write(path, content)
+
+      uuid
+    end
+
+    def delete_key(name)
+      ::File.delete(::File.join(crypto_tmp_dir, name))
+    end
+
+    def decrypt(key, str)
+      cmd_str = "java -cp '#{crypto_classpath}' Decrypt '#{key}' '#{str}'"
+      cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
+      cmd.run_command
+      cmd.error!
+
+      Chef::Log.debug("Decryption command: #{cmd_str}")
+      cmd.stdout
+    rescue => e
+      Chef::Log.debug("Decryption error: #{e}")
+      case cmd.exitstatus
+      when 1
+        Chef::Application.fatal!("Wrong number of arguments: #{e}")
+      when 2
+        Chef::Application.fatal!("Error while reading master key: #{e}")
+      when 3
+        Chef::Log.error("Error while decrypting #{str}")
+        nil
+      when 4
+        Chef::Application.fatal!(
+          "Error while initializing cipher with master key: #{e}"
+        )
+      when 5
+        Chef::Application.fatal!("Master key file does not exist: #{e}")
+      end
     end
 
     def encrypt(str)
