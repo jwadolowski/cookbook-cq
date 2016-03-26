@@ -65,32 +65,25 @@ module Cq
     # Makes sure the following elements are in place
     #
     # /path/to/chef/cache/crypto
-    # ├── Decrypt.class
-    # ├── Decrypt.java
-    # ├── key
-    # │   └── master
-    # ├── libs
-    # │   ├── aem
-    # │   │   ├── com.adobe.granite.crypto-3.0.18-CQ610-B0004.jar
-    # │   │   ├── cryptojce-6.0.0.jar
-    # │   │   ├── cryptojcommon-6.0.0.jar
-    # │   │   ├── jcmFIPS-6.0.0.jar
-    # │   │   └── jSafeCryptoSupport.jar
-    # │   └── log
-    # │       ├── slf4j-api-1.7.12.jar
-    # │       └── slf4j-simple-1.7.12.jar
-    # └── tmp
+    # |-- Decrypt.class
+    # |-- Decrypt.java
+    # |-- key
+    # |   |-- master
+    # |-- libs
+    # |   |-- aem
+    # |       |-- com.adobe.granite.crypto-3.0.18-CQ610-B0004.jar
+    # |       |-- cryptojce-6.0.0.jar
+    # |       |-- cryptojcommon-6.0.0.jar
+    # |       |-- jcmFIPS-6.0.0.jar
+    # |       |-- jSafeCryptoSupport.jar
+    # |   |-- log
+    # |       |-- slf4j-api-1.7.12.jar
+    # |       |-- slf4j-simple-1.7.12.jar
+    # |-- tmp
     #
     def load_decryptor
       crypto_dir_structure
-
-      # Extract standalone jar out of quickstart one
-      extract_jar(
-        primary_jar,
-        'static/app/*',
-        crypo_tmp_dir
-      ) if ::Dir.entries(crypto_aem_dir).length.empty?
-
+      extract_aem_libs
       deploy_decryptor
     end
 
@@ -106,10 +99,51 @@ module Cq
         directory = Chef::Resource::Directory.new(d, run_context)
         directory.owner('root')
         directory.group('root')
-        directory.mode(d.ends_with?('key') ? '0600' : '0755') # keep key secure
+        directory.mode(d.end_with?('key') ? '0600' : '0755') # keep key secure
         directory.recursive(true)
         directory.run_action(:create)
       end
+    end
+
+    def extract_aem_libs
+      aem_libs = ::Dir.entries(crypto_aem_dir)
+
+      if aem_libs.empty? || aem_libs.length != 5
+        Chef::Log.debug('Missing crypto AEM libraries. Extracting...')
+
+        # Extract standalone JAR file out of the primary one
+        extract_jar(primary_jar, 'static/app/*', crypto_tmp_dir)
+
+        # Crypto tmp dir should contain just a standalone jar file
+        tmp_files = ::Dir[::File.join(crypto_tmp_dir, '*')]
+        Chef::Log.warn(
+          'Crypto tmp directory contains more than 1 file! Only standalone '\
+          'JAR file should be there.'
+        ) if tmp_files.length > 1
+        standalone_jar = tmp_files.first
+
+        # Extract com.adobe.granite.crypto JAR file from standalone one
+        extract_jar(
+          standalone_jar,
+          'resources/install/0/com.adobe.granite.crypto*',
+          crypto_aem_dir
+        )
+
+        # Remove standalone JAR, as it is no longer needed
+        ::File.delete(standalone_jar)
+
+        # Find out filename of com.adobe.granite.crypto file (varies by AEM
+        # version)
+        granite_crypto_name = ::Dir.entries(
+          crypto_aem_dir
+        ).find { |f| f.match(/com.adobe.granite.crypto.+/) }
+        granite_crypto_jar = ::File.join(crypto_aem_dir, granite_crypto_name)
+
+        # Extract libs out of com.adobe.granite.crypto JAR file
+        extract_jar(granite_crypto_jar, 'META-INF/lib/*', crypto_aem_dir)
+      end
+
+      Chef::Log.debug('All crypto AEM libraries have been already extracted')
     end
 
     def deploy_decryptor
@@ -127,7 +161,6 @@ module Cq
 
       # TODO: compile_decryptor if cookbook_file.updated_by_last_action?(true)
     end
-
 
     def decrypt(str)
     end
