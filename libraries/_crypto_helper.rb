@@ -43,6 +43,14 @@ module Cq
       ::File.join(crypto_root_dir, 'key')
     end
 
+    def crypto_aem_libs
+      ::Dir[::File.join(crypto_aem_dir, '*')]
+    end
+
+    def crypto_log_libs
+      ::Dir[::File.join(crypto_log_dir, '*')]
+    end
+
     def primary_jar
       ::File.join(
         Chef::Config[:file_cache_path],
@@ -84,6 +92,7 @@ module Cq
     def load_decryptor
       crypto_dir_structure
       extract_aem_libs
+      download_log_libs
       deploy_decryptor
     end
 
@@ -106,7 +115,9 @@ module Cq
     end
 
     def extract_aem_libs
-      aem_libs = ::Dir.entries(crypto_aem_dir)
+      aem_libs = crypto_aem_libs
+
+      Chef::Log.debug("Existing AEM libs: #{aem_libs}")
 
       if aem_libs.empty? || aem_libs.length != 5
         Chef::Log.debug('Missing crypto AEM libraries. Extracting...')
@@ -143,13 +154,32 @@ module Cq
         extract_jar(granite_crypto_jar, 'META-INF/lib/*', crypto_aem_dir)
       end
 
-      Chef::Log.debug('All crypto AEM libraries have been already extracted')
+      Chef::Log.debug('All crypto AEM libraries are in place')
+    end
+
+    def download_log_libs
+      server_url = 'http://central.maven.org/maven2'
+
+      log_libs = %w(
+        /org/slf4j/slf4j-api/1.7.12/slf4j-api-1.7.12.jar
+        /org/slf4j/slf4j-simple/1.7.12/slf4j-simple-1.7.12.jar
+      )
+
+      log_libs.each do |l|
+        url = server_url + l
+        filename = uri_basename(url)
+        path = ::File.join(crypto_log_dir, filename)
+
+        remote_file = Chef::Resource::RemoteFile.new(path, run_context)
+        remote_file.source(url)
+        remote_file.mode('0644')
+        remote_file.backup(false)
+        remote_file.run_action(:create)
+      end
     end
 
     def deploy_decryptor
-      path = ::File.join(
-        Chef::Config[:file_cache_path], 'crypto', 'Decrypt.java'
-      )
+      path = ::File.join(crypto_root_dir, 'Decrypt.java')
 
       cookbook_file = Chef::Resource::CookbookFile.new(path, run_context)
       cookbook_file.source('Decrypt.java')
