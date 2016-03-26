@@ -23,14 +23,41 @@ module Cq
   module CryptoHelper
     include Cq::HttpHelper
 
-    def extract_jar_content(jar, content, dst)
-      cmd_str = "unzip -b -j #{jar} \"#{content}\" -d #{dst}"
+    def crypto_root_dir
+      ::File.join(Chef::Config[:file_cache_path], 'crypto')
+    end
+
+    def crypto_tmp_dir
+      ::File.join(crypto_root_dir, 'tmp')
+    end
+
+    def crypto_aem_dir
+      ::File.join(crypto_root_dir, 'libs', 'aem')
+    end
+
+    def crypto_log_dir
+      ::File.join(crypto_root_dir, 'libs', 'log')
+    end
+
+    def crypto_key_dir
+      ::File.join(crypto_root_dir, 'key')
+    end
+
+    def primary_jar
+      ::File.join(
+        Chef::Config[:file_cache_path],
+        uri_basename(node['cq']['jar']['url'])
+      )
+    end
+
+    def extract_jar(jar, filter, dst)
+      cmd_str = "unzip -o -b -j #{jar} \"#{filter}\" -d #{dst}"
       cmd = Mixlib::ShellOut.new(cmd_str)
       cmd.run_command
       cmd.error!
 
       Chef::Log.debug("Unzip command: #{cmd_str}")
-      Chef::Log.debug("JAR file successfully extracted: #{cmd.stdout}")
+      Chef::Log.debug("JAR file successfully extracted:\n #{cmd.stdout}")
     rescue => e
       Chef::Application.fatal!("Can't extract content out of JAR file: #{e}")
     end
@@ -56,19 +83,30 @@ module Cq
     #
     def load_decryptor
       crypto_dir_structure
+
+      # Extract standalone jar out of quickstart one
+      extract_jar(
+        primary_jar,
+        'static/app/*',
+        crypo_tmp_dir
+      ) if ::Dir.entries(crypto_aem_dir).length.empty?
+
       deploy_decryptor
     end
 
     def crypto_dir_structure
-      dirs = %w(crypto/key crypto/aem/libs crypto/aem/log crypto/tmp)
+      dirs = [
+        crypto_key_dir,
+        crypto_aem_dir,
+        crypto_log_dir,
+        crypto_tmp_dir
+      ]
 
       dirs.each do |d|
-        path = ::File.join(Chef::Config[:file_cache_path], d)
-
-        directory = Chef::Resource::Directory.new(path, run_context)
+        directory = Chef::Resource::Directory.new(d, run_context)
         directory.owner('root')
         directory.group('root')
-        directory.mode(d == 'crypto/key' ? '0600' : '0755') # keep key secure
+        directory.mode(d.ends_with?('key') ? '0600' : '0755') # keep key secure
         directory.recursive(true)
         directory.run_action(:create)
       end
@@ -89,6 +127,7 @@ module Cq
 
       # TODO: compile_decryptor if cookbook_file.updated_by_last_action?(true)
     end
+
 
     def decrypt(str)
     end
