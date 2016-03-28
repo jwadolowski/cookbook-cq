@@ -310,35 +310,73 @@ class Chef
             !editable_property(k.gsub(/@Delete/, ''))
           end
 
-          # TODO: placeholder for encrypted values
+          # TODO: the whole block needs to be moved to dedicated method
+          # TODO: lack of support for create action
+          # TODO: move valid_encrypted_fields to attr_accessor (need to happen
+          #       just once)
           #
-          # 1. lazy load Decrypt.java (extract files and all remaining stuff)
-          #      - go for it only if encrypted_fields is not empty
-          #      - create directory structure in cache
-          #      - cookbook_file
-          #      - trigger all processing if Decrypt.class is missing
-          #      - trigger all processing if required jars (extracted and
-          #        downloaded ones) are missing. Check for empty dir should be
-          #        fine
-          #      - trigger javac if cookbook_file changed
-          #      - cleanup intermediates?
-          # 2. if decrypt(current_resource.properties['f'] ==
-          #         new_resource.properties['f']
-          #       delete f from diff
-          #    else
-          #      diff['f'] = encrypt(new_resource.properties['f'])
-          #    end
+          # Handle encrypted fields
+          encrypted_fields = valid_encrypted_fields
 
-          load_decryptor unless new_resource.encrypted_fields.empty?
+          unless encrypted_fields.empty?
+            load_decryptor
 
-          new_resource.encrypted_fields.each do |f|
+            key = load_master_key(
+              new_resource.instance,
+              new_resource.username,
+              new_resource.password
+            )
 
+            begin
+              encrypted_fields.each do |f|
+                current_val = current_resource.properties[f]
+                new_val = new_resource.properties[f]
+
+                if current_val && decrypt(key, current_val) == new_val
+                  diff.delete(f)
+                else
+                  diff[f] = encrypt(
+                    new_resource.instance,
+                    new_resource.username,
+                    new_resource.password,
+                    new_val
+                  )
+                end
+              end
+            ensure
+              unload_master_key(key)
+            end
           end
         end
 
         Chef::Log.debug("Properties diff: #{diff}")
 
         diff
+      end
+
+      # There's no point to bother about:
+      # * fields specified in encrypted_fileds property, but not present in
+      #   new_resource.properties
+      # * non string values
+      def valid_encrypted_fields
+        fields = []
+
+        new_resource.encrypted_fields.each do |f|
+          property = new_resource.properties[f]
+
+          if property && property.is_a?(String)
+            fields.push(f)
+          else
+            Chef::Log.warn(
+              "Ignoring #{f}, as it's not present in both places "\
+              '(encrypted_fields and properties) or is not a String'
+            )
+          end
+        end
+
+        Chef::Log.debug("Valid encrypted fields: #{fields}")
+
+        fields
       end
     end
   end
