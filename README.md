@@ -441,13 +441,12 @@ All attributes in this file refer to CQ/AEM publish instance (
 
 ## default.rb
 
-Empty for now.
+Installs core dependencies (Ruby gems and OS packages).
 
 ## commons.rb
 
 Takes care of common elements of every CQ/AEM deployment, including:
 
-* Ruby gems
 * system user and its configuration
 * required directory structure
 * Java installation
