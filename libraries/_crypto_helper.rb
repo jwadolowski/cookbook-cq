@@ -39,22 +39,19 @@ module Cq
       ::File.join(crypto_root_dir, 'libs', 'log')
     end
 
-    def crypto_aem_libs
-      ::Dir[::File.join(crypto_aem_dir, '*')]
-    end
-
-    def crypto_log_libs
-      ::Dir[::File.join(crypto_log_dir, '*')]
-    end
-
     # Combines:
     # * current dir (java commands are executed from crypto root dir)
     # * crypto tmp dir (needs to be there, as master key is fetched from
     #   classpath)
-    # * all AEM libs
-    # * all log libs
+    # * all AEM libs (JAR files)
+    # * all log libs (JAR files)
     def crypto_classpath
-      (['.'] | [crypto_tmp_dir] | crypto_aem_libs | crypto_log_libs).join(':')
+      [
+        '.',
+        crypto_tmp_dir,
+        ::File.join(crypto_aem_dir, '*'),
+        ::File.join(crypto_log_dir, '*')
+      ].join(':')
     end
 
     def primary_jar
@@ -86,7 +83,6 @@ module Cq
     # /path/to/chef/cache/crypto
     # |-- Decrypt.class
     # |-- Decrypt.java
-    # |   |-- master
     # |-- libs
     # |   |-- aem
     # |       |-- com.adobe.granite.crypto-3.0.18-CQ610-B0004.jar
@@ -129,7 +125,7 @@ module Cq
     end
 
     def extract_aem_libs
-      aem_libs = crypto_aem_libs
+      aem_libs = ::Dir[::File.join(crypto_aem_dir, '*')]
 
       Chef::Log.debug("Existing AEM libs: #{aem_libs}")
 
@@ -174,19 +170,23 @@ module Cq
     def download_log_libs
       server_url = 'http://central.maven.org/maven2'
 
-      log_libs = %w(
-        /org/slf4j/slf4j-api/1.7.12/slf4j-api-1.7.12.jar
-        /org/slf4j/slf4j-simple/1.7.12/slf4j-simple-1.7.12.jar
-      )
+      log_libs = {
+        '/org/slf4j/slf4j-api/1.7.12/slf4j-api-1.7.12.jar' =>
+          '0aee9a77a4940d72932b0d0d9557793f872e66a03f598e473f45e7efecdccf99',
+        '/org/slf4j/slf4j-simple/1.7.12/slf4j-simple-1.7.12.jar' =>
+          'ff15e390d71e9852c296fb63986995609dc8c6681f9eff45ef65281a94649acd'
+      }
 
-      log_libs.each do |l|
-        url = server_url + l
+      log_libs.each do |k, v|
+        url = server_url + k
         filename = uri_basename(url)
         path = ::File.join(crypto_log_dir, filename)
 
         remote_file = Chef::Resource::RemoteFile.new(path, run_context)
         remote_file.source(url)
         remote_file.mode('0644')
+        remote_file.use_conditional_get(false)
+        remote_file.checksum(v)
         remote_file.backup(false)
         remote_file.run_action(:create)
       end
@@ -268,12 +268,17 @@ module Cq
 
     def decrypt(key, str)
       cmd_str = "java -cp '#{crypto_classpath}' Decrypt '#{key}' '#{str}'"
+
+      Chef::Log.debug("Decrypt command: #{cmd_str}")
+
       cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
       cmd.run_command
-      cmd.error!
 
-      Chef::Log.debug("Decryption command: #{cmd_str}")
-      Chef::Log.debug("Decrypted value: #{cmd.stdout}")
+      Chef::Log.debug("Decrypt stdout: #{cmd.stdout}")
+      Chef::Log.debug("Decrypt stderr: #{cmd.stderr}")
+      Chef::Log.debug("Decrypt execution time: #{cmd.execution_time}")
+
+      cmd.error!
 
       # Get rid of leading/trailing whitespaces from the output
       cmd.stdout.strip
