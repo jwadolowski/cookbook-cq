@@ -26,3 +26,4 @@ chef_gem 'multipart-post' do
 end
 
 package 'unzip'
+package 'rng-tools'

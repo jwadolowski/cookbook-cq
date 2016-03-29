@@ -267,9 +267,7 @@ module Cq
     end
 
     def entropy_builder
-      require 'securerandom'
-
-      Thread.new { SecureRandom.uuid() while true }
+      spawn('rngd -r /dev/urandom -o /dev/random -f')
     end
 
     def decrypt(key, str)
@@ -280,12 +278,13 @@ module Cq
       # Decrypt code needs high entropy level to get things done in an
       # acceptable time frame. With this trick it takes miliseconds to finish,
       # without it execution used to take a minute or more.
-      t = entropy_builder
+      p = entropy_builder
+      Chef::Log.debug("Entropy builder PID: #{p}")
 
       cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
       cmd.run_command
 
-      Thread.kill(t)
+      Process.kill('INT', p)
 
       Chef::Log.debug("Decrypt stdout: #{cmd.stdout}")
       Chef::Log.debug("Decrypt stderr: #{cmd.stderr}")
