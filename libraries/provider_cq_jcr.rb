@@ -164,6 +164,14 @@ class Chef
       end
 
       def update_via_sling(payload)
+        unless valid_encrypted_fields.empty?
+          payload = crypto_payload(payload)
+
+          Chef::Log.debug(
+            "Payload passed thorugh crypto processing: #{payload}"
+          )
+        end
+
         http_resp = http_multipart_post(
           new_resource.instance,
           new_resource.path,
@@ -277,8 +285,6 @@ class Chef
       end
 
       def force_replace_diff
-        diff = {}
-
         # Iterate over desired (new) properties first to see if update is
         # required
         new_resource.properties.each do |k, v|
@@ -310,43 +316,8 @@ class Chef
             !editable_property(k.gsub(/@Delete/, ''))
           end
 
-          # TODO: the whole block needs to be moved to dedicated method
-          # TODO: lack of support for create action
-          # TODO: move valid_encrypted_fields to attr_accessor (need to happen
-          #       just once)
-          #
           # Handle encrypted fields
-          encrypted_fields = valid_encrypted_fields
-
-          unless encrypted_fields.empty?
-            load_decryptor
-
-            key = load_master_key(
-              new_resource.instance,
-              new_resource.username,
-              new_resource.password
-            )
-
-            begin
-              encrypted_fields.each do |f|
-                current_val = current_resource.properties[f]
-                new_val = new_resource.properties[f]
-
-                if current_val && decrypt(key, current_val) == new_val
-                  diff.delete(f)
-                else
-                  diff[f] = encrypt(
-                    new_resource.instance,
-                    new_resource.username,
-                    new_resource.password,
-                    new_val
-                  )
-                end
-              end
-            ensure
-              unload_master_key(key)
-            end
-          end
+          diff = crypto_payload(diff) unless valid_encrypted_fields.empty?
         end
 
         Chef::Log.debug("Properties diff: #{diff}")
@@ -377,6 +348,43 @@ class Chef
         Chef::Log.debug("Valid encrypted fields: #{fields}")
 
         fields
+      end
+
+      # Encrypts value if decrypt(current_value) != new_value. If these two
+      # elements match then such item is removed from payload, as there's no
+      # reason to do any changes on it.
+      #
+      # Returns modified payload
+      def crypto_payload(payload)
+        load_decryptor
+
+        key = load_master_key(
+          new_resource.instance,
+          new_resource.username,
+          new_resource.password
+        )
+
+        begin
+          valid_encrypted_fields.each do |f|
+            current_val = current_resource.properties[f]
+            new_val = new_resource.properties[f]
+
+            if current_val && decrypt(key, current_val) == new_val
+              payload.delete(f)
+            else
+              payload[f] = encrypt(
+                new_resource.instance,
+                new_resource.username,
+                new_resource.password,
+                new_val
+              )
+            end
+          end
+        ensure
+          unload_master_key(key)
+        end
+
+        payload
       end
     end
   end
