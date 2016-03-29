@@ -279,6 +279,7 @@ module Cq
       # acceptable time frame. With this trick it takes miliseconds to finish,
       # without it execution used to take a minute or more.
       p = entropy_builder
+      Chef::Log.debug("Entropy builder PID: #{p}")
 
       cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
       cmd.run_command
