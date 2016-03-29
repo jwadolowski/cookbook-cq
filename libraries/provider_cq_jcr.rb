@@ -21,6 +21,7 @@ class Chef
   class Provider
     class CqJcr < Chef::Provider
       include Cq::HttpHelper
+      include Cq::CryptoHelper
 
       # Chef 12.4.0 support
       provides :cq_jcr if Chef::Provider.respond_to?(:provides)
@@ -35,15 +36,28 @@ class Chef
         @raw_node_info = raw_node_info
         @current_resource.exist = exist?(@raw_node_info)
 
+        Chef::Log.debug("Raw node info: #{@raw_node_info.body}")
+        Chef::Log.debug("Exists? #{current_resource.exist}")
+
         @current_resource.properties(
           standardize_properties(
             node_info(@raw_node_info)
           )
         ) if current_resource.exist
 
+        Chef::Log.debug(
+          'Standardized properties of current resource: ' +
+          current_resource.properties.to_s
+        )
+
         @new_resource.properties(
           standardize_properties(new_resource.properties)
         ) if new_resource.properties
+
+        Chef::Log.debug(
+          'Standardized properties of new resource: ' +
+          new_resource.properties.to_s
+        )
       end
 
       def action_create
@@ -150,6 +164,14 @@ class Chef
       end
 
       def update_via_sling(payload)
+        unless valid_encrypted_fields.empty?
+          payload = crypto_payload(payload)
+
+          Chef::Log.debug(
+            "Payload passed thorugh crypto processing: #{payload}"
+          )
+        end
+
         http_resp = http_multipart_post(
           new_resource.instance,
           new_resource.path,
@@ -236,7 +258,7 @@ class Chef
 
       # Get jcr:primaryType from (order matters):
       # * new resource (if defined)
-      # * current resource (in case of existing resouruce update)
+      # * current resource (in case of existing resource update)
       #
       # Return nil if none of above is possible (completely new JCR node)
       def best_primary_type
@@ -263,8 +285,6 @@ class Chef
       end
 
       def force_replace_diff
-        diff = {}
-
         # Iterate over desired (new) properties first to see if update is
         # required
         new_resource.properties.each do |k, v|
@@ -295,9 +315,76 @@ class Chef
           diff.delete_if do |k, _v|
             !editable_property(k.gsub(/@Delete/, ''))
           end
+
+          # Handle encrypted fields
+          diff = crypto_payload(diff) unless valid_encrypted_fields.empty?
         end
 
+        Chef::Log.debug("Properties diff: #{diff}")
+
         diff
+      end
+
+      # There's no point to bother about:
+      # * fields specified in encrypted_fileds property, but not present in
+      #   new_resource.properties
+      # * non string values
+      def valid_encrypted_fields
+        fields = []
+
+        new_resource.encrypted_fields.each do |f|
+          property = new_resource.properties[f]
+
+          if property && property.is_a?(String)
+            fields.push(f)
+          else
+            Chef::Log.warn(
+              "Ignoring #{f}, as it's not present in both places "\
+              '(encrypted_fields and properties) or is not a String'
+            )
+          end
+        end
+
+        Chef::Log.debug("Valid encrypted fields: #{fields}")
+
+        fields
+      end
+
+      # Encrypts value if decrypt(current_value) != new_value. If these two
+      # elements match then such item is removed from payload, as there's no
+      # reason to do any changes on it.
+      #
+      # Returns modified payload
+      def crypto_payload(payload)
+        load_decryptor
+
+        key = load_master_key(
+          new_resource.instance,
+          new_resource.username,
+          new_resource.password
+        )
+
+        begin
+          valid_encrypted_fields.each do |f|
+            current_val = current_resource.properties[f]
+            new_val = new_resource.properties[f]
+
+            if current_val && decrypt(key, current_val) == new_val
+              payload.delete(f)
+            else
+              payload[f] = encrypt(
+                new_resource.instance,
+                new_resource.username,
+                new_resource.password,
+                new_val
+              )
+            end
+          end
+        ensure
+          unload_master_key(key)
+        end
+
+        payload
       end
     end
   end
