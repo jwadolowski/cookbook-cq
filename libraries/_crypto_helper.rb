@@ -269,7 +269,7 @@ module Cq
     def entropy_builder
       require 'securerandom'
 
-      Thread.new { SecureRandom.uuid() while true }
+      Thread.new { %x(rngd -r /dev/urandom -o /dev/random -f) }
     end
 
     def decrypt(key, str)
