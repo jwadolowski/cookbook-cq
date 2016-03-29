@@ -285,6 +285,8 @@ class Chef
       end
 
       def force_replace_diff
+        diff = {}
+
         # Iterate over desired (new) properties first to see if update is
         # required
         new_resource.properties.each do |k, v|
