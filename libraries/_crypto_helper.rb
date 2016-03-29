@@ -266,13 +266,26 @@ module Cq
       Chef::Log.error("Can't delete #{path} file: #{e}")
     end
 
+    def entropy_builder
+      require 'securerandom'
+
+      Thread.new { SecureRandom.uuid() while true }
+    end
+
     def decrypt(key, str)
       cmd_str = "java -cp '#{crypto_classpath}' Decrypt '#{key}' '#{str}'"
 
       Chef::Log.debug("Decrypt command: #{cmd_str}")
 
+      # Decrypt code needs high entropy level to get things done in an
+      # acceptable time frame. With this trick it takes miliseconds to finish,
+      # without it execution used to take a minute or more.
+      t = entropy_builder
+
       cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
       cmd.run_command
+
+      Thread.kill(t)
 
       Chef::Log.debug("Decrypt stdout: #{cmd.stdout}")
       Chef::Log.debug("Decrypt stderr: #{cmd.stderr}")
