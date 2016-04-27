@@ -38,8 +38,6 @@ default['cq']['service']['restart_sleep'] = 5
 default['cq']['init_template_cookbook'] = 'cq'
 default['cq']['conf_template_cookbook'] = 'cq'
 
-default['cq']['healthcheck_resource'] = '/libs/granite/core/content/login.html'
-
 default['cq']['http_read_timeout'] = 300
 
 # Java attributes
