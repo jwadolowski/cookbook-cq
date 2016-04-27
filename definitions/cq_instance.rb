@@ -125,24 +125,28 @@ define :cq_instance,
     cookbook node['cq']['conf_template_cookbook']
     source 'cq.conf.erb'
     variables(
-      :port => node['cq'][local_id]['port'],
-      :jmx_ip => node['cq'][local_id]['jmx_ip'],
-      :jmx_port => node['cq'][local_id]['jmx_port'],
-      :debug_ip => node['cq'][local_id]['debug_ip'],
-      :debug_port => node['cq'][local_id]['debug_port'],
-      :instance_home => instance_home,
-      :run_mode => node['cq'][local_id]['run_mode'],
-      :min_heap => node['cq'][local_id]['jvm']['min_heap'],
-      :max_heap => node['cq'][local_id]['jvm']['max_heap'],
-      :max_perm_size => node['cq'][local_id]['jvm']['max_perm_size'],
-      :code_cache => node['cq'][local_id]['jvm']['code_cache_size'],
-      :jvm_general_opts => node['cq'][local_id]['jvm']['general_opts'],
-      :jvm_code_cache_opts => node['cq'][local_id]['jvm']['code_cache_opts'],
-      :jvm_gc_opts => node['cq'][local_id]['jvm']['gc_opts'],
-      :jvm_jmx_opts => node['cq'][local_id]['jvm']['jmx_opts'],
-      :jvm_debug_opts => node['cq'][local_id]['jvm']['debug_opts'],
-      :jvm_crx_opts => node['cq'][local_id]['jvm']['crx_opts'],
-      :jvm_extra_opts => node['cq'][local_id]['jvm']['extra_opts']
+      lazy {
+        {
+          :port => node['cq'][local_id]['port'],
+          :jmx_ip => node['cq'][local_id]['jmx_ip'],
+          :jmx_port => node['cq'][local_id]['jmx_port'],
+          :debug_ip => node['cq'][local_id]['debug_ip'],
+          :debug_port => node['cq'][local_id]['debug_port'],
+          :instance_home => instance_home,
+          :run_mode => node['cq'][local_id]['run_mode'],
+          :min_heap => node['cq'][local_id]['jvm']['min_heap'],
+          :max_heap => node['cq'][local_id]['jvm']['max_heap'],
+          :max_perm_size => node['cq'][local_id]['jvm']['max_perm_size'],
+          :code_cache => node['cq'][local_id]['jvm']['code_cache_size'],
+          :jvm_general_opts => node['cq'][local_id]['jvm']['general_opts'],
+          :jvm_code_cache_opts => node['cq'][local_id]['jvm']['code_cache_opts'],
+          :jvm_gc_opts => node['cq'][local_id]['jvm']['gc_opts'],
+          :jvm_jmx_opts => node['cq'][local_id]['jvm']['jmx_opts'],
+          :jvm_debug_opts => node['cq'][local_id]['jvm']['debug_opts'],
+          :jvm_crx_opts => node['cq'][local_id]['jvm']['crx_opts'],
+          :jvm_extra_opts => node['cq'][local_id]['jvm']['extra_opts']
+        }
+      }
     )
 
     notifies :restart,
