@@ -116,6 +116,21 @@ define :cq_instance,
   end
 
   # Render CQ config file
+  #
+  # All template variables are lazy evaluated to cover scenarios when one of
+  # attributes i.e. run mode is set on multiple levels, including recipe.
+  #
+  # Example:
+  # * default run mode is set in this cookbook
+  # * run mode is reconfigured on environment level
+  # * in a recipe user would like to append additional run mode to the one
+  #   that's set on environment level
+  #
+  # If node['cq'][local_id]['run_mode'] is set in a recipe that's included
+  # after cq::author then nothing happens as template resource gets compiled
+  # and all variables are already populated. With lazy evaluation user can do
+  # all required amendments in compile phase and these changes will be
+  # propagated correctly during converge phase.
   # ---------------------------------------------------------------------------
   template "#{instance_conf_dir}/cq#{cq_version('short_squeezed')}"\
            "-#{local_id}.conf" do
@@ -177,7 +192,7 @@ define :cq_instance,
 
       # Pick valid resource to verify CQ instance full start
       uri = URI.parse("http://localhost:#{node['cq'][local_id]['port']}" +
-                      node['cq']['healthcheck_resource'])
+                      node['cq'][local_id]['healthcheck']['resource'])
 
       # Start timeout
       timeout = node['cq']['service']['start_timeout']
@@ -187,7 +202,7 @@ define :cq_instance,
 
       # Keep asking CQ instance for login page HTTP status code until it
       # returns 200 or specified time has elapsed
-      while response != '200'
+      while response != node['cq'][local_id]['healthcheck']['response_code']
         begin
           response = Net::HTTP.get_response(uri).code
         rescue => e
