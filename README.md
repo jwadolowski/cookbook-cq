@@ -175,12 +175,6 @@ installs Oracle's JDK7.
     <td>String</td>
     <td>Cookbook which is a source for conf file template</td>
   </tr>
-  <tr>
-    <td><tt>['cq']['healthcheck_resource']</tt></td>
-    <td>String</td>
-    <td>Resource that's queried during instance start to determine whether
-    CQ/AEM is fully operational</td>
-  </tr>
 </table>
 
 ## author.rb
@@ -308,6 +302,17 @@ All attributes in this file refer to CQ/AEM author instance (
     <td>String</td>
     <td>All other JVM patameters</td>
   </tr>
+  <tr>
+    <td><tt>['cq']['author']['healthcheck']['resource']</tt></td>
+    <td>String</td>
+    <td>Resource that's queried during instance start to determine whether
+    CQ/AEM is fully operational</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['author']['healthcheck']['response_code']</tt></td>
+    <td>String</td>
+    <td>Expected HTTP status code of healthcheck resource</td>
+  </tr>
 </table>
 
 ## publish.rb
@@ -434,6 +439,17 @@ All attributes in this file refer to CQ/AEM publish instance (
     <td><tt>['cq']['publish']['jvm']['extra_opts']</tt></td>
     <td>String</td>
     <td>All other JVM patameters</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['healthcheck']['resource']</tt></td>
+    <td>String</td>
+    <td>Resource that's queried during instance start to determine whether
+    CQ/AEM is fully operational</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['publish']['healthcheck']['response_code']</tt></td>
+    <td>String</td>
+    <td>Expected HTTP status code of healthcheck resource</td>
   </tr>
 </table>
 
