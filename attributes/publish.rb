@@ -38,3 +38,6 @@ default['cq']['publish']['jvm']['jmx_opts'] = ''
 default['cq']['publish']['jvm']['debug_opts'] = ''
 default['cq']['publish']['jvm']['crx_opts'] = ''
 default['cq']['publish']['jvm']['extra_opts'] = ''
+default['cq']['publish']['healthcheck']['resource'] =
+  '/libs/granite/core/content/login.html'
+default['cq']['publish']['healthcheck']['response_code'] = '200'
