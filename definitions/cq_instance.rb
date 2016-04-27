@@ -116,6 +116,21 @@ define :cq_instance,
   end
 
   # Render CQ config file
+  #
+  # All template variables are lazy evaluated to cover scenarios when one of
+  # attributes i.e. run mode is set on multiple levels, including recipe.
+  #
+  # Example:
+  # * default run mode is set in this cookbook
+  # * run mode is reconfigured on environment level
+  # * in one of recipes user would like to append additional run mode to the
+  #   one that's set on environment level
+  #
+  # If node['cq'][local_id]['run_mode'] is set in a recipe that's included
+  # after cq::author then nothing happens as template resource gets compiled
+  # and all variables are already populated. With lazy evaluation user can do
+  # all required amendments in compile phase and these changes will be
+  # propagated correctly during converge phase.
   # ---------------------------------------------------------------------------
   template "#{instance_conf_dir}/cq#{cq_version('short_squeezed')}"\
            "-#{local_id}.conf" do
