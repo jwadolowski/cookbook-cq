@@ -177,7 +177,7 @@ define :cq_instance,
 
       # Pick valid resource to verify CQ instance full start
       uri = URI.parse("http://localhost:#{node['cq'][local_id]['port']}" +
-                      node['cq']['healthcheck_resource'])
+                      node['cq'][local_id]['healthcheck']['resource'])
 
       # Start timeout
       timeout = node['cq']['service']['start_timeout']
@@ -187,7 +187,7 @@ define :cq_instance,
 
       # Keep asking CQ instance for login page HTTP status code until it
       # returns 200 or specified time has elapsed
-      while response != '200'
+      while response != node['cq'][local_id]['healthcheck']['response_code']
         begin
           response = Net::HTTP.get_response(uri).code
         rescue => e
