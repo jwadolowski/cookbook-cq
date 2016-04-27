@@ -123,8 +123,8 @@ define :cq_instance,
   # Example:
   # * default run mode is set in this cookbook
   # * run mode is reconfigured on environment level
-  # * in one of recipes user would like to append additional run mode to the
-  #   one that's set on environment level
+  # * in a recipe user would like to append additional run mode to the one
+  #   that's set on environment level
   #
   # If node['cq'][local_id]['run_mode'] is set in a recipe that's included
   # after cq::author then nothing happens as template resource gets compiled
