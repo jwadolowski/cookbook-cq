@@ -45,14 +45,18 @@ choice ;)
         * [Usage](#usage-1)
             * [Regular OSGi configs](#regular-osgi-configs)
             * [Factory OSGi configs](#factory-osgi-configs)
-    * [cq_user](#cq_user)
+    * [cq_osgi_bundle](#cq_osgi_bundle)
         * [Actions](#actions-2)
         * [Properties](#properties-2)
-        * [Compatibility matrix](#compatibility-matrix-1)
         * [Usage](#usage-2)
-    * [cq_jcr](#cq_jcr)
+    * [cq_user](#cq_user)
         * [Actions](#actions-3)
         * [Properties](#properties-3)
+        * [Compatibility matrix](#compatibility-matrix-1)
+        * [Usage](#usage-3)
+    * [cq_jcr](#cq_jcr)
+        * [Actions](#actions-4)
+        * [Properties](#properties-4)
         * [Usage](#usage-4)
 * [Testing](#testing)
 * [Author](#author)
@@ -1143,6 +1147,22 @@ resource definition.
 `Jobs Queue` resource will delete a factory instance of
 `org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
 properties. Nothing will happen when there's no such OSGi config.
+
+# cq_osgi_bundle
+
+Adds ability to stop and start OSGi bundles
+
+## Actions
+
+TBD
+
+## Properties
+
+TBD
+
+## Usage
+
+TBD
 
 # cq_user
 
