@@ -105,11 +105,7 @@ class Chef
       end
 
       def rescue_mode(arg = nil)
-        set_or_return(
-          :rescue_mode,
-          arg,
-          :kind_of => [TrueClass, FalseClass]
-        )
+        set_or_return(:rescue_mode, arg, :kind_of => [TrueClass, FalseClass])
       end
 
       def checksum(arg = nil)
