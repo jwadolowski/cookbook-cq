@@ -23,6 +23,8 @@ class Chef
       provides :cq_osgi_bundle
 
       attr_accessor :exist
+      attr_accessor :state
+      attr_accessor :id
 
       def initialize(name, run_context = nil)
         super
