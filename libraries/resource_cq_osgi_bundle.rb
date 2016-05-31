@@ -28,7 +28,7 @@ class Chef
         super
 
         @resource_name = :cq_osgi_bundle
-        @allowed_actions = [:nothing, :stop, :start, :update, :refresh]
+        @allowed_actions = [:nothing, :stop, :start]
         @action = :nothing
 
         @symbolic_name = name
