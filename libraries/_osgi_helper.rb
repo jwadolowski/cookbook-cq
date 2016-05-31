@@ -46,6 +46,20 @@ module Cq
       http_post(addr, req_path, user, password, payload)
     end
 
+    # stateRaw:
+    # * UNINSTALLED = 1
+    # * INSTALLED   = 2
+    # * RESOLVED    = 4
+    # * STARTING    = 8
+    # * STOPPING    = 16
+    # * ACTIVE      = 32
+    def valid_bundle_op?(http_resp, expected_state)
+      return false if http_resp.code != '200'
+
+      response = json_to_hash(http_resp.body)
+      response['fragment'] == false && response['stateRaw'] == expected_state
+    end
+
     def osgi_stability_healthcheck(addr, user, password, rescue_mode,
                                    same_state_barrier, error_state_barrier,
                                    max_attempts, sleep_time)

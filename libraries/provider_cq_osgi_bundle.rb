@@ -59,16 +59,69 @@ class Chef
         ) unless current_resource.info
       end
 
+      def stop_bundle
+        resp = bundle_op(
+          new_resource.instance,
+          new_resource.user,
+          new_resource.password,
+          current_resource.info['id'],
+          'stop'
+        )
+
+        Chef::Application.fatal!(
+          "Expected stateRaw 4, but got #{resp.code} HTTP response and "\
+          "#{resp.body} body"
+        ) unless valid_bundle_op?(resp, 4)
+      end
+
+      def start_bundle
+        resp = bundle_op(
+          new_resource.instance,
+          new_resource.user,
+          new_resource.password,
+          current_resource.info['id'],
+          'start'
+        )
+
+        Chef::Application.fatal!(
+          "Expected stateRaw 32, but got #{resp.code} HTTP response and "\
+          "#{resp.body} body"
+        ) unless valid_bundle_op?(resp, 32)
+      end
+
       def action_stop
         if current_resource.info['state'] == 'Active'
           converge_by("Stop #{new_resource.symbolic_name} bundle") do
-            bundle_op(
-              new_resource.instance,
-              new_resource.user,
-              new_resource.password,
-              current_resource.info['id'],
-              'stop'
-            )
+            stop_bundle
+          end
+
+          osgi_stability_healthcheck(
+          new_resource.instance,
+          new_resource.username,
+          new_resource.password,
+          new_resource.rescue_mode,
+          new_resource.same_state_barrier,
+          new_resource.error_state_barrier,
+          new_resource.max_attempts,
+          new_resource.sleep_time
+        )
+        elsif current_resource.info['state'] == 'Resolved'
+          Chef::Log.info(
+            "#{current_resource.symbolic_name} bundle is already stopped"
+          )
+        else
+          Chef::Log.warn(
+            "#{current_resource.symbolic_name} is in "\
+            "#{current_resource.info['state']} state. Only bundles in Active"\
+            'state can be stopped'
+          )
+        end
+      end
+
+      def action_start
+        if current_resource.info['state'] == 'Resolved'
+          converge_by("Start #{new_resource.symbolic_name} bundle") do
+            start_bundle
           end
 
           osgi_stability_healthcheck(
