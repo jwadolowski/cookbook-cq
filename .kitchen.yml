@@ -144,4 +144,13 @@ suites:
         version: <%= v %>
         jar:
           url: <%= ENV[env] %>
+  - name: osgi_bundles-v<%= v %>
+    run_list:
+      - recipe[cq::author]
+      - recipe[cq::_osgi_bundles]
+    attributes:
+      cq:
+        version: <%= v %>
+        jar:
+          url: <%= ENV[env] %>
 <% end %>
