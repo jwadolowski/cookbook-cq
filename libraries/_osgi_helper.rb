@@ -64,6 +64,7 @@ module Cq
       return false if http_resp.code != '200'
 
       body = json_to_hash(http_resp.body)
+      Chef::Log.debug("Bundle operation response: #{body}")
       body['fragment'] == false && body['stateRaw'] == expected_state
     end
 
