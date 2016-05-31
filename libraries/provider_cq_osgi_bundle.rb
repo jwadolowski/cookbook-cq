@@ -134,9 +134,9 @@ class Chef
             new_resource.max_attempts,
             new_resource.sleep_time
           )
-        elsif current_resource.info['state'] == 'Resolved'
+        elsif current_resource.info['state'] == 'Active'
           Chef::Log.info(
-            "#{current_resource.symbolic_name} bundle is already stopped"
+            "#{current_resource.symbolic_name} bundle is already started"
           )
         else
           Chef::Log.warn(
