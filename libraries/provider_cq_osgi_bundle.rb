@@ -34,47 +34,51 @@ class Chef
           new_resource.symbolic_name
         )
 
-        bundle_info = bundle_info(
+        # {
+        #   "id": 476,
+        #   "name": "peaberry - Dynamic services for Google-Guice",
+        #   "fragment": false,
+        #   "stateRaw": 32,
+        #   "state": "Active",
+        #   "version": "1.3.0",
+        #   "symbolicName": "org.ops4j.peaberry",
+        #   "category": ""
+        # }
+        @current_resource.info = bundle_info(
           new_resource.instance,
           new_resource.user,
           new_resource.password,
           new_resource.symbolic_name
         )
 
-        @current_resource.exist = true if bundle_info
+        Chef::Log.debug("Bundle info: #{current_resource.info}")
 
         # Stop processing if there's no such bundle
         Chef::Application.fatal!(
           "#{current_resource.symbolic_name} bundle doesn't exist!"
-        ) unless current_resource.exist
-
-        @current_resource.state = bundle_info['state']
-        @current_resource.id = bundle_info['id']
-
-        Chef::Log.debug("Bundle state: #{current_resource.state}")
-        Chef::Log.debug("Bundle ID: #{current_resource.id}")
+        ) unless current_resource.info
       end
 
       def action_stop
-        if current_resource.state == 'Active'
+        if current_resource.info['state'] == 'Active'
           converge_by("Stop #{new_resource.symbolic_name} bundle") do
             bundle_op(
               new_resource.instance,
               new_resource.user,
               new_resource.password,
-              current_resource.id,
+              current_resource.info['id'],
               'stop'
             )
           end
-        elsif current_resource.state == 'Resolved'
+        elsif current_resource.info['state'] == 'Resolved'
           Chef::Log.info(
             "#{current_resource.symbolic_name} bundle is already stopped"
           )
         else
           Chef::Log.warn(
             "#{current_resource.symbolic_name} is in "\
-            "#{current_resource.state} state. Only bundles in 'Active' state "\
-            'can be stopped'
+            "#{current_resource.info['state']} state. Only bundles in Active"\
+            'state can be stopped'
           )
         end
       end
