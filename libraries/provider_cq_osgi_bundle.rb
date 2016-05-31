@@ -46,7 +46,7 @@ class Chef
         # }
         @current_resource.info = bundle_info(
           new_resource.instance,
-          new_resource.user,
+          new_resource.username,
           new_resource.password,
           new_resource.symbolic_name
         )
@@ -62,7 +62,7 @@ class Chef
       def stop_bundle
         resp = bundle_op(
           new_resource.instance,
-          new_resource.user,
+          new_resource.username,
           new_resource.password,
           current_resource.info['id'],
           'stop'
@@ -77,7 +77,7 @@ class Chef
       def start_bundle
         resp = bundle_op(
           new_resource.instance,
-          new_resource.user,
+          new_resource.username,
           new_resource.password,
           current_resource.info['id'],
           'start'
