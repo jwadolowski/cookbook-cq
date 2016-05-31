@@ -70,6 +70,17 @@ class Chef
               'stop'
             )
           end
+
+          osgi_stability_healthcheck(
+            new_resource.instance,
+            new_resource.username,
+            new_resource.password,
+            new_resource.rescue_mode,
+            new_resource.same_state_barrier,
+            new_resource.error_state_barrier,
+            new_resource.max_attempts,
+            new_resource.sleep_time
+          )
         elsif current_resource.info['state'] == 'Resolved'
           Chef::Log.info(
             "#{current_resource.symbolic_name} bundle is already stopped"
