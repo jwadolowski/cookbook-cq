@@ -31,14 +31,14 @@ class Chef
         @allowed_actions = [:nothing, :stop, :start]
         @action = :nothing
 
-        @name = name
+        @symbolic_name = name
         @username = nil
         @password = nil
         @instance = nil
       end
 
-      def name(arg = nil)
-        set_or_return(:name, arg, :kind_of => String)
+      def symbolic_name(arg = nil)
+        set_or_return(:symbolic_name, arg, :kind_of => String)
       end
 
       def username(arg = nil)
