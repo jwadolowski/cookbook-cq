@@ -21,22 +21,27 @@ module Cq
   module OsgiHelper
     include Cq::HttpHelper
 
-    def osgi_bundles(addr, user, password)
+    def bundle_list(addr, user, password)
       json_to_hash(
-        http_get(
-          addr,
-          '/system/console/bundles/.json',
-          user,
-          password
-        ).body
+        http_get(addr, '/system/console/bundles/.json', user, password).body
       )
     end
 
     # symbolicName is unique, hence filtering using .detect
-    def bundle_state(addr, user, password, bundle_name)
-      osgi_bundles(addr, user, password)['data'].detect do |b|
+    def bundle_info(addr, user, password, bundle_name)
+      bundle_list(addr, user, password)['data'].detect do |b|
         b['symbolicName'] == bundle_name
-      end['state']
+      end
+    end
+
+    # Executes defined operation on given bundle ID
+    def bundle_op(addr, user, password, id, op)
+      req_path = "/system/console/bundles/#{id}"
+      payload = {
+        'action' => op
+      }
+
+      http_post(addr, req_path, user, password, payload)
     end
   end
 end
