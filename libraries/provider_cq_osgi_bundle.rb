@@ -141,8 +141,8 @@ class Chef
         else
           Chef::Log.warn(
             "#{current_resource.symbolic_name} is in "\
-            "#{current_resource.info['state']} state. Only bundles in Active"\
-            'state can be stopped'
+            "#{current_resource.info['state']} state. Only bundles in "\
+            'Resolved state can be stopped'
           )
         end
       end
