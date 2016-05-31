@@ -36,6 +36,8 @@ cq_osgi_bundle 'Author: com.adobe.granite.gibson' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
+  same_state_barrier 3
+  sleep_time 5
 
   action :stop
 end
