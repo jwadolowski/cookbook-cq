@@ -53,11 +53,18 @@ module Cq
     # * STARTING    = 8
     # * STOPPING    = 16
     # * ACTIVE      = 32
+    #
+    # Response body: {"fragment":false,"stateRaw":32}
+    #
+    # Expected:
+    # * 200 HTTP status code
+    # * fragment equals false
+    # * stateRaws as defined
     def valid_bundle_op?(http_resp, expected_state)
       return false if http_resp.code != '200'
 
-      response = json_to_hash(http_resp.body)
-      response['fragment'] == false && response['stateRaw'] == expected_state
+      body = json_to_hash(http_resp.body)
+      body['fragment'] == false && body['stateRaw'] == expected_state
     end
 
     def osgi_stability_healthcheck(addr, user, password, rescue_mode,
