@@ -60,7 +60,7 @@ cq_osgi_bundle 'org.apache.sling.fragment.ws' do
 end
 
 # Start of already Active bundle
-cq_osgi_bundle 'com.adobe.cq.cq-healthcheck' do
+cq_osgi_bundle 'pdfcore' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
