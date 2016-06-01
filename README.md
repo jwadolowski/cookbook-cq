@@ -1194,22 +1194,22 @@ Adds ability to stop and start OSGi bundles
   <tr>
     <td><tt>same_state_barrier</tt></td>
     <td>Integer</td>
-    <td>Same meaning as for `cq_package`</td>
+    <td>Same meaning as for <tt>cq_package</tt></td>
   </tr>
   <tr>
     <td><tt>error_state_barrier</tt></td>
     <td>Integer</td>
-    <td>Same meaning as for `cq_package`</td>
+    <td>Same meaning as for <tt>cq_package</tt></td>
   </tr>
   <tr>
     <td><tt>max_attempts</tt></td>
     <td>Integer</td>
-    <td>Same meaning as for `cq_package`</td>
+    <td>Same meaning as for <tt>cq_package</tt></td>
   </tr>
   <tr>
     <td><tt>sleep_time</tt></td>
     <td>Integer</td>
-    <td>Same meaning as for `cq_package`</td>
+    <td>Same meaning as for <tt>cq_package</tt></td>
   </tr>
 </table>
 
