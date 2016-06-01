@@ -1215,7 +1215,33 @@ Adds ability to stop and start OSGi bundles
 
 ## Usage
 
-TBD
+```ruby
+cq_osgi_bundle 'Author: org.eclipse.equinox.region' do
+  symbolic_name 'org.eclipse.equinox.region'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  same_state_barrier 3
+  sleep_time 5
+
+  action :stop
+end
+
+cq_osgi_bundle 'com.adobe.xmp.worker.files.native.fragment.linux' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :start
+end
+```
+
+First example stops `org.eclipse.equinox.region` AEM author instance. Since
+there's just a few dependencies on this bundle, number of post-stop checks
+have been limited, as there's no point to wait for so long.
+
+Second instance of `cq_osgi_bundle` is fairly simple, as it just starts
+`com.adobe.xmp.worker.files.native.fragment.linux` bundle.
 
 # cq_user
 
