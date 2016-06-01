@@ -1154,11 +1154,64 @@ Adds ability to stop and start OSGi bundles
 
 ## Actions
 
-TBD
+* `stop` - stop given OSGi bundle if it is in `Active` state
+* `start` - starts defined bundle, but only when it's in `Resolved` state
 
 ## Properties
 
-TBD
+<table>
+  <tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>symbolic_name</tt></td>
+    <td>String</td>
+    <td>Symbolic name of the bundle, i.e. <tt>com.company.example.abc</tt>. If
+    not explicitly defined resource name will be used as symbolic name</td>
+  </tr>
+  <tr>
+    <td><tt>username</tt></td>
+    <td>String</td>
+    <td>Instance username</td>
+  </tr>
+  <tr>
+    <td><tt>password</tt></td>
+    <td>String</td>
+    <td>Instance password</td>
+  </tr>
+  <tr>
+    <td><tt>instance</tt></td>
+    <td>String</td>
+    <td>Instance URL</td>
+  </tr>
+  <tr>
+    <td><tt>rescue_mode</tt></td>
+    <td>Boolean</td>
+    <td>Same meaning as in `cq_package`</td>
+  </tr>
+  <tr>
+    <td><tt>same_state_barrier</tt></td>
+    <td>Integer</td>
+    <td>Same meaning as for `cq_package`</td>
+  </tr>
+  <tr>
+    <td><tt>error_state_barrier</tt></td>
+    <td>Integer</td>
+    <td>Same meaning as for `cq_package`</td>
+  </tr>
+  <tr>
+    <td><tt>max_attempts</tt></td>
+    <td>Integer</td>
+    <td>Same meaning as for `cq_package`</td>
+  </tr>
+  <tr>
+    <td><tt>sleep_time</tt></td>
+    <td>Integer</td>
+    <td>Same meaning as for `cq_package`</td>
+  </tr>
+</table>
 
 ## Usage
 
