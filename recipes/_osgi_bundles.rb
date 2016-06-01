@@ -25,7 +25,7 @@ Chef::Log.warn(
 # -----------------------------------------------------------------------------
 
 # Bundle in Active state
-cq_osgi_bundle 'org.eclipse.equinox.region' do
+cq_osgi_bundle 'com.day.crx.crxde-support' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -36,8 +36,8 @@ cq_osgi_bundle 'org.eclipse.equinox.region' do
 end
 
 # Bundle in Active state, but with explicitly defined symbolic name
-cq_osgi_bundle 'Author: com.adobe.granite.gibson' do
-  symbolic_name 'com.adobe.granite.gibson'
+cq_osgi_bundle 'Author: org.apache.sling.jcr.webdav' do
+  symbolic_name 'org.apache.sling.jcr.webdav'
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -51,7 +51,7 @@ end
 # -----------------------------------------------------------------------------
 
 # Start of fragmented bundle
-cq_osgi_bundle 'com.adobe.xmp.worker.files.native.fragment.linux' do
+cq_osgi_bundle 'org.apache.sling.fragment.ws' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
