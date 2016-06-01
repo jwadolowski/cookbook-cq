@@ -21,6 +21,10 @@ Chef::Log.warn(
   'This is a test recipe and must not be used outside of test kitchen!'
 )
 
+# Stop action
+# -----------------------------------------------------------------------------
+
+# Bundle in Active state
 cq_osgi_bundle 'org.eclipse.equinox.region' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -31,6 +35,7 @@ cq_osgi_bundle 'org.eclipse.equinox.region' do
   action :stop
 end
 
+# Bundle in Active state, but with explicitly defined symbolic name
 cq_osgi_bundle 'Author: com.adobe.granite.gibson' do
   symbolic_name 'com.adobe.granite.gibson'
   username node['cq']['author']['credentials']['login']
@@ -42,6 +47,19 @@ cq_osgi_bundle 'Author: com.adobe.granite.gibson' do
   action :stop
 end
 
+# Start action
+# -----------------------------------------------------------------------------
+
+# Start of fragmented bundle
+cq_osgi_bundle 'com.adobe.xmp.worker.files.native.fragment.linux' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :start
+end
+
+# Start of already Active bundle
 cq_osgi_bundle 'com.adobe.cq.cq-healthcheck' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
