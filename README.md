@@ -1189,7 +1189,7 @@ Adds ability to stop and start OSGi bundles
   <tr>
     <td><tt>rescue_mode</tt></td>
     <td>Boolean</td>
-    <td>Same meaning as in `cq_package`</td>
+    <td>Same meaning as for <tt>cq_package</tt></td>
   </tr>
   <tr>
     <td><tt>same_state_barrier</tt></td>
