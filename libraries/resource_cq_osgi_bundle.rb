@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: cq
-# Resource:: package
+# Resource:: osgi_bundle
 #
-# Copyright (C) 2016 Jakub Wadolowski
+# Copyright (C) 2015 Jakub Wadolowski
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,57 +19,31 @@
 
 class Chef
   class Resource
-    class CqPackage < Chef::Resource
-      provides :cq_package
+    class CqOsgiBundle < Chef::Resource
+      provides :cq_osgi_bundle
 
-      attr_accessor :local_path
-
-      attr_accessor :uploaded
-      attr_accessor :installed
-
-      # Package metadata from properties.xml
-      attr_accessor :xml_name
-      attr_accessor :xml_group
-      attr_accessor :xml_version
-
-      # Package metadata from CRX Package Manager
-      attr_accessor :crx_name
-      attr_accessor :crx_group
-      attr_accessor :crx_version
-      attr_accessor :crx_download_name
+      attr_accessor :info
 
       def initialize(name, run_context = nil)
         super
 
-        @resource_name = :cq_package
-        @allowed_actions = [
-          :nothing,
-          :upload,
-          :install,
-          :deploy,
-          :uninstall,
-          :delete
-        ]
+        @resource_name = :cq_osgi_bundle
+        @allowed_actions = [:nothing, :stop, :start]
         @action = :nothing
 
-        @name = name
+        @symbolic_name = name
         @username = nil
         @password = nil
         @instance = nil
-        @source = nil
-        @http_user = nil
-        @http_pass = nil
-        @recursive_install = false
         @rescue_mode = false
-        @checksum = nil
         @same_state_barrier = 6
         @error_state_barrier = 6
         @max_attempts = 30
         @sleep_time = 10
       end
 
-      def name(arg = nil)
-        set_or_return(:name, arg, :kind_of => String)
+      def symbolic_name(arg = nil)
+        set_or_return(:symbolic_name, arg, :kind_of => String)
       end
 
       def username(arg = nil)
@@ -84,32 +58,8 @@ class Chef
         set_or_return(:instance, arg, :kind_of => String)
       end
 
-      def source(arg = nil)
-        set_or_return(:source, arg, :kind_of => String)
-      end
-
-      def http_user(arg = nil)
-        set_or_return(:http_user, arg, :kind_of => String)
-      end
-
-      def http_pass(arg = nil)
-        set_or_return(:http_pass, arg, :kind_of => String)
-      end
-
-      def recursive_install(arg = nil)
-        set_or_return(
-          :recursive_install,
-          arg,
-          :kind_of => [TrueClass, FalseClass]
-        )
-      end
-
       def rescue_mode(arg = nil)
         set_or_return(:rescue_mode, arg, :kind_of => [TrueClass, FalseClass])
-      end
-
-      def checksum(arg = nil)
-        set_or_return(:checksum, arg, :kind_of => String)
       end
 
       def same_state_barrier(arg = nil)

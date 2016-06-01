@@ -45,14 +45,18 @@ choice ;)
         * [Usage](#usage-1)
             * [Regular OSGi configs](#regular-osgi-configs)
             * [Factory OSGi configs](#factory-osgi-configs)
-    * [cq_user](#cq_user)
+    * [cq_osgi_bundle](#cq_osgi_bundle)
         * [Actions](#actions-2)
         * [Properties](#properties-2)
-        * [Compatibility matrix](#compatibility-matrix-1)
         * [Usage](#usage-2)
-    * [cq_jcr](#cq_jcr)
+    * [cq_user](#cq_user)
         * [Actions](#actions-3)
         * [Properties](#properties-3)
+        * [Compatibility matrix](#compatibility-matrix-1)
+        * [Usage](#usage-3)
+    * [cq_jcr](#cq_jcr)
+        * [Actions](#actions-4)
+        * [Properties](#properties-4)
         * [Usage](#usage-4)
 * [Testing](#testing)
 * [Author](#author)
@@ -1143,6 +1147,101 @@ resource definition.
 `Jobs Queue` resource will delete a factory instance of
 `org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
 properties. Nothing will happen when there's no such OSGi config.
+
+# cq_osgi_bundle
+
+Adds ability to stop and start OSGi bundles
+
+## Actions
+
+* `stop` - stop given OSGi bundle if it is in `Active` state
+* `start` - starts defined bundle, but only when it's in `Resolved` state
+
+## Properties
+
+<table>
+  <tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>symbolic_name</tt></td>
+    <td>String</td>
+    <td>Symbolic name of the bundle, i.e. <tt>com.company.example.abc</tt>. If
+    not explicitly defined resource name will be used as symbolic name</td>
+  </tr>
+  <tr>
+    <td><tt>username</tt></td>
+    <td>String</td>
+    <td>Instance username</td>
+  </tr>
+  <tr>
+    <td><tt>password</tt></td>
+    <td>String</td>
+    <td>Instance password</td>
+  </tr>
+  <tr>
+    <td><tt>instance</tt></td>
+    <td>String</td>
+    <td>Instance URL</td>
+  </tr>
+  <tr>
+    <td><tt>rescue_mode</tt></td>
+    <td>Boolean</td>
+    <td>Same meaning as for <tt>cq_package</tt></td>
+  </tr>
+  <tr>
+    <td><tt>same_state_barrier</tt></td>
+    <td>Integer</td>
+    <td>Same meaning as for <tt>cq_package</tt></td>
+  </tr>
+  <tr>
+    <td><tt>error_state_barrier</tt></td>
+    <td>Integer</td>
+    <td>Same meaning as for <tt>cq_package</tt></td>
+  </tr>
+  <tr>
+    <td><tt>max_attempts</tt></td>
+    <td>Integer</td>
+    <td>Same meaning as for <tt>cq_package</tt></td>
+  </tr>
+  <tr>
+    <td><tt>sleep_time</tt></td>
+    <td>Integer</td>
+    <td>Same meaning as for <tt>cq_package</tt></td>
+  </tr>
+</table>
+
+## Usage
+
+```ruby
+cq_osgi_bundle 'Author: org.eclipse.equinox.region' do
+  symbolic_name 'org.eclipse.equinox.region'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  same_state_barrier 3
+  sleep_time 5
+
+  action :stop
+end
+
+cq_osgi_bundle 'com.adobe.xmp.worker.files.native.fragment.linux' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :start
+end
+```
+
+First example stops `org.eclipse.equinox.region` AEM author instance. Since
+there's just a few dependencies on this bundle, number of post-stop checks
+have been limited, as there's no point to wait for so long.
+
+Second instance of `cq_osgi_bundle` is fairly simple, as it just starts
+`com.adobe.xmp.worker.files.native.fragment.linux` bundle.
 
 # cq_user
 
