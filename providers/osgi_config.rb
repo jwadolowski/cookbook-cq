@@ -333,12 +333,17 @@ def load_current_resource
     factory_pid_presence if @new_resource.factory_pid
   @current_resource.exists = osgi_config_presence
 
+  Chef::Log.debug("Factory PID exists? #{current_resource.factory_pid_exists}")
+  Chef::Log.debug("Exist? #{current_resource.exists}")
+
   # For non-factory configs choose PID of current resource, otherwise look
   # for best candidate
   if new_resource.factory_pid.nil?
     config_name = current_resource.pid
   else
     config_name = @best_candidate_pid
+
+    Chef::Log.debug("Best candidate: #{config_name}")
 
     # Update resource PID with best candidate's PID (but only if such
     # exists)
@@ -352,6 +357,11 @@ def load_current_resource
       properties_hash(current_osgi_config_properties(config_name))
     )
     @current_resource.valid = validate_properties
+
+    Chef::Log.debug(
+      "Current resource properties: #{current_resource.properties}"
+    )
+    Chef::Log.debug("Valid? #{current_resource.valid}")
   end if current_resource.exists
 end
 
