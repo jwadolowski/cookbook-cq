@@ -91,6 +91,10 @@ def compatibility_score(factory_instance)
     )
   )
 
+  Chef::Log.debug(
+    "Properties of #{factory_instance}: #{factory_config_properties}"
+  )
+
   score = 0
 
   baselined_values(sanitized_new_properties).each do |key, val|
@@ -136,6 +140,7 @@ def best_candidate_pid
     nil
   else
     candidates = matching_candidates
+    Chef::Log.debug("Matching candidates: #{candidates}")
 
     case candidates.length
     when 1
