@@ -21,12 +21,10 @@ module Cq
   module OsgiComponentHelper
     include Cq::HttpHelper
 
-    def raw_component_list(addr, user, password)
-      http_get(addr, '/system/console/components/.json', user, password)
-    end
-
     def component_list(addr, user, password)
-      json_to_hash(raw_component_list(addr, user, password).body)
+      json_to_hash(
+        http_get(addr, '/system/console/components/.json', user, password).body
+      )
     end
 
     # pid is unique, hence filtering using .detect
