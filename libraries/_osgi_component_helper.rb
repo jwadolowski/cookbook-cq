@@ -50,7 +50,7 @@ module Cq
       return false if http_resp.code != '200'
 
       body = component_info(json_to_hash(http_resp.body), pid)
-      Chef::Log.debug("Component state after action: #{body}")
+      Chef::Log.debug("Post-action component information: #{body}")
       body['state'] == expected_state
     end
   end
