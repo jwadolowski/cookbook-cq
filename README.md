@@ -1249,7 +1249,7 @@ Second instance of `cq_osgi_bundle` is fairly simple, as it just starts
 
 # cq_osgi_component
 
-Adds ability to stop and start OSGi bundles
+Management of OSGi components
 
 ## Actions
 
