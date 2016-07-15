@@ -23,7 +23,6 @@ class Chef
       include Cq::HttpHelper
       include Cq::CryptoHelper
 
-      # Chef 12.4.0 support
       provides :cq_jcr if Chef::Provider.respond_to?(:provides)
 
       def whyrun_supported?
