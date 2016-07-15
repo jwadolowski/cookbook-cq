@@ -21,7 +21,7 @@ class Chef
   class Provider
     class CqPackage < Chef::Provider
       include Cq::HttpHelper
-      include Cq::OsgiHelper
+      include Cq::OsgiBundleHelper
       include Cq::PackageHelper
 
       provides :cq_package if Chef::Provider.respond_to?(:provides)
