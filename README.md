@@ -1315,7 +1315,7 @@ not already `disabled`.
 
 ---
 
-Please keep in mind that OSGi components used to got back to their original
+Please keep in mind that OSGi components used to get back to their original
 state after AEM instance restart. So if you disabled one, most probably it'll
 become enabled after instance restart.
 
