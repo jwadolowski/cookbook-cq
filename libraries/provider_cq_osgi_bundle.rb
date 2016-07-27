@@ -20,7 +20,7 @@
 class Chef
   class Provider
     class CqOsgiBundle < Chef::Provider
-      include Cq::OsgiHelper
+      include Cq::OsgiBundleHelper
 
       # Chef 12.4.0 support
       provides :cq_osgi_bundle if Chef::Provider.respond_to?(:provides)

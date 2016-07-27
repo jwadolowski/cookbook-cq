@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cq
-# Libraries:: OsgiHelper
+# Libraries:: OsgiBundleHelper
 #
 # Copyright (C) 2016 Jakub Wadolowski
 #
@@ -18,7 +18,7 @@
 #
 
 module Cq
-  module OsgiHelper
+  module OsgiBundleHelper
     include Cq::HttpHelper
 
     def raw_bundle_list(addr, user, password)
