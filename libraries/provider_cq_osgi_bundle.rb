@@ -22,7 +22,6 @@ class Chef
     class CqOsgiBundle < Chef::Provider
       include Cq::OsgiBundleHelper
 
-      # Chef 12.4.0 support
       provides :cq_osgi_bundle if Chef::Provider.respond_to?(:provides)
 
       def whyrun_supported?

@@ -22,7 +22,6 @@ class Chef
     class CqUser < Chef::Provider
       include Cq::HttpHelper
 
-      # Chef 12.4.0 support
       provides :cq_user if Chef::Provider.respond_to?(:provides)
 
       def whyrun_supported?

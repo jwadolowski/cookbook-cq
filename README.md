@@ -49,15 +49,19 @@ choice ;)
         * [Actions](#actions-2)
         * [Properties](#properties-2)
         * [Usage](#usage-2)
-    * [cq_user](#cq_user)
+    * [cq_osgi_component](#cq_osgi_component)
         * [Actions](#actions-3)
         * [Properties](#properties-3)
-        * [Compatibility matrix](#compatibility-matrix-1)
         * [Usage](#usage-3)
-    * [cq_jcr](#cq_jcr)
+    * [cq_user](#cq_user)
         * [Actions](#actions-4)
         * [Properties](#properties-4)
+        * [Compatibility matrix](#compatibility-matrix-1)
         * [Usage](#usage-4)
+    * [cq_jcr](#cq_jcr)
+        * [Actions](#actions-5)
+        * [Properties](#properties-5)
+        * [Usage](#usage-5)
 * [Testing](#testing)
 * [Author](#author)
 
@@ -1242,6 +1246,80 @@ have been limited, as there's no point to wait for so long.
 
 Second instance of `cq_osgi_bundle` is fairly simple, as it just starts
 `com.adobe.xmp.worker.files.native.fragment.linux` bundle.
+
+# cq_osgi_component
+
+Management of OSGi components
+
+## Actions
+
+* `enable` - enable given OSGi component
+* `disable` - disable defined OSGi component
+
+## Properties
+
+<table>
+  <tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>pid</tt></td>
+    <td>String</td>
+    <td>Component PID</td>
+  </tr>
+  <tr>
+    <td><tt>username</tt></td>
+    <td>String</td>
+    <td>Instance username</td>
+  </tr>
+  <tr>
+    <td><tt>password</tt></td>
+    <td>String</td>
+    <td>Instance password</td>
+  </tr>
+  <tr>
+    <td><tt>instance</tt></td>
+    <td>String</td>
+    <td>Instance URL</td>
+  </tr>
+</table>
+
+## Usage
+
+```ruby
+cq_osgi_component 'Author: com.example.my.component' do
+  symbolic_name 'com.example.my.component'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :enable
+end
+
+cq_osgi_component 'Author: com.project.email.servlet' do
+  symbolic_name 'com.project.email.servlet'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :disable
+end
+```
+
+Both examples are self-explanatory. First one enables
+`com.example.my.component` component if it's in `disabled` state. Second one
+will disable `com.project.email.servlet` component, but only if it's state is
+not already `disabled`.
+
+---
+
+Please keep in mind that OSGi components used to get back to their original
+state after AEM instance restart. So if you disabled one, most probably it'll
+become enabled after instance restart.
+
+---
 
 # cq_user
 
