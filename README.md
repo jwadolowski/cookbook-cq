@@ -1,12 +1,11 @@
 # CQ/AEM Chef cookbook
 
-This is CQ/AEM cookbook that is primarily a library cookbook. It heavily uses
-and relies on [CQ Unix Toolkit](https://github.com/Cognifide/CQ-Unix-Toolkit).
+This is CQ/AEM cookbook that is primarily a library cookbook.
 
-FYI, this cookbook is not called `aem-coobkook` because of the fact when I
-started development there was no AEM yet and I simply like the old name much
-better. Nowadays it seems to be already taken anyway, so I no longer have a
-choice ;)
+FYI, this cookbook is not called `aem-coobkook`, because when I started
+development CQ was not rebranded to AEM  yet and I simply like the old name
+much better. Nowadays it seems to be already taken anyway, so I no longer have
+a choice.
 
 # Table of contents
 
