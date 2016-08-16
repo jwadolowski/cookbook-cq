@@ -1517,11 +1517,7 @@ won't be able to log in as this user anymore.
 
 # cq_jcr
 
-Enables CRUD operations on JCR nodes. Currently supports:
-
-* nodes creation
-* nodes modification
-* nodes deletion
+CRUD operations on JCR nodes.
 
 ## Actions
 
