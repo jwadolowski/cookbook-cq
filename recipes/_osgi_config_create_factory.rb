@@ -52,6 +52,7 @@ osgi_config_wrapper 'com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
     'jmxdomain' => 'com.example.monitoring'
   )
   factory true
+  append false
 end
 # *** existing: 1, append: 0, valid: 1
 osgi_config_wrapper 'com.day.cq.mcm.impl.MCMConfiguration' do
@@ -62,6 +63,7 @@ osgi_config_wrapper 'com.day.cq.mcm.impl.MCMConfiguration' do
                                    exampleMCMSuperTouchpoint)
   )
   factory true
+  append false
 end
 # *** existing: 1, append: 1, valid: 0
 osgi_config_wrapper 'com.adobe.granite.auth.oauth.provider' do

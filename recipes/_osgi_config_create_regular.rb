@@ -49,6 +49,7 @@ end
 osgi_config_wrapper 'com.day.cq.wcm.foundation.impl.'\
   'AdaptiveImageComponentServlet' do
   properties('adapt.supported.widths' => %w(325 480 476 620 720))
+  append false
 end
 # *** existing: 1, append: 0, valid: 1
 osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
@@ -57,6 +58,7 @@ osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
     'cq.pagesupdatehandler.imageresourcetypes' =>
      ['foundation/components/image']
   )
+  append false
 end
 # *** existing: 1, append: 1, valid: 0
 osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
@@ -99,6 +101,7 @@ osgi_config_wrapper 'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
                                       'z:'],
     'service.special_link_patterns' => ''
   )
+  append false
 end
 
 osgi_config_wrapper 'com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
@@ -118,6 +121,7 @@ osgi_config_wrapper 'com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
                                    '-iX',
                                    '-i']
   )
+  append false
 end
 # *** existing: 1, append: 0, valid: 1
 osgi_config_wrapper 'com.adobe.mac.core.impl.DAMVolumeChecker' do
@@ -128,11 +132,13 @@ osgi_config_wrapper 'com.adobe.mac.core.impl.DAMVolumeChecker' do
     'countThreshold' => 1000,
     'recipients' => []
   )
+  append false
 end
 # *** existing: 1, append: 1, valid: 0
 osgi_config_wrapper 'org.apache.felix.eventadmin.impl.EventAdmin' do
   properties(
-    'org.apache.felix.eventadmin.IgnoreTimeout' => ['com.example*']
+    'org.apache.felix.eventadmin.IgnoreTimeout' => ['com.example*'],
+    'not.existing.key' => 'value1'
   )
   append true
 end
