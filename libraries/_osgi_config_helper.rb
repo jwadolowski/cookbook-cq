@@ -228,7 +228,7 @@ module Cq
 
     def create_config(instance, user, pass, diff, factory_pid)
       req_path = '/system/console/configMgr/'\
-        '[Temporary%20PID%20replaced%20by%20real%20PID%20upon%20save]'
+        '[Temporary PID replaced by real PID upon save]'
       payload = payload_builder(diff).merge('factoryPid' => factory_pid)
 
       Chef::Log.debug("POST payload: #{payload}")
