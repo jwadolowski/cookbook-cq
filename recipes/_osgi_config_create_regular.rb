@@ -25,16 +25,12 @@ Chef::Log.warn(
 # -----------------------------------------------------------------------------
 
 # ** 1 key, 1 value
-# *** existing: 0, append: [0,1], valid: [0,1]
-osgi_config_wrapper 'not.existing.config.create.1k1v' do
-  properties('key1' => 'val1')
-end
-# *** existing: 1, append: [0,1], valid: 0
+# *** append: [0,1], valid: 0
 osgi_config_wrapper 'com.day.cq.dam.s7dam.common.'\
   'S7damDamChangeEventListener' do
   properties('cq.dam.s7dam.damchangeeventlistener.enabled' => false)
 end
-# *** existing: 1, append: [0,1], valid: 1
+# *** append: [0,1], valid: 1
 osgi_config_wrapper 'com.day.cq.dam.scene7.impl.'\
   'Scene7ConfigurationEventListener' do
   properties('cq.dam.scene7.configurationeventlistener.enabled' => true)
@@ -45,13 +41,13 @@ end
 osgi_config_wrapper 'not.existing.config.create.1kNv' do
   properties('key1' => %w(val1 val2 val3))
 end
-# *** existing: 1, append: 0, valid: 0
+# *** append: 0, valid: 0
 osgi_config_wrapper 'com.day.cq.wcm.foundation.impl.'\
   'AdaptiveImageComponentServlet' do
   properties('adapt.supported.widths' => %w(325 480 476 620 720))
   append false
 end
-# *** existing: 1, append: 0, valid: 1
+# *** append: 0, valid: 1
 osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   'DPSPagesUpdateHandler' do
   properties(
@@ -60,7 +56,7 @@ osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   )
   append false
 end
-# *** existing: 1, append: 1, valid: 0
+# *** append: 1, valid: 0
 osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   'DPSSubPagesUpdateHandler' do
   properties(
@@ -69,7 +65,7 @@ osgi_config_wrapper 'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
   )
   append true
 end
-# *** existing: 1, append: 1, valid: 1
+# *** append: 1, valid: 1
 osgi_config_wrapper 'com.day.cq.dam.scene7.impl.'\
   'Scene7AssetMimeTypeServiceImpl' do
   properties(
@@ -83,7 +79,7 @@ end
 osgi_config_wrapper 'not.existing.config.create.NkNv' do
   properties('key1' => 'val1', 'key2' => %w(a b c))
 end
-# *** existing: 1, append: 0, valid: 0
+# *** append: 0, valid: 0
 osgi_config_wrapper 'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
   properties(
     'scheduler.period' => 5,
@@ -123,7 +119,7 @@ osgi_config_wrapper 'com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
   )
   append false
 end
-# *** existing: 1, append: 0, valid: 1
+# *** append: 0, valid: 1
 osgi_config_wrapper 'com.adobe.mac.core.impl.DAMVolumeChecker' do
   properties(
     'scheduler.expression' => '0 0 0 * * ?',
@@ -134,7 +130,7 @@ osgi_config_wrapper 'com.adobe.mac.core.impl.DAMVolumeChecker' do
   )
   append false
 end
-# *** existing: 1, append: 1, valid: 0
+# *** append: 1, valid: 0
 osgi_config_wrapper 'org.apache.felix.eventadmin.impl.EventAdmin' do
   properties(
     'org.apache.felix.eventadmin.IgnoreTimeout' => ['com.example*'],
@@ -142,7 +138,7 @@ osgi_config_wrapper 'org.apache.felix.eventadmin.impl.EventAdmin' do
   )
   append true
 end
-# *** existing: 1, append: 1, valid: 1
+# *** append: 1, valid: 1
 osgi_config_wrapper 'org.apache.sling.engine.impl.SlingMainServlet' do
   properties(
     'sling.max.inclusions' => 50
