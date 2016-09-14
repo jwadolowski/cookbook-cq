@@ -50,15 +50,43 @@ module Cq
         "#{html.code}, response body: #{html.body}"
       ) if html.code != '200'
 
-      json_to_hash(html.body[/configData\ = (.+);/,1])
+      json_to_hash(html.body[/configData\ = (.+);/, 1])
     end
 
-    def matching_pids(configs)
-      configs['pids'].select { |c| c['id'] == pid }
+    def regular_pids(configs)
+      configs['pids']
     end
 
-    def matching_fpids(configs)
-      configs['fpids'].select { |c| c['id'] == fpid }
+    def factory_pids(configs)
+      configs['fpids']
+    end
+
+    # All instances of given factory PID
+    #
+    # [
+    #   {
+    #     "id" => "com.example.com.cf279d-1530-467f-a1bd-6a22bfee13cb",
+    #     "bundle_name" => "Adobe Granite Monitoring Support",
+    #     "has_config" => true,
+    #     "name" => "Adobe Granite Monitor Handler",
+    #     "fpid" => "com.adobe.granite.monitoring.impl.ScriptConfigImpl",
+    #     "bundle" => 166
+    #   },
+    #   {
+    #     "id" => "com.example.com.b12334-1jrr-421f-a12d-6a23bfxa421",
+    #     "bundle_name" => "Adobe Granite Monitoring Support",
+    #     "has_config" => true,
+    #     "name" => "Adobe Granite Monitor Handler",
+    #     "fpid" => "com.adobe.granite.monitoring.impl.ScriptConfigImpl",
+    #     "bundle" => 191
+    #   }
+    # ]
+    def factory_instances(fpid, configs)
+      regular_pids(configs).select { |c| c['fpid'] == fpid }
+    end
+
+    def pid_exist?(pid, list)
+      !list.select { |p| p['id'] == pid }.empty?
     end
 
     # [
@@ -92,20 +120,158 @@ module Cq
     #     "service_location": "..."
     #   }
     # ]
-    def config_properties(addr, user, password, pid)
-      path = '/system/console/configMgr/' + pid + '.json'
-      json = http_get(addr, path, user, password)
+    def config_info(addr, user, password, pid)
+      path = '/system/console/configMgr/' + pid
+      json = http_post(addr, path, user, password, {})
 
       Chef::Application.fatal!(
         "Can't download #{pid} configuration! Response code: #{json.code}, "\
-        "response body: #{html.body}"
+        "response body: #{json.body}"
       ) if json.code != '200'
 
       json_to_hash(json.body)
     end
 
-    def factory_instances(configs)
-      configs['pids'].select { |c| c['fpid'] == fpid }
+    # Converts verbose format of properties AEM returns to the one user defined
+    # in cq_osgi_config resource
+    def pure_properties(info)
+      hash = {}
+
+      info['properties'].each do |k, v|
+        # Fallback to 'values' if 'value' doesn't exist
+        hash[k] = v['value'].nil? ? v['values'] : v['value']
+      end
+
+      hash
+    end
+
+    # Properties need to be unified to enable easy comparison:
+    # * sort and uniq array elements
+    # * serialize all values to string, as that doesn't matter from change
+    #   point of view (including array elements)
+    def unify_properties(properties)
+      properties.each do |k, v|
+        if v.is_a?(Array)
+          properties[k] = v.map(&:to_s)
+          properties[k] = v.sort.uniq
+        else
+          properties[k] = v.to_s
+        end
+      end
+    end
+
+    def validate_keyspace(c_prop, n_prop)
+      n_prop.each do |k, v|
+        Chef::Log.warn(
+          "#{k} is not a valid property key!"
+        ) unless c_prop.include?(k)
+      end
+    end
+
+    # Key space we loop through varies by presence of append mode. When it's
+    # true new resource property keys are used, as we care just about them. In
+    # complementary scenario we need to go thorugh the entire key space that's
+    # defined in current resource
+    #
+    # Additionally remove property keys that doesn't exist in current
+    # configuration
+    # def keyspace(c_prop, n_prop, append)
+    #   if append
+    #     n_prop.delete_if { |k, v| !c_prop.include?(k) }
+    #   else
+    #     c_prop
+    #   end
+    # end
+
+    # Always use _valid_ properties defined in your resource as a keyspace we
+    # will loop thorugh
+    def keyspace(c_prop, n_prop)
+      n_prop.delete_if { |k, v| !c_prop.include?(k) }
+    end
+
+    def property_diff(c_prop, n_prop, append)
+      diff = {}
+
+      keyspace(c_prop, n_prop).each do |k, v|
+        # 3 possible scenarios:
+        # * array w/ append and new array elements are not included yet
+        # * array w/o append and new array != current array
+        # * regular string and new value != current value
+        if v.is_a?(Array) && append &&
+           (c_prop[k] & n_prop[k]).sort != n_prop[k]
+          diff[k] = (c_prop[k] | n_prop[k]).sort
+        elsif v.is_a?(Array) && !append && c_prop[k] != n_prop[k]
+          diff[k] = n_prop[k]
+        elsif v.is_a?(String) && c_prop[k] != n_prop[k]
+          diff[k] = n_prop[k]
+        end
+      end
+
+      diff
+    end
+
+    def payload_builder(diff)
+      static = { 'apply' => true, 'action' => 'ajaxConfigManager' }
+      propertylist = { 'propertylist' => diff.keys.join(',') }
+
+      [static, diff, propertylist].inject(:merge)
+    end
+
+    # TODO: validate approach
+    # * AEM 5.6.1
+    # * AEM 6.0.0
+    # * AEM 6.1.0
+    # * AEM 6.2.0
+    def update_config(instance, user, pass, info, diff)
+      req_path = '/system/console/configMgr/' + info['pid']
+      payload = payload_builder(diff).merge(
+        { '$location' => info['bundle_location'] }
+      )
+
+      Chef::Log.debug("POST payload: #{payload}")
+
+      http_resp = http_post(
+        instance,
+        req_path,
+        user,
+        pass,
+        payload
+      )
+
+      # TODO: validate response
+    end
+
+    def create_config(instance, user, pass, diff, factory_pid)
+      req_path = '/system/console/configMgr/'\
+        '[Temporary%20PID%20replaced%20by%20real%20PID%20upon%20save]'
+      payload = payload_builder(diff).merge('factoryPid' => factory_pid)
+
+      Chef::Log.error("POST payload: #{payload}")
+
+      http_resp = http_post(
+        instance,
+        req_path,
+        user,
+        pass,
+        payload
+      )
+
+      # TODO: validate response
+    end
+
+    def delete_config(instance, user, pass, pid)
+      req_path = '/system/console/configMgr/' + pid
+      payload = { 'apply' => 1, 'delete' => 1 }
+
+      http_resp = http_post(
+        instance,
+        req_path,
+        user,
+        pass,
+        payload
+      )
+
+      # TODO: validate response
     end
   end
 end
