@@ -34,6 +34,7 @@ define :osgi_config_wrapper,
        :action => :create do
   ruby_block "start timestamp for #{params[:name]}" do
     block do
+      sleep 1 # Wait a second to separate log events
       File.write(
         "/tmp/#{params[:name]}_start_timestamp",
         Time.now.strftime('%d/%b/%Y %H:%M:%S')
@@ -60,6 +61,7 @@ define :osgi_config_wrapper,
 
   ruby_block "stop timestamp for #{params[:name]}" do
     block do
+      sleep 1 # Wait a second to separate log events
       File.write(
         "/tmp/#{params[:name]}_stop_timestamp",
         Time.now.strftime('%d/%b/%Y %H:%M:%S')
