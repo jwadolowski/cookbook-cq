@@ -1,29 +1,5 @@
 require_relative '../../../kitchen/data/spec_helper'
 
-describe 'OSGi config not.existing.config.create.1k1v' do
-  it 'there was NO attempts to create it' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'not.existing.config.create.1k1v'
-      ).length
-    ).to eq(0)
-  end
-
-  it 'does NOT exist' do
-    expect(
-      @config_list.include?('not.existing.config.create.1k1v')
-    ).to be false
-  end
-
-  it 'in total there was 0 HTTP requests' do
-    expect(
-      @osgi_config_helper.all_requests(
-        'not.existing.config.create.1k1v'
-      ).length
-    ).to eq(0)
-  end
-end
-
 describe 'OSGi config '\
   'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener' do
   it 'in total there were 2 HTTP requests' do
@@ -61,30 +37,6 @@ describe 'OSGi config '\
         'cq.dam.scene7.configurationeventlistener.enabled'
       )
     ).to eq(true)
-  end
-end
-
-describe 'OSGi config not.existing.config.create.1kNv' do
-  it 'there was NO attempts to create it' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'not.existing.config.create.1kNv'
-      ).length
-    ).to eq(0)
-  end
-
-  it 'does NOT exist' do
-    expect(
-      @config_list.include?('not.existing.config.create.1kNv')
-    ).to be false
-  end
-
-  it 'in total there was 0 HTTP requests' do
-    expect(
-      @osgi_config_helper.all_requests(
-        'not.existing.config.create.1kNv'
-      ).length
-    ).to eq(0)
   end
 end
 
@@ -183,30 +135,6 @@ describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
         'Video=video/*'
       ]
     )
-  end
-end
-
-describe 'OSGi not.existing.config.create.NkNv' do
-  it 'there was NO attempts to read/modify it' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'not.existing.config.create.NkNv'
-      ).length
-    ).to eq(0)
-  end
-
-  it 'does NOT exist' do
-    expect(
-      @config_list.include?('not.existing.config.create.NkNv')
-    ).to be false
-  end
-
-  it 'in total there was 0 HTTP requests' do
-    expect(
-      @osgi_config_helper.all_requests(
-        'not.existing.config.create.NkNv'
-      ).length
-    ).to eq(0)
   end
 end
 
@@ -344,13 +272,23 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
   end
 end
 
-describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
-  it 'in total there was 0 HTTP requests' do
+describe 'OSGi com.adobe.granite.queries.impl.explain.query.'\
+  'ExplainQueryServlet' do
+  it 'in total there was 1 HTTP request' do
     expect(
       @osgi_config_helper.all_requests(
-        'com.adobe.mac.core.impl.DAMVolumeChecker'
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet'
       ).length
-    ).to eq(0)
+    ).to eq(1)
+  end
+
+  it 'has log.message-count-limit set to 100' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet',
+        'log.message-count-limit'
+      )
+    ).to match(/^100$/)
   end
 end
 

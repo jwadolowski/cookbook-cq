@@ -112,13 +112,16 @@ osgi_config_wrapper 'com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
   append false
 end
 # *** append: 0, valid: 1
-osgi_config_wrapper 'com.adobe.mac.core.impl.DAMVolumeChecker' do
+osgi_config_wrapper 'com.adobe.granite.queries.impl.explain.query.'\
+  'ExplainQueryServlet' do
   properties(
-    'scheduler.expression' => '0 0 0 * * ?',
-    'damRootPath' => '/content/dam/mac/',
-    'sizeThreshold' => '500',
-    'countThreshold' => 1000,
-    'recipients' => []
+    'log.logger-names' => [
+      'org.apache.jackrabbit.oak.query',
+      'org.apache.jackrabbit.oak.plugins.index'
+    ],
+    'log.pattern' => '%msg%n',
+    'log.message-count-limit' => 100,
+    'logging.enabled' => false
   )
   append false
 end
