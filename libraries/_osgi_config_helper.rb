@@ -231,7 +231,7 @@ module Cq
         '[Temporary%20PID%20replaced%20by%20real%20PID%20upon%20save]'
       payload = payload_builder(diff).merge('factoryPid' => factory_pid)
 
-      Chef::Log.error("POST payload: #{payload}")
+      Chef::Log.debug("POST payload: #{payload}")
 
       http_resp = http_post(
         instance,
