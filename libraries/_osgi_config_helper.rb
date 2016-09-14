@@ -168,21 +168,6 @@ module Cq
       end
     end
 
-    # Key space we loop through varies by presence of append mode. When it's
-    # true new resource property keys are used, as we care just about them. In
-    # complementary scenario we need to go thorugh the entire key space that's
-    # defined in current resource
-    #
-    # Additionally remove property keys that doesn't exist in current
-    # configuration
-    # def keyspace(c_prop, n_prop, append)
-    #   if append
-    #     n_prop.delete_if { |k, v| !c_prop.include?(k) }
-    #   else
-    #     c_prop
-    #   end
-    # end
-
     # Always use _valid_ properties defined in your resource as a keyspace we
     # will loop thorugh
     def keyspace(c_prop, n_prop)
@@ -238,7 +223,7 @@ module Cq
         payload
       )
 
-      # TODO: validate response
+      validate_respose(http_resp, '302')
     end
 
     def create_config(instance, user, pass, diff, factory_pid)
@@ -256,7 +241,7 @@ module Cq
         payload
       )
 
-      # TODO: validate response
+      validate_respose(http_resp, '302')
     end
 
     def delete_config(instance, user, pass, pid)
@@ -271,7 +256,13 @@ module Cq
         payload
       )
 
-      # TODO: validate response
+      validate_respose(http_resp, '200')
+    end
+
+    def validate_response(http_resp, expected_code)
+      Chef::Application.fatal!(
+        "Got #{http_resp.code}, but expected #{expected_code}"
+      ) if http_resp.code != expected_code
     end
   end
 end
