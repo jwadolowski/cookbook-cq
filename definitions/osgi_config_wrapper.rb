@@ -28,6 +28,9 @@ define :osgi_config_wrapper,
        :append => true,
        :factory => false,
        :force => false,
+       :unique_fields => [],
+       :count => 1,
+       :enforce_count => false,
        :action => :create do
   ruby_block "start timestamp for #{params[:name]}" do
     block do
@@ -48,6 +51,9 @@ define :osgi_config_wrapper,
     force params[:force]
     properties(params[:properties])
     factory_pid params[:name] if params[:factory]
+    unique_fields params[:unique_fields]
+    count params[:count]
+    enforce_count params[:enforce_count]
 
     action params[:action]
   end
