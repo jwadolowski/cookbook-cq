@@ -223,7 +223,7 @@ module Cq
         payload
       )
 
-      validate_respose(http_resp, '302')
+      validate_response(http_resp, '302')
     end
 
     def create_config(instance, user, pass, diff, factory_pid)
@@ -241,7 +241,7 @@ module Cq
         payload
       )
 
-      validate_respose(http_resp, '302')
+      validate_response(http_resp, '302')
     end
 
     def delete_config(instance, user, pass, pid)
@@ -256,7 +256,7 @@ module Cq
         payload
       )
 
-      validate_respose(http_resp, '200')
+      validate_response(http_resp, '200')
     end
 
     def validate_response(http_resp, expected_code)
