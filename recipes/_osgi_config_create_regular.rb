@@ -37,10 +37,6 @@ osgi_config_wrapper 'com.day.cq.dam.scene7.impl.'\
 end
 
 # ** 1 key, N values
-# *** existing: 0, append: [0,1], valid: [0,1]
-osgi_config_wrapper 'not.existing.config.create.1kNv' do
-  properties('key1' => %w(val1 val2 val3))
-end
 # *** append: 0, valid: 0
 osgi_config_wrapper 'com.day.cq.wcm.foundation.impl.'\
   'AdaptiveImageComponentServlet' do
@@ -75,10 +71,6 @@ osgi_config_wrapper 'com.day.cq.dam.scene7.impl.'\
 end
 
 # ** N key, N values
-# *** existing: 0, append: [0,1], valid: [0,1]
-osgi_config_wrapper 'not.existing.config.create.NkNv' do
-  properties('key1' => 'val1', 'key2' => %w(a b c))
-end
 # *** append: 0, valid: 0
 osgi_config_wrapper 'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
   properties(
