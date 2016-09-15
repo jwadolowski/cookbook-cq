@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 
 define :osgi_config_wrapper,
-       :properties => nil,
+       :properties => {},
        :append => true,
        :factory => false,
        :force => false,
