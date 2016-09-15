@@ -40,7 +40,7 @@ class Chef
         @instance = nil
         @factory_pid = nil
         @properties = {}
-        @append = true
+        @append = false
         @apply_all = false
         @unique_fields = []
         @count = 1
