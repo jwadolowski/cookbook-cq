@@ -357,6 +357,7 @@ class Chef
                 "Update #{new_resource.count} instance(s) of "\
                 "#{new_resource.factory_pid}"
               ) do
+                diff = new_resource.properties if new_resource.apply_all
                 candidates.each do |c|
                   update_config(
                     new_resource.instance,
@@ -373,6 +374,7 @@ class Chef
                 "Update #{candidates.length} instance(s) of "\
                 "#{new_resource.factory_pid}"
               ) do
+                diff = new_resource.properties if new_resource.apply_all
                 candidates.each do |c|
                   update_config(
                     new_resource.instance,
@@ -425,6 +427,7 @@ class Chef
                   "Update #{new_resource.count} instance(s) of "\
                   "#{new_resource.factory_pid}"
                 ) do
+                  diff = new_resource.properties if new_resource.apply_all
                   new_resource.count.times do |i|
                     update_config(
                       new_resource.instance,
@@ -470,6 +473,7 @@ class Chef
           Chef::Log.info("#{new_resource.pid} is already configured")
         else
           converge_by("Create #{new_resource.pid}") do
+            diff = new_resource.properties if new_resource.apply_all
             update_config(
               new_resource.instance,
               new_resource.username,

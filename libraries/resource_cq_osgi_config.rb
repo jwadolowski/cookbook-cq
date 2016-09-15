@@ -41,6 +41,7 @@ class Chef
         @factory_pid = nil
         @properties = {}
         @append = true
+        @apply_all = false
         @unique_fields = []
         @count = 1
         @enforce_count = false
@@ -73,6 +74,10 @@ class Chef
 
       def append(arg = nil)
         set_or_return(:append, arg, :kind_of => [TrueClass, FalseClass])
+      end
+
+      def apply_all(arg = nil)
+        set_or_return(:apply_all, arg, :kind_of => [TrueClass, FalseClass])
       end
 
       def unique_fields(arg = nil)
