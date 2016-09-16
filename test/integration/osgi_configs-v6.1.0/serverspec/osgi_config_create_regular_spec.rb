@@ -1,47 +1,7 @@
 require_relative '../../../kitchen/data/spec_helper'
 
-describe 'OSGi config not.existing.config.create.1k1v' do
-  it 'there was NO attempts to create it' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'not.existing.config.create.1k1v'
-      ).length
-    ).to eq(0)
-  end
-
-  it 'does NOT exist' do
-    expect(
-      @config_list.include?('not.existing.config.create.1k1v')
-    ).to be false
-  end
-
-  it 'in total there was 0 HTTP requests' do
-    expect(
-      @osgi_config_helper.all_requests(
-        'not.existing.config.create.1k1v'
-      ).length
-    ).to eq(0)
-  end
-end
-
 describe 'OSGi config '\
   'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener' do
-  it 'there was single READ request' do
-    expect(
-      @osgi_config_helper.read_requests(
-        'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
-      ).length
-    ).to eq(1)
-  end
-
-  it 'there was single UPDATE request' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener'
-      ).length
-    ).to eq(1)
-  end
-
   it 'in total there were 2 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
@@ -62,14 +22,6 @@ end
 
 describe 'OSGi config '\
   'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener' do
-  it 'there was single READ request' do
-    expect(
-      @osgi_config_helper.read_requests(
-        'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener'
-      ).length
-    ).to eq(1)
-  end
-
   it 'in total there was 1 HTTP request' do
     expect(
       @osgi_config_helper.all_requests(
@@ -88,47 +40,7 @@ describe 'OSGi config '\
   end
 end
 
-describe 'OSGi config not.existing.config.create.1kNv' do
-  it 'there was NO attempts to create it' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'not.existing.config.create.1kNv'
-      ).length
-    ).to eq(0)
-  end
-
-  it 'does NOT exist' do
-    expect(
-      @config_list.include?('not.existing.config.create.1kNv')
-    ).to be false
-  end
-
-  it 'in total there was 0 HTTP requests' do
-    expect(
-      @osgi_config_helper.all_requests(
-        'not.existing.config.create.1kNv'
-      ).length
-    ).to eq(0)
-  end
-end
-
 describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
-  it 'there was single READ request' do
-    expect(
-      @osgi_config_helper.read_requests(
-        'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet'
-      ).length
-    ).to eq(1)
-  end
-
-  it 'there was single UPDATE request' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet'
-      ).length
-    ).to eq(1)
-  end
-
   it 'in total there were 2 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
@@ -147,94 +59,53 @@ describe 'OSGi com.day.cq.wcm.foundation.impl.AdaptiveImageComponentServlet' do
   end
 end
 
-# Temporarily disabled because of:
-# https://github.com/Cognifide/CQ-Unix-Toolkit/issues/42
-#
-# describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-#   'DPSPagesUpdateHandler' do
-#   it 'there was single READ request' do
-#     expect(
-#       @osgi_config_helper.read_requests(
-#         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-#         'DPSPagesUpdateHandler'
-#       ).length
-#     ).to eq(1)
-#   end
-
-#   it 'in total there was 1 HTTP request' do
-#     expect(
-#       @osgi_config_helper.all_requests(
-#         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-#         'DPSPagesUpdateHandler'
-#       ).length
-#     ).to eq(1)
-#   end
-
-#   it 'cq.pagesupdatehandler.imageresourcetypes is set to ["foundation'\
-#     '/components/image"]' do
-#     expect(
-#       @osgi_config_helper.config_value(
-#         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-#         'DPSPagesUpdateHandler',
-#         'cq.pagesupdatehandler.imageresourcetypes'
-#       )
-#     ).to eq(['foundation/components/image'])
-#   end
-# end
-
-# Temporarily disabled because of:
-# https://github.com/Cognifide/CQ-Unix-Toolkit/issues/42
-#
-# describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-#   'DPSSubPagesUpdateHandler' do
-#   it 'there was single READ request' do
-#     expect(
-#       @osgi_config_helper.read_requests(
-#         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-#         'DPSSubPagesUpdateHandler'
-#       ).length
-#     ).to eq(1)
-#   end
-
-#   it 'there was single UPDATE request' do
-#     expect(
-#       @osgi_config_helper.regular_update_requests(
-#         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-#         'DPSSubPagesUpdateHandler'
-#       ).length
-#     ).to eq(1)
-#   end
-
-#   it 'in total there were 2 HTTP requests' do
-#     expect(
-#       @osgi_config_helper.all_requests(
-#         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-#         'DPSSubPagesUpdateHandler'
-#       ).length
-#     ).to eq(2)
-#   end
-
-#   it 'cq.pagesupdatehandler.imageresourcetypes is set to '\
-#     '["foundation/components/image","test/append/value"]' do
-#     expect(
-#       @osgi_config_helper.config_value(
-#         'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
-#         'DPSSubPagesUpdateHandler',
-#         'cq.pagesupdatehandler.imageresourcetypes'
-#       )
-#     ).to eq(['foundation/components/image', 'test/append/value'])
-#   end
-# end
-
-describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
-  it 'there was single READ request' do
+describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+  'DPSPagesUpdateHandler' do
+  it 'in total there was 1 HTTP request' do
     expect(
-      @osgi_config_helper.read_requests(
-        'com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl'
+      @osgi_config_helper.all_requests(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSPagesUpdateHandler'
       ).length
     ).to eq(1)
   end
 
+  it 'cq.pagesupdatehandler.imageresourcetypes is set to ["foundation'\
+    '/components/image"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSPagesUpdateHandler',
+        'cq.pagesupdatehandler.imageresourcetypes'
+      )
+    ).to eq(['foundation/components/image'])
+  end
+end
+
+describe 'OSGi com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+  'DPSSubPagesUpdateHandler' do
+  it 'in total there were 2 HTTP requests' do
+    expect(
+      @osgi_config_helper.all_requests(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSSubPagesUpdateHandler'
+      ).length
+    ).to eq(2)
+  end
+
+  it 'cq.pagesupdatehandler.imageresourcetypes is set to '\
+    '["foundation/components/image","test/append/value"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.media.publishing.dps.impl.contentsync.'\
+        'DPSSubPagesUpdateHandler',
+        'cq.pagesupdatehandler.imageresourcetypes'
+      )
+    ).to eq(['foundation/components/image', 'test/append/value'])
+  end
+end
+
+describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
   it 'in total there were 2 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
@@ -267,47 +138,7 @@ describe 'OSGi com.day.cq.dam.scene7.impl.Scene7AssetMimeTypeServiceImpl' do
   end
 end
 
-describe 'OSGi not.existing.config.create.NkNv' do
-  it 'there was NO attempts to read/modify it' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'not.existing.config.create.NkNv'
-      ).length
-    ).to eq(0)
-  end
-
-  it 'does NOT exist' do
-    expect(
-      @config_list.include?('not.existing.config.create.NkNv')
-    ).to be false
-  end
-
-  it 'in total there was 0 HTTP requests' do
-    expect(
-      @osgi_config_helper.all_requests(
-        'not.existing.config.create.NkNv'
-      ).length
-    ).to eq(0)
-  end
-end
-
 describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
-  it 'there was single READ request' do
-    expect(
-      @osgi_config_helper.read_requests(
-        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
-      ).length
-    ).to eq(1)
-  end
-
-  it 'there was single UPDATE request' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl'
-      ).length
-    ).to eq(1)
-  end
-
   it 'in total there were 2 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
@@ -322,7 +153,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'scheduler.period'
       )
-    ).to eq(5)
+    ).to match(/^5$/)
   end
 
   it 'scheduler.concurrent is set to false' do
@@ -331,7 +162,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'scheduler.concurrent'
       )
-    ).to eq(false)
+    ).to match(/^false$/)
   end
 
   it 'service.bad_link_tolerance_interval is set to 24' do
@@ -384,22 +215,6 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
 end
 
 describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
-  it 'there was single READ request' do
-    expect(
-      @osgi_config_helper.read_requests(
-        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet'
-      ).length
-    ).to eq(1)
-  end
-
-  it 'there was single UPDATE request' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet'
-      ).length
-    ).to eq(1)
-  end
-
   it 'in total there were 2 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
@@ -457,41 +272,27 @@ describe 'OSGi com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
   end
 end
 
-describe 'OSGi com.adobe.mac.core.impl.DAMVolumeChecker' do
-  it 'there was 0 READ requests' do
-    expect(
-      @osgi_config_helper.read_requests(
-        'com.adobe.mac.core.impl.DAMVolumeChecker'
-      ).length
-    ).to eq(0)
-  end
-
-  it 'in total there was 0 HTTP requests' do
+describe 'OSGi com.adobe.granite.queries.impl.explain.query.'\
+  'ExplainQueryServlet' do
+  it 'in total there was 1 HTTP request' do
     expect(
       @osgi_config_helper.all_requests(
-        'com.adobe.mac.core.impl.DAMVolumeChecker'
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet'
       ).length
-    ).to eq(0)
+    ).to eq(1)
+  end
+
+  it 'has log.message-count-limit set to 100' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet',
+        'log.message-count-limit'
+      )
+    ).to match(/^100$/)
   end
 end
 
 describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
-  it 'there was single READ request' do
-    expect(
-      @osgi_config_helper.read_requests(
-        'org.apache.felix.eventadmin.impl.EventAdmin'
-      ).length
-    ).to eq(1)
-  end
-
-  it 'there was single UPDATE request' do
-    expect(
-      @osgi_config_helper.regular_update_requests(
-        'org.apache.felix.eventadmin.impl.EventAdmin'
-      ).length
-    ).to eq(1)
-  end
-
   it 'in total there were 2 HTTP requests' do
     expect(
       @osgi_config_helper.all_requests(
@@ -506,7 +307,7 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
         'org.apache.felix.eventadmin.impl.EventAdmin',
         'org.apache.felix.eventadmin.ThreadPoolSize'
       )
-    ).to eq(20)
+    ).to match(/^20$/)
   end
 
   it 'org.apache.felix.eventadmin.Timeout is set to 5000' do
@@ -515,7 +316,7 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
         'org.apache.felix.eventadmin.impl.EventAdmin',
         'org.apache.felix.eventadmin.Timeout'
       )
-    ).to eq(5000)
+    ).to match(/^5000$/)
   end
 
   it 'org.apache.felix.eventadmin.RequireTopic is set to true' do
@@ -524,7 +325,7 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
         'org.apache.felix.eventadmin.impl.EventAdmin',
         'org.apache.felix.eventadmin.RequireTopic'
       )
-    ).to eq(true)
+    ).to match(/^true/)
   end
 
   it 'org.apache.felix.eventadmin.IgnoreTimeout is set to '\
@@ -548,14 +349,6 @@ describe 'OSGi org.apache.felix.eventadmin.impl.EventAdmin' do
 end
 
 describe 'OSGi org.apache.sling.engine.impl.SlingMainServlet' do
-  it 'there was single READ request' do
-    expect(
-      @osgi_config_helper.read_requests(
-        'org.apache.sling.engine.impl.SlingMainServlet'
-      ).length
-    ).to eq(1)
-  end
-
   it 'in total there was 1 HTTP request' do
     expect(
       @osgi_config_helper.all_requests(

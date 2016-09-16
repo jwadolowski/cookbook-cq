@@ -24,13 +24,17 @@
 # -----------------------------------------------------------------------------
 
 define :osgi_config_wrapper,
-       :properties => nil,
-       :append => false,
+       :properties => {},
+       :append => true,
        :factory => false,
        :force => false,
+       :unique_fields => [],
+       :count => 1,
+       :enforce_count => false,
        :action => :create do
   ruby_block "start timestamp for #{params[:name]}" do
     block do
+      sleep 1 # Wait a second to separate log events
       File.write(
         "/tmp/#{params[:name]}_start_timestamp",
         Time.now.strftime('%d/%b/%Y %H:%M:%S')
@@ -48,12 +52,16 @@ define :osgi_config_wrapper,
     force params[:force]
     properties(params[:properties])
     factory_pid params[:name] if params[:factory]
+    unique_fields params[:unique_fields]
+    count params[:count]
+    enforce_count params[:enforce_count]
 
     action params[:action]
   end
 
   ruby_block "stop timestamp for #{params[:name]}" do
     block do
+      sleep 1 # Wait a second to separate log events
       File.write(
         "/tmp/#{params[:name]}_stop_timestamp",
         Time.now.strftime('%d/%b/%Y %H:%M:%S')

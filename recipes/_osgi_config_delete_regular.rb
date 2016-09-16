@@ -21,12 +21,6 @@ Chef::Log.warn(
   'This is a test recipe and must not be used outside of test kitchen!'
 )
 
-# Not exisiting config
-osgi_config_wrapper 'not.existing.config.to.delete' do
-  properties('key1' => 'val1')
-  action :delete
-end
-
 # Update existing regular config and delete it afterwards
 osgi_config_wrapper 'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler' do
   properties(
@@ -39,15 +33,11 @@ end
 # Not forced delete
 osgi_config_wrapper 'com.adobe.cq.commerce.impl.promotion.'\
   'PromotionManagerImpl' do
-  properties(
-    'cq.commerce.promotion.root' => '/random/path'
-  )
   action :delete
 end
 
 # Forced delete
 osgi_config_wrapper 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
-  properties({})
   force true
   action :delete
 end

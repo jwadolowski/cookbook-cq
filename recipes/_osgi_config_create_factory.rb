@@ -23,12 +23,7 @@ Chef::Log.warn(
 
 # Factory configurations
 # -----------------------------------------------------------------------------
-# *** existing: 0, append: [0,1], valid: [0,1]
-osgi_config_wrapper 'com.example.random.factory' do
-  properties('val1' => 'key1', 'abcd' => 'efgh')
-  factory true
-end
-# *** existing: 1, append: 0, valid: 0
+# *** append: 0, valid: 0
 osgi_config_wrapper 'com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
   properties(
     'script.filename' => 'test-script.sh',
@@ -52,18 +47,35 @@ osgi_config_wrapper 'com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
     'jmxdomain' => 'com.example.monitoring'
   )
   factory true
+  append false
 end
-# *** existing: 1, append: 0, valid: 1
+
+osgi_config_wrapper 'com.adobe.cq.social.datastore.as.impl.'\
+  'UGCCResourceProviderFactory' do
+  properties(
+    'version.id' => 'v1',
+    'cache.on' => 'true',
+    'cache.ttl' => '1000'
+  )
+  factory true
+  unique_fields ['version.id', 'cache.on']
+  count 3
+  enforce_count true
+  append false
+end
+# *** append: 0, valid: 1
 osgi_config_wrapper 'com.day.cq.mcm.impl.MCMConfiguration' do
   properties(
     'experience.indirection' => %w(geometrixx/components/newsletterpage
                                    mcm/components/newsletter/page),
     'touchpoint.indirection' => %w(exampleGeometrixxAddedComp
-                                   exampleMCMSuperTouchpoint)
+                                   exampleMCMSuperTouchpoint),
+    'extraProperty' => %w(a b c)
   )
   factory true
+  append false
 end
-# *** existing: 1, append: 1, valid: 0
+# *** append: 1, valid: 0
 osgi_config_wrapper 'com.adobe.granite.auth.oauth.provider' do
   properties(
     'oauth.config.id' => 'test123'
@@ -71,7 +83,7 @@ osgi_config_wrapper 'com.adobe.granite.auth.oauth.provider' do
   factory true
   append true
 end
-# *** existing: 1, append: 1, valid: 1
+# *** append: 1, valid: 1
 osgi_config_wrapper 'org.apache.sling.commons.log.LogManager.factory.config' do
   properties(
     'org.apache.sling.commons.log.level' => 'info',
@@ -84,5 +96,6 @@ osgi_config_wrapper 'org.apache.sling.commons.log.LogManager.factory.config' do
     ]
   )
   factory true
+  unique_fields ['org.apache.sling.commons.log.file']
   append true
 end

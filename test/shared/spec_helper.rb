@@ -58,12 +58,11 @@ class OSGiConfigHelper
   #
   # @param pid [String] factory PID
   # @return [Array] array of elements (request lines)
-  def factory_update_requests(pid)
+  def factory_create_requests(pid)
     log_entries(
       pid,
       'POST\ \/system\/console\/configMgr\/%5BTemporary%20PID%20replaced'\
-      "%20by%20real%20PID%20upon%20save%5D\?.*factoryPid=#{pid}"\
-      '.*\ HTTP\/1\.1'
+      '%20by%20real%20PID%20upon%20save%5D.*\ HTTP\/1\.1'
     )
   end
 
@@ -71,24 +70,24 @@ class OSGiConfigHelper
   #
   # @param pid [String] PID
   # @return [Array] array of elements (request lines)
-  def regular_update_requests(pid)
-    log_entries(
-      pid,
-      "POST\ \/system\/console\/configMgr\/#{pid}\?"\
-      '.*apply=true.*action=ajaxConfigManager.*\ HTTP\/1\.1'
-    )
-  end
+  # def regular_update_requests(pid)
+  #   log_entries(
+  #     pid,
+  #     "POST\ \/system\/console\/configMgr\/#{pid}\?"\
+  #     '.*apply=true.*action=ajaxConfigManager.*\ HTTP\/1\.1'
+  #   )
+  # end
 
   # Get all POST requests that delete given config
   #
   # @param pid [String] PID
   # @return [Array] array of elements (request lines)
-  def delete_requests(pid)
-    log_entries(
-      pid,
-      "POST\ \/system\/console\/configMgr\/#{pid}\?.*delete=true\ HTTP\/1\.1"
-    )
-  end
+  # def delete_requests(pid)
+  #   log_entries(
+  #     pid,
+  #     "POST\ \/system\/console\/configMgr\/#{pid}\?.*delete=true\ HTTP\/1\.1"
+  #   )
+  # end
 
   # Get all requests that includes given PID
   #

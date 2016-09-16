@@ -21,12 +21,6 @@ Chef::Log.warn(
   'This is a test recipe and must not be used outside of test kitchen!'
 )
 
-osgi_config_wrapper 'not.existing.factory.config.to.delete' do
-  properties('x' => '123')
-  factory true
-  action :delete
-end
-
 osgi_config_wrapper 'org.apache.sling.tenant.internal.TenantProviderImpl' do
   properties(
     'tenant.root' => '/some/path',

@@ -1122,7 +1122,7 @@ cq_osgi_config 'Custom Logger' do
   action :create
 end
 
-cq_osgi_config 'Jobs Queue' do
+cq_osgi_config 'Job Queue' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -1147,7 +1147,7 @@ end
 properties unless it is already present. There's no need to specify an UUID in
 resource definition.
 
-`Jobs Queue` resource will delete a factory instance of
+`Job Queue` resource will delete a factory instance of
 `org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
 properties. Nothing will happen when there's no such OSGi config.
 

@@ -16,6 +16,8 @@ platforms:
 <% platforms.each do |p| %>
 <%   chef_versions.each do |chef_version| %>
   - name: <%= p %>-chef-<%= chef_version %>
+    driver:
+      linked_clone: true
     driver_config:
       box: bento/<%= p %>
       require_chef_omnibus: <%= chef_version %>
@@ -86,7 +88,7 @@ suites:
       - recipe[cq::_osgi_config_create_regular]
       - recipe[cq::_osgi_config_create_factory]
       - recipe[cq::_osgi_config_delete_regular]
-      - recipe[cq::_osgi_config_delete_factory]
+      # - recipe[cq::_osgi_config_delete_factory]
     attributes:
       cq:
         version: <%= v %>
