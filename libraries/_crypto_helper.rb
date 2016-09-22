@@ -146,7 +146,7 @@ module Cq
         # Extract com.adobe.granite.crypto JAR file from standalone one
         extract_jar(
           standalone_jar,
-          'resources/install/0/com.adobe.granite.crypto*',
+          'resources/install/0/com.adobe.granite.crypto*.jar',
           crypto_aem_dir
         )
 
