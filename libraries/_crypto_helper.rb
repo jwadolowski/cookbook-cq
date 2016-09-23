@@ -140,7 +140,7 @@ module Cq
         Chef::Application.fatal!(
           'Crypto tmp directory should contain only one CQ quickstart JAR '\
           "file. Found: #{tmp_files}. That's either a bug in CQ cookbook or "\
-          'something is wrong with your primary JAR file.'
+          'something is wrong with your primary JAR file'
         ) if tmp_files.length != 1
         standalone_jar = tmp_files.first
 
@@ -162,7 +162,7 @@ module Cq
 
         Chef::Application.fatal!(
           'Expected single com.adobe.granite.crypto JAR file, but found: '\
-          "#{granite_crypto_name}. It's probably a bug in CQ cookbook."
+          "#{granite_crypto_name}. It's probably a bug in CQ cookbook"
         ) if granite_crypto_name.length != 1
 
         granite_crypto_jar = ::File.join(
