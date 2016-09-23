@@ -137,16 +137,17 @@ module Cq
 
         # Crypto tmp dir should contain just a standalone jar file
         tmp_files = ::Dir[::File.join(crypto_tmp_dir, '*')]
-        Chef::Log.warn(
-          'Crypto tmp directory contains more than 1 file! Only standalone '\
-          'JAR file should be there.'
-        ) if tmp_files.length > 1
+        Chef::Application.fatal!(
+          'Crypto tmp directory should contain only one CQ quickstart JAR '\
+          "file. Found: #{tmp_files}. That's either a bug in CQ cookbook or "\
+          'something is wrong with your primary JAR file'
+        ) if tmp_files.length != 1
         standalone_jar = tmp_files.first
 
         # Extract com.adobe.granite.crypto JAR file from standalone one
         extract_jar(
           standalone_jar,
-          'resources/install/0/com.adobe.granite.crypto*',
+          'resources/install/0/com.adobe.granite.crypto*.jar',
           crypto_aem_dir
         )
 
@@ -157,8 +158,17 @@ module Cq
         # version)
         granite_crypto_name = ::Dir.entries(
           crypto_aem_dir
-        ).find { |f| f.match(/com.adobe.granite.crypto.+/) }
-        granite_crypto_jar = ::File.join(crypto_aem_dir, granite_crypto_name)
+        ).find_all { |f| f.match(/com\.adobe\.granite\.crypto.+/) }
+
+        Chef::Application.fatal!(
+          'Expected single com.adobe.granite.crypto JAR file, but found: '\
+          "#{granite_crypto_name}. It's probably a bug in CQ cookbook"
+        ) if granite_crypto_name.length != 1
+
+        granite_crypto_jar = ::File.join(
+          crypto_aem_dir,
+          granite_crypto_name.first
+        )
 
         # Extract libs out of com.adobe.granite.crypto JAR file
         extract_jar(granite_crypto_jar, 'META-INF/lib/*', crypto_aem_dir)
