@@ -78,6 +78,62 @@ module Cq
       Chef::Application.fatal!("Can't extract content out of JAR file: #{e}")
     end
 
+    def current_jvm_version
+      node['java']['jdk_version']
+    end
+
+    # Source:
+    # * http://stackoverflow.com/a/1096159/6802186
+    # * http://stackoverflow.com/a/27123/6802186
+    #
+    # | Major.minor | Target  |
+    # | ----------- | ------- |
+    # | 45.3        | 1.1     |
+    # | 46.0        | 1.2     |
+    # | 47.0        | 1.3     |
+    # | 48.0        | 1.4     |
+    # | 49.0        | 5 (1.5) |
+    # | 50.0        | 6 (1.6) |
+    # | 51.0        | 7 (1.7) |
+    # | 52.0        | 8 (1.8) |
+    def jvm_version_mapper(major_minor)
+      version_map = {
+        '45.3' => '1',
+        '46.0' => '2',
+        '47.0' => '3',
+        '48.0' => '4',
+        '49.0' => '5',
+        '50.0' => '6',
+        '51.0' => '7',
+        '52.0' => '8'
+      }
+
+      version_map[major_minor]
+    end
+
+    # Returns version of Java for given compiled file
+    def compiled_with?(path)
+      cmd_str = "javap -verbose #{path}"
+      cmd = Mixlib::ShellOut.new(cmd_str)
+      cmd.run_command
+      cmd.error!
+
+      Chef::Log.debug("javap output: #{cmd.stdout}")
+      major = cmd.stdout[/^\s+major\sversion:\s(?<version>.+)/, 'version']
+      minor = cmd.stdout[/^\s+minor\sversion:\s(?<version>.+)/, 'version']
+
+      java_version = jvm_version_mapper(major + '.'+ minor)
+      Chef::Log.debug("#{path} was compiled with Java #{java_version}")
+
+      java_version
+    rescue => e
+      Chef::Application.fatal!("Cannot disassemble #{path} file: #{e}")
+    end
+
+    def jvm_version_changed?(path)
+      current_jvm_version == compiled_with?(path)
+    end
+
     # Makes sure the following elements are in place
     #
     # /path/to/chef/cache/crypto
@@ -101,10 +157,9 @@ module Cq
       download_log_libs
       deploy_decryptor
 
-      # Recompile Decrypt.java if cookbook_file's postprocessing didn't finish
-      # successfully or wasn't triggered at all as Decrypt.java was already in
-      # place
-      compile_decryptor unless File.exist?(decryptor_path + '.class')
+      # Recompile Decrypt.java if needed
+      compile_decryptor if !File.exist?(decryptor_path + '.class') ||
+        jvm_version_changed?(decryptor_path)
     end
 
     def crypto_dir_structure
