@@ -131,7 +131,7 @@ module Cq
     end
 
     def jvm_version_changed?(path)
-      current_jvm_version == compiled_with?(path)
+      current_jvm_version != compiled_with?(path)
     end
 
     # Makes sure the following elements are in place
