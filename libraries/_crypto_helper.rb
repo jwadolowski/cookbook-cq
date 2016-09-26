@@ -79,6 +79,7 @@ module Cq
     end
 
     def current_jvm_version
+      Chef::Log.debug("Current JVM version: #{node['java']['jdk_version']}")
       node['java']['jdk_version']
     end
 
