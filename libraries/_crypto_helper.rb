@@ -158,10 +158,6 @@ module Cq
       download_log_libs
       deploy_decryptor
 
-      Chef::Log.debug(
-        "Compiled version exists? #{File.exist?(decryptor_path + '.class')}"
-      )
-
       # Recompile Decrypt.java if needed
       compile_decryptor if !File.exist?(decryptor_path + '.class') ||
         jvm_version_changed?(decryptor_path)
