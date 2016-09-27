@@ -78,11 +78,6 @@ module Cq
       Chef::Application.fatal!("Can't extract content out of JAR file: #{e}")
     end
 
-    def current_jvm_version
-      Chef::Log.debug("Current JVM version: #{node['java']['jdk_version']}")
-      node['java']['jdk_version']
-    end
-
     # Source:
     # * http://stackoverflow.com/a/1096159/6802186
     # * http://stackoverflow.com/a/27123/6802186
@@ -132,7 +127,7 @@ module Cq
     end
 
     def jvm_version_changed?(path)
-      current_jvm_version != compiled_with?(path)
+      node['java']['jdk_version'] != compiled_with?(path)
     end
 
     # Makes sure the following elements are in place
