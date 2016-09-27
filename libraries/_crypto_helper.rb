@@ -118,7 +118,7 @@ module Cq
       major = cmd.stdout[/^\s+major\sversion:\s(?<version>.+)/, 'version']
       minor = cmd.stdout[/^\s+minor\sversion:\s(?<version>.+)/, 'version']
 
-      java_version = jvm_version_mapper(major + '.'+ minor)
+      java_version = jvm_version_mapper(major + '.' + minor)
       Chef::Log.debug("#{path} was compiled with Java #{java_version}")
 
       java_version
@@ -155,7 +155,7 @@ module Cq
 
       # Recompile Decrypt.java if needed
       compile_decryptor if !File.exist?(decryptor_path + '.class') ||
-        jvm_version_changed?(decryptor_path)
+                           jvm_version_changed?(decryptor_path)
     end
 
     def crypto_dir_structure
