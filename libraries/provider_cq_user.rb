@@ -104,6 +104,10 @@ class Chef
             payload
           )
 
+          Chef::Log.debug(
+            "#{req_path} requested as admin / #{p} returned #{http_resp.code}"
+          )
+
           return p if http_resp.code == '200'
         end
 
