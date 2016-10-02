@@ -113,7 +113,7 @@ class Chef
 
         Chef::Application.fatal!(
           'Unable to determine valid admin credentials! The following '\
-          "user/pass pairs were checked: \n"\
+          "user/pass pairs were verified: \n"\
           "* admin / <password>\n"\
           "* admin / <old_password>\n"\
           '* admin / admin'
