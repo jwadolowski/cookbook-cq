@@ -46,7 +46,7 @@ module Cq
       http = Net::HTTP.new(uri.host, uri.port)
       http.read_timeout = node['cq']['http_read_timeout']
       http_req = Net::HTTP::Get.new(uri.request_uri)
-      http_req.basic_auth(user, password)
+      http_req.basic_auth(user, password) if !user.nil? && !password.nil?
 
       begin
         http.request(http_req)
@@ -61,7 +61,7 @@ module Cq
       http = Net::HTTP.new(uri.host, uri.port)
       http.read_timeout = node['cq']['http_read_timeout']
       http_req = Net::HTTP::Post.new(uri.request_uri)
-      http_req.basic_auth(user, password)
+      http_req.basic_auth(user, password) if !user.nil? && !password.nil?
       http_req.set_form_data(payload)
 
       begin
@@ -78,7 +78,7 @@ module Cq
       http = Net::HTTP.new(uri.host, uri.port)
       http.read_timeout = node['cq']['http_read_timeout']
       http_req = Net::HTTP::Post::Multipart.new(uri.request_uri, payload)
-      http_req.basic_auth(user, password)
+      http_req.basic_auth(user, password) if !user.nil? && !password.nil?
 
       begin
         http.request(http_req)
