@@ -85,19 +85,37 @@ class Chef
       end
 
       def current_admin_password
-        req_path = '/libs/granite/core/content/login.html'
+        req_path = '/crx/de/j_security_check'
 
         [new_resource.password, new_resource.old_password, 'admin'].each do |p|
-          http_resp = http_get(new_resource.instance, req_path, 'admin', p)
+          payload = {
+            'j_username' => 'admin',
+            'j_password' => p,
+            'j_workspace' => 'crx.default',
+            'j_validate' => 'true',
+            '_charset_' => 'utf-8'
+          }
+
+          http_resp = http_post(
+            new_resource.instance,
+            req_path,
+            nil,
+            nil,
+            payload
+          )
+
+          Chef::Log.debug(
+            "#{req_path} requested as admin / #{p} returned #{http_resp.code}"
+          )
 
           return p if http_resp.code == '200'
         end
 
         Chef::Application.fatal!(
           'Unable to determine valid admin credentials! The following '\
-          'user/pass pairs were checked: \n'\
-          '* admin / <password>\n'\
-          '* admin / <old_password>\n'\
+          "user/pass pairs were verified: \n"\
+          "* admin / <password>\n"\
+          "* admin / <old_password>\n"\
           '* admin / admin'
         )
       end
