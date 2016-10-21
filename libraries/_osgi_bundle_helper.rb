@@ -89,7 +89,7 @@ module Cq
         begin
           # Reduce net read time value to speed up OSGi healthcheck procedure
           # when instance is running but stopped accepting HTTP requests
-          node['cq']['http_read_timeout'] = 5
+          node.default['cq']['http_read_timeout'] = 5
           state = raw_bundle_list(addr, user, password)
 
           # Raise an error if state is not an instance of HTTP response
