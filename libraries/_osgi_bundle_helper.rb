@@ -73,6 +73,9 @@ module Cq
                                    max_attempts, sleep_time)
       Chef::Log.info('Waiting for stable state of OSGi bundles...')
 
+      # Save current net read timeout value
+      current_timeout = node['cq']['http_read_timeout']
+
       # Previous state of OSGi bundles (start with empty)
       previous_state = ''
 
@@ -84,6 +87,9 @@ module Cq
 
       (1..max_attempts).each do |i|
         begin
+          # Reduce net read time value to speed up OSGi healthcheck procedure
+          # when instance is running but stopped accepting HTTP requests
+          node.default['cq']['http_read_timeout'] = 5
           state = raw_bundle_list(addr, user, password)
 
           # Raise an error if state is not an instance of HTTP response
@@ -129,6 +135,9 @@ module Cq
             )
             break
           end
+        ensure
+          # Restore original timeout
+          node.default['cq']['http_read_timeout'] = current_timeout
         end
 
         Chef::Application.fatal!(
