@@ -137,7 +137,7 @@ module Cq
           end
         ensure
           # Restore original timeout
-          node['cq']['http_read_timeout'] = current_timeout
+          node.default['cq']['http_read_timeout'] = current_timeout
         end
 
         Chef::Application.fatal!(
