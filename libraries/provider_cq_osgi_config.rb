@@ -48,6 +48,22 @@ class Chef
         end
       end
 
+      def init_regular_current_resource
+        @current_resource.info = config_info(
+          new_resource.instance,
+          new_resource.username,
+          new_resource.password,
+          new_resource.pid
+        )
+        Chef::Log.debug("Current resource info: #{current_resource.info}")
+
+        # Extract properties out of info object and unify them
+        @current_resource.properties(object_properties(current_resource.info))
+        Chef::Log.debug(
+          "Current resource properties: #{current_resource.properties}"
+        )
+      end
+
       def regular_config(list)
         # Since property check of not existing OSGi configuraton returns proper
         # JSON, we need to look up the entire list first to define wether given
@@ -70,21 +86,7 @@ class Chef
         pid_exists = pid_exist?(new_resource.pid, regular_pids(list))
 
         if pid_exists
-          @current_resource.info = config_info(
-            new_resource.instance,
-            new_resource.username,
-            new_resource.password,
-            new_resource.pid
-          )
-          Chef::Log.debug("Current resource info: #{current_resource.info}")
-
-          # Extract properties out of info object and unify them
-          @current_resource.properties(
-            object_properties(current_resource.info)
-          )
-          Chef::Log.debug(
-            "Current resource properties: #{current_resource.properties}"
-          )
+          init_regular_current_resource
 
           # Validate keys defined in user's resource, warn if there are any
           # redundant ones
@@ -97,17 +99,29 @@ class Chef
         end
       end
 
+      def init_factory_current_resource
+        @current_resource.default_properties = object_properties(
+          factory_pid_info
+        )
+        Chef::Log.debug(
+          "Default #{new_resource.factory_pid} properties: "\
+          "#{current_resource.default_properties}"
+        )
+      end
+
+      def init_unique_fields
+        # By default all fields should be considered as unique, so update
+        # unique_fileds property if user didn't set anything explicitly
+        @new_resource.unique_fields(
+          current_resource.default_properties.keys
+        ) if new_resource.unique_fields.empty?
+      end
+
       def factory_config(list)
         fpid_exists = pid_exist?(new_resource.factory_pid, factory_pids(list))
 
         if fpid_exists
-          @current_resource.default_properties = object_properties(
-            factory_pid_info
-          )
-          Chef::Log.debug(
-            "Default #{new_resource.factory_pid} properties: "\
-            "#{current_resource.default_properties}"
-          )
+          init_factory_current_resource
 
           # Validate keys defined in user's resource, warn if there are any
           # redundant ones
@@ -116,11 +130,7 @@ class Chef
             new_resource.properties
           )
 
-          # By default all fields should be considered as unique, so update
-          # unique_fileds property if user didn't set anything explicitly
-          @new_resource.unique_fields(
-            current_resource.default_properties.keys
-          ) if new_resource.unique_fields.empty?
+          init_unique_fields
 
           # Get list of all instances
           instances = factories_info(
@@ -325,18 +335,13 @@ class Chef
         when candidates.length == new_resource.count
           update_existing_instances(candidates, diff)
         when candidates.length < new_resource.count
-          # Update existing instances
           update_existing_instances(candidates, diff)
-
-          # Create missing instances
           create_missing_instances(new_resource.count - candidates.length)
         when candidates.length > new_resource.count
           if new_resource.enforce_count
-            # Remove redundant configs
             count = candidates.length - new_resource.count
-            delete_redundant_instances(candidates[0..count - 1])
 
-            # Update those that left
+            delete_redundant_instances(candidates[0..count - 1])
             update_existing_instances(candidates[count..-1], diff)
           else
             Chef::Application.fatal!(
@@ -354,8 +359,7 @@ class Chef
         when ideal_copies.length == new_resource.count
           Chef::Log.info("#{new_resource.factory_pid} is already configured")
         when ideal_copies.length < new_resource.count
-          count = new_resource.count - ideal_copies.length
-          create_missing_instances(count)
+          create_missing_instances(new_resource.count - ideal_copies.length)
         when ideal_copies.length > new_resource.count
           if new_resource.enforce_count
             count = ideal_copies.length - new_resource.count
@@ -426,6 +430,20 @@ class Chef
         end
       end
 
+      def align_factory_twins(twins)
+        rank = factory_ranking(twins)
+        Chef::Log.debug("Ranking: #{rank}")
+
+        # Look for exact copies of given config (score == 0)
+        ideal_copies = zero_score_instances(rank)
+
+        if !ideal_copies.empty?
+          zero_score_factories(ideal_copies)
+        else
+          non_zero_score_factories(rank)
+        end
+      end
+
       def create_factory_config
         # All configs that have the same fingerprint (ID)
         twins = current_resource.fingerprint_groups[new_resource.fingerprint]
@@ -433,17 +451,7 @@ class Chef
 
         # Found some configs with the same fingerprint
         if !twins.nil?
-          rank = factory_ranking(twins)
-          Chef::Log.debug("Ranking: #{rank}")
-
-          # Look for exact copies of given config (score == 0)
-          ideal_copies = zero_score_instances(rank)
-
-          if !ideal_copies.empty?
-            zero_score_factories(ideal_copies)
-          else
-            non_zero_score_factories(rank)
-          end
+          align_factory_twins(twins)
         else
           converge_by(
             "Create #{new_resource.count} new instance(s) of "\
