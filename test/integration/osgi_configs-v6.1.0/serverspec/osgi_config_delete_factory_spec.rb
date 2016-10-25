@@ -1,37 +1,5 @@
 require_relative '../../../kitchen/data/spec_helper'
 
-describe 'Factory OSGi not.existing.factory.config.to.delete' do
-  it 'there was NO attemtps to delete it' do
-    expect(
-      @osgi_config_helper.delete_requests(
-        'not.existing.factory.config.to.delete'
-      ).length
-    ).to eq(0)
-  end
-
-  it 'there was a single check to verify factory PID presence' do
-    expect(
-      @osgi_config_helper.read_requests(
-        'not.existing.factory.config.to.delete'
-      ).length
-    ).to eq(1)
-  end
-
-  it 'does NOT exist' do
-    expect(
-      @config_list.include?('not.existing.factory.config.to.delete')
-    ).to be false
-  end
-
-  it 'in total there was 1 HTTP request' do
-    expect(
-      @osgi_config_helper.all_requests(
-        'not.existing.factory.config.to.delete'
-      ).length
-    ).to eq(1)
-  end
-end
-
 describe 'Factory OSGi org.apache.sling.tenant.internal.TenantProviderImpl' do
   it 'there was a single check to verify factory PID presence' do
     expect(
