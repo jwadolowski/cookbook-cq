@@ -111,11 +111,10 @@ class Chef
         )
         Chef::Log.debug("Property diff: #{diff}")
 
-        if diff.empty?
-          Chef::Log.info("#{new_resource.pid} is already configured")
-        else
+        if new_resource.force || !diff.empty?
           converge_by("Create #{new_resource.pid}") do
             diff = new_resource.properties if new_resource.apply_all
+
             update_config(
               new_resource.instance,
               new_resource.username,
@@ -124,15 +123,13 @@ class Chef
               diff
             )
           end
+        else
+          Chef::Log.info("#{new_resource.pid} is already configured")
         end
       end
 
       def delete_regular_config
-        if customized_properties(current_resource.info).empty?
-          Chef::Log.info(
-            "All #{new_resource.pid} properties already have default values"
-          )
-        else
+        if new_resource.force || !customized_properties.empty?
           converge_by("Delete #{new_resource.pid}") do
             delete_config(
               new_resource.instance,
@@ -141,6 +138,10 @@ class Chef
               new_resource.pid
             )
           end
+        else
+          Chef::Log.info(
+            "All #{new_resource.pid} properties already have default values"
+          )
         end
       end
 
@@ -322,8 +323,10 @@ class Chef
       end
 
       # Get all modified properties (non default ones)
-      def customized_properties(info)
-        info['properties'].select { |_k, v| v['is_set'] == true }
+      def customized_properties
+        current_resource.info['properties'].select do
+          |_k, v| v['is_set'] == true
+        end
       end
 
       def create_missing_instances(count)
