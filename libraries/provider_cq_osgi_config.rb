@@ -335,6 +335,7 @@ class Chef
       end
 
       def align_same_property_instances(candidates)
+        # Since all candidates are the same use the fist one as a diff source
         diff = property_diff(
           candidates.first['properties'],
           new_resource.properties,
@@ -353,13 +354,12 @@ class Chef
             update_existing_instances(candidates, diff)
 
             # Create missing instances
-            count = new_resource.count - candidates.length
-            create_missing_instances(count)
+            create_missing_instances(new_resource.count - candidates.length)
           when candidates.length > new_resource.count
             if new_resource.enforce_count
               # Remove redundant configs
               count = candidates.length - new_resource.count
-              delete_redundant_instances(candidates[0..count])
+              delete_redundant_instances(candidates[0..count - 1])
 
               # Update those that left
               update_existing_instances(candidates[count..-1], diff)
@@ -368,8 +368,7 @@ class Chef
                 "Expected #{new_resource.count} #{new_resource.factory_pid} "\
                 "instance(s), but found #{candidates.length} possible "\
                 'candidates. enforce_count is off, so please either turn it '\
-                'on to get rid of redundant configs or update unique_fields '\
-                'property'
+                'on or update unique_fields property'
               )
             end
           end
@@ -386,7 +385,7 @@ class Chef
         when ideal_copies.length > new_resource.count
           if new_resource.enforce_count
             count = ideal_copies.length - new_resource.count
-            delete_redundant_instances(ideal_copies[0..count])
+            delete_redundant_instances(ideal_copies[0..count - 1])
           else
             Chef::Application.fatal!(
               "Expected #{new_resource.count} instances of "\
