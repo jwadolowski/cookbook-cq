@@ -53,7 +53,7 @@ class Chef
 
       def regular_config(list)
         # Since property check of not existing OSGi configuraton returns proper
-        # JSON we need to look up the entire list first to define wether given
+        # JSON, we need to look up the entire list first to define wether given
         # config exists or not. This is what AEM returns when there's no
         # defined PID:
         #
@@ -71,7 +71,6 @@ class Chef
         # Technically we can rely on description, but it can change any time,
         # so let's stick to aforementioned approach
         pid_exists = pid_exist?(new_resource.pid, regular_pids(list))
-
         Chef::Log.debug("#{new_resource.pid} exists? #{pid_exists}")
 
         if pid_exists
@@ -105,8 +104,7 @@ class Chef
       end
 
       def factory_config(list)
-        factory_pids = factory_pids(list)
-        fpid_exists = pid_exist?(new_resource.factory_pid, factory_pids)
+        fpid_exists = pid_exist?(new_resource.factory_pid, factory_pids(list))
 
         Chef::Log.debug("#{new_resource.factory_pid} exists? #{fpid_exists}")
 
@@ -484,24 +482,32 @@ class Chef
         end
       end
 
+      def delete_regular_config
+        if customized_properties(current_resource.info).empty?
+          Chef::Log.info(
+            "All #{new_resource.pid} properties already have default values"
+          )
+        else
+          converge_by("Delete #{new_resource.pid}") do
+            delete_config(
+              new_resource.instance,
+              new_resource.username,
+              new_resource.password,
+              new_resource.pid
+            )
+          end
+        end
+      end
+
+      def delete_factory_config
+        # TODO: factory_instance delete
+      end
+
       def action_delete
         if new_resource.factory_pid
-          # TODO: factory_instance delete
+          delete_factory_config
         else
-          if customized_properties(current_resource.info).empty?
-            Chef::Log.info(
-              "All #{new_resource.pid} properties already have default values"
-            )
-          else
-            converge_by("Delete #{new_resource.pid}") do
-              delete_config(
-                new_resource.instance,
-                new_resource.username,
-                new_resource.password,
-                new_resource.pid
-              )
-            end
-          end
+          delete_regular_config
         end
       end
     end
