@@ -128,8 +128,8 @@ class Chef
             new_resource.properties
           )
 
-          # By default all fields should be considered as unique, so fill that
-          # in if user didn't set anything explicitly
+          # By default all fields should be considered as unique, so update
+          # unique_fileds property if user didn't set anything explicitly
           @new_resource.unique_fields(
             current_resource.default_properties.keys
           ) if new_resource.unique_fields.empty?
@@ -280,7 +280,102 @@ class Chef
 
       # Get all modified properties (non default ones)
       def customized_properties(info)
-        info['properties'].select { |k, v| v['is_set'] == true }
+        info['properties'].select { |_k, v| v['is_set'] == true }
+      end
+
+      def create_missing_instances(count)
+        converge_by(
+          "Create #{count} #{new_resource.factory_pid} instance(s)"
+        ) do
+          count.times do
+            create_config(
+              new_resource.instance,
+              new_resource.username,
+              new_resource.password,
+              new_resource.properties,
+              new_resource.factory_pid
+            )
+          end
+        end
+      end
+
+      def delete_redundant_instances(instances)
+        converge_by(
+          "Delete #{instances.length} #{new_resource.factory_pid} instance(s)"
+        ) do
+          instances.length.times do |i|
+            delete_config(
+              new_resource.instance,
+              new_resource.username,
+              new_resource.password,
+              instances[i]['pid']
+            )
+          end
+        end
+      end
+
+      def update_existing_instances(instances, diff)
+        converge_by(
+          "Update #{instances.length} #{new_resource.factory_pid} instance(s)"
+        ) do
+          diff = new_resource.properties if new_resource.apply_all
+
+          instances.each do |i|
+            update_config(
+              new_resource.instance,
+              new_resource.username,
+              new_resource.password,
+              i,
+              diff
+            )
+          end
+        end
+      end
+
+      def same_properties?(instances)
+        instances.uniq { |c| property_checksum(c) }.length == 1
+      end
+
+      def align_same_property_instances(candidates)
+        diff = property_diff(
+          candidates.first['properties'],
+          new_resource.properties,
+          new_resource.append
+        )
+        Chef::Log.debug("Diff: #{diff}")
+
+        if diff.empty?
+          Chef::Log.info("#{new_resource.factory_pid} is already configured")
+        else
+          case
+          when candidates.length == new_resource.count
+            update_existing_instances(candidates, diff)
+          when candidates.length < new_resource.count
+            # Update existing instances
+            update_existing_instances(candidates, diff)
+
+            # Create missing instances
+            count = new_resource.count - candidates.length
+            create_missing_instances(count)
+          when candidates.length > new_resource.count
+            if new_resource.enforce_count
+              # Remove redundant configs
+              count = candidates.length - new_resource.count
+              delete_redundant_instances(candidates[0..count])
+
+              # Update those that left
+              update_existing_instances(candidates[count..-1], diff)
+            else
+              Chef::Application.fatal!(
+                "Expected #{new_resource.count} #{new_resource.factory_pid} "\
+                "instance(s), but found #{candidates.length} possible "\
+                'candidates. enforce_count is off, so please either turn it '\
+                'on to get rid of redundant configs or update unique_fields '\
+                'property'
+              )
+            end
+          end
+        end
       end
 
       def zero_score_factories(ideal_copies)
@@ -288,168 +383,31 @@ class Chef
         when ideal_copies.length == new_resource.count
           Chef::Log.info("#{new_resource.factory_pid} is already configured")
         when ideal_copies.length < new_resource.count
-          # Create missing instances
-          missing_count = new_resource.count - ideal_copies.length
-
-          converge_by(
-            "Create #{missing_count} #{new_resource.factory_pid} instance(s)"
-          ) do
-            missing_count.times do
-              create_config(
-                new_resource.instance,
-                new_resource.username,
-                new_resource.password,
-                new_resource.properties,
-                new_resource.factory_pid
-              )
-            end
-          end
+          count = new_resource.count - ideal_copies.length
+          create_missing_instances(count)
         when ideal_copies.length > new_resource.count
-          # Delete redundant instances if enforce_count is enabled
           if new_resource.enforce_count
-            to_delete = ideal_copies.length - new_resource.count
-
-            converge_by(
-              "Delete #{to_delete} #{new_resource.factory_pid} instance(s) "\
-              'due to enforce_count'
-            ) do
-              to_delete.times do |i|
-                delete_config(
-                  new_resource.instance,
-                  new_resource.username,
-                  new_resource.password,
-                  ideal_copies[i]['pid']
-                )
-              end
-            end
+            count = ideal_copies.length - new_resource.count
+            delete_redundant_instances(ideal_copies[0..count])
           else
             Chef::Application.fatal!(
-              "#{new_resource.count} instance(s) of "\
-              "#{new_resource.factory_pid} is/are expected, but found "\
-              "#{ideal_copies.length} of them. enforce_count is off, so "\
-              'please either turn it on to get rid of redundant configs or '\
-              'update unique_fields property'
+              "Expected #{new_resource.count} instances of "\
+              "#{new_resource.factory_pid}, but found #{ideal_copies.length} "\
+              'of them. enforce_count is off, so please either turn it on to '\
+              'get rid of redundant configs or update unique_fields property'
             )
           end
         end
       end
 
-      def greater_than_zero_score_factories(rank)
+      def non_zero_score_factories(rank)
         # Get lowest score instances out of non-zero score ones
         candidates = lowest_score_instances(non_zero_score_instances(rank))
         Chef::Log.debug("Lowest (non-zero) score instances: #{candidates}")
 
         # All candidates are identical (have the same properties)
-        if candidates.uniq { |c| property_checksum(c) }.length == 1
-          diff = property_diff(
-            candidates.first['properties'],
-            new_resource.properties,
-            new_resource.append
-          )
-          Chef::Log.debug("Diff: #{diff}")
-
-          if diff.empty?
-            Chef::Log.info("#{new_resource.factory_pid} is already configured")
-          else
-            case
-            when candidates.length == new_resource.count
-              converge_by(
-                "Update #{new_resource.count} instance(s) of "\
-                "#{new_resource.factory_pid}"
-              ) do
-                diff = new_resource.properties if new_resource.apply_all
-                candidates.each do |c|
-                  update_config(
-                    new_resource.instance,
-                    new_resource.username,
-                    new_resource.password,
-                    c,
-                    diff
-                  )
-                end
-              end
-            when candidates.length < new_resource.count
-              # Update existing instances
-              converge_by(
-                "Update #{candidates.length} instance(s) of "\
-                "#{new_resource.factory_pid}"
-              ) do
-                diff = new_resource.properties if new_resource.apply_all
-                candidates.each do |c|
-                  update_config(
-                    new_resource.instance,
-                    new_resource.username,
-                    new_resource.password,
-                    c,
-                    diff
-                  )
-                end
-              end
-
-              # Create missing instances
-              missing_count = new_resource.count - candidates.length
-
-              converge_by(
-                "Create #{missing_count} instance(s) of "\
-                "#{new_resource.factory_pid}"
-              ) do
-                missing_count.times do
-                  create_config(
-                    new_resource.instance,
-                    new_resource.username,
-                    new_resource.password,
-                    new_resource.properties,
-                    new_resource.factory_pid
-                  )
-                end
-              end
-            when candidates.length > new_resource.count
-              if new_resource.enforce_count
-                # Remove redundant configs
-                to_delete = candidates.length - new_resource.count
-
-                converge_by(
-                  "Delete #{to_delete} instances of "\
-                  "#{new_resource.factory_pid} due to enforce_count"
-                ) do
-                  to_delete.times do |i|
-                    delete_config(
-                      new_resource.instance,
-                      new_resource.username,
-                      new_resource.password,
-                      candidates[i]['pid']
-                    )
-                  end
-                end
-
-                # Update those that left
-                converge_by(
-                  "Update #{new_resource.count} instance(s) of "\
-                  "#{new_resource.factory_pid}"
-                ) do
-                  diff = new_resource.properties if new_resource.apply_all
-                  new_resource.count.times do |i|
-                    update_config(
-                      new_resource.instance,
-                      new_resource.username,
-                      new_resource.password,
-                      candidates[i + to_delete],
-                      diff
-                    )
-                  end
-                end
-              else
-                Chef::Application.fatal!(
-                  "#{new_resource.count} instance(s) of "\
-                  "#{new_resource.factory_pid} is/are expected, but "\
-                  "found #{candidates.length} possible candidates. "\
-                  'enforce_count is off, so please either turn it on to '\
-                  'get rid of redundant configs or update unique_fields '\
-                  'property'
-                )
-              end
-            end
-          end
+        if same_properties?(candidates)
+          align_same_property_instances(candidates)
         else
           Chef::Application.fatal!(
             'Given set of unique fields has a few similar instances: '\
@@ -501,7 +459,7 @@ class Chef
           if !ideal_copies.empty?
             zero_score_factories(ideal_copies)
           else
-            greater_than_zero_score_factories(rank)
+            non_zero_score_factories(rank)
           end
         else
           converge_by(
@@ -530,7 +488,7 @@ class Chef
       end
 
       def action_delete
-        if  new_resource.factory_pid
+        if new_resource.factory_pid
           # TODO: factory_instance delete
         else
           if customized_properties(current_resource.info).empty?
