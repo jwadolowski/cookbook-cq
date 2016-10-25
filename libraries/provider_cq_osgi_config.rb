@@ -48,6 +48,10 @@ class Chef
         end
       end
 
+# -----------------------------------------------------------------------------
+# Regular configs
+# -----------------------------------------------------------------------------
+
       def init_regular_current_resource
         @current_resource.info = config_info(
           new_resource.instance,
@@ -99,29 +103,56 @@ class Chef
         end
       end
 
-      def init_factory_current_resource
-        @current_resource.default_properties = object_properties(
-          factory_pid_info
+      def create_regular_config
+        diff = property_diff(
+          current_resource.properties,
+          new_resource.properties,
+          new_resource.append
         )
-        Chef::Log.debug(
-          "Default #{new_resource.factory_pid} properties: "\
-          "#{current_resource.default_properties}"
-        )
+        Chef::Log.debug("Property diff: #{diff}")
+
+        if diff.empty?
+          Chef::Log.info("#{new_resource.pid} is already configured")
+        else
+          converge_by("Create #{new_resource.pid}") do
+            diff = new_resource.properties if new_resource.apply_all
+            update_config(
+              new_resource.instance,
+              new_resource.username,
+              new_resource.password,
+              current_resource.info,
+              diff
+            )
+          end
+        end
       end
 
-      def init_unique_fields
-        # By default all fields should be considered as unique, so update
-        # unique_fileds property if user didn't set anything explicitly
-        @new_resource.unique_fields(
-          current_resource.default_properties.keys
-        ) if new_resource.unique_fields.empty?
+      def delete_regular_config
+        if customized_properties(current_resource.info).empty?
+          Chef::Log.info(
+            "All #{new_resource.pid} properties already have default values"
+          )
+        else
+          converge_by("Delete #{new_resource.pid}") do
+            delete_config(
+              new_resource.instance,
+              new_resource.username,
+              new_resource.password,
+              new_resource.pid
+            )
+          end
+        end
       end
+
+# -----------------------------------------------------------------------------
+# Factory configs
+# -----------------------------------------------------------------------------
 
       def factory_config(list)
         fpid_exists = pid_exist?(new_resource.factory_pid, factory_pids(list))
 
         if fpid_exists
-          init_factory_current_resource
+          init_default_properties
 
           # Validate keys defined in user's resource, warn if there are any
           # redundant ones
@@ -151,6 +182,24 @@ class Chef
             "#{new_resource.factory_pid} PID does NOT exist!"
           )
         end
+      end
+
+      def init_default_properties
+        @current_resource.default_properties = object_properties(
+          factory_pid_info
+        )
+        Chef::Log.debug(
+          "Default #{new_resource.factory_pid} properties: "\
+          "#{current_resource.default_properties}"
+        )
+      end
+
+      def init_unique_fields
+        # By default all fields should be considered as unique, so update
+        # unique_fileds property if user didn't set anything explicitly
+        @new_resource.unique_fields(
+          current_resource.default_properties.keys
+        ) if new_resource.unique_fields.empty?
       end
 
       # Info about factory PID itself (number of properties, their names and
@@ -406,30 +455,6 @@ class Chef
         end
       end
 
-      def create_regular_config
-        diff = property_diff(
-          current_resource.properties,
-          new_resource.properties,
-          new_resource.append
-        )
-        Chef::Log.debug("Property diff: #{diff}")
-
-        if diff.empty?
-          Chef::Log.info("#{new_resource.pid} is already configured")
-        else
-          converge_by("Create #{new_resource.pid}") do
-            diff = new_resource.properties if new_resource.apply_all
-            update_config(
-              new_resource.instance,
-              new_resource.username,
-              new_resource.password,
-              current_resource.info,
-              diff
-            )
-          end
-        end
-      end
-
       def align_factory_twins(twins)
         rank = factory_ranking(twins)
         Chef::Log.debug("Ranking: #{rank}")
@@ -470,33 +495,20 @@ class Chef
         end
       end
 
+      def delete_factory_config
+        # TODO: factory_instance delete
+      end
+
+# -----------------------------------------------------------------------------
+# Actions
+# -----------------------------------------------------------------------------
+
       def action_create
         if new_resource.factory_pid
           create_factory_config
         else
           create_regular_config
         end
-      end
-
-      def delete_regular_config
-        if customized_properties(current_resource.info).empty?
-          Chef::Log.info(
-            "All #{new_resource.pid} properties already have default values"
-          )
-        else
-          converge_by("Delete #{new_resource.pid}") do
-            delete_config(
-              new_resource.instance,
-              new_resource.username,
-              new_resource.password,
-              new_resource.pid
-            )
-          end
-        end
-      end
-
-      def delete_factory_config
-        # TODO: factory_instance delete
       end
 
       def action_delete
