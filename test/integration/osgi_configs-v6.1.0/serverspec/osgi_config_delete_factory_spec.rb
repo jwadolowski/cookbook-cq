@@ -28,14 +28,6 @@ describe 'Factory OSGi org.apache.sling.commons.log.LogManager.factory.'\
     ).to eq(1)
   end
 
-  it 'there was NO attemtps to delete it' do
-    expect(
-      @osgi_config_helper.delete_requests(
-        'org.apache.sling.commons.log.LogManager.factory.writer'
-      ).length
-    ).to eq(0)
-  end
-
   # 1) Read factory PID
   # 2) Read 1st instance
   it 'in total there were 2 HTTP requests' do
@@ -57,14 +49,6 @@ describe 'Factory OSGi org.apache.sling.commons.log.LogManager.factory.'\
 end
 
 describe 'Factory OSGi org.apache.sling.event.jobs.QueueConfiguration' do
-  it 'there was 0 DELETE requests' do
-    expect(
-      @osgi_config_helper.delete_requests(
-        'org.apache.sling.event.jobs.QueueConfiguration'
-      ).length
-    ).to eq(0)
-  end
-
   # 1) Read factory PID
   # 2) - 13) Read all instances
   # 14) Re-read best pid
