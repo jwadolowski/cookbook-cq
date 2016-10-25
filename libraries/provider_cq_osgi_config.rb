@@ -403,21 +403,21 @@ class Chef
         end
       end
 
-      def zero_score_factories(ideal_copies)
+      def zero_score_factories(copies)
         case
-        when ideal_copies.length == new_resource.count
+        when copies.length == new_resource.count
           Chef::Log.info("#{new_resource.factory_pid} is already configured")
-        when ideal_copies.length < new_resource.count
-          create_missing_instances(new_resource.count - ideal_copies.length)
-        when ideal_copies.length > new_resource.count
+        when copies.length < new_resource.count
+          create_missing_instances(new_resource.count - copies.length)
+        when copies.length > new_resource.count
           if new_resource.enforce_count
-            count = ideal_copies.length - new_resource.count
-            delete_redundant_instances(ideal_copies[0..count - 1])
+            count = copies.length - new_resource.count
+            delete_redundant_instances(copies[0..count - 1])
           else
             Chef::Application.fatal!(
               "Expected #{new_resource.count} instances of "\
-              "#{new_resource.factory_pid}, but found #{ideal_copies.length} "\
-              'of them. enforce_count is off, so please either turn it on to '\
+              "#{new_resource.factory_pid}, but found #{copies.length} of "\
+              'them. enforce_count is off, so please either turn it on to '\
               'get rid of redundant configs or update unique_fields property'
             )
           end
