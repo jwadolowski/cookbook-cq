@@ -160,6 +160,10 @@ module Cq
       end
     end
 
+    def object_properties(info)
+      unify_properties(pure_properties(info))
+    end
+
     def validate_keyspace(c_prop, n_prop)
       n_prop.each do |k, v|
         Chef::Log.warn(

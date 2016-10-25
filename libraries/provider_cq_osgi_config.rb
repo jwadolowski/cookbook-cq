@@ -70,8 +70,7 @@ class Chef
         #
         # Technically we can rely on description, but it can change any time,
         # so let's stick to aforementioned approach
-        regular_pids = regular_pids(list)
-        pid_exists = pid_exist?(new_resource.pid, regular_pids)
+        pid_exists = pid_exist?(new_resource.pid, regular_pids(list))
 
         Chef::Log.debug("#{new_resource.pid} exists? #{pid_exists}")
 
@@ -87,9 +86,11 @@ class Chef
 
           # Extract properties out of info object and unify them
           @current_resource.properties(
-            unify_properties(
-              pure_properties(current_resource.info)
-            )
+            object_properties(current_resource.info)
+          )
+
+          Chef::Log.debug(
+            "Current resource properties: #{current_resource.properties}"
           )
 
           # Validate keys defined in user's resource, warn if there are any
@@ -101,10 +102,6 @@ class Chef
         else
           Chef::Application.fatal!("#{new_resource.pid} PID does NOT exist!")
         end
-
-        Chef::Log.debug(
-          "Current resource properties: #{current_resource.properties}"
-        )
       end
 
       def factory_config(list)
@@ -114,8 +111,9 @@ class Chef
         Chef::Log.debug("#{new_resource.factory_pid} exists? #{fpid_exists}")
 
         if fpid_exists
-          @current_resource.default_properties =
-            unify_properties(pure_properties(factory_pid_info))
+          @current_resource.default_properties = object_properties(
+            factory_pid_info
+          )
           Chef::Log.debug(
             "Default #{new_resource.factory_pid} properties: "\
             "#{current_resource.default_properties}"
