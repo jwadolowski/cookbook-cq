@@ -33,9 +33,6 @@ class Chef
 
         # Unify properties defined in new resource
         @new_resource.properties(unify_properties(new_resource.properties))
-        Chef::Log.debug(
-          "Unified new resource properties: #{new_resource.properties}"
-        )
 
         # Fetch all OSGi configs just once
         full_list = config_list(
@@ -102,7 +99,6 @@ class Chef
 
       def factory_config(list)
         fpid_exists = pid_exist?(new_resource.factory_pid, factory_pids(list))
-        Chef::Log.debug("#{new_resource.factory_pid} exists? #{fpid_exists}")
 
         if fpid_exists
           @current_resource.default_properties = object_properties(
