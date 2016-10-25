@@ -66,29 +66,6 @@ class OSGiConfigHelper
     )
   end
 
-  # Get all POST requests that modify given regular config
-  #
-  # @param pid [String] PID
-  # @return [Array] array of elements (request lines)
-  # def regular_update_requests(pid)
-  #   log_entries(
-  #     pid,
-  #     "POST\ \/system\/console\/configMgr\/#{pid}\?"\
-  #     '.*apply=true.*action=ajaxConfigManager.*\ HTTP\/1\.1'
-  #   )
-  # end
-
-  # Get all POST requests that delete given config
-  #
-  # @param pid [String] PID
-  # @return [Array] array of elements (request lines)
-  # def delete_requests(pid)
-  #   log_entries(
-  #     pid,
-  #     "POST\ \/system\/console\/configMgr\/#{pid}\?.*delete=true\ HTTP\/1\.1"
-  #   )
-  # end
-
   # Get all requests that includes given PID
   #
   # @param pid [String] PID
