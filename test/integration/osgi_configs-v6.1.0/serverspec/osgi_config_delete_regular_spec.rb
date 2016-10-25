@@ -1,29 +1,5 @@
 require_relative '../../../kitchen/data/spec_helper'
 
-describe 'OSGi not.existing.config.to.delete' do
-  it 'does not exist' do
-    expect(
-      @config_list.include?('not.existing.config.to.delete')
-    ).to be false
-  end
-
-  it 'there was 0 DELETE requests' do
-    expect(
-      @osgi_config_helper.delete_requests(
-        'not.existing.config.to.delete'
-      ).length
-    ).to eq(0)
-  end
-
-  it 'in total there was 0 HTTP requests' do
-    expect(
-      @osgi_config_helper.all_requests(
-        'not.existing.config.to.delete'
-      ).length
-    ).to eq(0)
-  end
-end
-
 describe 'OSGi com.adobe.cq.wcm.launches.impl.LaunchesEventHandler' do
   it 'exists' do
     expect(
