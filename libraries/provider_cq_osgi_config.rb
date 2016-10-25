@@ -71,7 +71,6 @@ class Chef
         # Technically we can rely on description, but it can change any time,
         # so let's stick to aforementioned approach
         pid_exists = pid_exist?(new_resource.pid, regular_pids(list))
-        Chef::Log.debug("#{new_resource.pid} exists? #{pid_exists}")
 
         if pid_exists
           @current_resource.info = config_info(
@@ -80,14 +79,12 @@ class Chef
             new_resource.password,
             new_resource.pid
           )
-
           Chef::Log.debug("Current resource info: #{current_resource.info}")
 
           # Extract properties out of info object and unify them
           @current_resource.properties(
             object_properties(current_resource.info)
           )
-
           Chef::Log.debug(
             "Current resource properties: #{current_resource.properties}"
           )
@@ -105,7 +102,6 @@ class Chef
 
       def factory_config(list)
         fpid_exists = pid_exist?(new_resource.factory_pid, factory_pids(list))
-
         Chef::Log.debug("#{new_resource.factory_pid} exists? #{fpid_exists}")
 
         if fpid_exists
@@ -129,14 +125,10 @@ class Chef
           @new_resource.unique_fields(
             current_resource.default_properties.keys
           ) if new_resource.unique_fields.empty?
-          Chef::Log.debug("Unique fields: #{new_resource.unique_fields}")
 
           # Get list of all instances
           instances = factories_info(
             factory_instances(new_resource.factory_pid, list)
-          )
-          Chef::Log.debug(
-            "#{new_resource.factory_pid} instances: #{instances}"
           )
 
           # Calculate fingerprint (ID) for given config
@@ -332,43 +324,31 @@ class Chef
         instances.uniq { |c| property_checksum(c) }.length == 1
       end
 
-      def align_same_property_instances(candidates)
-        # Since all candidates are the same use the fist one as a diff source
-        diff = property_diff(
-          candidates.first['properties'],
-          new_resource.properties,
-          new_resource.append
-        )
-        Chef::Log.debug("Diff: #{diff}")
+      def align_same_property_instances(candidates, diff)
+        case
+        when candidates.length == new_resource.count
+          update_existing_instances(candidates, diff)
+        when candidates.length < new_resource.count
+          # Update existing instances
+          update_existing_instances(candidates, diff)
 
-        if diff.empty?
-          Chef::Log.info("#{new_resource.factory_pid} is already configured")
-        else
-          case
-          when candidates.length == new_resource.count
-            update_existing_instances(candidates, diff)
-          when candidates.length < new_resource.count
-            # Update existing instances
-            update_existing_instances(candidates, diff)
+          # Create missing instances
+          create_missing_instances(new_resource.count - candidates.length)
+        when candidates.length > new_resource.count
+          if new_resource.enforce_count
+            # Remove redundant configs
+            count = candidates.length - new_resource.count
+            delete_redundant_instances(candidates[0..count - 1])
 
-            # Create missing instances
-            create_missing_instances(new_resource.count - candidates.length)
-          when candidates.length > new_resource.count
-            if new_resource.enforce_count
-              # Remove redundant configs
-              count = candidates.length - new_resource.count
-              delete_redundant_instances(candidates[0..count - 1])
-
-              # Update those that left
-              update_existing_instances(candidates[count..-1], diff)
-            else
-              Chef::Application.fatal!(
-                "Expected #{new_resource.count} #{new_resource.factory_pid} "\
-                "instance(s), but found #{candidates.length} possible "\
-                'candidates. enforce_count is off, so please either turn it '\
-                'on or update unique_fields property'
-              )
-            end
+            # Update those that left
+            update_existing_instances(candidates[count..-1], diff)
+          else
+            Chef::Application.fatal!(
+              "Expected #{new_resource.count} #{new_resource.factory_pid} "\
+              "instance(s), but found #{candidates.length} possible "\
+              'candidates. enforce_count is off, so please either turn it '\
+              'on or update unique_fields property'
+            )
           end
         end
       end
@@ -402,7 +382,19 @@ class Chef
 
         # All candidates are identical (have the same properties)
         if same_properties?(candidates)
-          align_same_property_instances(candidates)
+          # Since all candidates are the same use the fist one as a diff source
+          diff = property_diff(
+            candidates.first['properties'],
+            new_resource.properties,
+            new_resource.append
+          )
+          Chef::Log.debug("Diff: #{diff}")
+
+          if diff.empty?
+            Chef::Log.info("#{new_resource.factory_pid} is already configured")
+          else
+            align_same_property_instances(candidates, diff)
+          end
         else
           Chef::Application.fatal!(
             'Given set of unique fields has a few similar instances: '\
