@@ -379,6 +379,7 @@ class Chef
         instances.uniq { |c| property_checksum(c) }.length == 1
       end
 
+      # rubocop:disable Metrics/AbcSize
       def align_same_property_instances(candidates, diff)
         case
         when candidates.length == new_resource.count
@@ -402,7 +403,9 @@ class Chef
           end
         end
       end
+      # rubocop:enable Metrics/AbcSize
 
+      # rubocop:disable Metrics/AbcSize
       def zero_score_factories(copies)
         case
         when copies.length == new_resource.count
@@ -415,14 +418,15 @@ class Chef
             delete_redundant_instances(copies[0..count - 1])
           else
             Chef::Application.fatal!(
-              "Expected #{new_resource.count} instances of "\
-              "#{new_resource.factory_pid}, but found #{copies.length} of "\
-              'them. enforce_count is off, so please either turn it on to '\
+              "Expected #{new_resource.count} #{new_reosurce.factory_pid} "\
+              "instance(s), but found #{copies.length} of them. "\
+              'enforce_count is off, so please either turn it on to '\
               'get rid of redundant configs or update unique_fields property'
             )
           end
         end
       end
+      # rubocop:enable Metrics/AbcSize
 
       def non_zero_score_factories(rank)
         # Get lowest score instances out of non-zero score ones
