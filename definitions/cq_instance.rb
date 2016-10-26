@@ -224,6 +224,7 @@ define :cq_instance,
         end
         sleep(5)
         time_diff = Time.now - start_time
+        Chef::Log.debug("Time elapsed since process start: #{time_diff}")
         abort "Aborting since #{daemon_name} start took more than "\
               "#{start_timeout / 60} minutes " if time_diff > start_timeout
       end
