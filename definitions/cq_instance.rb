@@ -213,6 +213,7 @@ define :cq_instance,
           node.default['cq']['http_read_timeout'] = 5
 
           response = Net::HTTP.get_response(uri).code
+          Chef::Log.debug("HTTP response: #{response}")
         rescue => e
           Chef::Log.debug(
             "Error occurred while trying to send GET #{uri} request: #{e}"
