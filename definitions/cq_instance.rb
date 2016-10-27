@@ -191,11 +191,16 @@ define :cq_instance,
       require 'uri'
 
       # Pick valid resource to verify CQ instance full start
-      uri = URI.parse("http://localhost:#{node['cq'][local_id]['port']}" +
-                      node['cq'][local_id]['healthcheck']['resource'])
+      uri = URI.parse(
+        "http://localhost:#{node['cq'][local_id]['port']}" +
+        node['cq'][local_id]['healthcheck']['resource']
+      )
 
       # Start timeout
-      timeout = node['cq']['service']['start_timeout']
+      start_timeout = node['cq']['service']['start_timeout']
+
+      # Save current net read timeout value
+      current_http_timeout = node['cq']['http_read_timeout']
 
       response = '-1'
       start_time = Time.now
@@ -204,16 +209,24 @@ define :cq_instance,
       # returns 200 or specified time has elapsed
       while response != node['cq'][local_id]['healthcheck']['response_code']
         begin
+          # Reduce net read time value to speed up start guard procedure
+          node.default['cq']['http_read_timeout'] = 5
+
           response = Net::HTTP.get_response(uri).code
+          Chef::Log.debug("HTTP response: #{response}")
         rescue => e
-          Chef::Log.debug("Error occurred while trying to send GET #{uri} "\
-                          "request: #{e}")
+          Chef::Log.debug(
+            "Error occurred while trying to send GET #{uri} request: #{e}"
+          )
+        ensure
+          # Restore original timeout
+          node.default['cq']['http_read_timeout'] = current_http_timeout
         end
         sleep(5)
         time_diff = Time.now - start_time
-        abort "Aborting since #{daemon_name} "\
-              'start took more than '\
-              "#{timeout / 60} minutes " if time_diff > timeout
+        Chef::Log.debug("Time elapsed since process start: #{time_diff}")
+        abort "Aborting since #{daemon_name} start took more than "\
+              "#{start_timeout / 60} minutes " if time_diff > start_timeout
       end
 
       Chef::Log.info("CQ start time: #{time_diff} seconds")
