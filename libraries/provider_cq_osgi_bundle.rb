@@ -118,7 +118,7 @@ class Chef
       end
 
       def action_start
-        if current_resource.info['state'] == 'Resolved'
+        if %w(Resolved Installed).include?(current_resource.info['state'])
           converge_by("Start #{new_resource.symbolic_name} bundle") do
             start_bundle
           end
@@ -141,7 +141,7 @@ class Chef
           Chef::Log.warn(
             "#{current_resource.symbolic_name} is in "\
             "#{current_resource.info['state']} state. Only bundles in "\
-            'Resolved state can be started'
+            'Resolved or Installed state can be started'
           )
         end
       end
