@@ -503,7 +503,26 @@ class Chef
       end
 
       def delete_factory_config
-        # TODO: factory_instance delete
+        twins = current_resource.fingerprint_groups[new_resource.fingerprint]
+        Chef::Log.debug("Instances with the same fingerprint: #{twins}")
+
+        if !twins.nil?
+          twins.each do |t|
+            converge_by("Delete #{t['pid']}") do
+              delete_config(
+                new_resource.instance,
+                new_resource.username,
+                new_resource.password,
+                t['pid']
+              )
+            end
+          end
+        else
+          Chef::Log.info(
+            "All instances of #{new_resource.factory_pid} with "\
+            "#{new_resource.fingerprint} fingerprint have been already deleted"
+          )
+        end
       end
 
       # -----------------------------------------------------------------------
