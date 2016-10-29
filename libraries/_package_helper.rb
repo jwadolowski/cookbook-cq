@@ -30,15 +30,18 @@ module Cq
     end
 
     def package_list(addr, user, password)
-      xml_str = http_get(
+      resp = http_get(
         addr,
         '/crx/packmgr/service.jsp',
         user,
         password,
         'cmd' => 'ls'
-      ).body
+      )
 
-      xml = xmlify(xml_str)
+      Chef::Log.debug("Package list response code: #{reps.code}")
+      Chef::Log.debug("Package list response body: #{reps.body}")
+
+      xml = xmlify(resp.body)
 
       begin
         REXML::XPath.first(xml, '//packages')
