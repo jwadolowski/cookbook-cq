@@ -83,6 +83,8 @@ class Chef
           new_resource.password
         )
 
+        Chef::Log.debug("All available packages: #{all_pkgs}")
+
         # Uploaded packages
         @uploaded_packages = uploaded_packages(all_pkgs)
         Chef::Log.debug("Found #{@uploaded_packages.size} uploaded package(s)")
