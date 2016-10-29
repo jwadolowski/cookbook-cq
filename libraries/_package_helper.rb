@@ -38,8 +38,8 @@ module Cq
         'cmd' => 'ls'
       )
 
-      Chef::Log.debug("Package list response code: #{reps.code}")
-      Chef::Log.debug("Package list response body: #{reps.body}")
+      Chef::Log.debug("Package list response code: #{resp.code}")
+      Chef::Log.debug("Package list response body: #{resp.body}")
 
       xml = xmlify(resp.body)
 
