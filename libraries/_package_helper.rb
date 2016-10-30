@@ -41,15 +41,19 @@ module Cq
       Chef::Log.debug("Package list response code: #{resp.code}")
       Chef::Log.debug("Package list response body: #{resp.body}")
 
-      xml = xmlify(resp.body)
+      Chef::Application.fatal!(
+        "Available packages can't be fetched from AEM!\nResponse code: "\
+        "#{resp.code}\nResponse body:\n#{resp.body}"
+      ) if resp.code != '200'
 
-      begin
-        REXML::XPath.first(xml, '//packages')
-      rescue => e
-        Chef::Application.fatal!(
-          "Can't find <packages> element in #{xml}: #{e}"
-        )
-      end
+      xml = xmlify(resp.body)
+      packages = REXML::XPath.first(xml, '//packages')
+
+      Chef::Application.fatal!(
+        "Can't find <packages> element in #{xml}"
+      ) if packages.nil?
+
+      packages
     end
 
     def package_download(src, dst, http_user, http_pass)
