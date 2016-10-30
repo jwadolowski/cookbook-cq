@@ -173,14 +173,7 @@ module Cq
     end
 
     def xml_property(xml, name)
-      begin
-        element = REXML::XPath.first(xml, "//entry[@key='#{name}']")
-      rescue => e
-        Chef::Application.fatal!(
-          "Can't extract #{name} from properties.xml: #{e}"
-        )
-      end
-
+      element = REXML::XPath.first(xml, "//entry[@key='#{name}']")
       element.nil? ? element : element.text
     end
 
