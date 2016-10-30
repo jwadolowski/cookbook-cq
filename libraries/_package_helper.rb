@@ -42,8 +42,9 @@ module Cq
       Chef::Log.debug("Package list response body: #{resp.body}")
 
       Chef::Application.fatal!(
-        "Available packages can't be fetched from AEM!\nResponse code: "\
-        "#{resp.code}\nResponse body:\n#{resp.body}"
+        "Available packages can't be fetched from AEM!\n"\
+        "Response code: #{resp.code}\n"\
+        "Response body:\n#{resp.body}"
       ) if resp.code != '200'
 
       xml = xmlify(resp.body)
