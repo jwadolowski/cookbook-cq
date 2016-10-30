@@ -181,11 +181,7 @@ module Cq
         )
       end
 
-      if element.nil?
-        element
-      else
-        element.text
-      end
+      element.nil? ? element : element.text
     end
 
     def crx_property(xml, name)
