@@ -229,8 +229,8 @@ module Cq
     end
 
     def download_log_libs
-      node['cq']['crypto']['log_libs']['data'].each do |k, v|
-        url = node['cq']['crypto']['log_libs']['server'] + k
+      node['cq']['crypto']['log_libs']['data'].each do |path, checksum|
+        url = node['cq']['crypto']['log_libs']['server'] + path
         filename = uri_basename(url)
         path = ::File.join(crypto_log_dir, filename)
 
@@ -238,7 +238,7 @@ module Cq
         remote_file.source(url)
         remote_file.mode('0644')
         remote_file.use_conditional_get(false)
-        remote_file.checksum(v)
+        remote_file.checksum(checksum)
         remote_file.backup(false)
         remote_file.run_action(:create)
       end
