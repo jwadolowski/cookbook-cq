@@ -30,23 +30,31 @@ module Cq
     end
 
     def package_list(addr, user, password)
-      xml_str = http_get(
+      resp = http_get(
         addr,
         '/crx/packmgr/service.jsp',
         user,
         password,
         'cmd' => 'ls'
-      ).body
+      )
 
-      xml = xmlify(xml_str)
+      Chef::Log.debug("Package list response code: #{resp.code}")
+      Chef::Log.debug("Package list response body: #{resp.body}")
 
-      begin
-        REXML::XPath.first(xml, '//packages')
-      rescue => e
-        Chef::Application.fatal!(
-          "Can't find <packages> element in #{xml}: #{e}"
-        )
-      end
+      Chef::Application.fatal!(
+        "Available packages can't be fetched from AEM!\n"\
+        "Response code: #{resp.code}\n"\
+        "Response body:\n#{resp.body}"
+      ) if resp.code != '200'
+
+      xml = xmlify(resp.body)
+      packages = REXML::XPath.first(xml, '//packages')
+
+      Chef::Application.fatal!(
+        "Can't find <packages> element in #{xml}"
+      ) if packages.nil?
+
+      packages
     end
 
     def package_download(src, dst, http_user, http_pass)
@@ -166,19 +174,8 @@ module Cq
     end
 
     def xml_property(xml, name)
-      begin
-        element = REXML::XPath.first(xml, "//entry[@key='#{name}']")
-      rescue => e
-        Chef::Application.fatal!(
-          "Can't extract #{name} from properties.xml: #{e}"
-        )
-      end
-
-      if element.nil?
-        element
-      else
-        element.text
-      end
+      element = REXML::XPath.first(xml, "//entry[@key='#{name}']")
+      element.nil? ? element : element.text
     end
 
     def crx_property(xml, name)
