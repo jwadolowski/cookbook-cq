@@ -229,17 +229,8 @@ module Cq
     end
 
     def download_log_libs
-      server_url = 'http://central.maven.org/maven2'
-
-      log_libs = {
-        '/org/slf4j/slf4j-api/1.7.12/slf4j-api-1.7.12.jar' =>
-          '0aee9a77a4940d72932b0d0d9557793f872e66a03f598e473f45e7efecdccf99',
-        '/org/slf4j/slf4j-simple/1.7.12/slf4j-simple-1.7.12.jar' =>
-          'ff15e390d71e9852c296fb63986995609dc8c6681f9eff45ef65281a94649acd'
-      }
-
-      log_libs.each do |k, v|
-        url = server_url + k
+      node['cq']['crypto']['log_libs']['data'].each do |path, checksum|
+        url = node['cq']['crypto']['log_libs']['server'] + path
         filename = uri_basename(url)
         path = ::File.join(crypto_log_dir, filename)
 
@@ -247,7 +238,7 @@ module Cq
         remote_file.source(url)
         remote_file.mode('0644')
         remote_file.use_conditional_get(false)
-        remote_file.checksum(v)
+        remote_file.checksum(checksum)
         remote_file.backup(false)
         remote_file.run_action(:create)
       end
