@@ -59,7 +59,9 @@ module Cq
       end
     end
 
-    def http_post(addr, path, user, password, payload, query = nil)
+    def http_post(
+      addr, path, user, password, payload, query = nil, headers = {}
+    )
       uri = parse_uri(addr + path, query)
 
       http = Net::HTTP.new(uri.host, uri.port)
@@ -68,6 +70,10 @@ module Cq
       http_req.basic_auth(user, password) if !user.nil? && !password.nil?
       http_req.set_form_data(payload)
 
+      headers.each do |name, value|
+        http_req[name] = value
+      end
+
       begin
         http.request(http_req)
       rescue => e
@@ -75,7 +81,9 @@ module Cq
       end
     end
 
-    def http_multipart_post(addr, path, user, password, payload, query = nil)
+    def http_multipart_post(
+      addr, path, user, password, payload, query = nil, headers = {}
+    )
       require 'net/http/post/multipart'
 
       uri = parse_uri(addr + path, query)
@@ -83,6 +91,10 @@ module Cq
       http.read_timeout = node['cq']['http_read_timeout']
       http_req = Net::HTTP::Post::Multipart.new(uri.request_uri, payload)
       http_req.basic_auth(user, password) if !user.nil? && !password.nil?
+
+      headers.each do |name, value|
+        http_req[name] = value
+      end
 
       begin
         http.request(http_req)
