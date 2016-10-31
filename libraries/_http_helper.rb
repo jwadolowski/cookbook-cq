@@ -40,13 +40,17 @@ module Cq
       Chef::Application.fatal!("Unable to parse #{str} as JSON: #{e}")
     end
 
-    def http_get(addr, path, user, password, query = nil)
+    def http_get(addr, path, user, password, query = nil, headers = {})
       uri = parse_uri(addr + path, query)
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.read_timeout = node['cq']['http_read_timeout']
       http_req = Net::HTTP::Get.new(uri.request_uri)
       http_req.basic_auth(user, password) if !user.nil? && !password.nil?
+
+      headers.each do |name, value|
+        http_req[name] = value
+      end
 
       begin
         http.request(http_req)

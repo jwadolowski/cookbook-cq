@@ -22,7 +22,14 @@ module Cq
     include Cq::HttpHelper
 
     def raw_bundle_list(addr, user, password)
-      http_get(addr, '/system/console/bundles/.json', user, password)
+      http_get(
+        addr,
+        '/system/console/bundles/.json',
+        user,
+        password,
+        nil,
+        'Cookie' => 'felix-webconsole-locale=en'
+      )
     end
 
     def bundle_list(addr, user, password)
