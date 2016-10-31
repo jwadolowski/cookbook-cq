@@ -45,12 +45,19 @@ module Cq
 
     # Executes defined operation on given bundle ID
     def bundle_op(addr, user, password, id, op)
-      req_path = "/system/console/bundles/#{id}"
       payload = {
         'action' => op
       }
 
-      http_post(addr, req_path, user, password, payload)
+      http_post(
+        addr,
+        "/system/console/bundles/#{id}",
+        user,
+        password,
+        payload,
+        nil,
+        'Cookie' => 'felix-webconsole-locale=en'
+      )
     end
 
     # stateRaw:
