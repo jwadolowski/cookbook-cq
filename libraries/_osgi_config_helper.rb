@@ -45,6 +45,11 @@ module Cq
     # }
     def config_list(addr, user, password)
       html = http_get(addr, '/system/console/configMgr', user, password)
+
+      Chef::Application.fatal!(
+        "Can't download OSGi configurations from AEM!"
+      ) if !html.is_a?(Net::HTTPResponse)
+
       Chef::Application.fatal!(
         "Can't download available OSGi configuratons! Response code: "\
         "#{html.code}, response body: #{html.body}"
