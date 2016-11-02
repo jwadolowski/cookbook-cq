@@ -113,7 +113,8 @@ class Chef
 
         if new_resource.force || !diff.empty?
           converge_by("Create #{new_resource.pid}") do
-            diff = new_resource.properties if new_resource.apply_all
+            diff = new_resource.properties if new_resource.force ||
+                                              new_resource.apply_all
 
             update_config(
               new_resource.instance,
