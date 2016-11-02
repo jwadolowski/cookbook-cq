@@ -951,35 +951,6 @@ For factory configs:
     <td>Config name (PID)</td>
   </tr>
   <tr>
-    <td><tt>factory_pid</tt></td>
-    <td>String</td>
-    <td>Factory PID</td>
-  </tr>
-  <tr>
-    <td><tt>properties</tt></td>
-    <td>Hash</td>
-    <td>Key-value pairs that represents OSGi config properties</td>
-  </tr>
-  <tr>
-    <td><tt>append</tt></td>
-    <td>Boolean</td>
-    <td>Set to true if you'd like to specify just a subset of original
-    properties. For regular configs it means that your properties will be
-    eventually merged with the ones that are already configured in AEM. Merged
-    values will be used during idempotence test. Impact on factory configs is
-    slightly different. Properties will be also merged in the end, but during
-    idempotence test only values defined in your resource will be used, so
-    please make sure it will be enogugh for unique identification</td>
-  </tr>
-  <tr>
-    <td><tt>force</tt></td>
-    <td>Boolean</td>
-    <td>If <tt>true</tt>, defined OSGi config is deleted reagrdless of current
-    settings. Applies only to regular OSGi configs. <b>WARNING</b>: this
-    violates idempotence, so please use <tt>only_if</tt> or <tt>not_if</tt>
-    block to prevent constant execution</td>
-  </tr>
-  <tr>
     <td><tt>username</tt></td>
     <td>String</td>
     <td>Instance username</td>
@@ -994,20 +965,82 @@ For factory configs:
     <td>String</td>
     <td>Instance URL</td>
   </tr>
+  <tr>
+    <td><tt>factory_pid</tt></td>
+    <td>String</td>
+    <td>Factory PID</td>
+  </tr>
+  <tr>
+    <td><tt>properties</tt></td>
+    <td>Hash</td>
+    <td>Key-value pairs that represent OSGi config properties</td>
+  </tr>
+  <tr>
+    <td><tt>append</tt></td>
+    <td>Boolean</td>
+    <td>If set to <tt>true</tt> arrays will be merged. Use if you'd like to
+    specify just a subset of array elements. <tt>false</tt> by default. Has no
+    impact on other property types</td>
+  </tr>
+  <tr>
+    <td><tt>apply_all</tt></td>
+    <td>Boolean</td>
+    <td>If <tt>true</tt> all defined properties will be used when applying
+    OSGi configuration (despite of the fact just a subset differs). Example: 5
+    properties were defined under <tt>properties</tt>, 3 of them requires
+    update, but eventually all of them will be set. <tt>false</tt> by default
+    </td>
+  </tr>
+  <tr>
+    <td><tt>unique_fields</tt></td>
+    <td>Array</td>
+    <td>Property names/keys that define uniqueness of given config. Applicable
+    to factory configs only. By deafult all available property keys will be
+    used (defined by factory config on AEM instance). User doesn't need to
+    define that at all, unless you want to cherry pick particular config.
+    Example: <tt>log.name</tt> key needs to stay unique for your config</td>
+  </tr>
+  <tr>
+    <td><tt>count</tt></td>
+    <td>Fixnum</td>
+    <td>Number of duplicated instances of given OSGi configuration. 1 by
+    default. Applicable to factory configs only. Useful when duplicated
+    instances are allowed, i.e. each instance specify some sort of a worker
+    </td>
+  </tr>
+  <tr>
+    <td><tt>enforce_count</tt></td>
+    <td>Boolean</td>
+    <td>Reduces number of duplicated configs if more than <tt>count</tt> has
+    been found. Applicable to factory configs only. <tt>false</tt> by default
+    </td>
+  </tr>
+  <tr>
+    <td><tt>force</tt></td>
+    <td>Boolean</td>
+    <td>If <tt>true</tt>, defined OSGi config is deleted/updated reagrdless of
+    current settings. Applies to regular OSGi configs only. This violates
+    idempotence, so please use <tt>only_if</tt> or <tt>not_if</tt> blocks to
+    prevent constant execution</td>
+  </tr>
 </table>
 
 ### Compatibility matrix
 
-| Property      | Regular OSGi config | Factory OSGi config |
-| ------------- | ------------------- | ------------------- |
-| `pid`         | :white_check_mark:  | :white_check_mark:  |
-| `factory_pid` | :no_entry:          | :white_check_mark:  |
-| `properties`  | :white_check_mark:  | :white_check_mark:  |
-| `append`      | :white_check_mark:  | :white_check_mark:  |
-| `force`       | :white_check_mark:  | :no_entry:          |
-| `username`    | :white_check_mark:  | :white_check_mark:  |
-| `password`    | :white_check_mark:  | :white_check_mark:  |
-| `instance`    | :white_check_mark:  | :white_check_mark:  |
+| Property        | Regular OSGi config | Factory OSGi config |
+| --------------- | ------------------- | ------------------- |
+| `pid`           | :white_check_mark:  | :white_check_mark:  |
+| `username`      | :white_check_mark:  | :white_check_mark:  |
+| `password`      | :white_check_mark:  | :white_check_mark:  |
+| `instance`      | :white_check_mark:  | :white_check_mark:  |
+| `factory_pid`   | :x:                 | :white_check_mark:  |
+| `properties`    | :white_check_mark:  | :white_check_mark:  |
+| `append`        | :white_check_mark:  | :white_check_mark:  |
+| `apply_all`     | :white_check_mark:  | :white_check_mark:  |
+| `unique_fields` | :x:                 | :white_check_mark:  |
+| `count`         | :x:                 | :white_check_mark:  |
+| `enforce_count` | :x:                 | :white_check_mark:  |
+| `force`         | :white_check_mark:  | :x:                 |
 
 ### Usage
 
