@@ -948,7 +948,8 @@ For factory configs:
   <tr>
     <td><tt>pid</tt></td>
     <td>String</td>
-    <td>Config name (PID)</td>
+    <td>Config name (PID). Important for regular configs only. Can be anything
+    for factory ones</td>
   </tr>
   <tr>
     <td><tt>username</tt></td>
