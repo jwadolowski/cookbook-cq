@@ -988,7 +988,7 @@ For factory configs:
     <td>Boolean</td>
     <td>If <tt>true</tt> all defined properties will be used when applying
     OSGi configuration (despite of the fact just a subset differs). Example: 5
-    properties were defined under <tt>properties</tt>, 3 of them requires
+    properties were defined under <tt>properties</tt>, 3 of them require
     update, but eventually all of them will be set. <tt>false</tt> by default
     </td>
   </tr>
