@@ -1480,28 +1480,28 @@ Exposes a resource for CQ/AEM user management. Supports:
 
 ## Compatibility matrix
 
-| Property        | `admin` user        | All other users     |
-| --------------- | ------------------- | ------------------- |
-| `id`            | :white_check_mark:  | :white_check_mark:  |
-| `username`      | :white_check_mark:  | :white_check_mark:  |
-| `password`      | :white_check_mark:  | :white_check_mark:  |
-| `instance`      | :white_check_mark:  | :white_check_mark:  |
-| `email`         | :white_check_mark:  | :white_check_mark:  |
-| `first_name`    | :white_check_mark:  | :white_check_mark:  |
-| `last_name`     | :white_check_mark:  | :white_check_mark:  |
-| `phone_number`  | :white_check_mark:  | :white_check_mark:  |
-| `job_title`     | :white_check_mark:  | :white_check_mark:  |
-| `street`        | :white_check_mark:  | :white_check_mark:  |
-| `mobile`        | :white_check_mark:  | :white_check_mark:  |
-| `city`          | :white_check_mark:  | :white_check_mark:  |
-| `postal_code`   | :white_check_mark:  | :white_check_mark:  |
-| `country`       | :white_check_mark:  | :white_check_mark:  |
-| `state`         | :white_check_mark:  | :white_check_mark:  |
-| `gender`        | :white_check_mark:  | :white_check_mark:  |
-| `about`         | :white_check_mark:  | :white_check_mark:  |
-| `user_password` | :no_entry:          | :white_check_mark:  |
-| `enabled`       | :no_entry:          | :white_check_mark:  |
-| `old_password`  | :white_check_mark:  | :no_entry:          |
+| Property        | `admin` user        | All other users    |
+| --------------- | ------------------- | ------------------ |
+| `id`            | :white_check_mark:  | :white_check_mark: |
+| `username`      | :white_check_mark:  | :white_check_mark: |
+| `password`      | :white_check_mark:  | :white_check_mark: |
+| `instance`      | :white_check_mark:  | :white_check_mark: |
+| `email`         | :white_check_mark:  | :white_check_mark: |
+| `first_name`    | :white_check_mark:  | :white_check_mark: |
+| `last_name`     | :white_check_mark:  | :white_check_mark: |
+| `phone_number`  | :white_check_mark:  | :white_check_mark: |
+| `job_title`     | :white_check_mark:  | :white_check_mark: |
+| `street`        | :white_check_mark:  | :white_check_mark: |
+| `mobile`        | :white_check_mark:  | :white_check_mark: |
+| `city`          | :white_check_mark:  | :white_check_mark: |
+| `postal_code`   | :white_check_mark:  | :white_check_mark: |
+| `country`       | :white_check_mark:  | :white_check_mark: |
+| `state`         | :white_check_mark:  | :white_check_mark: |
+| `gender`        | :white_check_mark:  | :white_check_mark: |
+| `about`         | :white_check_mark:  | :white_check_mark: |
+| `user_password` | :x:                 | :white_check_mark: |
+| `enabled`       | :x:                 | :white_check_mark: |
+| `old_password`  | :white_check_mark:  | :x:                |
 
 ## Usage
 
