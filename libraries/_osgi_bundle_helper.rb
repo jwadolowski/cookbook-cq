@@ -157,7 +157,7 @@ module Cq
 
         Chef::Log.info(
           "[#{i}/#{hc_params['max_attempts']}] Next OSGi status check in "\
-          " #{hc_params['sleep_time']}s..."
+          "#{hc_params['sleep_time']}s..."
         )
 
         sleep hc_params['sleep_time']
