@@ -483,43 +483,43 @@ Installs CQ/AEM author instance.
 
 Installs CQ/AEM publish instance.
 
-## _package_aem561.rb
+## \_package_aem561.rb
 
 Private recipe to test `cq_package` resource on AEM 5.6.1.
 
-## _package_aem600.rb
+## \_package_aem600.rb
 
 Private recipe to test `cq_package` resource on AEM 6.0.0.
 
-## _package_aem610.rb
+## \_package_aem610.rb
 
 Private recipe to test `cq_package` resource on AEM 6.1.0.
 
-## _osgi_config_create_regular.rb
+## \_osgi_config_create_regular.rb
 
 Private recipe that tests `:create` action on regular `cq_osgi_config`
 resources.
 
-## _osgi_config_create_factory.rb
+## \_osgi_config_create_factory.rb
 
 Private recipe that tests `:create` action on factory `cq_osgi_config`
 resources.
 
-## _osgi_config_delete_regular.rb
+## \_osgi_config_delete_regular.rb
 
 Private recipe that tests `:delete` action on regular `cq_osgi_config`
 resources.
 
-## _osgi_config_delete_factory.rb
+## \_osgi_config_delete_factory.rb
 
 Private recipe that tests `:delete` action on factory `cq_osgi_config`
 resources.
 
-## _users.rb
+## \_users.rb
 
 Private recipe that tests `cq_user` resource.
 
-## _jcr_nodes.rb
+## \_jcr_nodes.rb
 
 Private recipe that tests `cq_jcr` resource.
 
