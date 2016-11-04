@@ -38,6 +38,8 @@ class Chef
       attr_accessor :crx_version
       attr_accessor :crx_download_name
 
+      attr_accessor :healthcheck_params
+
       def initialize(name, run_context = nil)
         super
 

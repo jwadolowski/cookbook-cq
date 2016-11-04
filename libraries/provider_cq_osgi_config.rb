@@ -21,6 +21,7 @@ class Chef
   class Provider
     class CqOsgiConfig < Chef::Provider
       include Cq::OsgiConfigHelper
+      include Cq::OsgiBundleHelper
 
       provides :cq_osgi_config if Chef::Provider.respond_to?(:provides)
 
@@ -33,6 +34,14 @@ class Chef
 
         # Unify properties defined in new resource
         @new_resource.properties(unify_properties(new_resource.properties))
+
+        @new_resource.healthcheck_params = healthcheck_params(
+          new_resource.rescue_mode,
+          new_resource.same_state_barrier,
+          new_resource.error_state_barrier,
+          new_resource.max_attempts,
+          new_resource.sleep_time
+        )
 
         # Fetch all OSGi configs just once
         full_list = config_list(
@@ -121,7 +130,8 @@ class Chef
               new_resource.username,
               new_resource.password,
               current_resource.info,
-              diff
+              diff,
+              new_resource.healthcheck_params
             )
           end
         else
@@ -136,7 +146,8 @@ class Chef
               new_resource.instance,
               new_resource.username,
               new_resource.password,
-              new_resource.pid
+              new_resource.pid,
+              new_resource.healthcheck_params
             )
           end
         else
@@ -340,7 +351,8 @@ class Chef
               new_resource.username,
               new_resource.password,
               new_resource.properties,
-              new_resource.factory_pid
+              new_resource.factory_pid,
+              new_resource.healthcheck_params
             )
           end
         end
@@ -355,7 +367,8 @@ class Chef
               new_resource.instance,
               new_resource.username,
               new_resource.password,
-              instances[i]['pid']
+              instances[i]['pid'],
+              new_resource.healthcheck_params
             )
           end
         end
@@ -373,7 +386,8 @@ class Chef
               new_resource.username,
               new_resource.password,
               i,
-              diff
+              diff,
+              new_resource.healthcheck_params
             )
           end
         end
@@ -496,7 +510,8 @@ class Chef
                 new_resource.username,
                 new_resource.password,
                 new_resource.properties,
-                new_resource.factory_pid
+                new_resource.factory_pid,
+                new_resource.healthcheck_params
               )
             end
           end
@@ -514,7 +529,8 @@ class Chef
                 new_resource.instance,
                 new_resource.username,
                 new_resource.password,
-                t['pid']
+                t['pid'],
+                new_resource.healthcheck_params
               )
             end
           end

@@ -21,6 +21,7 @@ class Chef
   class Provider
     class CqOsgiComponent < Chef::Provider
       include Cq::OsgiComponentHelper
+      include Cq::OsgiBundleHelper
 
       provides :cq_osgi_component if Chef::Provider.respond_to?(:provides)
 
@@ -31,6 +32,14 @@ class Chef
       def load_current_resource
         @current_resource = Chef::Resource::CqOsgiComponent.new(
           new_resource.pid
+        )
+
+        @new_resource.healthcheck_params = healthcheck_params(
+          new_resource.rescue_mode,
+          new_resource.same_state_barrier,
+          new_resource.error_state_barrier,
+          new_resource.max_attempts,
+          new_resource.sleep_time
         )
 
         # {
@@ -70,6 +79,13 @@ class Chef
           "Expected disabled state, but got #{resp.code} HTTP response and "\
           "#{resp.body} body"
         ) unless valid_component_op?(resp, 'disabled', new_resource.pid)
+
+        osgi_stability_healthcheck(
+          new_resource.instance,
+          new_resource.username,
+          new_resource.password,
+          new_resource.healthcheck_params
+        )
       end
 
       def enable_component
@@ -85,6 +101,13 @@ class Chef
           "Expected active state, but got #{resp.code} HTTP response and "\
           "#{resp.body} body"
         ) unless valid_component_op?(resp, 'active', new_resource.pid)
+
+        osgi_stability_healthcheck(
+          new_resource.instance,
+          new_resource.username,
+          new_resource.password,
+          new_resource.healthcheck_params
+        )
       end
 
       def action_disable

@@ -43,6 +43,14 @@ class Chef
           new_resource.http_pass
         )
 
+        @new_resource.healthcheck_params = healthcheck_params(
+          new_resource.rescue_mode,
+          new_resource.same_state_barrier,
+          new_resource.error_state_barrier,
+          new_resource.max_attempts,
+          new_resource.sleep_time
+        )
+
         populate_xml_properties
 
         # Get information from CRX Package Manager
@@ -222,11 +230,7 @@ class Chef
           new_resource.instance,
           new_resource.username,
           new_resource.password,
-          new_resource.rescue_mode,
-          new_resource.same_state_barrier,
-          new_resource.error_state_barrier,
-          new_resource.max_attempts,
-          new_resource.sleep_time
+          new_resource.healthcheck_params
         )
       end
 
@@ -295,11 +299,7 @@ class Chef
               new_resource.instance,
               new_resource.username,
               new_resource.password,
-              new_resource.rescue_mode,
-              new_resource.same_state_barrier,
-              new_resource.error_state_barrier,
-              new_resource.max_attempts,
-              new_resource.sleep_time
+              new_resource.healthcheck_params
             )
           end
         elsif new_resource.uploaded

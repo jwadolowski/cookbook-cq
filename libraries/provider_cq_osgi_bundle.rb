@@ -33,6 +33,14 @@ class Chef
           new_resource.symbolic_name
         )
 
+        @new_resource.healthcheck_params = healthcheck_params(
+          new_resource.rescue_mode,
+          new_resource.same_state_barrier,
+          new_resource.error_state_barrier,
+          new_resource.max_attempts,
+          new_resource.sleep_time
+        )
+
         # {
         #   "id": 476,
         #   "name": "peaberry - Dynamic services for Google-Guice",
@@ -98,11 +106,7 @@ class Chef
             new_resource.instance,
             new_resource.username,
             new_resource.password,
-            new_resource.rescue_mode,
-            new_resource.same_state_barrier,
-            new_resource.error_state_barrier,
-            new_resource.max_attempts,
-            new_resource.sleep_time
+            new_resource.healthcheck_params
           )
         elsif current_resource.info['state'] == 'Resolved'
           Chef::Log.info(
@@ -127,11 +131,7 @@ class Chef
             new_resource.instance,
             new_resource.username,
             new_resource.password,
-            new_resource.rescue_mode,
-            new_resource.same_state_barrier,
-            new_resource.error_state_barrier,
-            new_resource.max_attempts,
-            new_resource.sleep_time
+            new_resource.healthcheck_params
           )
         elsif current_resource.info['state'] == 'Active'
           Chef::Log.info(

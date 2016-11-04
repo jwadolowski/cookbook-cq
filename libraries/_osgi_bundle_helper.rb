@@ -68,9 +68,18 @@ module Cq
       body['fragment'] == false && body['stateRaw'] == expected_state
     end
 
-    def osgi_stability_healthcheck(addr, user, password, rescue_mode,
-                                   same_state_barrier, error_state_barrier,
-                                   max_attempts, sleep_time)
+    def healthcheck_params(rescue_mode, same_state_barrier,
+                           error_state_barrier, max_attempts, sleep_time)
+      {
+        'rescue_mode' => rescue_mode,
+        'same_state_barrier' => same_state_barrier,
+        'error_state_barrier' => error_state_barrier,
+        'max_attempts' => max_attempts,
+        'sleep_time' => sleep_time
+      }
+    end
+
+    def osgi_stability_healthcheck(addr, user, password, hc_params)
       Chef::Log.info('Waiting for stable state of OSGi bundles...')
 
       # Save current net read timeout value
@@ -85,7 +94,7 @@ module Cq
       # How many times an error occurred in a row
       error_state_counter = 0
 
-      (1..max_attempts).each do |i|
+      (1..hc_params['max_attempts']).each do |i|
         begin
           # Reduce net read time value to speed up OSGi healthcheck procedure
           # when instance is running but stopped accepting HTTP requests
@@ -110,7 +119,7 @@ module Cq
           previous_state = state.body
 
           # Move on if the same state occurred N times in a row
-          if same_state_counter == same_state_barrier
+          if same_state_counter == hc_params['same_state_barrier']
             Chef::Log.info('OSGi bundles seem to be stable. Moving on...')
             break
           end
@@ -128,7 +137,8 @@ module Cq
 
           # If error occurred N times in a row and rescue_mode is active then
           # log such event and break the loop
-          if rescue_mode && error_state_counter == error_state_barrier
+          if hc_params['rescue_mode'] &&
+              error_state_counter == hc_params['error_state_barrier']
             Chef::Log.error(
               "#{error_state_barrier} recent attempts to get OSGi bundles "\
               'state have failed! Rescuing, as rescue_mode is active...'
@@ -141,14 +151,16 @@ module Cq
         end
 
         Chef::Application.fatal!(
-          "Cannot detect stable state after #{max_attempts} attempts!"
-        ) if i == max_attempts
+          "Cannot detect stable state after #{hc_params['max_attempts']} "\
+          'attempts!'
+        ) if i == hc_params['max_attempts']
 
         Chef::Log.info(
-          "[#{i}/#{max_attempts}] Next OSGi status check in #{sleep_time}s..."
+          "[#{i}/#{hc_params['max_attempts']}] Next OSGi status check in "\
+          " #{hc_params['sleep_time']}s..."
         )
 
-        sleep sleep_time
+        sleep hc_params['sleep_time']
       end
     end
   end

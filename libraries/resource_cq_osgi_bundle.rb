@@ -23,6 +23,7 @@ class Chef
       provides :cq_osgi_bundle
 
       attr_accessor :info
+      attr_accessor :healthcheck_params
 
       def initialize(name, run_context = nil)
         super
@@ -36,10 +37,10 @@ class Chef
         @password = nil
         @instance = nil
         @rescue_mode = false
-        @same_state_barrier = 6
-        @error_state_barrier = 6
+        @same_state_barrier = 3
+        @error_state_barrier = 3
         @max_attempts = 30
-        @sleep_time = 10
+        @sleep_time = 5
       end
 
       def symbolic_name(arg = nil)
