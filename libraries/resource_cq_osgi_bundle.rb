@@ -40,7 +40,7 @@ class Chef
         @same_state_barrier = 3
         @error_state_barrier = 3
         @max_attempts = 30
-        @sleep_time = 5
+        @sleep_time = 3
       end
 
       def symbolic_name(arg = nil)
