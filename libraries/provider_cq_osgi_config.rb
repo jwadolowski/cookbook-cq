@@ -122,8 +122,10 @@ class Chef
 
         if new_resource.force || !diff.empty?
           converge_by("Create #{new_resource.pid}") do
-            diff = new_resource.properties if new_resource.force ||
-                                              new_resource.apply_all
+            # Calculated diff has precedence over defined properties
+            diff = new_resource.properties.merge(
+              diff
+            ) if new_resource.force || new_resource.apply_all
 
             update_config(
               new_resource.instance,
@@ -378,7 +380,8 @@ class Chef
         converge_by(
           "Update #{instances.length} #{new_resource.factory_pid} instance(s)"
         ) do
-          diff = new_resource.properties if new_resource.apply_all
+          # Calculated diff has precedence over defined properties
+          diff = new_resource.properties.merge(diff) if new_resource.apply_all
 
           instances.each do |i|
             update_config(
