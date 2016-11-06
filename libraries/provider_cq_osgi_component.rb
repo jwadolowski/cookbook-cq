@@ -21,7 +21,6 @@ class Chef
   class Provider
     class CqOsgiComponent < Chef::Provider
       include Cq::OsgiComponentHelper
-      include Cq::OsgiBundleHelper
 
       provides :cq_osgi_component if Chef::Provider.respond_to?(:provides)
 
@@ -80,7 +79,7 @@ class Chef
           "#{resp.body} body"
         ) unless valid_component_op?(resp, 'disabled', new_resource.pid)
 
-        osgi_stability_healthcheck(
+        osgi_component_stability(
           new_resource.instance,
           new_resource.username,
           new_resource.password,
@@ -102,7 +101,7 @@ class Chef
           "#{resp.body} body"
         ) unless valid_component_op?(resp, 'active', new_resource.pid)
 
-        osgi_stability_healthcheck(
+        osgi_component_stability(
           new_resource.instance,
           new_resource.username,
           new_resource.password,

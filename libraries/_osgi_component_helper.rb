@@ -19,6 +19,7 @@
 
 module Cq
   module OsgiComponentHelper
+    include Cq::HealthcheckHelper
     include Cq::HttpHelper
 
     def component_list(addr, user, password)
@@ -52,6 +53,12 @@ module Cq
       body = component_info(json_to_hash(http_resp.body), pid)
       Chef::Log.debug("Post-action component information: #{body}")
       body['state'] == expected_state
+    end
+
+    def osgi_component_stability(addr, user, pass, hc_params)
+      stability_check(
+        addr, '/system/console/components/.json', user, pass, hc_params
+      )
     end
   end
 end

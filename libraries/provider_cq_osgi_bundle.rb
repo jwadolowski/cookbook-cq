@@ -102,7 +102,7 @@ class Chef
             stop_bundle
           end
 
-          osgi_stability_healthcheck(
+          osgi_bundle_stability(
             new_resource.instance,
             new_resource.username,
             new_resource.password,
@@ -127,7 +127,7 @@ class Chef
             start_bundle
           end
 
-          osgi_stability_healthcheck(
+          osgi_bundle_stability(
             new_resource.instance,
             new_resource.username,
             new_resource.password,

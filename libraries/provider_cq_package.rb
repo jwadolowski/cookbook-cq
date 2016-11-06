@@ -226,7 +226,7 @@ class Chef
           new_resource.recursive_install
         )
 
-        osgi_stability_healthcheck(
+        osgi_bundle_stability(
           new_resource.instance,
           new_resource.username,
           new_resource.password,
@@ -295,7 +295,7 @@ class Chef
               )
             )
 
-            osgi_stability_healthcheck(
+            osgi_bundle_stability(
               new_resource.instance,
               new_resource.username,
               new_resource.password,

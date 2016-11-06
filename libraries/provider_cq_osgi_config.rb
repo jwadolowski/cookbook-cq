@@ -21,7 +21,6 @@ class Chef
   class Provider
     class CqOsgiConfig < Chef::Provider
       include Cq::OsgiConfigHelper
-      include Cq::OsgiBundleHelper
 
       provides :cq_osgi_config if Chef::Provider.respond_to?(:provides)
 

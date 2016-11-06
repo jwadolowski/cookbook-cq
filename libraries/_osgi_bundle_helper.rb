@@ -19,14 +19,13 @@
 
 module Cq
   module OsgiBundleHelper
+    include Cq::HealthcheckHelper
     include Cq::HttpHelper
 
-    def raw_bundle_list(addr, user, password)
-      http_get(addr, '/system/console/bundles/.json', user, password)
-    end
-
     def bundle_list(addr, user, password)
-      json_to_hash(raw_bundle_list(addr, user, password).body)
+      json_to_hash(
+        http_get(addr, '/system/console/bundles/.json', user, password).body
+      )
     end
 
     # symbolicName is unique, hence filtering using .detect
@@ -68,100 +67,10 @@ module Cq
       body['fragment'] == false && body['stateRaw'] == expected_state
     end
 
-    def healthcheck_params(rescue_mode, same_state_barrier,
-                           error_state_barrier, max_attempts, sleep_time)
-      {
-        'rescue_mode' => rescue_mode,
-        'same_state_barrier' => same_state_barrier,
-        'error_state_barrier' => error_state_barrier,
-        'max_attempts' => max_attempts,
-        'sleep_time' => sleep_time
-      }
-    end
-
-    def osgi_stability_healthcheck(addr, user, password, hc_params)
-      Chef::Log.info('Waiting for stable state of OSGi bundles...')
-
-      # Save current net read timeout value
-      current_timeout = node['cq']['http_read_timeout']
-
-      # Previous state of OSGi bundles (start with empty)
-      previous_state = ''
-
-      # How many times the state hasn't changed in a row
-      same_state_counter = 0
-
-      # How many times an error occurred in a row
-      error_state_counter = 0
-
-      (1..hc_params['max_attempts']).each do |i|
-        begin
-          # Reduce net read time value to speed up OSGi healthcheck procedure
-          # when instance is running but stopped accepting HTTP requests
-          node.default['cq']['http_read_timeout'] = 5
-          state = raw_bundle_list(addr, user, password)
-
-          # Raise an error if state is not an instance of HTTP response
-          raise('Invalid HTTP response') unless state.is_a?(Net::HTTPResponse)
-
-          # Reset error counter whenever request ended successfully
-          error_state_counter = 0
-
-          if state.body == previous_state
-            same_state_counter += 1
-          else
-            same_state_counter = 0
-          end
-
-          Chef::Log.info("Same state counter: #{same_state_counter}")
-
-          # Assign current state to previous state
-          previous_state = state.body
-
-          # Move on if the same state occurred N times in a row
-          if same_state_counter == hc_params['same_state_barrier']
-            Chef::Log.info('OSGi bundles seem to be stable. Moving on...')
-            break
-          end
-        rescue => e
-          Chef::Log.warn("Unable to get OSGi bundles state: #{e}. Retrying...")
-
-          # Let's start over in case of an error (clear indicator of flapping
-          # OSGi bundles)
-          previous_state = ''
-          same_state_counter = 0
-
-          # Increment error_state_counter in case of an error
-          error_state_counter += 1
-          Chef::Log.info("Error state counter: #{error_state_counter}")
-
-          # If error occurred N times in a row and rescue_mode is active then
-          # log such event and break the loop
-          if hc_params['rescue_mode'] &&
-              error_state_counter == hc_params['error_state_barrier']
-            Chef::Log.error(
-              "#{error_state_barrier} recent attempts to get OSGi bundles "\
-              'state have failed! Rescuing, as rescue_mode is active...'
-            )
-            break
-          end
-        ensure
-          # Restore original timeout
-          node.default['cq']['http_read_timeout'] = current_timeout
-        end
-
-        Chef::Application.fatal!(
-          "Cannot detect stable state after #{hc_params['max_attempts']} "\
-          'attempts!'
-        ) if i == hc_params['max_attempts']
-
-        Chef::Log.info(
-          "[#{i}/#{hc_params['max_attempts']}] Next OSGi status check in "\
-          "#{hc_params['sleep_time']}s..."
-        )
-
-        sleep hc_params['sleep_time']
-      end
+    def osgi_bundle_stability(addr, user, pass, hc_params)
+      stability_check(
+        addr, '/system/console/bundles/.json', user, pass, hc_params
+      )
     end
   end
 end

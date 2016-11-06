@@ -19,8 +19,8 @@
 
 module Cq
   module OsgiConfigHelper
+    include Cq::OsgiComponentHelper
     include Cq::HttpHelper
-    include Cq::OsgiBundleHelper
 
     # {
     #   "fpids": [
@@ -234,7 +234,7 @@ module Cq
       )
 
       validate_response(http_resp, '302')
-      osgi_stability_healthcheck(instance, user, pass, hc_params)
+      osgi_component_stability(instance, user, pass, hc_params)
     end
 
     def create_config(instance, user, pass, diff, factory_pid, hc_params)
@@ -253,7 +253,7 @@ module Cq
       )
 
       validate_response(http_resp, '302')
-      osgi_stability_healthcheck(instance, user, pass, hc_params)
+      osgi_component_stability(instance, user, pass, hc_params)
     end
 
     def delete_config(instance, user, pass, pid, hc_params)
@@ -269,7 +269,7 @@ module Cq
       )
 
       validate_response(http_resp, '200')
-      osgi_stability_healthcheck(instance, user, pass, hc_params)
+      osgi_component_stability(instance, user, pass, hc_params)
     end
 
     def validate_response(http_resp, expected_code)
