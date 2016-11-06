@@ -538,7 +538,7 @@ Key features:
 * package specific details (name, group, version) are always extracted from ZIP
   file (`/META-INF/vault/properties.xml`), so you don't have to define that
   anywhere else. All you need is an URL to your package
-* `cq_package` resource is name/group/version aware
+* `cq_package` identifies packages by name/group/version properties
 * packages are automatically downloaded from remote (`http://`, `https://`) or
   local (`file://`) sources. If HTTP(S) source requires basic auth please use
   `http_user` and `http_pass`
