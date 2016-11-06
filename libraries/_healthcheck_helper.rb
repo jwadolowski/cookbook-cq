@@ -123,8 +123,8 @@ module Cq
         ) if i == hc_params['max_attempts']
 
         Chef::Log.info(
-          "[#{i}/#{hc_params['max_attempts']}] Next OSGi #{path_desc(path)} "\
-          "check in #{hc_params['sleep_time']}s..."
+          "[#{i}/#{hc_params['max_attempts']}] Next check of OSGi "\
+          "#{path_desc(path)} in #{hc_params['sleep_time']}s..."
         )
 
         sleep hc_params['sleep_time']
