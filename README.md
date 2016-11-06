@@ -22,15 +22,6 @@ a choice.
     * [commons.rb](#commonsrb)
     * [author.rb](#authorrb-1)
     * [publish.rb](#publishrb-1)
-    * [\_package_aem561.rb](#_package_aem561rb)
-    * [\_package_aem600.rb](#_package_aem600rb)
-    * [\_package_aem610.rb](#_package_aem610rb)
-    * [\_osgi_config_create_regular.rb](#_osgi_config_create_regularrb)
-    * [\_osgi_config_create_factory.rb](#_osgi_config_create_factoryrb)
-    * [\_osgi_config_delete_regular.rb](#_osgi_config_delete_regularrb)
-    * [\_osgi_config_delete_factory.rb](#_osgi_config_delete_factoryrb)
-    * [\_users.rb](#_usersrb)
-    * [\_jcr_nodes.rb](#_jcr_nodesrb)
 * [Getting started](#getting-started)
 * [Custom resources](#custom-resources)
     * [cq_package](#cq_package)
@@ -483,46 +474,6 @@ Installs CQ/AEM author instance.
 
 Installs CQ/AEM publish instance.
 
-## \_package_aem561.rb
-
-Private recipe to test `cq_package` resource on AEM 5.6.1.
-
-## \_package_aem600.rb
-
-Private recipe to test `cq_package` resource on AEM 6.0.0.
-
-## \_package_aem610.rb
-
-Private recipe to test `cq_package` resource on AEM 6.1.0.
-
-## \_osgi_config_create_regular.rb
-
-Private recipe that tests `:create` action on regular `cq_osgi_config`
-resources.
-
-## \_osgi_config_create_factory.rb
-
-Private recipe that tests `:create` action on factory `cq_osgi_config`
-resources.
-
-## \_osgi_config_delete_regular.rb
-
-Private recipe that tests `:delete` action on regular `cq_osgi_config`
-resources.
-
-## \_osgi_config_delete_factory.rb
-
-Private recipe that tests `:delete` action on factory `cq_osgi_config`
-resources.
-
-## \_users.rb
-
-Private recipe that tests `cq_user` resource.
-
-## \_jcr_nodes.rb
-
-Private recipe that tests `cq_jcr` resource.
-
 # Getting started
 
 TBD
@@ -544,6 +495,7 @@ get unexpected results otherwise (i.e. when CQ/AEM restart is required
 afterwards). Please find `cq_package` example below:
 
 *Bad*:
+
 ```ruby
 cq_package 'package1' do
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -559,6 +511,7 @@ end
 ```
 
 *Good*:
+
 ```ruby
 cq_package 'Author: package1' do
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -580,9 +533,9 @@ end
 Allows for CRX package manipulation using CRX Package Manager API.
 
 Key features:
-* package specific details (name, group, version) are always extracted from
-  `/META-INF/vault/properties.xml` inside ZIP file and/or CRX Package
-  Manager API for already uploaded/installed packages, so you don't have to
+
+* package specific details (name, group, version) are always extracted from ZIP
+  file `/META-INF/vault/properties.xml`, so you don't have to
   define that anywhere else. All you need is an URL to your package
 * packages are automatically downloaded from remote (`http://`, `https://`) or
   local (`file://`) sources. If HTTP(S) source requires basic auth it is also
