@@ -13,6 +13,7 @@ a choice.
     * [Operating systems](#operating-systems)
     * [Chef versions](#chef-versions)
     * [AEM/CQ versions](#aemcq-versions)
+* [Getting started](#getting-started)
 * [Attributes](#attributes)
     * [default.rb](#defaultrb)
     * [author.rb](#authorrb)
@@ -22,7 +23,6 @@ a choice.
     * [commons.rb](#commonsrb)
     * [author.rb](#authorrb-1)
     * [publish.rb](#publishrb-1)
-* [Getting started](#getting-started)
 * [Custom resources](#custom-resources)
     * [cq_package](#cq_package)
         * [Actions](#actions)
@@ -70,6 +70,11 @@ a choice.
 * AEM 5.6.1
 * AEM 6.0.0
 * AEM 6.1.0
+* AEM 6.2.0
+
+# Getting started
+
+TBD
 
 # Attributes
 
@@ -473,10 +478,6 @@ Installs CQ/AEM author instance.
 ## publish.rb
 
 Installs CQ/AEM publish instance.
-
-# Getting started
-
-TBD
 
 # Custom resources
 
