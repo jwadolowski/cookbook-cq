@@ -536,17 +536,17 @@ Allows for CRX package manipulation using CRX Package Manager API.
 Key features:
 
 * package specific details (name, group, version) are always extracted from ZIP
-  file `/META-INF/vault/properties.xml`, so you don't have to
-  define that anywhere else. All you need is an URL to your package
+  file (`/META-INF/vault/properties.xml`), so you don't have to define that
+  anywhere else. All you need is an URL to your package
 * packages are automatically downloaded from remote (`http://`, `https://`) or
-  local (`file://`) sources. If HTTP(S) source requires basic auth it is also
-  supported (`http_user` and `http_pass` respectively for user and password)
+  local (`file://`) sources. If HTTP(S) source requires basic auth please use
+  `http_user` and `http_pass`
 * by default all packages are downloaded to Chef's cache (`/var/chef/cache`)
 * `cq_package` resource is version aware, so defined actions are always
   executed for given package version
 * installation process is considered finished only when both "foreground"
   (Package Manager) and "background" (OSGi bundle/component restarts) ones are
-  over - no more 'wait until you see X in `error.log` file'
+  over - no more 'wait until you see X in `error.log`'
 
 ### Actions
 
