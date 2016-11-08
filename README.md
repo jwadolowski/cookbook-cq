@@ -934,7 +934,7 @@ For factory configs:
     <td>Boolean</td>
     <td>If set to <tt>true</tt> arrays will be merged. Use if you'd like to
     specify just a subset of array elements. <tt>false</tt> by default. Has no
-    impact on other property types</td>
+    impact on other property types (String, Fixnum, etc)</td>
   </tr>
   <tr>
     <td><tt>apply_all</tt></td>
