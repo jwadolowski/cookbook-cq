@@ -398,8 +398,8 @@ class Chef
           # required to respect append property
           diff = new_resource.properties.merge(diff) if new_resource.apply_all
 
-          # Include missing properties (from factory instance) if needed
-          diff = current_resource.default_properties.merge(
+          # Include missing properties from existing instance if needed
+          diff = instances.first['properties'].merge(
             diff
           ) if new_resource.include_missing
 

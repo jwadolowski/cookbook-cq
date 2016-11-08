@@ -951,9 +951,13 @@ For factory configs:
     <td>Boolean</td>
     <td>Properties that were NOT defined by user, but exist in OSGi will be
     included as a part of an update if this property is set to <tt>true</tt>
-    for regular OSGi configs. In case of factory configs it bahaves almost the
-    same - there's only one exception - defaults defined in factory PID will be
-    used instead. <tt>false</tt> by default</td>
+    for regular OSGi configs. For factory configs it bahaves almost the same.
+    If new instance needs to be created then defaults defined in factory PID
+    will be used. In case of existing instance update, all missing properties
+    will be based on properties defined in that instance. This is
+    <b>recommended</b> property for factory OSGi configs, in particular when
+    you'd like to edit pre-existing factory instances. <tt>false</tt> by
+    default</td>
   </tr>
   <tr>
     <td><tt>unique_fields</tt></td>
