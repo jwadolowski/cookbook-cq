@@ -121,10 +121,17 @@ class Chef
 
         if new_resource.force || !diff.empty?
           converge_by("Create #{new_resource.pid}") do
-            # Calculated diff has precedence over defined properties
+            # Calculated diff has precedence over defined properties. This is
+            # required to respect append property
             diff = new_resource.properties.merge(
               diff
             ) if new_resource.force || new_resource.apply_all
+
+            # If user specified just a subset of properties the missing ones
+            # can be included automatically if needed
+            diff = current_resource.properties.merge(
+              diff
+            ) if new_resource.include_missing
 
             update_config(
               new_resource.instance,
@@ -342,6 +349,14 @@ class Chef
         end
       end
 
+      def new_instance_properties
+        if new_resource.include_missing
+          current_resource.default_properties.merge(new_resource.properties)
+        else
+          new_resource.properties
+        end
+      end
+
       def create_missing_instances(count)
         converge_by(
           "Create #{count} #{new_resource.factory_pid} instance(s)"
@@ -351,7 +366,7 @@ class Chef
               new_resource.instance,
               new_resource.username,
               new_resource.password,
-              new_resource.properties,
+              new_instance_properties,
               new_resource.factory_pid,
               new_resource.healthcheck_params
             )
@@ -379,8 +394,14 @@ class Chef
         converge_by(
           "Update #{instances.length} #{new_resource.factory_pid} instance(s)"
         ) do
-          # Calculated diff has precedence over defined properties
+          # Calculated diff has precedence over defined properties. This is
+          # required to respect append property
           diff = new_resource.properties.merge(diff) if new_resource.apply_all
+
+          # Include missing properties (from factory instance) if needed
+          diff = current_resource.default_properties.merge(
+            diff
+          ) if new_resource.include_missing
 
           instances.each do |i|
             update_config(
@@ -511,7 +532,7 @@ class Chef
                 new_resource.instance,
                 new_resource.username,
                 new_resource.password,
-                new_resource.properties,
+                new_instance_properties,
                 new_resource.factory_pid,
                 new_resource.healthcheck_params
               )

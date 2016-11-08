@@ -43,6 +43,7 @@ class Chef
         @properties = {}
         @append = false
         @apply_all = false
+        @include_missing = false
         @unique_fields = []
         @count = 1
         @enforce_count = false
@@ -84,6 +85,12 @@ class Chef
 
       def apply_all(arg = nil)
         set_or_return(:apply_all, arg, :kind_of => [TrueClass, FalseClass])
+      end
+
+      def include_missing(arg = nil)
+        set_or_return(
+          :include_missing, arg, :kind_of => [TrueClass, FalseClass]
+        )
       end
 
       def unique_fields(arg = nil)

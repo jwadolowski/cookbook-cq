@@ -939,11 +939,21 @@ For factory configs:
   <tr>
     <td><tt>apply_all</tt></td>
     <td>Boolean</td>
-    <td>If <tt>true</tt> all defined properties will be used when applying
-    OSGi configuration (despite of the fact just a subset differs). Example: 5
-    properties were defined under <tt>properties</tt>, 3 of them require
-    update, but eventually all of them will be set. <tt>false</tt> by default
+    <td>If <tt>true</tt> all properties defined in a <tt>cq_osgi_config</tt>
+    resource will be used when applying OSGi configuration (despite of the fact
+    just a subset differs). Example: 5 properties were defined as
+    <tt>properties</tt>, 3 of them require update, but all of them will be set. 
+    <tt>false</tt> by default
     </td>
+  </tr>
+  <tr>
+    <td><tt>include_missing</tt></td>
+    <td>Boolean</td>
+    <td>Properties that were NOT defined by user, but exist in OSGi will be
+    included as a part of an update if this property is set to <tt>true</tt>
+    for regular OSGi configs. In case of factory configs it bahaves almost the
+    same - there's only one exception - defaults defined in factory PID will be
+    used instead. <tt>false</tt> by default</td>
   </tr>
   <tr>
     <td><tt>unique_fields</tt></td>
@@ -981,20 +991,21 @@ For factory configs:
 
 ### Compatibility matrix
 
-| Property        | Regular OSGi config | Factory OSGi config |
-| --------------- | ------------------- | ------------------- |
-| `pid`           | :white_check_mark:  | :white_check_mark:  |
-| `username`      | :white_check_mark:  | :white_check_mark:  |
-| `password`      | :white_check_mark:  | :white_check_mark:  |
-| `instance`      | :white_check_mark:  | :white_check_mark:  |
-| `factory_pid`   | :x:                 | :white_check_mark:  |
-| `properties`    | :white_check_mark:  | :white_check_mark:  |
-| `append`        | :white_check_mark:  | :white_check_mark:  |
-| `apply_all`     | :white_check_mark:  | :white_check_mark:  |
-| `unique_fields` | :x:                 | :white_check_mark:  |
-| `count`         | :x:                 | :white_check_mark:  |
-| `enforce_count` | :x:                 | :white_check_mark:  |
-| `force`         | :white_check_mark:  | :x:                 |
+| Property          | Regular OSGi config | Factory OSGi config |
+| ----------------- | ------------------- | ------------------- |
+| `pid`             | :white_check_mark:  | :white_check_mark:  |
+| `username`        | :white_check_mark:  | :white_check_mark:  |
+| `password`        | :white_check_mark:  | :white_check_mark:  |
+| `instance`        | :white_check_mark:  | :white_check_mark:  |
+| `factory_pid`     | :x:                 | :white_check_mark:  |
+| `properties`      | :white_check_mark:  | :white_check_mark:  |
+| `append`          | :white_check_mark:  | :white_check_mark:  |
+| `apply_all`       | :white_check_mark:  | :white_check_mark:  |
+| `include_missing` | :white_check_mark:  | :white_check_mark:  |
+| `unique_fields`   | :x:                 | :white_check_mark:  |
+| `count`           | :x:                 | :white_check_mark:  |
+| `enforce_count`   | :x:                 | :white_check_mark:  |
+| `force`           | :white_check_mark:  | :x:                 |
 
 ### Usage
 
