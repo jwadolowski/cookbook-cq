@@ -50,8 +50,8 @@ class Chef
         @rescue_mode = false
         @same_state_barrier = 3
         @error_state_barrier = 3
-        @max_attempts = 30
-        @sleep_time = 3
+        @max_attempts = 60
+        @sleep_time = 2
       end
 
       def pid(arg = nil)
