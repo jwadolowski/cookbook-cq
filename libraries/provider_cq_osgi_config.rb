@@ -459,7 +459,7 @@ class Chef
             delete_redundant_instances(copies[0..count - 1])
           else
             Chef::Application.fatal!(
-              "Expected #{new_resource.count} #{new_reosurce.factory_pid} "\
+              "Expected #{new_resource.count} #{new_resource.factory_pid} "\
               "instance(s), but found #{copies.length} of them. "\
               'enforce_count is off, so please either turn it on to '\
               'get rid of redundant configs or update unique_fields property'
