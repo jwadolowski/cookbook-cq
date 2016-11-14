@@ -35,7 +35,7 @@ namespace 'git' do
 
   desc 'Push new tag to Git repository'
   task :push do
-    sh "git push origin v#{cookbook version}"
+    sh "git push origin v#{cookbook_version}"
   end
 
   desc 'Create new tag and push it to Git repository'
