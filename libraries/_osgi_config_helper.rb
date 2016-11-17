@@ -19,6 +19,7 @@
 
 module Cq
   module OsgiConfigHelper
+    include Cq::OsgiComponentHelper
     include Cq::HttpHelper
 
     # {
@@ -45,6 +46,11 @@ module Cq
     # }
     def config_list(addr, user, password)
       html = http_get(addr, '/system/console/configMgr', user, password)
+
+      Chef::Application.fatal!(
+        "Can't download OSGi configurations from AEM!"
+      ) if !html.is_a?(Net::HTTPResponse)
+
       Chef::Application.fatal!(
         "Can't download available OSGi configuratons! Response code: "\
         "#{html.code}, response body: #{html.body}"
@@ -160,6 +166,10 @@ module Cq
       end
     end
 
+    def object_properties(info)
+      unify_properties(pure_properties(info))
+    end
+
     def validate_keyspace(c_prop, n_prop)
       n_prop.each do |k, v|
         Chef::Log.warn(
@@ -207,7 +217,7 @@ module Cq
     # * AEM 6.0.0
     # * AEM 6.1.0
     # * AEM 6.2.0
-    def update_config(instance, user, pass, info, diff)
+    def update_config(instance, user, pass, info, diff, hc_params)
       req_path = '/system/console/configMgr/' + info['pid']
       payload = payload_builder(diff).merge(
         { '$location' => info['bundle_location'] }
@@ -224,9 +234,10 @@ module Cq
       )
 
       validate_response(http_resp, '302')
+      osgi_component_stability(instance, user, pass, hc_params)
     end
 
-    def create_config(instance, user, pass, diff, factory_pid)
+    def create_config(instance, user, pass, diff, factory_pid, hc_params)
       req_path = '/system/console/configMgr/'\
         '[Temporary PID replaced by real PID upon save]'
       payload = payload_builder(diff).merge('factoryPid' => factory_pid)
@@ -242,9 +253,10 @@ module Cq
       )
 
       validate_response(http_resp, '302')
+      osgi_component_stability(instance, user, pass, hc_params)
     end
 
-    def delete_config(instance, user, pass, pid)
+    def delete_config(instance, user, pass, pid, hc_params)
       req_path = '/system/console/configMgr/' + pid
       payload = { 'apply' => 1, 'delete' => 1 }
 
@@ -257,6 +269,7 @@ module Cq
       )
 
       validate_response(http_resp, '200')
+      osgi_component_stability(instance, user, pass, hc_params)
     end
 
     def validate_response(http_resp, expected_code)

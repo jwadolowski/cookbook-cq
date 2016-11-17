@@ -13,6 +13,7 @@ a choice.
     * [Operating systems](#operating-systems)
     * [Chef versions](#chef-versions)
     * [AEM/CQ versions](#aemcq-versions)
+* [Getting started](#getting-started)
 * [Attributes](#attributes)
     * [default.rb](#defaultrb)
     * [author.rb](#authorrb)
@@ -22,16 +23,6 @@ a choice.
     * [commons.rb](#commonsrb)
     * [author.rb](#authorrb-1)
     * [publish.rb](#publishrb-1)
-    * [\_package_aem561.rb](#_package_aem561rb)
-    * [\_package_aem600.rb](#_package_aem600rb)
-    * [\_package_aem610.rb](#_package_aem610rb)
-    * [\_osgi_config_create_regular.rb](#_osgi_config_create_regularrb)
-    * [\_osgi_config_create_factory.rb](#_osgi_config_create_factoryrb)
-    * [\_osgi_config_delete_regular.rb](#_osgi_config_delete_regularrb)
-    * [\_osgi_config_delete_factory.rb](#_osgi_config_delete_factoryrb)
-    * [\_users.rb](#_usersrb)
-    * [\_jcr_nodes.rb](#_jcr_nodesrb)
-* [Getting started](#getting-started)
 * [Custom resources](#custom-resources)
     * [cq_package](#cq_package)
         * [Actions](#actions)
@@ -79,6 +70,11 @@ a choice.
 * AEM 5.6.1
 * AEM 6.0.0
 * AEM 6.1.0
+* AEM 6.2.0
+
+# Getting started
+
+TBD
 
 # Attributes
 
@@ -483,50 +479,6 @@ Installs CQ/AEM author instance.
 
 Installs CQ/AEM publish instance.
 
-## _package_aem561.rb
-
-Private recipe to test `cq_package` resource on AEM 5.6.1.
-
-## _package_aem600.rb
-
-Private recipe to test `cq_package` resource on AEM 6.0.0.
-
-## _package_aem610.rb
-
-Private recipe to test `cq_package` resource on AEM 6.1.0.
-
-## _osgi_config_create_regular.rb
-
-Private recipe that tests `:create` action on regular `cq_osgi_config`
-resources.
-
-## _osgi_config_create_factory.rb
-
-Private recipe that tests `:create` action on factory `cq_osgi_config`
-resources.
-
-## _osgi_config_delete_regular.rb
-
-Private recipe that tests `:delete` action on regular `cq_osgi_config`
-resources.
-
-## _osgi_config_delete_factory.rb
-
-Private recipe that tests `:delete` action on factory `cq_osgi_config`
-resources.
-
-## _users.rb
-
-Private recipe that tests `cq_user` resource.
-
-## _jcr_nodes.rb
-
-Private recipe that tests `cq_jcr` resource.
-
-# Getting started
-
-TBD
-
 # Custom resources
 
 ---
@@ -544,6 +496,7 @@ get unexpected results otherwise (i.e. when CQ/AEM restart is required
 afterwards). Please find `cq_package` example below:
 
 *Bad*:
+
 ```ruby
 cq_package 'package1' do
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -559,6 +512,7 @@ end
 ```
 
 *Good*:
+
 ```ruby
 cq_package 'Author: package1' do
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -580,19 +534,18 @@ end
 Allows for CRX package manipulation using CRX Package Manager API.
 
 Key features:
-* package specific details (name, group, version) are always extracted from
-  `/META-INF/vault/properties.xml` inside ZIP file and/or CRX Package
-  Manager API for already uploaded/installed packages, so you don't have to
-  define that anywhere else. All you need is an URL to your package
+
+* package specific details (name, group, version) are always extracted from ZIP
+  file (`/META-INF/vault/properties.xml`), so you don't have to define that
+  anywhere else. All you need is an URL to your package
+* `cq_package` identifies packages by name/group/version properties
 * packages are automatically downloaded from remote (`http://`, `https://`) or
-  local (`file://`) sources. If HTTP(S) source requires basic auth it is also
-  supported (`http_user` and `http_pass` respectively for user and password)
+  local (`file://`) sources. If HTTP(S) source requires basic auth please use
+  `http_user` and `http_pass`
 * by default all packages are downloaded to Chef's cache (`/var/chef/cache`)
-* `cq_package` resource is version aware, so defined actions are always
-  executed for given package version
 * installation process is considered finished only when both "foreground"
   (Package Manager) and "background" (OSGi bundle/component restarts) ones are
-  over - no more 'wait until you see X in `error.log` file'
+  over - no more 'wait until you see X in `error.log`'
 
 ### Actions
 
@@ -948,36 +901,8 @@ For factory configs:
   <tr>
     <td><tt>pid</tt></td>
     <td>String</td>
-    <td>Config name (PID)</td>
-  </tr>
-  <tr>
-    <td><tt>factory_pid</tt></td>
-    <td>String</td>
-    <td>Factory PID</td>
-  </tr>
-  <tr>
-    <td><tt>properties</tt></td>
-    <td>Hash</td>
-    <td>Key-value pairs that represents OSGi config properties</td>
-  </tr>
-  <tr>
-    <td><tt>append</tt></td>
-    <td>Boolean</td>
-    <td>Set to true if you'd like to specify just a subset of original
-    properties. For regular configs it means that your properties will be
-    eventually merged with the ones that are already configured in AEM. Merged
-    values will be used during idempotence test. Impact on factory configs is
-    slightly different. Properties will be also merged in the end, but during
-    idempotence test only values defined in your resource will be used, so
-    please make sure it will be enogugh for unique identification</td>
-  </tr>
-  <tr>
-    <td><tt>force</tt></td>
-    <td>Boolean</td>
-    <td>If <tt>true</tt>, defined OSGi config is deleted reagrdless of current
-    settings. Applies only to regular OSGi configs. <b>WARNING</b>: this
-    violates idempotence, so please use <tt>only_if</tt> or <tt>not_if</tt>
-    block to prevent constant execution</td>
+    <td>Config name (PID). Important for regular configs only. Can be anything
+    for factory ones</td>
   </tr>
   <tr>
     <td><tt>username</tt></td>
@@ -994,20 +919,141 @@ For factory configs:
     <td>String</td>
     <td>Instance URL</td>
   </tr>
+  <tr>
+    <td><tt>factory_pid</tt></td>
+    <td>String</td>
+    <td>Factory PID</td>
+  </tr>
+  <tr>
+    <td><tt>properties</tt></td>
+    <td>Hash</td>
+    <td>Key-value pairs that represent OSGi config properties</td>
+  </tr>
+  <tr>
+    <td><tt>append</tt></td>
+    <td>Boolean</td>
+    <td>If set to <tt>true</tt> arrays will be merged. Use if you'd like to
+    specify just a subset of array elements. <tt>false</tt> by default. Has no
+    impact on other property types (String, Fixnum, etc)</td>
+  </tr>
+  <tr>
+    <td><tt>apply_all</tt></td>
+    <td>Boolean</td>
+    <td>If <tt>true</tt> all properties defined in a <tt>cq_osgi_config</tt>
+    resource will be used when applying OSGi configuration (despite of the fact
+    just a subset differs). Example: 5 properties were defined as
+    <tt>properties</tt>, 3 of them require update, but all of them will be set. 
+    <tt>false</tt> by default
+    </td>
+  </tr>
+  <tr>
+    <td><tt>include_missing</tt></td>
+    <td>Boolean</td>
+    <td>Properties that were NOT defined by user, but exist in OSGi will be
+    included as a part of an update if this property is set to <tt>true</tt>
+    for regular OSGi configs. For factory configs it bahaves almost the same.
+    If new instance needs to be created then defaults defined in factory PID
+    will be used. In case of existing instance update, all missing properties
+    will be based on properties defined in that instance. This is
+    <b>recommended</b> property for factory OSGi configs, in particular when
+    you'd like to edit pre-existing factory instances. <tt>false</tt> by
+    default</td>
+  </tr>
+  <tr>
+    <td><tt>unique_fields</tt></td>
+    <td>Array</td>
+    <td>Property names/keys that define uniqueness of given config. Applicable
+    to factory configs only. By deafult all available property keys will be
+    used (defined by factory config on AEM instance). User doesn't need to
+    define that at all, unless you want to cherry pick particular config.
+    Example: <tt>log.name</tt> key needs to stay unique for your config</td>
+  </tr>
+  <tr>
+    <td><tt>count</tt></td>
+    <td>Fixnum</td>
+    <td>Number of duplicated instances of given OSGi configuration. 1 by
+    default. Applicable to factory configs only. Useful when duplicated
+    instances are allowed, i.e. each instance specify some sort of a worker
+    </td>
+  </tr>
+  <tr>
+    <td><tt>enforce_count</tt></td>
+    <td>Boolean</td>
+    <td>Reduces number of duplicated configs if more than <tt>count</tt> has
+    been found. Applicable to factory configs only. <tt>false</tt> by default
+    </td>
+  </tr>
+  <tr>
+    <td><tt>force</tt></td>
+    <td>Boolean</td>
+    <td>If <tt>true</tt>, defined OSGi config is deleted/updated reagrdless of
+    current settings. Applies to regular OSGi configs only. This violates
+    idempotence, so please use <tt>only_if</tt> or <tt>not_if</tt> blocks to
+    prevent constant execution</td>
+  </tr>
+  <tr>
+    <td><tt>rescue_mode</tt></td>
+    <td>Boolean</td>
+    <td>Some config operations may cause shutdown of the entire OSGi because of
+    dependecy (i.e. cycle) or bundle/component priority issues. In such case
+    after config update java process is still running, however the instance
+    is not responding over HTTP. After CQ/AEM restart everyting works
+    perfectly fine again.
+    This flag allows Chef to continue processing if it is not able to get OSGi
+    component state <tt>error_state_barrier</tt> times in a row.
+    In most (if not all) cases it should be combined with AEM restart
+    notification.
+    It is highly discouraged to use this property, as 99% of OSGi configs
+    shouldn't require such configuration. Unfortunately that 1% does. This is
+    rather a safety switch than a common pattern that should be used in every
+    single case.
+    </td>
+  </tr>
+  <tr>
+    <td><tt>same_state_barrier</tt></td>
+    <td>Integer</td>
+    <td>How many times in a row the same OSGi component state should occur
+    after configuration update to consider this process successful. 3 by
+    default</td>
+  </tr>
+  <tr>
+    <td><tt>error_state_barrier</tt></td>
+    <td>Integer</td>
+    <td>How many times in a row the OSGi console was unavailable after OSGi
+    config update. Useful only when combined with <tt>rescue_mode</tt>. 3 by
+    default</td>
+  </tr>
+  <tr>
+    <td><tt>max_attempts</tt></td>
+    <td>Integer</td>
+    <td>Number of attempts while waiting for stable OSGi state after OSGi
+    config update. 60 by default</td>
+  </tr>
+  <tr>
+    <td><tt>sleep_time</tt></td>
+    <td>Integer</td>
+    <td>Sleep time between OSGi component status checks (in seconds) after
+    config update. 2 by default</td>
+  </tr>
 </table>
 
 ### Compatibility matrix
 
-| Property      | Regular OSGi config | Factory OSGi config |
-| ------------- | ------------------- | ------------------- |
-| `pid`         | :white_check_mark:  | :white_check_mark:  |
-| `factory_pid` | :no_entry:          | :white_check_mark:  |
-| `properties`  | :white_check_mark:  | :white_check_mark:  |
-| `append`      | :white_check_mark:  | :white_check_mark:  |
-| `force`       | :white_check_mark:  | :no_entry:          |
-| `username`    | :white_check_mark:  | :white_check_mark:  |
-| `password`    | :white_check_mark:  | :white_check_mark:  |
-| `instance`    | :white_check_mark:  | :white_check_mark:  |
+| Property          | Regular OSGi config | Factory OSGi config |
+| ----------------- | ------------------- | ------------------- |
+| `pid`             | :white_check_mark:  | :white_check_mark:  |
+| `username`        | :white_check_mark:  | :white_check_mark:  |
+| `password`        | :white_check_mark:  | :white_check_mark:  |
+| `instance`        | :white_check_mark:  | :white_check_mark:  |
+| `factory_pid`     | :x:                 | :white_check_mark:  |
+| `properties`      | :white_check_mark:  | :white_check_mark:  |
+| `append`          | :white_check_mark:  | :white_check_mark:  |
+| `apply_all`       | :white_check_mark:  | :white_check_mark:  |
+| `include_missing` | :white_check_mark:  | :white_check_mark:  |
+| `unique_fields`   | :x:                 | :white_check_mark:  |
+| `count`           | :x:                 | :white_check_mark:  |
+| `enforce_count`   | :x:                 | :white_check_mark:  |
+| `force`           | :white_check_mark:  | :x:                 |
 
 ### Usage
 
@@ -1082,7 +1128,7 @@ before:
 | org.apache.felix.eventadmin.ThreadPoolSize | 20    |
 | org.apache.felix.eventadmin.Timeout        | 5000  |
 | org.apache.felix.eventadmin.RequireTopic   | true  |
-| org.apache.felix.eventadmin.IgnoreTimeout  | ["org.apache.felix\*","org.apache.sling\*","com.day\*","com.adobe\*"] |
+| org.apache.felix.eventadmin.IgnoreTimeout  | ["org.apache.felix\*","com.adobe\*"] |
 
 and after Chef run:
 
@@ -1091,7 +1137,7 @@ and after Chef run:
 | org.apache.felix.eventadmin.ThreadPoolSize | 20    |
 | org.apache.felix.eventadmin.Timeout        | 5000  |
 | org.apache.felix.eventadmin.RequireTopic   | true  |
-| org.apache.felix.eventadmin.IgnoreTimeout  | ["com.adobe\*","com.day\*","com.example\*","org.apache.felix\*","org.apache.sling\*"] |
+| org.apache.felix.eventadmin.IgnoreTimeout  | ["com.adobe\*","com.example\*","org.apache.felix\*"] |
 
 `OAuth Twitter` will be deleted (restore to the defaults, as this is regular
 OSGi config) only if properties match: `oauth.provider.id` is set to
@@ -1447,28 +1493,28 @@ Exposes a resource for CQ/AEM user management. Supports:
 
 ## Compatibility matrix
 
-| Property        | `admin` user        | All other users     |
-| --------------- | ------------------- | ------------------- |
-| `id`            | :white_check_mark:  | :white_check_mark:  |
-| `username`      | :white_check_mark:  | :white_check_mark:  |
-| `password`      | :white_check_mark:  | :white_check_mark:  |
-| `instance`      | :white_check_mark:  | :white_check_mark:  |
-| `email`         | :white_check_mark:  | :white_check_mark:  |
-| `first_name`    | :white_check_mark:  | :white_check_mark:  |
-| `last_name`     | :white_check_mark:  | :white_check_mark:  |
-| `phone_number`  | :white_check_mark:  | :white_check_mark:  |
-| `job_title`     | :white_check_mark:  | :white_check_mark:  |
-| `street`        | :white_check_mark:  | :white_check_mark:  |
-| `mobile`        | :white_check_mark:  | :white_check_mark:  |
-| `city`          | :white_check_mark:  | :white_check_mark:  |
-| `postal_code`   | :white_check_mark:  | :white_check_mark:  |
-| `country`       | :white_check_mark:  | :white_check_mark:  |
-| `state`         | :white_check_mark:  | :white_check_mark:  |
-| `gender`        | :white_check_mark:  | :white_check_mark:  |
-| `about`         | :white_check_mark:  | :white_check_mark:  |
-| `user_password` | :no_entry:          | :white_check_mark:  |
-| `enabled`       | :no_entry:          | :white_check_mark:  |
-| `old_password`  | :white_check_mark:  | :no_entry:          |
+| Property        | `admin` user        | All other users    |
+| --------------- | ------------------- | ------------------ |
+| `id`            | :white_check_mark:  | :white_check_mark: |
+| `username`      | :white_check_mark:  | :white_check_mark: |
+| `password`      | :white_check_mark:  | :white_check_mark: |
+| `instance`      | :white_check_mark:  | :white_check_mark: |
+| `email`         | :white_check_mark:  | :white_check_mark: |
+| `first_name`    | :white_check_mark:  | :white_check_mark: |
+| `last_name`     | :white_check_mark:  | :white_check_mark: |
+| `phone_number`  | :white_check_mark:  | :white_check_mark: |
+| `job_title`     | :white_check_mark:  | :white_check_mark: |
+| `street`        | :white_check_mark:  | :white_check_mark: |
+| `mobile`        | :white_check_mark:  | :white_check_mark: |
+| `city`          | :white_check_mark:  | :white_check_mark: |
+| `postal_code`   | :white_check_mark:  | :white_check_mark: |
+| `country`       | :white_check_mark:  | :white_check_mark: |
+| `state`         | :white_check_mark:  | :white_check_mark: |
+| `gender`        | :white_check_mark:  | :white_check_mark: |
+| `about`         | :white_check_mark:  | :white_check_mark: |
+| `user_password` | :x:                 | :white_check_mark: |
+| `enabled`       | :x:                 | :white_check_mark: |
+| `old_password`  | :white_check_mark:  | :x:                |
 
 ## Usage
 

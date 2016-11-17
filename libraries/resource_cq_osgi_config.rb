@@ -26,6 +26,7 @@ class Chef
       attr_accessor :default_properties
       attr_accessor :fingerprint
       attr_accessor :fingerprint_groups
+      attr_accessor :healthcheck_params
 
       def initialize(pid, run_context = nil)
         super
@@ -42,10 +43,16 @@ class Chef
         @properties = {}
         @append = false
         @apply_all = false
+        @include_missing = false
         @unique_fields = []
         @count = 1
         @enforce_count = false
         @force = false
+        @rescue_mode = false
+        @same_state_barrier = 3
+        @error_state_barrier = 3
+        @max_attempts = 60
+        @sleep_time = 2
       end
 
       def pid(arg = nil)
@@ -80,6 +87,12 @@ class Chef
         set_or_return(:apply_all, arg, :kind_of => [TrueClass, FalseClass])
       end
 
+      def include_missing(arg = nil)
+        set_or_return(
+          :include_missing, arg, :kind_of => [TrueClass, FalseClass]
+        )
+      end
+
       def unique_fields(arg = nil)
         set_or_return(:unique_fields, arg, :kind_of => Array)
       end
@@ -94,6 +107,26 @@ class Chef
 
       def force(arg = nil)
         set_or_return(:force, arg, :kind_of => [TrueClass, FalseClass])
+      end
+
+      def rescue_mode(arg = nil)
+        set_or_return(:rescue_mode, arg, :kind_of => [TrueClass, FalseClass])
+      end
+
+      def same_state_barrier(arg = nil)
+        set_or_return(:same_state_barrier, arg, :kind_of => Integer)
+      end
+
+      def error_state_barrier(arg = nil)
+        set_or_return(:error_state_barrier, arg, :kind_of => Integer)
+      end
+
+      def max_attempts(arg = nil)
+        set_or_return(:max_attempts, arg, :kind_of => Integer)
+      end
+
+      def sleep_time(arg = nil)
+        set_or_return(:sleep_time, arg, :kind_of => Integer)
       end
     end
   end

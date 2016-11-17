@@ -1,7 +1,7 @@
 ---
 <% chef_versions = %w( 12 ) %>
-<% platforms = %w( centos-6.7 ) %>
-<% aem_versions = %w( 5.6.1 6.0.0 6.1.0 ) %>
+<% platforms = %w( centos-6.8 ) %>
+<% aem_versions = %w( 5.6.1 6.0.0 6.1.0 6.2.0 ) %>
 
 driver:
   name: vagrant
@@ -10,6 +10,7 @@ driver:
 
 provisioner:
   name: chef_zero
+  log_level: <%= ENV['TK_CHEF_LOG_LEVEL'] || 'info' %>
   data_path: test/shared
 
 platforms:
@@ -31,128 +32,40 @@ platforms:
             x86_64:
               url: <%= ENV['JAVA_JDK_7_X86_64_URL'] || "http://download.oracle.com/otn-pub/java/jdk/7u80-b15/jdk-7u80-linux-x64.tar.gz" %>
               checksum: <%= ENV['JAVA_JDK_7_X86_64_CHECKSUM'] || '6152f8a7561acf795ca4701daa10a965' %>
+          '8':
+            x86_64:
+              url: <%= ENV['JAVA_JDK_8_X86_64_URL'] || 'http://download.oracle.com/otn-pub/java/jdk/8u112-b15/jdk-8u112-linux-x64.tar.gz' %>
+              checksum: <%= ENV['JAVA_JDK_8_X86_64_CHECKSUM'] || '777bd7d5268408a5a94f5e366c2e43e720c6ce4fe8c59d9a71e2961e50d774a5' %>
 <%   end %>
 <% end %>
 
 suites:
 <% aem_versions.each do |v| %>
-  <% env = "CQ_V#{v.delete('.')}_JAR_URL" %>
-  - name: author-v<%= v %>
+
+  <% short_ver = v.delete('.') %>
+  <% url_var = "CQ_V#{short_ver}_JAR_URL" %>
+
+  - name: aem<%= short_ver %>-author
     run_list:
       - recipe[cq::author]
+      - recipe[cq<%= short_ver %>::author_cq_package]
+      - recipe[cq<%= short_ver %>::author_cq_osgi_config]
+      - recipe[cq<%= short_ver %>::author_cq_osgi_bundle]
+      - recipe[cq<%= short_ver %>::author_cq_osgi_component]
+      - recipe[cq<%= short_ver %>::author_cq_user]
+      - recipe[cq<%= short_ver %>::author_cq_jcr]
     attributes:
       cq:
         version: <%= v %>
         jar:
-          url: <%= ENV[env] %>
-  - name: publish-v<%= v %>
+          url: <%= ENV[url_var] %>
+  - name: aem<%= short_ver %>-publish
     run_list:
       - recipe[cq::publish]
+      - recipe[cq<%= short_ver %>::publish_cq_user]
     attributes:
       cq:
         version: <%= v %>
         jar:
-          url: <%= ENV[env] %>
-  - name: combined-v<%= v %>
-    run_list:
-      - recipe[cq::author]
-      - recipe[cq::publish]
-    attributes:
-      cq:
-        version: <%= v %>
-        jar:
-          url: <%= ENV[env] %>
-  - name: author-run_mode-v<%= v %>
-    run_list:
-      - recipe[cq::author]
-    attributes:
-      cq:
-        author:
-          run_mode: 'crx2,author'
-        version: <%= v %>
-        jar:
-          url: <%= ENV[env] %>
-  - name: publish-run_mode-v<%= v %>
-    run_list:
-      - recipe[cq::publish]
-    attributes:
-      cq:
-        publish:
-          run_mode: 'crx2,publish'
-        version: <%= v %>
-        jar:
-          url: <%= ENV[env] %>
-  - name: osgi_configs-v<%= v %>
-    run_list:
-      - recipe[cq::author]
-      - recipe[cq::_osgi_config_create_regular]
-      - recipe[cq::_osgi_config_create_factory]
-      - recipe[cq::_osgi_config_delete_regular]
-      # - recipe[cq::_osgi_config_delete_factory]
-    attributes:
-      cq:
-        version: <%= v %>
-        jar:
-          url: <%= ENV[env] %>
-  - name: packages-v<%= v %>
-    run_list:
-      - recipe[cq::author]
-      - recipe[cq::_package_aem<%= v.delete('.') %>]
-    attributes:
-      cq:
-        version: <%= v %>
-        jar:
-          url: <%= ENV[env] %>
-        packages:
-          aem561:
-            sec_sp1: <%= ENV['CQ_V561_SEC_SP1_URL'] %>
-            hf6446: <%= ENV['CQ_V561_HF6446_URL'] %>
-            hf5122: <%= ENV['CQ_V561_HF5122_URL'] %>
-            hf5667: <%= ENV['CQ_V561_HF5667_URL'] %>
-            hf3527: <%= ENV['CQ_V561_HF3527_URL'] %>
-            hf4990: <%= ENV['CQ_V561_HF4990_URL'] %>
-          aem60:
-            sp2: <%= ENV['CQ_V600_SP2_URL'] %>
-            hf6316: <%= ENV['CQ_V600_HF6316_URL'] %>
-            hf6167: <%= ENV['CQ_V600_HF6167_URL'] %>
-            hf6446: <%= ENV['CQ_V600_HF6446_URL'] %>
-            hf6031: <%= ENV['CQ_V600_HF6031_URL'] %>
-          aem61:
-            hf7700: <%= ENV['CQ_V610_HF7700_URL'] %>
-            hf6449: <%= ENV['CQ_V610_HF6449_URL'] %>
-            hf7085: <%= ENV['CQ_V610_HF7085_URL'] %>
-            hf6446: <%= ENV['CQ_V610_HF6446_URL'] %>
-            hf6500: <%= ENV['CQ_V610_HF6500_URL'] %>
-            sp1: <%= ENV['CQ_V610_SP1_URL'] %>
-  - name: users-v<%= v %>
-    run_list:
-      - recipe[cq::author]
-      - recipe[cq::_users]
-    attributes:
-      cq:
-        author:
-          credentials:
-            password: 'passw0rd'
-            old_password: 'password1'
-        version: <%= v %>
-        jar:
-          url: <%= ENV[env] %>
-  - name: jcr_nodes-v<%= v %>
-    run_list:
-      - recipe[cq::author]
-      - recipe[cq::_jcr_nodes]
-    attributes:
-      cq:
-        version: <%= v %>
-        jar:
-          url: <%= ENV[env] %>
-  - name: osgi_bundles-v<%= v %>
-    run_list:
-      - recipe[cq::author]
-      - recipe[cq::_osgi_bundles]
-    attributes:
-      cq:
-        version: <%= v %>
-        jar:
-          url: <%= ENV[env] %>
+          url: <%= ENV[url_var] %>
 <% end %>
