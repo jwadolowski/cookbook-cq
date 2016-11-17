@@ -991,6 +991,50 @@ For factory configs:
     idempotence, so please use <tt>only_if</tt> or <tt>not_if</tt> blocks to
     prevent constant execution</td>
   </tr>
+  <tr>
+    <td><tt>rescue_mode</tt></td>
+    <td>Boolean</td>
+    <td>Some config operations may cause shutdown of the entire OSGi because of
+    dependecy (i.e. cycle) or bundle/component priority issues. In such case
+    after config update java process is still running, however the instance
+    is not responding over HTTP. After CQ/AEM restart everyting works
+    perfectly fine again.
+    This flag allows Chef to continue processing if it is not able to get OSGi
+    bundles state <tt>error_state_barrier</tt> times in a row.
+    In most (if not all) cases it should be combined with AEM restart
+    notification.
+    It is highly discouraged to use this property, as 99% of OSGi configs
+    shouldn't require such configuration. Unfortunately that 1% does. This is
+    rather a safety switch than a common pattern that should be used in every
+    single case.
+    </td>
+  </tr>
+  <tr>
+    <td><tt>same_state_barrier</tt></td>
+    <td>Integer</td>
+    <td>How many times in a row the same OSGi component state should occur
+    after configuration update to consider this process successful. 3 by
+    default</td>
+  </tr>
+  <tr>
+    <td><tt>error_state_barrier</tt></td>
+    <td>Integer</td>
+    <td>How many times in a row the OSGi console was unavailable after OSGi
+    config update. Useful only when combined with <tt>rescue_mode</tt>. 3 by
+    default</td>
+  </tr>
+  <tr>
+    <td><tt>max_attempts</tt></td>
+    <td>Integer</td>
+    <td>Number of attempts while waiting for stable OSGi state after OSGi
+    config update. 60 by default</td>
+  </tr>
+  <tr>
+    <td><tt>sleep_time</tt></td>
+    <td>Integer</td>
+    <td>Sleep time between OSGi component status checks (in seconds) after
+    config update. 2 by default</td>
+  </tr>
 </table>
 
 ### Compatibility matrix
