@@ -1000,7 +1000,7 @@ For factory configs:
     is not responding over HTTP. After CQ/AEM restart everyting works
     perfectly fine again.
     This flag allows Chef to continue processing if it is not able to get OSGi
-    bundles state <tt>error_state_barrier</tt> times in a row.
+    component state <tt>error_state_barrier</tt> times in a row.
     In most (if not all) cases it should be combined with AEM restart
     notification.
     It is highly discouraged to use this property, as 99% of OSGi configs
