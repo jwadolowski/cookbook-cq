@@ -106,8 +106,8 @@ module Cq
           if hc_params['rescue_mode'] &&
              error_state_counter == hc_params['error_state_barrier']
             Chef::Log.error(
-              "#{error_state_barrier} recent attempts to get OSGi "\
-              "#{path_desc(path)} state have failed! Rescuing, as "\
+              "#{hc_params['error_state_barrier']} recent attempts to get "\
+              "OSGi #{path_desc(path)} state have failed! Rescuing, as "\
               'rescue_mode is active...'
             )
             break
