@@ -1,3 +1,8 @@
+# TODO:
+# a) update existing factory config (filter by unique_fields)
+# b) test apply_all for a)
+# c) test include_missing for b)
+
 # -----------------------------------------------------------------------------
 # Regular configs (create)
 #
