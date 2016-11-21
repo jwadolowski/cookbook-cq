@@ -63,8 +63,9 @@ module Cq
           node.default['cq']['http_read_timeout'] = 5
           state = http_get(addr, path, user, password)
 
-          # Raise an error if state is not an instance of HTTP response
-          raise('Invalid HTTP response') unless state.is_a?(Net::HTTPResponse)
+          # Handle response errors
+          raise(Net::HTTPUnknownResponse) unless state.is_a?(Net::HTTPResponse)
+          raise(Net::HTTPBadResponse) unless state.code == '200'
 
           # Reset error counter whenever request ended successfully
           error_state_counter = 0
