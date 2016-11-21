@@ -210,8 +210,8 @@ class Chef
           factory_pid_info
         )
         Chef::Log.debug(
-          "Default #{new_resource.factory_pid} properties: "\
-          "#{current_resource.default_properties}"
+          "Default #{new_resource.factory_pid} properties: " +
+          current_resource.default_properties
         )
       end
 
@@ -524,8 +524,8 @@ class Chef
           align_factory_twins(twins)
         else
           converge_by(
-            "Create #{new_resource.count} new instance(s) of "\
-            "#{new_resource.factory_pid}"
+            "Create #{new_resource.count} new instance(s) of " +
+            new_resource.factory_pid
           ) do
             new_resource.count.times do
               create_config(
