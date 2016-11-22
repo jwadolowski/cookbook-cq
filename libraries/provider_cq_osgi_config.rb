@@ -211,7 +211,7 @@ class Chef
         )
         Chef::Log.debug(
           "Default #{new_resource.factory_pid} properties: " +
-          current_resource.default_properties
+          current_resource.default_properties.to_s
         )
       end
 
