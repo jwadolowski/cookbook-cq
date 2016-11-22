@@ -26,10 +26,10 @@ default['cq']['base_dir'] = '/opt'
 default['cq']['home_dir'] = "#{node['cq']['base_dir']}/cq"
 default['cq']['version'] = '5.6.1'
 default['cq']['custom_tmp_dir'] = '/opt/tmp'
-default['cq']['jar']['url'] = ''
-# default['cq']['jar']['checksum'] = ''
-default['cq']['license']['url'] = ''
-# default['cq']['license']['checksum'] = ''
+default['cq']['jar']['url'] = nil
+default['cq']['jar']['checksum'] = nil
+default['cq']['license']['url'] = nil
+default['cq']['license']['checksum'] = nil
 
 default['cq']['service']['start_timeout'] = 1800
 default['cq']['service']['kill_delay'] = 120
