@@ -20,7 +20,7 @@ namespace 'berkshelf' do
 
   desc 'Upload cookbook to Chef Server'
   task :upload do
-    sh 'berks upload'
+    sh 'berks upload --except development'
   end
 end
 
