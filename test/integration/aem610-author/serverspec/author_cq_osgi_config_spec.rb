@@ -420,3 +420,218 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
     ).to eq(false)
   end
 end
+
+describe 'com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
+  it 'sling.servlet.paths is set to /libs/dam/health_check' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.paths'
+      )
+    ).to match(%r{^/libs/dam/health_check$})
+  end
+
+  it 'sling.servlet.paths is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.paths'
+      )
+    ).to eq(true)
+  end
+
+  it 'sling.servlet.methods is set to ["GET", "POST", "CUSTOM", "-stop",'\
+    ' "-i NJECT"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.methods'
+      )
+    ).to eq(['-i NJECT', '-stop', 'CUSTOM', 'GET', 'POST'])
+  end
+
+  it 'sling.servlet.methods is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.methods'
+      )
+    ).to eq(true)
+  end
+
+  it 'sling.servlet.extensions is set to json' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.extensions'
+      )
+    ).to match(/^json$/)
+  end
+
+  it 'sling.servlet.extensions is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'sling.servlet.extensions'
+      )
+    ).to eq(true)
+  end
+
+  it 'cq.dam.sync.workflow.id is set to /some/path/to/model' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'cq.dam.sync.workflow.id'
+      )
+    ).to match(%r{^/some/path/to/model$})
+  end
+
+  it 'cq.dam.sync.workflow.id is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'cq.dam.sync.workflow.id'
+      )
+    ).to eq(true)
+  end
+
+  it 'cq.dam.sync.folder.types is set to valid array' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'cq.dam.sync.folder.types'
+      )
+    ).to eq(
+      ['-i', '-i X', '-iX', '-p', '-p Y', '-pY', '-u', '-u Z', '-uZ', 'sth']
+    )
+  end
+
+  it 'cq.dam.sync.folder.types is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.day.cq.dam.core.impl.servlet.HealthCheckServlet',
+        'cq.dam.sync.folder.types'
+      )
+    ).to eq(true)
+  end
+end
+
+describe 'org.apache.felix.eventadmin.impl.EventAdmin' do
+  it 'org.apache.felix.eventadmin.ThreadPoolSize is set to 20' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.ThreadPoolSize'
+      )
+    ).to eq(20)
+  end
+
+  it 'org.apache.felix.eventadmin.ThreadPoolSize is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.ThreadPoolSize'
+      )
+    ).to eq(true)
+  end
+
+  it 'org.apache.felix.eventadmin.AsyncToSyncThreadRatio is set to 0.5' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.AsyncToSyncThreadRatio'
+      )
+    ).to eq(0.5)
+  end
+
+  it 'org.apache.felix.eventadmin.AsyncToSyncThreadRatio is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.AsyncToSyncThreadRatio'
+      )
+    ).to eq(true)
+  end
+
+  it 'org.apache.felix.eventadmin.Timeout is set to 5000' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.Timeout'
+      )
+    ).to eq(5000)
+  end
+
+  it 'org.apache.felix.eventadmin.Timeout is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.Timeout'
+      )
+    ).to eq(true)
+  end
+
+  it 'org.apache.felix.eventadmin.RequireTopic is set to true' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.RequireTopic'
+      )
+    ).to eq(true)
+  end
+
+  it 'org.apache.felix.eventadmin.RequireTopic is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.RequireTopic'
+      )
+    ).to eq(true)
+  end
+
+  it 'org.apache.felix.eventadmin.IgnoreTimeout is set to '\
+    '["com.adobe*", "com.day*", "com.example*", "org.apache.felix*", '\
+    '"org.apache.sling*"]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.IgnoreTimeout'
+      )
+    ).to eq(
+      [
+        'com.adobe*',
+        'com.day*',
+        'com.example*',
+        'org.apache.felix*',
+        'org.apache.sling*'
+      ]
+    )
+  end
+
+  it 'org.apache.felix.eventadmin.IgnoreTimeout is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.IgnoreTimeout'
+      )
+    ).to eq(true)
+  end
+
+  it 'org.apache.felix.eventadmin.IgnoreTopic is set an empty array' do
+    expect(
+      @osgi_config_helper.config_value(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.IgnoreTopic'
+      )
+    ).to eq(%w())
+  end
+
+  it 'org.apache.felix.eventadmin.IgnoreTopic is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'org.apache.felix.eventadmin.impl.EventAdmin',
+        'org.apache.felix.eventadmin.IgnoreTopic'
+      )
+    ).to eq(false)
+  end
+end

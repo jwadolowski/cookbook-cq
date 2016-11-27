@@ -8,13 +8,13 @@
 # | Append          | true or false |
 # | Apply All       | true or false |
 # | Force           | true or false |
-# | Include missing | true or false |
+# | All properties  | true or false |
 #
 # -----------------------------------------------------------------------------
 
-# | Keys | Values | Append | Apply All | Force | Include missing |
-# | ---- | ------ | ------ | --------- | ----- | --------------- |
-# | 1    | 1      | 0      | 0         | 0     | 0               |
+# | Keys | Values | Append | Apply All | Force | All properties |
+# | ---- | ------ | ------ | --------- | ----- | -------------- |
+# | 1    | 1      | 0      | 0         | 0     | 1              |
 
 # Original:
 #
@@ -70,9 +70,9 @@ cq_osgi_config 'com.day.cq.dam.scene7.impl.Scene7ConfigurationEventListener' do
   action :create
 end
 
-# | Keys | Values | Append | Apply All | Force | Include missing |
-# | ---- | ------ | ------ | --------- | ----- | --------------- |
-# | 1    | 1      | 0      | 0         | 0     | 1               |
+# | Keys | Values | Append | Apply All | Force | All properties |
+# | ---- | ------ | ------ | --------- | ----- | -------------- |
+# | 1    | 1      | 0      | 0         | 0     | 0              |
 
 # Original:
 #
@@ -146,14 +146,13 @@ cq_osgi_config 'org.apache.sling.engine.impl.SlingMainServlet' do
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
   properties('sling.max.record.requests' => 60)
-  include_missing true
 
   action :create
 end
 
-# | Keys | Values | Append | Apply All | Force | Include missing |
-# | ---- | ------ | ------ | --------- | ----- | --------------- |
-# | 1    | N      | 0      | 0         | 0     | 0               |
+# | Keys | Values | Append | Apply All | Force | All properties |
+# | ---- | ------ | ------ | --------- | ----- | -------------- |
+# | 1    | N      | 0      | 0         | 0     | 1              |
 
 # Original:
 #
@@ -221,9 +220,9 @@ cq_osgi_config 'DPSPagesUpdateHandler' do
   action :create
 end
 
-# | Keys | Values | Append | Apply All | Force | Include missing |
-# | ---- | ------ | ------ | --------- | ----- | --------------- |
-# | 1    | N      | 1      | 0         | 0     | 0               |
+# | Keys | Values | Append | Apply All | Force | All properties |
+# | ---- | ------ | ------ | --------- | ----- | -------------- |
+# | 1    | N      | 1      | 0         | 0     | 1              |
 
 # Original:
 #
@@ -299,9 +298,9 @@ cq_osgi_config 'Scene7AssetMimeTypeServiceImpl' do
   action :create
 end
 
-# | Keys | Values | Append | Apply All | Force | Include missing |
-# | ---- | ------ | ------ | --------- | ----- | --------------- |
-# | N    | N      | 0      | 0         | 0     | 0               |
+# | Keys | Values | Append | Apply All | Force | All properties |
+# | ---- | ------ | ------ | --------- | ----- | -------------- |
+# | N    | N      | 0      | 0         | 0     | 0              |
 
 # Original:
 #
@@ -382,44 +381,157 @@ cq_osgi_config 'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
       'javascript:', 'data:', 'mailto:', 'rx:', '#', '<!--', '${', 'z:'
     ]
   )
+  include_missing false
 
   action :create
 end
 
-# cq_osgi_config 'com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
-#   username node['cq']['author']['credentials']['login']
-#   password node['cq']['author']['credentials']['password']
-#   instance "http://localhost:#{node['cq']['author']['port']}"
-#   properties(
-#     'sling.servlet.paths' => '/libs/dam/health_check',
-#     'sling.servlet.methods' => ['GET', 'POST', 'CUSTOM', '-stop', '-i NJECT'],
-#     'sling.servlet.extensions' => 'json',
-#     'cq.dam.sync.workflow.id' => '/some/path/to/model',
-#     'cq.dam.sync.folder.types' => [
-#       'sth', '-u Z', '-uZ', '-u', '-p Y', '-pY', '-p', '-i X', '-iX', '-i'
-#     ]
-#   )
-# end
+# | Keys | Values | Append | Apply All | Force | All properties |
+# | ---- | ------ | ------ | --------- | ----- | -------------- |
+# | N    | N      | 0      | 0         | 0     | 1              |
 
-# | Keys | Values | Append | Apply All | Force | Include missing |
-# | ---- | ------ | ------ | --------- | ----- | --------------- |
-# | N    | N      | 1      | 0         | 0     | 0               |
-# cq_osgi_config 'org.apache.felix.eventadmin.impl.EventAdmin' do
-#   username node['cq']['author']['credentials']['login']
-#   password node['cq']['author']['credentials']['password']
-#   instance "http://localhost:#{node['cq']['author']['port']}"
-#   properties(
-#     'org.apache.felix.eventadmin.IgnoreTimeout' => ['com.example*'],
-#     'not.existing.key' => 'value1'
-#   )
-#   append false
+# Original:
+#
+# {
+#   "pid": "com.day.cq.dam.core.impl.servlet.HealthCheckServlet",
+#   "title": "Day CQ DAM Health Check Servlet",
+#   "properties": {
+#     "sling.servlet.paths": {
+#       "name": "sling.servlet.paths.name",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "value": "/libs/dam/health_check",
+#     },
+#     "sling.servlet.methods": {
+#       "name": "sling.servlet.methods.name",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "values": [
+#         "GET",
+#         "POST"
+#       ],
+#     },
+#     "sling.servlet.extensions": {
+#       "name": "sling.servlet.extensions.name",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "value": "json",
+#     },
+#     "cq.dam.sync.workflow.id": {
+#       "name": "Sync Workflow Model Id",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "value": "/etc/workflow/models/dam/dam_asset_syncer_and/jcr:content/model",
+#     },
+#     "cq.dam.sync.folder.types": {
+#       "name": "Foldernode types",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "values": [
+#         "nt:folder",
+#         "sling:Folder",
+#         "cq:Page"
+#       ],
+#     }
+#   }
+# }
+#
+cq_osgi_config 'com.day.cq.dam.core.impl.servlet.HealthCheckServlet' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'sling.servlet.methods' => ['GET', 'POST', 'CUSTOM', '-stop', '-i NJECT'],
+    'sling.servlet.extensions' => 'json',
+    'cq.dam.sync.workflow.id' => '/some/path/to/model',
+    'cq.dam.sync.folder.types' => [
+      'sth', '-u Z', '-uZ', '-u', '-p Y', '-pY', '-p', '-i X', '-iX', '-i'
+    ]
+  )
 
-#   action :create
-# end
+  action :create
+end
 
-# | Keys | Values | Append | Apply All | Force | Include missing |
-# | ---- | ------ | ------ | --------- | ----- | --------------- |
-# | N    | N      | 0      | 1         | 0     | 0               |
+# | Keys | Values | Append | Apply All | Force | All properties |
+# | ---- | ------ | ------ | --------- | ----- | -------------- |
+# | N    | N      | 1      | 0         | 0     | 0              |
+
+# Original:
+# {
+#   "pid": "org.apache.felix.eventadmin.impl.EventAdmin",
+#   "title": "Apache Felix Event Admin Implementation",
+#   "properties": {
+#     "org.apache.felix.eventadmin.ThreadPoolSize": {
+#       "name": "Thread Pool Size",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 3,
+#       "value": "20",
+#     },
+#     "org.apache.felix.eventadmin.AsyncToSyncThreadRatio": {
+#       "name": "Async/sync Thread Pool Ratio",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 7,
+#       "value": "0.5",
+#     },
+#     "org.apache.felix.eventadmin.Timeout": {
+#       "name": "Timeout",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 3,
+#       "value": "5000",
+#     },
+#     "org.apache.felix.eventadmin.RequireTopic": {
+#       "name": "Require Topic",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 11,
+#       "value": "true",
+#     },
+#     "org.apache.felix.eventadmin.IgnoreTimeout": {
+#       "name": "Ignore Timeouts",
+#       "optional": false,
+#       "is_set": true,
+#       "type": 1,
+#       "values": [
+#         "org.apache.felix*",
+#         "org.apache.sling*",
+#         "com.day*",
+#         "com.adobe*"
+#       ],
+#     },
+#     "org.apache.felix.eventadmin.IgnoreTopic": {
+#       "name": "Ignore Topics",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "values": [],
+#     }
+#   }
+# }
+#
+cq_osgi_config 'org.apache.felix.eventadmin.impl.EventAdmin' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'org.apache.felix.eventadmin.IgnoreTimeout' => ['com.example*'],
+    'not.existing.key' => 'value1'
+  )
+  append true
+
+  action :create
+end
+
+# | Keys | Values | Append | Apply All | Force | All properties |
+# | ---- | ------ | ------ | --------- | ----- | -------------- |
+# | N    | N      | 0      | 1         | 0     | 1              |
 # cq_osgi_config 'ExplainQueryServlet' do
 #   pid 'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet'
 #   username node['cq']['author']['credentials']['login']
@@ -439,9 +551,9 @@ end
 #   action :create
 # end
 
-# | Keys | Values | Append | Apply All | Force | Include missing |
-# | ---- | ------ | ------ | --------- | ----- | --------------- |
-# | N    | N      | 0      | 0         | 1     | 0               |
+# | Keys | Values | Append | Apply All | Force | All properties |
+# | ---- | ------ | ------ | --------- | ----- | -------------- |
+# | N    | N      | 0      | 0         | 1     | 1              |
 # cq_osgi_config 'com.day.cq.wcm.foundation.forms.impl.MailServlet' do
 #   username node['cq']['author']['credentials']['login']
 #   password node['cq']['author']['credentials']['password']
