@@ -43,7 +43,7 @@ class Chef
         @properties = {}
         @append = false
         @apply_all = false
-        @include_missing = false
+        @include_missing = true
         @unique_fields = []
         @count = 1
         @enforce_count = false
