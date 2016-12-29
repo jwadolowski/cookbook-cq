@@ -635,3 +635,103 @@ describe 'org.apache.felix.eventadmin.impl.EventAdmin' do
     ).to eq(false)
   end
 end
+
+describe 'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet' do
+  it 'log.logger-names is set to [org.apache.jackrabbit.oak.plugins.index, '\
+    'org.apache.jackrabbit.oak.query]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet',
+        'log.logger-names'
+      )
+    ).to eq(
+      %w(
+        org.apache.jackrabbit.oak.plugins.index
+        org.apache.jackrabbit.oak.query
+      )
+    )
+  end
+
+  it 'log.logger-names is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet',
+        'log.logger-names'
+      )
+    ).to eq(true)
+  end
+
+  it 'log.pattern is set to %msg%n' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet',
+        'log.pattern'
+      )
+    ).to eq('%msg%n')
+  end
+
+  it 'log.pattern is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet',
+        'log.pattern'
+      )
+    ).to eq(true)
+  end
+
+  it 'log.message-count-limit is set to 150' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet',
+        'log.message-count-limit'
+      )
+    ).to eq(150)
+  end
+
+  it 'log.message-count-limit is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet',
+        'log.message-count-limit'
+      )
+    ).to eq(true)
+  end
+
+  it 'logging.enabled is set to false' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet',
+        'logging.enabled'
+      )
+    ).to eq(false)
+  end
+
+  it 'logging.enabled is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet',
+        'logging.enabled'
+      )
+    ).to eq(true)
+  end
+end
+
+describe 'com.day.cq.wcm.foundation.forms.impl.MailServlet' do
+  it 'resource.whitelist is set to [/content, /home, /test1, /test2]' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.day.cq.wcm.foundation.forms.impl.MailServlet',
+        'resource.whitelist'
+      )
+    ).to eq(%w(/content /home /test1 /test2))
+  end
+
+  it 'resource.whitelist is explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.day.cq.wcm.foundation.forms.impl.MailServlet',
+        'resource.whitelist'
+      )
+    ).to eq(true)
+  end
+end

@@ -532,39 +532,106 @@ end
 # | Keys | Values | Append | Apply All | Force | All properties |
 # | ---- | ------ | ------ | --------- | ----- | -------------- |
 # | N    | N      | 0      | 1         | 0     | 1              |
-# cq_osgi_config 'ExplainQueryServlet' do
-#   pid 'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet'
-#   username node['cq']['author']['credentials']['login']
-#   password node['cq']['author']['credentials']['password']
-#   instance "http://localhost:#{node['cq']['author']['port']}"
-#   properties(
-#     'log.logger-names' => [
-#       'org.apache.jackrabbit.oak.query',
-#       'org.apache.jackrabbit.oak.plugins.index'
-#     ],
-#     'log.pattern' => '%msg%n',
-#     'log.message-count-limit' => 150,
-#     'logging.enabled' => false
-#   )
-#   apply_all true
 
-#   action :create
-# end
+# Original:
+# {
+#   "pid": "com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet",
+#   "title": "Adobe Granite - Explain Query Servlet",
+#   "description": "End-point for Apache Jackrabbit Oak query explanations.",
+#   "properties": {
+#     "log.logger-names": {
+#       "name": "Query Logger Names",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "values": [
+#         "org.apache.jackrabbit.oak.query",
+#         "org.apache.jackrabbit.oak.plugins.index"
+#       ],
+#     },
+#     "log.pattern": {
+#       "name": "Log Pattern",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "value": "%msg%n",
+#     },
+#     "log.message-count-limit": {
+#       "name": "Log Limit",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 3,
+#       "value": "100",
+#     },
+#     "logging.enabled": {
+#       "name": "Logging Enabled",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 11,
+#       "value": "false",
+#     }
+#   }
+# }
+#
+cq_osgi_config 'ExplainQueryServlet' do
+  pid 'com.adobe.granite.queries.impl.explain.query.ExplainQueryServlet'
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'log.logger-names' => [
+      'org.apache.jackrabbit.oak.query',
+      'org.apache.jackrabbit.oak.plugins.index'
+    ],
+    'log.pattern' => '%msg%n',
+    'log.message-count-limit' => 150,
+    'logging.enabled' => false
+  )
+  apply_all true
+
+  action :create
+end
 
 # | Keys | Values | Append | Apply All | Force | All properties |
 # | ---- | ------ | ------ | --------- | ----- | -------------- |
 # | N    | N      | 0      | 0         | 1     | 1              |
-# cq_osgi_config 'com.day.cq.wcm.foundation.forms.impl.MailServlet' do
-#   username node['cq']['author']['credentials']['login']
-#   password node['cq']['author']['credentials']['password']
-#   instance "http://localhost:#{node['cq']['author']['port']}"
-#   properties(
-#     'resource.whitelist' => %w(/content /home /test1 /test2)
-#   )
-#   force true
 
-#   action :create
-# end
+# Original:
+# {
+#   "pid": "com.day.cq.wcm.foundation.forms.impl.MailServlet",
+#   "title": "Adobe CQ Form Mail Servlet",
+#   "properties": {
+#     "resource.whitelist": {
+#       "name": "Resource Whitelist",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "values": [
+#         "/content",
+#         "/home"
+#       ],
+#     },
+#     "resource.blacklist": {
+#       "name": "Resource Blacklist",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "value": "/content/usergenerated",
+#     }
+#   }
+# }
+#
+cq_osgi_config 'com.day.cq.wcm.foundation.forms.impl.MailServlet' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'resource.whitelist' => %w(/content /home /test1 /test2)
+  )
+  force true
+
+  action :create
+end
 
 # -----------------------------------------------------------------------------
 # Regular configs (delete)
