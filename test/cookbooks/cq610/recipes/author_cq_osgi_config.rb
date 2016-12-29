@@ -637,34 +637,115 @@ end
 # Regular configs (delete)
 # -----------------------------------------------------------------------------
 
-# cq_osgi_config 'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler' do
-#   username node['cq']['author']['credentials']['login']
-#   password node['cq']['author']['credentials']['password']
-#   instance "http://localhost:#{node['cq']['author']['port']}"
-#   properties(
-#     'launches.eventhandler.threadpool.maxsize' => 100,
-#     'launches.eventhandler.threadpool.priority' => 'MAX'
-#   )
+# Original:
+# {
+#   "pid": "com.adobe.cq.wcm.launches.impl.LaunchesEventHandler",
+#   "title": "Adobe CQ Launches Event Handler",
+#   "description": "An event handler specific to CQ Launches",
+#   "properties": {
+#     "event.filter": {
+#       "name": "event.filter.name",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "value": "(!(event.application=*))",
+#       "description": "event.filter.description (event.filter)"
+#     },
+#     "launches.eventhandler.threadpool.maxsize": {
+#       "name": "Background Thread Pool Size",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 3,
+#       "value": "5",
+#     },
+#     "launches.eventhandler.threadpool.priority": {
+#       "name": "Background Thread Priority",
+#       "optional": false,
+#       "is_set": false,
+#       "type": {
+#         "labels": [
+#           "Normal",
+#           "Maximal",
+#           "Minimal"
+#         ],
+#         "values": [
+#           "NORM",
+#           "MAX",
+#           "MIN"
+#         ]
+#       },
+#       "value": "MIN",
+#     },
+#     "launches.eventhandler.updatelastmodification": {
+#       "name": "Update last modification",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 11,
+#       "value": "false",
+#     }
+#   }
+# }
+#
+cq_osgi_config 'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  properties(
+    'launches.eventhandler.threadpool.maxsize' => 100,
+    'launches.eventhandler.threadpool.priority' => 'MAX'
+  )
 
-#   action [:create, :delete]
-# end
+  action [:create, :delete]
+end
 
-# cq_osgi_config 'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl' do
-#   username node['cq']['author']['credentials']['login']
-#   password node['cq']['author']['credentials']['password']
-#   instance "http://localhost:#{node['cq']['author']['port']}"
+# Original:
+# {
+#   "pid": "com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl",
+#   "title": "Adobe CQ Commerce Promotion Manager",
+#   "properties": {
+#     "cq.commerce.promotion.root": {
+#       "name": "Promotions Root",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "value": "/content/campaigns",
+#     }
+#   }
+# }
+#
+cq_osgi_config 'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
 
-#   action :delete
-# end
+  action :delete
+end
 
-# cq_osgi_config 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
-#   username node['cq']['author']['credentials']['login']
-#   password node['cq']['author']['credentials']['password']
-#   instance "http://localhost:#{node['cq']['author']['port']}"
-#   force true
+# Original:
+#
+# {
+#   "pid": "com.adobe.granite.auth.oauth.impl.TwitterProviderImpl",
+#   "title": "Adobe Granite OAuth Twitter Provider",
+#   "description": "Default Twitter OAuth Provider",
+#   "properties": {
+#     "oauth.provider.id": {
+#       "name": "Provider ID",
+#       "optional": false,
+#       "is_set": false,
+#       "type": 1,
+#       "value": "twitter",
+#       "description": "Assign a unique Provider ID (oauth.provider.id)"
+#     }
+#   }
+# }
+cq_osgi_config 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  force true
 
-#   action :delete
-# end
+  action :delete
+end
 
 # -----------------------------------------------------------------------------
 # Factory configs (create)

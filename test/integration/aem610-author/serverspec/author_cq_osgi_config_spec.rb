@@ -735,3 +735,117 @@ describe 'com.day.cq.wcm.foundation.forms.impl.MailServlet' do
     ).to eq(true)
   end
 end
+
+describe 'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler' do
+  it 'event.filter is set to (!(event.application=*))' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
+        'event.filter'
+      )
+    ).to eq('(!(event.application=*))')
+  end
+
+  it 'event.filter is not explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
+        'event.filter'
+      )
+    ).to eq(false)
+  end
+
+  it 'launches.eventhandler.threadpool.maxsize is set to 5' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
+        'launches.eventhandler.threadpool.maxsize'
+      )
+    ).to eq('5')
+  end
+
+  it 'launches.eventhandler.threadpool.maxsize is not explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
+        'launches.eventhandler.threadpool.maxsize'
+      )
+    ).to eq(false)
+  end
+
+  it 'launches.eventhandler.threadpool.priority is set to MIN' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
+        'launches.eventhandler.threadpool.priority'
+      )
+    ).to eq('MIN')
+  end
+
+  it 'launches.eventhandler.threadpool.priority is not explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
+        'launches.eventhandler.threadpool.priority'
+      )
+    ).to eq(false)
+  end
+
+  it 'launches.eventhandler.updatelastmodification is set to false' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
+        'launches.eventhandler.updatelastmodification'
+      )
+    ).to eq('false')
+  end
+
+  it 'launches.eventhandler.updatelastmodification is not explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.adobe.cq.wcm.launches.impl.LaunchesEventHandler',
+        'launches.eventhandler.updatelastmodification'
+      )
+    ).to eq(false)
+  end
+end
+
+describe 'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl' do
+  it 'cq.commerce.promotion.root is set to /content/campaigns' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl',
+        'cq.commerce.promotion.root'
+      )
+    ).to eq('/content/campaigns')
+  end
+
+  it 'cq.commerce.promotion.root is not explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl',
+        'cq.commerce.promotion.root'
+      )
+    ).to eq(false)
+  end
+end
+
+describe 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
+  it 'oauth.provider.id is set to twitter' do
+    expect(
+      @osgi_config_helper.config_value(
+        'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl',
+        'oauth.provider.id'
+      )
+    ).to eq('twitter')
+  end
+
+  it 'oauth.provider.id is not explicitly set' do
+    expect(
+      @osgi_config_helper.config_is_set(
+        'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl',
+        'oauth.provider.id'
+      )
+    ).to eq(false)
+  end
+end
