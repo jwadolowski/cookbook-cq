@@ -676,11 +676,6 @@ explanation can be found below.
 
 ### Usage
 
-More comprehensive examples can be found in package test recipes:
-
-* [recipes/_package_aem561.rb](recipes/_package_aem561.rb)
-* [recipes/_package_aem600.rb](recipes/_package_aem600.rb)
-
 ```ruby
 cq_package 'Slice 4.2.1' do
   username node['cq']['author']['credentials']['login']
@@ -875,17 +870,15 @@ Provides an interface for CRUD operations in OSGi configs.
 
 ### Actions
 
-For non-factory (regular) configs:
+For regular (non-factory, single instance) configs:
 
 * `create` - updates already existing configuration
-* `delete` - restores default settings of given OSGi config if all properties
-  match to defined state. If you'd like to restore default settings regardless
-  of current properties please use `force` parameter
+* `delete` - restores default settings of given OSGi config
 
 For factory configs:
 
-* `create` - creates a new factory config instance if none of existing ones
-  match to defined state
+* `create` - creates a new factory instance if none of existing ones match to
+  defined state
 * `delete` - deletes factory config instance if there's one that matches to
   defined state
 
@@ -901,8 +894,7 @@ For factory configs:
   <tr>
     <td><tt>pid</tt></td>
     <td>String</td>
-    <td>Config name (PID). Important for regular configs only. Can be anything
-    for factory ones</td>
+    <td>Config name (PID). Relevant to regular configs only</td>
   </tr>
   <tr>
     <td><tt>username</tt></td>
@@ -964,7 +956,8 @@ For factory configs:
     <td>Property names/keys that define uniqueness of given config. Applicable
     to factory configs only. By deafult all available property keys will be
     used (defined by factory config on AEM instance). User doesn't need to
-    define that at all, unless you want to cherry pick particular config.
+    define that at all, unless you want to cherry pick particular config. It's
+    generally <b>recommended</b> to specify this for every factory OSGi config.
     Example: <tt>log.name</tt> key needs to stay unique for your config</td>
   </tr>
   <tr>
@@ -972,7 +965,8 @@ For factory configs:
     <td>Fixnum</td>
     <td>Number of duplicated instances of given OSGi configuration. 1 by
     default. Applicable to factory configs only. Useful when duplicated
-    instances are allowed, i.e. each instance specify some sort of a worker
+    instances are allowed, i.e. each instance specify some sort of a worker and
+    every single one of them has exactly the same set of properties
     </td>
   </tr>
   <tr>
@@ -1056,15 +1050,6 @@ For factory configs:
 
 ### Usage
 
-Detailed examples can be found here:
-
-* [recipes/_osgi_config_create_regular.rb](recipes/_osgi_config_create_regular.rb)
-* [recipes/_osgi_config_create_factory.rb](recipes/_osgi_config_create_factory.rb)
-
-Please keep in mind that all recipes above use
-[definitions/osgi_config_wrapper.rb](definitions/osgi_config_wrapper.rb)
-definition for testing purposes.
-
 #### Regular OSGi configs
 
 ```ruby
@@ -1109,7 +1094,6 @@ cq_osgi_config 'Promotion Manager' do
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
   force true
-  properties({})
 
   action :delete
 end
@@ -1138,12 +1122,11 @@ and after Chef run:
 | org.apache.felix.eventadmin.RequireTopic   | true  |
 | org.apache.felix.eventadmin.IgnoreTimeout  | ["com.adobe\*","com.example\*","org.apache.felix\*"] |
 
-`OAuth Twitter` will be deleted (restore to the defaults, as this is regular
-OSGi config) only if properties match: `oauth.provider.id` is set to
-`oauth.provider.id`.
+Properties of `OAuth Twitter` will be restored to default values if any of them
+was previously modified (explicitly set).
 
-`Promotion Manager` will be deleted (restored to defaults) regardless of its
-current settings because of `force` flag.
+`Promotion Manager` will behave as `OAuth Twitter` with on exception - it will
+happen on every Chef run due to `force` property.
 
 #### Factory OSGi configs
 
@@ -1163,6 +1146,7 @@ cq_osgi_config 'Custom Logger' do
       'com.example.custom2'
     ]
   )
+  unique_fields ['org.apache.sling.commons.log.file']
 
   action :create
 end
@@ -1182,6 +1166,7 @@ cq_osgi_config 'Job Queue' do
     'queue.priority' => 'MIN',
     'service.ranking' => 0
   )
+  unique_fields ['queue.name']
 
   action :delete
 end
@@ -1189,12 +1174,17 @@ end
 ```
 
 `Custom Logger` resource will create a new logger according to defined
-properties unless it is already present. There's no need to specify an UUID in
-resource definition.
+properties. `org.apache.sling.commons.log.file` is a virtual identifier of
+given OSGi config instance (specified by user). If instance with such "ID"
+already exists nothing happens. Otherwise a brand new configuration will be
+created.
+Please keep in mind that there's no need to specify any UUID in resource definition.
 
-`Job Queue` resource will delete a factory instance of
-`org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
-properties. Nothing will happen when there's no such OSGi config.
+
+`Job Queue` resource will delete factory instance of
+`org.apache.sling.event.jobs.QueueConfiguration` that has `queue.name` set to
+`Granite Workflow Timeout Queue`. Presence of additional properties doesn't
+matter in this case and will be completely ignored.
 
 # cq_osgi_bundle
 
@@ -1517,8 +1507,6 @@ Exposes a resource for CQ/AEM user management. Supports:
 
 ## Usage
 
-More detailed examples are available [here](recipes/_users.rb).
-
 ```ruby
 cq_user 'admin' do
   username node['cq']['author']['credentials']['login']
@@ -1614,9 +1602,6 @@ CRUD operations on JCR nodes.
 </table>
 
 ## Usage
-
-More examples of `cq_jcr` are available in [this](recipes/_jcr_nodes.rb)
-recipe.
 
 ```ruby
 cq_jcr '/content/test_node' do
