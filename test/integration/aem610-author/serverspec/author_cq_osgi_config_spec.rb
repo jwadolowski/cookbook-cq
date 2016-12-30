@@ -849,3 +849,94 @@ describe 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
     ).to eq(false)
   end
 end
+
+describe 'com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
+  it '3 instances exist' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'com.adobe.granite.monitoring.impl.ScriptConfigImpl'
+      ).length
+    ).to eq(3)
+  end
+end
+
+describe 'com.adobe.cq.social.datastore.as.impl.UGCCResourceProviderFactory' do
+  it '3 instances exist' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'com.adobe.cq.social.datastore.as.impl.UGCCResourceProviderFactory'
+      ).length
+    ).to eq(3)
+  end
+end
+
+describe 'com.day.cq.mcm.impl.MCMConfiguration' do
+  it '7 instances exist' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'com.day.cq.mcm.impl.MCMConfiguration'
+      ).length
+    ).to eq(7)
+  end
+end
+
+describe 'com.adobe.granite.auth.oauth.provider' do
+  it '3 instances exist' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'com.adobe.granite.auth.oauth.provider'
+      ).length
+    ).to eq(3)
+  end
+end
+
+describe 'org.apache.sling.commons.log.LogManager.factory.config' do
+  it '9 instances exist' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'org.apache.sling.commons.log.LogManager.factory.config'
+      ).length
+    ).to eq(9)
+  end
+end
+
+describe 'org.apache.sling.distribution.agent.impl.'\
+  'SyncDistributionAgentFactory' do
+  it '1 instance exists' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'org.apache.sling.distribution.agent.impl.SyncDistributionAgentFactory'
+      ).length
+    ).to eq(1)
+  end
+end
+
+describe 'com.adobe.granite.ocs.core.internal.OCSLifeCycle' do
+  it '2 instances exist' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'com.adobe.granite.ocs.core.internal.OCSLifeCycle'
+      ).length
+    ).to eq(2)
+  end
+end
+
+describe 'org.apache.sling.hc.core.impl.CompositeHealthCheck' do
+  it '1 instance exists' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'org.apache.sling.hc.core.impl.CompositeHealthCheck'
+      ).length
+    ).to eq(1)
+  end
+end
+
+describe 'org.apache.sling.event.jobs.QueueConfiguration' do
+  it '11 instances exist' do
+    expect(
+      @osgi_config_helper.factory_instaces(
+        'org.apache.sling.event.jobs.QueueConfiguration'
+      ).length
+    ).to eq(11)
+  end
+end
