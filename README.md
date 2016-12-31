@@ -792,15 +792,15 @@ operation was executed against Geometrixx package.
 6th `cq_package` presents usage of `rescue_mode` property. Imagine that this
 package provides new OSGi bundles and right after its installation some serious
 issue occurs (i.e. unresolvable OSGi dependency, conflict or cycle). As a
-result of this event all (or almost all) bundles will be turned off and
-effectively instance will stop responding or start serving 404s for all
-resources (including `/system/console`). The java process though will still be
-running. The only solution to that problem is AEM restart, after which all work
-perfectly fine again. Without `rescue_mode` property `cq_package` provider will
-keep checking OSGi bundles to detect their stable state, but none of these
-attempts will end successfully, as nothing is reachable over HTTP. After 30
-requests Chef run will be aborted. If `rescue_mode` was activated (set to
-`true`) then after 6 unsuccessful attempts an error will be printed and the
+result of this event all bundles will be turned off and effectively instance
+will stop responding or start serving 404s for all resources (including
+`/system/console`). The java process though will still be running. The only
+solution to that problem is AEM restart, after which all work perfectly fine
+again. Without `rescue_mode` property `cq_package` provider will keep checking
+OSGi bundles to detect their stable state, but none of these attempts will end
+successfully, as nothing is reachable over HTTP. Eventually Chef run will be
+aborted. If `rescue_mode` was activated (set to `true`) then after
+`error_state_barrier` unsuccessful attempts an error will be printed and the
 processing will be continued (restart of `cq60-author` service in this case).
 
 7th & 8th `cq_package` resources explain how to deal with AEM instance
@@ -860,7 +860,7 @@ same name, but different actions.
 In second example restart still will be triggered after upload, even if it's
 not explicitly defined during 1st usage (upload action). The reason is quite
 simple - both resources are named the same (`Author: Service Pack 2`) and Chef
-will treat this as a single resource on resource collection, which means that
+will treat this as a single resource on resource collection. It means that
 notify parameter will be silently merged to the resource with upload action
 during compile phase.
 
