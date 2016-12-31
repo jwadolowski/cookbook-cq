@@ -763,6 +763,10 @@ cq_package 'Author: Service Pack 2 (install)' do
   instance "http://localhost:#{node['cq']['author']['port']}"
   source node['cq']['packages']['aem6']['sp2']
   recursive_install true
+  rescue_mode true
+  same_state_barrier 12
+  error_state_barrier 12
+  max_attempts 36
 
   action :install
 
@@ -804,7 +808,8 @@ aborted. If `rescue_mode` was activated (set to `true`) then after
 processing will be continued (restart of `cq60-author` service in this case).
 
 7th & 8th `cq_package` resources explain how to deal with AEM instance
-restarts after package installation.
+restarts after package installation and tune post installation OSGi
+stability checks.
 
 Moreover it explains how to use combination of `upload` and `install` instead
 of `deploy`. Such procedure might be required sometimes, i.e. when some extra
