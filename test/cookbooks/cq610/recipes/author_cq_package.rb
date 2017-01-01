@@ -171,14 +171,12 @@ end
 
 # Delete a package
 # -----------------------------------------------------------------------------
-cq_package 'cq-screens-content' do
+cq_package 'Groovy Console' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  source "http://localhost:#{node['cq']['author']['port']}"\
-    '/etc/packages/day/cq61/product/cq-screens-content-0.1.6.zip'
-  http_user node['cq']['author']['credentials']['login']
-  http_pass node['cq']['author']['credentials']['password']
+  source 'https://github.com/OlsonDigital/cq-groovy-console/releases/'\
+    'download/8.0.2/aem-groovy-console-8.0.2.zip'
 
-  action :delete
+  action [:upload, :delete]
 end
