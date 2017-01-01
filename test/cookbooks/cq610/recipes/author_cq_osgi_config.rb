@@ -829,13 +829,15 @@ end
 # | Apply All | Unique fields | Count | Enforce count |
 # | --------- | ------------- | ----- | ------------- |
 # | 0         | 1             | 1     | 0             |
-cq_osgi_config 'com.adobe.granite.auth.oauth.provider' do
-  factory_pid 'com.adobe.granite.auth.oauth.provider'
+cq_osgi_config 'org.apache.sling.resource.inventory.impl.'\
+  'ResourceInventoryPrinterFactory' do
+  factory_pid 'org.apache.sling.resource.inventory.impl.'\
+    'ResourceInventoryPrinterFactory'
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
-  properties('oauth.config.id' => 'aaaaabbbbbcccccddddd')
-  unique_fields ['oauth.config.id']
+  properties('felix.inventory.printer.name' => 'aaaaabbbbbcccccddddd')
+  unique_fields ['felix.inventory.printer.name']
 
   action :create
 end

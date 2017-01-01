@@ -880,13 +880,15 @@ describe 'com.day.cq.mcm.impl.MCMConfiguration' do
   end
 end
 
-describe 'com.adobe.granite.auth.oauth.provider' do
-  it '3 instances exist' do
+describe 'org.apache.sling.resource.inventory.impl.'\
+  'ResourceInventoryPrinterFactory' do
+  it '2 instances exist' do
     expect(
       @osgi_config_helper.factory_instaces(
-        'com.adobe.granite.auth.oauth.provider'
+        'org.apache.sling.resource.inventory.impl.'\
+        'ResourceInventoryPrinterFactory'
       ).length
-    ).to eq(3)
+    ).to eq(2)
   end
 end
 
