@@ -93,7 +93,6 @@ class Chef
 
         # Uploaded packages
         @uploaded_packages = uploaded_packages(all_pkgs)
-        Chef::Log.debug("Found #{@uploaded_packages.size} uploaded package(s)")
 
         # Package info
         @package_info = package_info(@uploaded_packages)
@@ -140,13 +139,9 @@ class Chef
         # be invalid.
         require 'date'
 
-        newest_pkg = pkgs.first
-
-        pkgs.each_cons(2) do |p1, p2|
-          newest_pkg = p1
-          newest_pkg = p2 if DateTime.parse(crx_property(p1, 'lastUnpacked')) <
-                             DateTime.parse(crx_property(p2, 'lastUnpacked'))
-        end
+        newest_pkg = pkgs.sort_by do |p|
+          DateTime.parse(crx_property(p, 'lastUnpacked'))
+        end.reverse.first
 
         Chef::Log.debug("The most recently installed package: #{newest_pkg}")
 
