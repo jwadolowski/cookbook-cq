@@ -93,7 +93,6 @@ class Chef
 
         # Uploaded packages
         @uploaded_packages = uploaded_packages(all_pkgs)
-        Chef::Log.debug("Found #{@uploaded_packages.size} uploaded package(s)")
 
         # Package info
         @package_info = package_info(@uploaded_packages)
