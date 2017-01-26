@@ -140,13 +140,15 @@ class Chef
         # be invalid.
         require 'date'
 
-        newest_pkg = installed_packages.first
+        newest_pkg = pkgs.first
 
         pkgs.each_cons(2) do |p1, p2|
           newest_pkg = p1
           newest_pkg = p2 if DateTime.parse(crx_property(p1, 'lastUnpacked')) <
                              DateTime.parse(crx_property(p2, 'lastUnpacked'))
         end
+
+        Chef::Log.debug("The most recently installed package: #{newest_pkg}")
 
         # Verify whether the newest package is in the same version as the one
         # defined in the resource itself
@@ -173,6 +175,8 @@ class Chef
           pkgs.push(p) if crx_property(p, 'name') == new_resource.xml_name &&
                           crx_property(p, 'group') == new_resource.xml_group
         end
+
+        Chef::Log.debug("Found #{pkgs.size} uploaded package(s)")
 
         pkgs
       end
