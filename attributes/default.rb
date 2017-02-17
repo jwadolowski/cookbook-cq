@@ -20,7 +20,9 @@
 # CQ attributes
 # -----------------------------------------------------------------------------
 default['cq']['user'] = 'cq'
+default['cq']['user_uid'] = nil
 default['cq']['group'] = 'cq'
+default['cq']['group_gid'] = nil
 default['cq']['limits']['file_descriptors'] = '16384'
 default['cq']['base_dir'] = '/opt'
 default['cq']['home_dir'] = "#{node['cq']['base_dir']}/cq"
