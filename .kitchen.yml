@@ -40,6 +40,17 @@ platforms:
 <% end %>
 
 suites:
+  - name: commons
+    run_list:
+      - recipe[cq::default]
+      - recipe[cq::commons]
+    attributes:
+      cq:
+        user: 'aem'
+        user_uid: 200
+        group: 'app'
+        group_gid: 200
+
 <% aem_versions.each do |v| %>
 
   <% short_ver = v.delete('.') %>
