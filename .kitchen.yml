@@ -53,8 +53,10 @@ suites:
         user: 'aem'
         user_uid: 200
         user_comment: 'Adobe AEM'
+        user_shell: '/bin/sh'
         group: 'aem'
         group_gid: 200
+        home_dir: '/opt/aem'
 
 <% aem_versions.each do |v| %>
 
