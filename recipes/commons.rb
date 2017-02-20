@@ -43,7 +43,7 @@ user node['cq']['user'] do
   uid node['cq']['user_uid'] if node['cq']['user_uid']
   supports :manage_home => true
   system true
-  comment 'Adobe CQ'
+  comment node['cq']['user_comment']
   group node['cq']['group']
   home node['cq']['home_dir']
   shell '/bin/bash'

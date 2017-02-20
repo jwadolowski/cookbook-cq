@@ -52,6 +52,7 @@ suites:
       cq:
         user: 'aem'
         user_uid: 200
+        user_comment: 'Adobe AEM'
         group: 'aem'
         group_gid: 200
 

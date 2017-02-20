@@ -21,6 +21,7 @@
 # -----------------------------------------------------------------------------
 default['cq']['user'] = 'cq'
 default['cq']['user_uid'] = nil
+default['cq']['user_comment'] = 'Adobe CQ'
 default['cq']['group'] = 'cq'
 default['cq']['group_gid'] = nil
 default['cq']['limits']['file_descriptors'] = '16384'
