@@ -122,7 +122,7 @@ installs Oracle's JDK7.
     <td>System group for CQ/AEM</td>
   </tr>
   <tr>
-    :x
+    <td><tt>['cq']['group_gid']</tt></td>
     <td>String</td>
     <td>GID of CQ/AEM group</td>
   </tr>
