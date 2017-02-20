@@ -43,7 +43,7 @@ describe 'AEM user' do
     expect(user('aem')).to belong_to_group('aem')
   end
 
-  it 'has its home directory in /opt/cq' do
+  it 'has its home directory in /opt/aem' do
     expect(user('aem')).to have_home_directory('/opt/aem')
   end
 
@@ -56,41 +56,41 @@ describe 'AEM user' do
   end
 end
 
-describe 'CQ user home' do
+describe 'AEM user home' do
   it 'is directory' do
-    expect(file('/opt/cq')).to be_directory
+    expect(file('/opt/aem')).to be_directory
   end
 
   it 'has 755 mode' do
-    expect(file('/opt/cq')).to be_mode('755')
+    expect(file('/opt/aem')).to be_mode('755')
   end
 end
 
-describe 'CQ user limits file' do
+describe 'AEM user limits file' do
   it 'exists' do
-    expect(file('/etc/security/limits.d/cq_limits.conf')).to be_file
+    expect(file('/etc/security/limits.d/aem_limits.conf')).to be_file
   end
 
   it 'contains valid data' do
     expect(
-      file('/etc/security/limits.d/cq_limits.conf').content
-    ).to match('cq - nofile 16384')
+      file('/etc/security/limits.d/aem_limits.conf').content
+    ).to match('aem - nofile 16384')
   end
 
   it 'is owned by root' do
     expect(
-      file('/etc/security/limits.d/cq_limits.conf')
+      file('/etc/security/limits.d/aem_limits.conf')
     ).to be_owned_by('root')
   end
 
   it 'is grouped into root' do
     expect(
-      file('/etc/security/limits.d/cq_limits.conf')
+      file('/etc/security/limits.d/aem_limits.conf')
     ).to be_grouped_into('root')
   end
 
   it 'has 644 mode' do
-    expect(file('/etc/security/limits.d/cq_limits.conf')).to be_mode('644')
+    expect(file('/etc/security/limits.d/aem_limits.conf')).to be_mode('644')
   end
 end
 
@@ -99,12 +99,12 @@ describe 'Custom tmp directory' do
     expect(file('/opt/tmp')).to be_directory
   end
 
-  it 'is owned by cq user' do
-    expect(file('/opt/tmp')).to be_owned_by('cq')
+  it 'is owned by aem user' do
+    expect(file('/opt/tmp')).to be_owned_by('aem')
   end
 
-  it 'is grouped into cq' do
-    expect(file('/opt/tmp')).to be_grouped_into('cq')
+  it 'is grouped into aem' do
+    expect(file('/opt/tmp')).to be_grouped_into('aem')
   end
 
   it 'has mode 755' do

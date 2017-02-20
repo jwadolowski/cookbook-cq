@@ -44,7 +44,7 @@ suites:
     run_list:
       - recipe[cq::default]
       - recipe[cq::commons]
-  - name: commons_customized
+  - name: commons-customized
     run_list:
       - recipe[cq::default]
       - recipe[cq::commons]
