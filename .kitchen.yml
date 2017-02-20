@@ -44,11 +44,15 @@ suites:
     run_list:
       - recipe[cq::default]
       - recipe[cq::commons]
+  - name: commons_customized
+    run_list:
+      - recipe[cq::default]
+      - recipe[cq::commons]
     attributes:
       cq:
         user: 'aem'
         user_uid: 200
-        group: 'app'
+        group: 'aem'
         group_gid: 200
 
 <% aem_versions.each do |v| %>
