@@ -25,7 +25,7 @@ describe 'AEM group' do
     expect(group('aem')).to exist
   end
 
-  it 'has GID 200' do
+  it 'has GID set to 200' do
     expect(group('aem')).to have_gid('200')
   end
 end
@@ -35,7 +35,7 @@ describe 'AEM user' do
     expect(user('aem')).to exist
   end
 
-  it 'has UID 200' do
+  it 'has UID set to 200' do
     expect(user('aem')).to have_uid('200')
   end
 
