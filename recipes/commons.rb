@@ -46,7 +46,7 @@ user node['cq']['user'] do
   comment node['cq']['user_comment']
   group node['cq']['group']
   home node['cq']['home_dir']
-  shell '/bin/bash'
+  shell node['cq']['user_shell']
   action :create
 end
 
