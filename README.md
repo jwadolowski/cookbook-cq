@@ -102,9 +102,29 @@ installs Oracle's JDK7.
     <td>System user for CQ/AEM</td>
   </tr>
   <tr>
+    <td><tt>['cq']['user_uid']</tt></td>
+    <td>String</td>
+    <td>UID of CQ/AEM user</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['user_comment']</tt></td>
+    <td>String</td>
+    <td>Comment/description of CQ/AEM user</td>
+  </tr>
+  <tr>
+    <td><tt>['cq']['user_shell']</tt></td>
+    <td>String</td>
+    <td>Default shell of CQ/AEM user</td>
+  </tr>
+  <tr>
     <td><tt>['cq']['group']</tt></td>
     <td>String</td>
     <td>System group for CQ/AEM</td>
+  </tr>
+  <tr>
+    :x
+    <td>String</td>
+    <td>GID of CQ/AEM group</td>
   </tr>
   <tr>
     <td><tt>['cq']['limits']['file_descriptors']</tt></td>
