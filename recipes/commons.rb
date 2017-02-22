@@ -33,18 +33,20 @@ end
 # -----------------------------------------------------------------------------
 # Create group
 group node['cq']['group'] do
+  gid node['cq']['group_gid'] if node['cq']['group_gid']
   system true
   action :create
 end
 
 # Create user
 user node['cq']['user'] do
+  uid node['cq']['user_uid'] if node['cq']['user_uid']
   supports :manage_home => true
   system true
-  comment 'Adobe CQ'
+  comment node['cq']['user_comment']
   group node['cq']['group']
   home node['cq']['home_dir']
-  shell '/bin/bash'
+  shell node['cq']['user_shell']
   action :create
 end
 
