@@ -972,7 +972,7 @@ For factory configs:
     If new instance needs to be created then defaults defined in factory PID
     will be used. In case of existing instance update, all missing properties
     will be based on properties defined in that instance. This is
-    <b>recommended</b> property in when you'd like to edit pre-existing factory
+    <b>recommended</b> property when you'd like to edit pre-existing factory
     or regular configs. <tt>true</tt> by default</td>
   </tr>
   <tr>

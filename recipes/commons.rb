@@ -26,6 +26,7 @@ directory node['cq']['base_dir'] do
   group 'root'
   mode '0755'
   recursive true
+
   action :create
 end
 
@@ -35,6 +36,7 @@ end
 group node['cq']['group'] do
   gid node['cq']['group_gid'] if node['cq']['group_gid']
   system true
+
   action :create
 end
 
@@ -47,6 +49,7 @@ user node['cq']['user'] do
   group node['cq']['group']
   home node['cq']['home_dir']
   shell node['cq']['user_shell']
+
   action :create
 end
 
@@ -55,6 +58,7 @@ directory node['cq']['home_dir'] do
   owner node['cq']['user']
   group node['cq']['group']
   mode '0755'
+
   action :create
 end
 
@@ -70,8 +74,9 @@ directory node['cq']['custom_tmp_dir'] do
   owner node['cq']['user']
   group node['cq']['group']
   mode '0755'
-  action :create
   recursive true
+
+  action :create
 
   only_if do
     !node['cq']['custom_tmp_dir'].nil? &&
