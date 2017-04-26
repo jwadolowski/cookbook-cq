@@ -68,11 +68,12 @@ module Cq
 
     def extract_jar(jar, filter, dst)
       cmd_str = "unzip -o -b -j #{jar} \"#{filter}\" -d #{dst}"
+      Chef::Log.debug("Unzip command: #{cmd_str}")
+
       cmd = Mixlib::ShellOut.new(cmd_str)
       cmd.run_command
       cmd.error!
 
-      Chef::Log.debug("Unzip command: #{cmd_str}")
       Chef::Log.debug("JAR file successfully extracted:\n #{cmd.stdout}")
     rescue => e
       Chef::Application.fatal!("Can't extract content out of JAR file: #{e}")
@@ -110,6 +111,8 @@ module Cq
     # Returns version of Java given file in crypto_root_dir was compiled with
     def compiled_with?(filename)
       cmd_str = "javap -cp '#{crypto_classpath}' -verbose #{filename}"
+      Chef::Log.debug("javap command: #{cmd_str}")
+
       cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
       cmd.run_command
       cmd.error!
@@ -260,11 +263,12 @@ module Cq
 
     def compile_decryptor
       cmd_str = "javac -cp '#{crypto_classpath}' Decrypt.java"
+      Chef::Log.debug("Compilation command: #{cmd_str}")
+
       cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
       cmd.run_command
       cmd.error!
 
-      Chef::Log.debug("Compilation command: #{cmd_str}")
       Chef::Log.debug('Decryptor successfully compiled')
     rescue => e
       Chef::Application.fatal!("Compilation error: #{e}")
@@ -324,7 +328,6 @@ module Cq
 
     def decrypt(key, str)
       cmd_str = "java -cp '#{crypto_classpath}' Decrypt '#{key}' '#{str}'"
-
       Chef::Log.debug("Decrypt command: #{cmd_str}")
 
       # Decrypt code needs high entropy level to get things done in an
