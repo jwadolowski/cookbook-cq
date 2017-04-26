@@ -68,11 +68,12 @@ module Cq
 
     def extract_jar(jar, filter, dst)
       cmd_str = "unzip -o -b -j #{jar} \"#{filter}\" -d #{dst}"
+      Chef::Log.debug("Unzip command: #{cmd_str}")
+
       cmd = Mixlib::ShellOut.new(cmd_str)
       cmd.run_command
       cmd.error!
 
-      Chef::Log.debug("Unzip command: #{cmd_str}")
       Chef::Log.debug("JAR file successfully extracted:\n #{cmd.stdout}")
     rescue => e
       Chef::Application.fatal!("Can't extract content out of JAR file: #{e}")
@@ -107,10 +108,12 @@ module Cq
       version_map[major_minor]
     end
 
-    # Returns version of Java for given compiled file
-    def compiled_with?(path)
-      cmd_str = "javap -verbose #{path}"
-      cmd = Mixlib::ShellOut.new(cmd_str)
+    # Returns version of Java given file in crypto_root_dir was compiled with
+    def compiled_with?(filename)
+      cmd_str = "javap -cp '#{crypto_classpath}' -verbose #{filename}"
+      Chef::Log.debug("javap command: #{cmd_str}")
+
+      cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
       cmd.run_command
       cmd.error!
 
@@ -119,15 +122,15 @@ module Cq
       minor = cmd.stdout[/^\s+minor\sversion:\s(?<version>.+)/, 'version']
 
       java_version = jvm_version_mapper(major + '.' + minor)
-      Chef::Log.debug("#{path} was compiled with Java #{java_version}")
+      Chef::Log.debug("#{filename} was compiled with Java #{java_version}")
 
       java_version
     rescue => e
-      Chef::Application.fatal!("Cannot disassemble #{path} file: #{e}")
+      Chef::Application.fatal!("Cannot disassemble #{filename} file: #{e}")
     end
 
-    def jvm_version_changed?(path)
-      node['java']['jdk_version'] != compiled_with?(path)
+    def jvm_version_changed?(filename)
+      node['java']['jdk_version'] != compiled_with?(filename)
     end
 
     # Makes sure the following elements are in place
@@ -155,7 +158,7 @@ module Cq
 
       # Recompile Decrypt.java if needed
       compile_decryptor if !File.exist?(decryptor_path + '.class') ||
-                           jvm_version_changed?(decryptor_path)
+                           jvm_version_changed?('Decrypt')
     end
 
     def crypto_dir_structure
@@ -260,11 +263,12 @@ module Cq
 
     def compile_decryptor
       cmd_str = "javac -cp '#{crypto_classpath}' Decrypt.java"
+      Chef::Log.debug("Compilation command: #{cmd_str}")
+
       cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
       cmd.run_command
       cmd.error!
 
-      Chef::Log.debug("Compilation command: #{cmd_str}")
       Chef::Log.debug('Decryptor successfully compiled')
     rescue => e
       Chef::Application.fatal!("Compilation error: #{e}")
@@ -324,7 +328,6 @@ module Cq
 
     def decrypt(key, str)
       cmd_str = "java -cp '#{crypto_classpath}' Decrypt '#{key}' '#{str}'"
-
       Chef::Log.debug("Decrypt command: #{cmd_str}")
 
       # Decrypt code needs high entropy level to get things done in an
