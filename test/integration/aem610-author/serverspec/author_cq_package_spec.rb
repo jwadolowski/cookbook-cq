@@ -227,7 +227,6 @@ describe 'ACS AEM Commons' do
     ).to be true
   end
 
-
   it 'version 2.8.0 is installed' do
     expect(
       @package_helper.package_installed(

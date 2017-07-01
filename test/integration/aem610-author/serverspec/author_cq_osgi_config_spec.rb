@@ -1,5 +1,8 @@
 require_relative '../../../kitchen/data/spec_helper'
 
+# -----------------------------------------------------------------------------
+# Regular configs
+# -----------------------------------------------------------------------------
 describe 'com.day.cq.dam.s7dam.common.S7damDamChangeEventListener' do
   it 'cq.dam.s7dam.damchangeeventlistener.enabled is set to false' do
     expect(
@@ -850,6 +853,9 @@ describe 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl' do
   end
 end
 
+# -----------------------------------------------------------------------------
+# Factory configs
+# -----------------------------------------------------------------------------
 describe 'com.adobe.granite.monitoring.impl.ScriptConfigImpl' do
   it '3 instances exist' do
     expect(
