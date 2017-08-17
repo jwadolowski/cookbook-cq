@@ -1355,7 +1355,7 @@ Management of OSGi components
 
 ```ruby
 cq_osgi_component 'Author: com.example.my.component' do
-  symbolic_name 'com.example.my.component'
+  pid 'com.example.my.component'
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
@@ -1364,7 +1364,7 @@ cq_osgi_component 'Author: com.example.my.component' do
 end
 
 cq_osgi_component 'Author: com.project.email.servlet' do
-  symbolic_name 'com.project.email.servlet'
+  pid 'com.project.email.servlet'
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
