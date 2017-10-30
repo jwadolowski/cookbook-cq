@@ -1150,7 +1150,7 @@ and after Chef run:
 Properties of `OAuth Twitter` will be restored to default values if any of them
 was previously modified (explicitly set).
 
-`Promotion Manager` will behave as `OAuth Twitter` with on exception - it will
+`Promotion Manager` will behave as `OAuth Twitter` with one exception - it will
 happen on every Chef run due to `force` property.
 
 #### Factory OSGi configs
