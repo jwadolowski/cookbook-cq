@@ -49,6 +49,8 @@ define :cq_instance,
     mode '0644'
     source node['cq']['jar']['url']
     checksum node['cq']['jar']['checksum'] if node['cq']['jar']['checksum']
+
+    action :create_if_missing
   end
 
   # Move JAR file to instance home
@@ -58,6 +60,8 @@ define :cq_instance,
     mode '0644'
     source "file://#{Chef::Config[:file_cache_path]}/#{jar_name}"
     checksum node['cq']['jar']['checksum'] if node['cq']['jar']['checksum']
+
+    action :create_if_missing
   end
 
   # Unpack CQ JAR file once downloaded

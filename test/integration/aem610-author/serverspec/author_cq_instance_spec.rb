@@ -155,6 +155,12 @@ describe 'CQ author config file' do
     expect(
       file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
     ).not_to match('export CQ_PORT=4503')
+    expect(
+      file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+    ).to match('export CQ_RUNMODE=aem61,author,kitchen')
+    expect(
+      file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+    ).not_to match('export CQ_RUNMODE=author')
   end
 end
 

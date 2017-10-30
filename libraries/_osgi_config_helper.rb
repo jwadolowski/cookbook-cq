@@ -215,7 +215,7 @@ module Cq
     # TODO: validate approach
     # * AEM 5.6.1
     # * AEM 6.0.0
-    # * AEM 6.1.0
+    # * AEM 6.1.0 [OK]
     # * AEM 6.2.0
     def update_config(instance, user, pass, info, diff, hc_params)
       req_path = '/system/console/configMgr/' + info['pid']

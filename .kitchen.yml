@@ -1,6 +1,6 @@
 ---
 <% chef_versions = %w( 12 ) %>
-<% platforms = %w( centos-6.8 ) %>
+<% platforms = %w( centos-6 centos-7 ) %>
 <% aem_versions = %w( 5.6.1 6.0.0 6.1.0 6.2.0 ) %>
 
 driver:
@@ -24,8 +24,13 @@ platforms:
       require_chef_omnibus: <%= chef_version %>
     attributes:
       cq:
+        http_read_timeout: 900
         license:
           url: <%= ENV['CQ_LICENSE_URL'] %>
+        packages:
+          aem61:
+            sp2: <%= ENV['CQ_V610_SP2_URL'] %>
+            sp2_cfp3: <%= ENV['CQ_V610_SP2_CFP3_URL'] %>
       java:
         jdk:
           '7':

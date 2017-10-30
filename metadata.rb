@@ -6,8 +6,8 @@ description      'Installs/Configures cq'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '1.0.0'
 
-depends          'java',            '~> 1.31.0'
-depends          'ulimit',          '~> 0.3.3'
+depends          'java'
+depends          'ulimit'
 depends          'cq-unix-toolkit', '~> 1.2.0'
 
 source_url       'https://github.com/jwadolowski/cookbook-cq'

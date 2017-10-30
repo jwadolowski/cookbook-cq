@@ -696,11 +696,6 @@ explanation can be found below.
 
 ### Usage
 
-More comprehensive examples can be found in package test recipes:
-
-* [recipes/_package_aem561.rb](recipes/_package_aem561.rb)
-* [recipes/_package_aem600.rb](recipes/_package_aem600.rb)
-
 ```ruby
 cq_package 'Slice 4.2.1' do
   username node['cq']['author']['credentials']['login']
@@ -788,6 +783,10 @@ cq_package 'Author: Service Pack 2 (install)' do
   instance "http://localhost:#{node['cq']['author']['port']}"
   source node['cq']['packages']['aem6']['sp2']
   recursive_install true
+  rescue_mode true
+  same_state_barrier 12
+  error_state_barrier 12
+  max_attempts 36
 
   action :install
 
@@ -817,19 +816,20 @@ operation was executed against Geometrixx package.
 6th `cq_package` presents usage of `rescue_mode` property. Imagine that this
 package provides new OSGi bundles and right after its installation some serious
 issue occurs (i.e. unresolvable OSGi dependency, conflict or cycle). As a
-result of this event all (or almost all) bundles will be turned off and
-effectively instance will stop responding or start serving 404s for all
-resources (including `/system/console`). The java process though will still be
-running. The only solution to that problem is AEM restart, after which all work
-perfectly fine again. Without `rescue_mode` property `cq_package` provider will
-keep checking OSGi bundles to detect their stable state, but none of these
-attempts will end successfully, as nothing is reachable over HTTP. After 30
-requests Chef run will be aborted. If `rescue_mode` was activated (set to
-`true`) then after 6 unsuccessful attempts an error will be printed and the
+result of this event all bundles will be turned off and effectively instance
+will stop responding or start serving 404s for all resources (including
+`/system/console`). The java process though will still be running. The only
+solution to that problem is AEM restart, after which all work perfectly fine
+again. Without `rescue_mode` property `cq_package` provider will keep checking
+OSGi bundles to detect their stable state, but none of these attempts will end
+successfully, as nothing is reachable over HTTP. Eventually Chef run will be
+aborted. If `rescue_mode` was activated (set to `true`) then after
+`error_state_barrier` unsuccessful attempts an error will be printed and the
 processing will be continued (restart of `cq60-author` service in this case).
 
 7th & 8th `cq_package` resources explain how to deal with AEM instance
-restarts after package installation.
+restarts after package installation and tune post installation OSGi
+stability checks.
 
 Moreover it explains how to use combination of `upload` and `install` instead
 of `deploy`. Such procedure might be required sometimes, i.e. when some extra
@@ -885,7 +885,7 @@ same name, but different actions.
 In second example restart still will be triggered after upload, even if it's
 not explicitly defined during 1st usage (upload action). The reason is quite
 simple - both resources are named the same (`Author: Service Pack 2`) and Chef
-will treat this as a single resource on resource collection, which means that
+will treat this as a single resource on resource collection. It means that
 notify parameter will be silently merged to the resource with upload action
 during compile phase.
 
@@ -895,17 +895,15 @@ Provides an interface for CRUD operations in OSGi configs.
 
 ### Actions
 
-For non-factory (regular) configs:
+For regular (non-factory, single instance) configs:
 
 * `create` - updates already existing configuration
-* `delete` - restores default settings of given OSGi config if all properties
-  match to defined state. If you'd like to restore default settings regardless
-  of current properties please use `force` parameter
+* `delete` - restores default settings of given OSGi config
 
 For factory configs:
 
-* `create` - creates a new factory config instance if none of existing ones
-  match to defined state
+* `create` - creates a new factory instance if none of existing ones match to
+  defined state
 * `delete` - deletes factory config instance if there's one that matches to
   defined state
 
@@ -921,8 +919,7 @@ For factory configs:
   <tr>
     <td><tt>pid</tt></td>
     <td>String</td>
-    <td>Config name (PID). Important for regular configs only. Can be anything
-    for factory ones</td>
+    <td>Config name (PID). Relevant to regular configs only</td>
   </tr>
   <tr>
     <td><tt>username</tt></td>
@@ -975,9 +972,8 @@ For factory configs:
     If new instance needs to be created then defaults defined in factory PID
     will be used. In case of existing instance update, all missing properties
     will be based on properties defined in that instance. This is
-    <b>recommended</b> property for factory OSGi configs, in particular when
-    you'd like to edit pre-existing factory instances. <tt>false</tt> by
-    default</td>
+    <b>recommended</b> property when you'd like to edit pre-existing factory
+    or regular configs. <tt>true</tt> by default</td>
   </tr>
   <tr>
     <td><tt>unique_fields</tt></td>
@@ -985,7 +981,8 @@ For factory configs:
     <td>Property names/keys that define uniqueness of given config. Applicable
     to factory configs only. By deafult all available property keys will be
     used (defined by factory config on AEM instance). User doesn't need to
-    define that at all, unless you want to cherry pick particular config.
+    define that at all, unless you want to cherry pick particular config. It's
+    generally <b>recommended</b> to specify this for every factory OSGi config.
     Example: <tt>log.name</tt> key needs to stay unique for your config</td>
   </tr>
   <tr>
@@ -993,7 +990,8 @@ For factory configs:
     <td>Fixnum</td>
     <td>Number of duplicated instances of given OSGi configuration. 1 by
     default. Applicable to factory configs only. Useful when duplicated
-    instances are allowed, i.e. each instance specify some sort of a worker
+    instances are allowed, i.e. each instance specify some sort of a worker and
+    every single one of them has exactly the same set of properties
     </td>
   </tr>
   <tr>
@@ -1077,15 +1075,6 @@ For factory configs:
 
 ### Usage
 
-Detailed examples can be found here:
-
-* [recipes/_osgi_config_create_regular.rb](recipes/_osgi_config_create_regular.rb)
-* [recipes/_osgi_config_create_factory.rb](recipes/_osgi_config_create_factory.rb)
-
-Please keep in mind that all recipes above use
-[definitions/osgi_config_wrapper.rb](definitions/osgi_config_wrapper.rb)
-definition for testing purposes.
-
 #### Regular OSGi configs
 
 ```ruby
@@ -1130,7 +1119,6 @@ cq_osgi_config 'Promotion Manager' do
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
   force true
-  properties({})
 
   action :delete
 end
@@ -1159,12 +1147,11 @@ and after Chef run:
 | org.apache.felix.eventadmin.RequireTopic   | true  |
 | org.apache.felix.eventadmin.IgnoreTimeout  | ["com.adobe\*","com.example\*","org.apache.felix\*"] |
 
-`OAuth Twitter` will be deleted (restore to the defaults, as this is regular
-OSGi config) only if properties match: `oauth.provider.id` is set to
-`oauth.provider.id`.
+Properties of `OAuth Twitter` will be restored to default values if any of them
+was previously modified (explicitly set).
 
-`Promotion Manager` will be deleted (restored to defaults) regardless of its
-current settings because of `force` flag.
+`Promotion Manager` will behave as `OAuth Twitter` with one exception - it will
+happen on every Chef run due to `force` property.
 
 #### Factory OSGi configs
 
@@ -1184,6 +1171,7 @@ cq_osgi_config 'Custom Logger' do
       'com.example.custom2'
     ]
   )
+  unique_fields ['org.apache.sling.commons.log.file']
 
   action :create
 end
@@ -1203,6 +1191,7 @@ cq_osgi_config 'Job Queue' do
     'queue.priority' => 'MIN',
     'service.ranking' => 0
   )
+  unique_fields ['queue.name']
 
   action :delete
 end
@@ -1210,12 +1199,17 @@ end
 ```
 
 `Custom Logger` resource will create a new logger according to defined
-properties unless it is already present. There's no need to specify an UUID in
-resource definition.
+properties. `org.apache.sling.commons.log.file` is a virtual identifier of
+given OSGi config instance (specified by user). If instance with such "ID"
+already exists nothing happens. Otherwise a brand new configuration will be
+created.
+Please keep in mind that there's no need to specify any UUID in resource definition.
 
-`Job Queue` resource will delete a factory instance of
-`org.apache.sling.event.jobs.QueueConfiguration` that matches to defined
-properties. Nothing will happen when there's no such OSGi config.
+
+`Job Queue` resource will delete factory instance of
+`org.apache.sling.event.jobs.QueueConfiguration` that has `queue.name` set to
+`Granite Workflow Timeout Queue`. Presence of additional properties doesn't
+matter in this case and will be completely ignored.
 
 # cq_osgi_bundle
 
@@ -1538,8 +1532,6 @@ Exposes a resource for CQ/AEM user management. Supports:
 
 ## Usage
 
-More detailed examples are available [here](recipes/_users.rb).
-
 ```ruby
 cq_user 'admin' do
   username node['cq']['author']['credentials']['login']
@@ -1635,9 +1627,6 @@ CRUD operations on JCR nodes.
 </table>
 
 ## Usage
-
-More examples of `cq_jcr` are available in [this](recipes/_jcr_nodes.rb)
-recipe.
 
 ```ruby
 cq_jcr '/content/test_node' do
