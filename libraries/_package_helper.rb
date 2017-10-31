@@ -94,9 +94,7 @@ module Cq
       remote_file.mode('0644')
       remote_file.backup(false)
       if auth_header_required?(http_user, http_pass)
-        remote_file.headers(
-          'Authorization' => auth_header
-        )
+        remote_file.headers('Authorization' => auth_header)
       end
       remote_file.run_action(:create)
     end
