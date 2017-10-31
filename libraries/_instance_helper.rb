@@ -48,6 +48,10 @@ module Cq
       end
     end
 
+    def elapsed_time(start_time)
+      Time.now - start_time
+    end
+
     def start_guard(addr, input_params, timeout_params)
       start_time ||= Time.now
 
@@ -67,9 +71,9 @@ module Cq
         raise(Net::HTTPBadResponse, 'Wrong HTTP response')
       end
 
-      Chef::Log.info("CQ start time: #{Time.now - start_time} seconds")
+      Chef::Log.info("CQ start time: #{elapsed_time(start_time)} seconds")
     rescue
-      if (Time.now - start_time) <= timeout_params['timeout']
+      if elapsed_time(start_time) < timeout_params['timeout']
         sleep(timeout_params['sleep_time'])
         retry
       else
