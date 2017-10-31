@@ -68,8 +68,8 @@ class Chef
 
       def modify_user
         if password_update?(new_resource.my_password) ||
-           !profile_diff.empty? ||
-           status_update?
+            !profile_diff.empty? ||
+            status_update?
           converge_by("Update #{new_resource.id} user") do
             profile_update(
               new_resource.username,
@@ -158,9 +158,18 @@ class Chef
         end
       end
 
+      # TODO: move to misc helper module, as the same has been defined in
+      # package helper
+      def sleep_time(attempt)
+        1 + (2**attempt) + rand(2**attempt)
+      end
+
       def crx_query(user, pass)
-        req_path = '/bin/querybuilder.json'
-        query_params = {
+        max_attempts ||= 3
+        attempt ||= 0
+
+        req_path ||= '/bin/querybuilder.json'
+        query_params ||= {
           'path' => '/home/users',
           'type' => 'rep:User',
           'group.p.or' => 'true',
@@ -171,15 +180,32 @@ class Chef
           'p.limit' => '-1'
         }
 
-        http_resp = http_get(
-          new_resource.instance,
-          req_path,
-          user,
-          pass,
-          query_params
+        resp = http_get(
+          new_resource.instance, req_path, user, pass, query_params
         )
 
-        json_to_hash(http_resp.body)
+        unless resp.is_a?(Net::HTTPResponse)
+          raise(Net::HTTPUnknownResponse, 'Unknown HTTP response')
+        end
+
+        unless resp.code == '200'
+          raise(Net::HTTPBadResponse, "#{resp.code} error")
+        end
+      rescue => e
+        if (attempt += 1) <= max_attempts
+          t = sleep_time(attempt)
+          Chef::Log.error(
+            "[#{attempt}/#{max_attempts}] Retrying in #{t}s (reason: #{e})"
+          )
+          sleep(t)
+          retry
+        else
+          Chef::Application.fatal!(
+            "Giving up, user query failed after #{max_attempts} attempts!"
+          )
+        end
+      else
+        json_to_hash(resp.body)
       end
 
       def exist?(result_set)
