@@ -54,7 +54,9 @@ module Cq
     rescue => e
       if (attempt += 1) <= max_attempts
         t = sleep_time(attempt)
-        Chef::Log.error("#{e}, retrying #{attempt}/#{max_attempts} in #{t}s")
+        Chef::Log.error(
+          "[#{attempt}/#{max_attempts}] Retrying in #{t}s (reason: #{e})"
+        )
         sleep(t)
         retry
       else
