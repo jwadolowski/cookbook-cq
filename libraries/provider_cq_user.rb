@@ -195,7 +195,8 @@ class Chef
         if (attempt += 1) <= max_attempts
           t = sleep_time(attempt)
           Chef::Log.error(
-            "[#{attempt}/#{max_attempts}] Retrying in #{t}s (reason: #{e})"
+            "[#{attempt}/#{max_attempts}] Query Builder error, retrying in "\
+            "#{t}s (reason: #{e})"
           )
           sleep(t)
           retry
