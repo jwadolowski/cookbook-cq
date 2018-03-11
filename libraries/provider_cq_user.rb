@@ -166,7 +166,7 @@ class Chef
 
       def crx_query(user, pass)
         max_attempts ||= 3
-        attempt ||= 0
+        attempt ||= 1
 
         req_path ||= '/bin/querybuilder.json'
         query_params ||= {
