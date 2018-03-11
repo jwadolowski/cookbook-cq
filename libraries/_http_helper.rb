@@ -55,6 +55,21 @@ module Cq
       end
     end
 
+    def http_delete(addr, path, user, password, query = nil)
+      uri = parse_uri(addr + path, query)
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.read_timeout = node['cq']['http_read_timeout']
+      http_req = Net::HTTP::Delete.new(uri.request_uri)
+      http_req.basic_auth(user, password) if !user.nil? && !password.nil?
+
+      begin
+        http.request(http_req)
+      rescue => e
+        Chef::Log.error("Unable to send DELETE request: #{e}")
+      end
+    end
+
     def http_post(addr, path, user, password, payload, query = nil)
       uri = parse_uri(addr + path, query)
 
