@@ -29,31 +29,60 @@ module Cq
       Chef::Application.fatal!("Can't serialize #{str} to XML: #{e}")
     end
 
-    def package_list(addr, user, password)
+    def sleep_time(attempt)
+      1 + (2**attempt) + rand(2**attempt)
+    end
+
+    def raw_package_list(addr, user, password)
+      max_attempts ||= 3
+      attempt ||= 1
+
       resp = http_get(
-        addr,
-        '/crx/packmgr/service.jsp',
-        user,
-        password,
-        'cmd' => 'ls'
+        addr, '/crx/packmgr/service.jsp', user, password, 'cmd' => 'ls'
       )
+
+      unless resp.is_a?(Net::HTTPResponse)
+        raise(Net::HTTPUnknownResponse, 'Unknown HTTP response')
+      end
+
+      unless resp.code == '200'
+        raise(Net::HTTPBadResponse, "#{resp.code} error")
+      end
 
       Chef::Log.debug("Package list response code: #{resp.code}")
       Chef::Log.debug("Package list response body: #{resp.body}")
+    rescue => e
+      if (attempt += 1) <= max_attempts
+        t = sleep_time(attempt)
+        Chef::Log.error(
+          "[#{attempt}/#{max_attempts}] Retrying in #{t}s (reason: #{e})"
+        )
+        sleep(t)
+        retry
+      else
+        Chef::Application.fatal!(
+          "Unable to fetch package list after #{max_attempts} attempts"
+        )
+      end
+    else
+      resp.body
+    end
 
-      Chef::Application.fatal!(
-        "Available packages can't be fetched from AEM!\n"\
-        "Response code: #{resp.code}\n"\
-        "Response body:\n#{resp.body}"
-      ) if resp.code != '200'
+    def package_list(addr, user, password)
+      packages = REXML::XPath.first(
+        xmlify(raw_package_list(addr, user, password)),
+        '//packages'
+      )
 
-      xml = xmlify(resp.body)
-      packages = REXML::XPath.first(xml, '//packages')
-
-      Chef::Application.fatal!(
-        "Can't find <packages> element in #{xml}"
-      ) if packages.nil?
-
+      if packages.nil?
+        raise(
+          REXML::ParseException,
+          'Package Manager response does NOT contain <packages> element!'
+        )
+      end
+    rescue => e
+      Chef::Application.fatal!(e.message)
+    else
       packages
     end
 
@@ -64,9 +93,9 @@ module Cq
       remote_file.source(src)
       remote_file.mode('0644')
       remote_file.backup(false)
-      remote_file.headers(
-        'Authorization' => auth_header
-      ) if auth_header_required?(http_user, http_pass)
+      if auth_header_required?(http_user, http_pass)
+        remote_file.headers('Authorization' => auth_header)
+      end
       remote_file.run_action(:create)
     end
 
