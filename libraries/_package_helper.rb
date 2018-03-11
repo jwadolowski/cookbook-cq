@@ -35,7 +35,7 @@ module Cq
 
     def raw_package_list(addr, user, password)
       max_attempts ||= 3
-      attempt ||= 0
+      attempt ||= 1
 
       resp = http_get(
         addr, '/crx/packmgr/service.jsp', user, password, 'cmd' => 'ls'
