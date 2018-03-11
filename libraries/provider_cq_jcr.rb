@@ -38,20 +38,22 @@ class Chef
         Chef::Log.debug("Raw node info: #{@raw_node_info.body}")
         Chef::Log.debug("Exists? #{current_resource.exist}")
 
-        @current_resource.properties(
-          standardize_properties(
-            node_info(@raw_node_info)
+        if current_resource.exist
+          @current_resource.properties(
+            standardize_properties(node_info(@raw_node_info))
           )
-        ) if current_resource.exist
+        end
 
         Chef::Log.debug(
           'Standardized properties of current resource: ' +
           current_resource.properties.to_s
         )
 
-        @new_resource.properties(
-          standardize_properties(new_resource.properties)
-        ) if new_resource.properties
+        if new_resource.properties
+          @new_resource.properties(
+            standardize_properties(new_resource.properties)
+          )
+        end
 
         Chef::Log.debug(
           'Standardized properties of new resource: ' +
@@ -89,20 +91,67 @@ class Chef
         end
       end
 
-      def delete_node
-        payload = {
-          ':operation' => 'delete'
-        }
+      # TODO: move to misc helper module, as the same has been defined in
+      # package helper
+      def sleep_time(attempt)
+        1 + (2**attempt) + rand(2**attempt)
+      end
 
-        http_resp = http_multipart_post(
+      def delete_by_post
+        http_multipart_post(
           new_resource.instance,
           new_resource.path,
           new_resource.username,
           new_resource.password,
-          payload
+          ':operation' => 'delete'
         )
+      end
 
-        http_response_validator(http_resp)
+      def delete_by_delete
+        http_delete(
+          new_resource.instance,
+          new_resource.path,
+          new_resource.username,
+          new_resource.password
+        )
+      end
+
+      def delete_node
+        max_attempts ||= 3
+        attempt ||= 1
+        delete_fallback ||= false
+
+        resp = delete_fallback ? delete_by_delete : delete_by_post
+
+        unless resp.is_a?(Net::HTTPResponse)
+          raise(Net::HTTPUnknownResponse, 'Unknown HTTP response')
+        end
+
+        unless resp.code.start_with?('20')
+          raise(Net::HTTPBadResponse, "#{resp.code} error")
+        end
+      rescue => e
+        if (attempt += 1) <= max_attempts
+          t = sleep_time(attempt)
+          Chef::Log.error(
+            "[#{attempt}/#{max_attempts}] Unable to delete node, retrying in "\
+            "#{t}s (reason: #{e})"
+          )
+          sleep(t)
+          retry
+        elsif delete_fallback == false
+          Chef::Log.error(
+            "Delete by POST didn't work after #{max_attempts} attempts. "\
+            'Retrying using DELETE approach...'
+          )
+          delete_fallback = true
+          attempt = 1
+          retry
+        else
+          Chef::Application.fatal!(
+            "Giving up, unable to delete #{new_resource.path} node!"
+          )
+        end
       end
 
       def apply_update
@@ -183,12 +232,14 @@ class Chef
       end
 
       def http_response_validator(http_resp)
+        return unless http_resp.code.start_with?('20')
+
         Chef::Application.fatal!(
           "Something went wrong during operation on #{new_resource.path}\n"\
           "HTTP response code: #{http_resp.code}\n"\
           "HTTP response body: #{http_resp.body}\n"\
           'Please check error.log file to get more info.'
-        ) unless http_resp.code.start_with?('20')
+        )
       end
 
       def regular_diff
@@ -210,14 +261,14 @@ class Chef
       # slingpostservlet-servlets-post.html#automatic-property-values-last-
       # modified-and-created-by
       def auto_properties
-        %w(
+        %w[
           jcr:created
           jcr:createdBy
           jcr:lastModified
           jcr:lastModifiedBy
           cq:lastModified
           cq:lastModifiedBy
-        )
+        ]
       end
 
       # Get protected properties of given JCR node type
@@ -240,17 +291,17 @@ class Chef
         # There is no 'rep:protectedProperties' element in CQ 5.6.1 under
         # /jcr:system/jcr:nodeTypes/<type>.json but jcr:primaryType can be
         # always assumed as protected
-        protected_properties = [
-          'jcr:primaryType'
-        ] if protected_properties.nil?
+        protected_properties = ['jcr:primaryType'] if protected_properties.nil?
 
         # Even though jcr:primaryType is protected for most types (if not
         # all) it can be updated w/o any issues. It gets deleted from
         # protected properties only if it's explicitly specified in
         # new_resource properties
-        protected_properties = protected_properties.delete_if do |k, _v|
-          k == 'jcr:primaryType'
-        end if new_resource.properties.include?('jcr:primaryType')
+        if new_resource.properties.include?('jcr:primaryType')
+          protected_properties = protected_properties.delete_if do |k, _v|
+            k == 'jcr:primaryType'
+          end
+        end
 
         protected_properties
       end
