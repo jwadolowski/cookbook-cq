@@ -232,7 +232,7 @@ class Chef
       end
 
       def http_response_validator(http_resp)
-        return unless http_resp.code.start_with?('20')
+        return if http_resp.code.start_with?('20')
 
         Chef::Application.fatal!(
           "Something went wrong during operation on #{new_resource.path}\n"\
