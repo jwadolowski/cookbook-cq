@@ -79,6 +79,43 @@ module Cq
       Chef::Application.fatal!("Can't extract content out of JAR file: #{e}")
     end
 
+    def jar_contents(jar)
+      cmd_str = "unzip -l #{jar}"
+      Chef::Log.debug("Unzip command: #{cmd_str}")
+
+      cmd = Mixlib::ShellOut.new(cmd_str)
+      cmd.run_command
+      cmd.error!
+
+      cmd.stdout
+    rescue => e
+      Chef::Application.fatal!("Can't list JAR file contents: #{e}")
+    end
+
+    def crypto_jar_internal_path(jar)
+      libs = jar_contents(jar).scan(
+        %r{
+          (?<=\ )resources\/.*
+          (?<=\/[0-9])\/
+          com.adobe.granite.crypto-[0-9]+\.[0-9]+\.[0-9]+\.jar$
+        }x
+      )
+
+      Chef::Application.fatal!(
+        "Found #{jars}, but single com.adobe.granite.crypto-x.y.z.jar is "\
+        'expected. Aborting!'
+      ) if libs.length != 1
+
+      libs.first
+    end
+
+    def crypto_jar_system_path(dir)
+      ::Dir.glob("#{dir}/*").select do |f|
+        ::File.file?(f) &&
+          f.match(/com.adobe.granite.crypto-[0-9]+\.[0-9]+\.[0-9]+\.jar/)
+      end.first
+    end
+
     # Source:
     # * http://stackoverflow.com/a/1096159/6802186
     # * http://stackoverflow.com/a/27123/6802186
@@ -198,34 +235,23 @@ module Cq
         ) if tmp_files.length != 1
         standalone_jar = tmp_files.first
 
-        # Extract com.adobe.granite.crypto JAR file from standalone one
+        # Extract com.adobe.granite.crypto-x.y.z.jar file from the standalone
+        # JAR file
         extract_jar(
           standalone_jar,
-          'resources/install/0/com.adobe.granite.crypto*.jar',
+          crypto_jar_internal_path(standalone_jar),
           crypto_aem_dir
         )
 
         # Remove standalone JAR, as it is no longer needed
         ::File.delete(standalone_jar)
 
-        # Find out filename of com.adobe.granite.crypto file (varies by AEM
-        # version)
-        granite_crypto_name = ::Dir.entries(
+        # Extract libs out of com.adobe.granite.crypto-x.y.z.jar file
+        extract_jar(
+          crypto_jar_system_path(crypto_aem_dir),
+          'META-INF/lib/*',
           crypto_aem_dir
-        ).find_all { |f| f.match(/com\.adobe\.granite\.crypto.+/) }
-
-        Chef::Application.fatal!(
-          'Expected single com.adobe.granite.crypto JAR file, but found: '\
-          "#{granite_crypto_name}. It's probably a bug in CQ cookbook"
-        ) if granite_crypto_name.length != 1
-
-        granite_crypto_jar = ::File.join(
-          crypto_aem_dir,
-          granite_crypto_name.first
         )
-
-        # Extract libs out of com.adobe.granite.crypto JAR file
-        extract_jar(granite_crypto_jar, 'META-INF/lib/*', crypto_aem_dir)
       end
 
       Chef::Log.debug('All AEM crypto libraries are in place')
