@@ -304,6 +304,8 @@ module Cq
       Chef::Application.fatal!("Compilation error: #{e}")
     end
 
+    # TODO: move to misc helper module, as the same has been defined in
+    # package helper
     def sleep_time(attempt)
       1 + (2**attempt) + rand(2**attempt)
     end
