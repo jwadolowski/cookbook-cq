@@ -343,6 +343,8 @@ module Cq
     # Use com.adobe.granite.crypto.file information to retrive the key
     #
     # Compatible with AEM 6.3+
+    #
+    # http://www.nateyolles.com/blog/2017/05/sharing-crypto-keys-in-aem-63
     def find_master_key(instance, username, password)
       bundle_name = 'com.adobe.granite.crypto.file'
       bundle_info = bundle_info(instance, username, password, bundle_name)
