@@ -18,10 +18,14 @@
 #
 
 require_relative '_http_helper'
+require_relative '_osgi_bundle_helper'
+require_relative '_osgi_status_helper'
 
 module Cq
   module CryptoHelper
     include Cq::HttpHelper
+    include Cq::OsgiBundleHelper
+    include Cq::OsgiStatusHelper
 
     def crypto_root_dir
       ::File.join(Chef::Config[:file_cache_path], 'crypto')
@@ -300,22 +304,82 @@ module Cq
       Chef::Application.fatal!("Compilation error: #{e}")
     end
 
-    # Downloads master key from AEM and saves it into crypto tmp directory
-    #
-    # Returns key name
-    def load_master_key(instance, username, password)
-      http_resp = http_get(
+    def sleep_time(attempt)
+      1 + (2**attempt) + rand(2**attempt)
+    end
+
+    # Download master key file directly from the instance (AEM < 6.3)
+    def download_master_key(instance, username, password)
+      max_attempts ||= 3
+      attempt ||= 1
+
+      resp = http_get(
         instance,
         '/etc/key/master',
         username,
         password
       )
 
-      Chef::Application.fatal!(
-        "Can't download master key! Response code: #{http_resp.code}"
-      ) if http_resp.code != '200'
+      unless resp.is_a?(Net::HTTPResponse)
+        raise(Net::HTTPUnknownResponse, 'Unknown HTTP response')
+      end
 
-      save_key(http_resp.body)
+      # Return raw HTTP response, so status code can be evaluated
+      resp
+    rescue => e
+      if (attempt += 1) <= max_attempts
+        t = sleep_time(attempt)
+        Chef::Log.error(
+          "[#{attempt}/#{max_attempts}] Unable to download master key, "\
+          "retrying in #{t}s (reason: #{e})"
+        )
+        sleep(t)
+        retry
+      end
+    end
+
+    # Use com.adobe.granite.crypto.file information to retrive the key
+    #
+    # Compatible with AEM 6.3+
+    def find_master_key(instance, username, password)
+      bundle_name = 'com.adobe.granite.crypto.file'
+      bundle_info = bundle_info(instance, username, password, bundle_name)
+      bundle_id = bundle_info['id']
+
+      Chef::Log.debug("com.adobe.granite.crypto.file bundle ID: #{bundle_id}")
+
+      root_dir = system_property(
+        instance,
+        username,
+        password,
+        'user.dir'
+      )
+
+      key_path = ::File.join(
+        root_dir,
+        "/crx-quickstart/launchpad/felix/bundle#{bundle_id}/data/master"
+      )
+
+      Chef::Log.debug("Master key system path: #{key_path}")
+
+      if ::File.file?(key_path)
+        ::File.read(key_path)
+      else
+        Chef::Application.fatal!("#{key_path} doesn't exist!")
+      end
+    end
+
+    # Retrieves master key from AEM and saves it into crypto tmp directory
+    def load_master_key(instance, username, password)
+      key_resp = download_master_key(instance, username, password)
+      key_content =
+        if key_resp.code == '200'
+          key_resp.body
+        else
+          find_master_key(instance, username, password)
+        end
+
+      save_key(key_content)
     end
 
     def save_key(content)
