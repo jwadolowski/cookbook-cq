@@ -28,7 +28,7 @@ module Cq
         'same_state_barrier' => same_state_barrier,
         'error_state_barrier' => error_state_barrier,
         'max_attempts' => max_attempts,
-        'sleep_time' => sleep_time
+        'sleep_time' => sleep_time,
       }
     end
 

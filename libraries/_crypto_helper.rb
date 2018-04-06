@@ -54,7 +54,7 @@ module Cq
         '.',
         crypto_tmp_dir,
         ::File.join(crypto_aem_dir, '*'),
-        ::File.join(crypto_log_dir, '*')
+        ::File.join(crypto_log_dir, '*'),
       ].join(':')
     end
 
@@ -143,7 +143,7 @@ module Cq
         '49.0' => '5',
         '50.0' => '6',
         '51.0' => '7',
-        '52.0' => '8'
+        '52.0' => '8',
       }
 
       version_map[major_minor]
@@ -154,7 +154,7 @@ module Cq
       cmd_str = "javap -cp '#{crypto_classpath}' -verbose #{filename}"
       Chef::Log.debug("javap command: #{cmd_str}")
 
-      cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
+      cmd = Mixlib::ShellOut.new(cmd_str, cwd: crypto_root_dir)
       cmd.run_command
       cmd.error!
 
@@ -206,7 +206,7 @@ module Cq
       dirs = [
         crypto_aem_dir,
         crypto_log_dir,
-        crypto_tmp_dir
+        crypto_tmp_dir,
       ]
 
       dirs.each do |d|
@@ -295,7 +295,7 @@ module Cq
       cmd_str = "javac -cp '#{crypto_classpath}' Decrypt.java"
       Chef::Log.debug("Compilation command: #{cmd_str}")
 
-      cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
+      cmd = Mixlib::ShellOut.new(cmd_str, cwd: crypto_root_dir)
       cmd.run_command
       cmd.error!
 
@@ -430,7 +430,7 @@ module Cq
       p = entropy_builder
       Chef::Log.debug("Entropy builder PID: #{p}")
 
-      cmd = Mixlib::ShellOut.new(cmd_str, :cwd => crypto_root_dir)
+      cmd = Mixlib::ShellOut.new(cmd_str, cwd: crypto_root_dir)
       cmd.run_command
 
       Process.kill('INT', p)
