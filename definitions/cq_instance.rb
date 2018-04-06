@@ -19,7 +19,7 @@
 #
 
 define :cq_instance,
-       :id => nil do
+       id: nil do
   # Helpers
   # ---------------------------------------------------------------------------
   local_id = params[:id]
@@ -107,15 +107,15 @@ define :cq_instance,
     cookbook node['cq']['init_template_cookbook']
     source 'cq.init.erb'
     variables(
-      :daemon_name => daemon_name,
-      :full_name => "Adobe CQ #{node['cq']['version']} " +
+      daemon_name: daemon_name,
+      full_name: "Adobe CQ #{node['cq']['version']} " +
                     local_id.to_s.capitalize,
-      :conf_file => "#{cq_instance_conf_dir(
+      conf_file: "#{cq_instance_conf_dir(
         node['cq']['home_dir'],
         local_id
       )}/#{daemon_name}.conf",
-      :kill_delay => node['cq']['service']['kill_delay'],
-      :restart_sleep => node['cq']['service']['restart_sleep']
+      kill_delay: node['cq']['service']['kill_delay'],
+      restart_sleep: node['cq']['service']['restart_sleep']
     )
   end
 
@@ -144,28 +144,28 @@ define :cq_instance,
     cookbook node['cq']['conf_template_cookbook']
     source 'cq.conf.erb'
     variables(
-      lazy {
+      lazy do
         {
-          :port => node['cq'][local_id]['port'],
-          :jmx_ip => node['cq'][local_id]['jmx_ip'],
-          :jmx_port => node['cq'][local_id]['jmx_port'],
-          :debug_ip => node['cq'][local_id]['debug_ip'],
-          :debug_port => node['cq'][local_id]['debug_port'],
-          :instance_home => instance_home,
-          :run_mode => node['cq'][local_id]['run_mode'],
-          :min_heap => node['cq'][local_id]['jvm']['min_heap'],
-          :max_heap => node['cq'][local_id]['jvm']['max_heap'],
-          :max_perm_size => node['cq'][local_id]['jvm']['max_perm_size'],
-          :code_cache => node['cq'][local_id]['jvm']['code_cache_size'],
-          :jvm_general_opts => node['cq'][local_id]['jvm']['general_opts'],
-          :jvm_code_cache_opts => node['cq'][local_id]['jvm']['code_cache_opts'],
-          :jvm_gc_opts => node['cq'][local_id]['jvm']['gc_opts'],
-          :jvm_jmx_opts => node['cq'][local_id]['jvm']['jmx_opts'],
-          :jvm_debug_opts => node['cq'][local_id]['jvm']['debug_opts'],
-          :jvm_crx_opts => node['cq'][local_id]['jvm']['crx_opts'],
-          :jvm_extra_opts => node['cq'][local_id]['jvm']['extra_opts']
+          port: node['cq'][local_id]['port'],
+          jmx_ip: node['cq'][local_id]['jmx_ip'],
+          jmx_port: node['cq'][local_id]['jmx_port'],
+          debug_ip: node['cq'][local_id]['debug_ip'],
+          debug_port: node['cq'][local_id]['debug_port'],
+          instance_home: instance_home,
+          run_mode: node['cq'][local_id]['run_mode'],
+          min_heap: node['cq'][local_id]['jvm']['min_heap'],
+          max_heap: node['cq'][local_id]['jvm']['max_heap'],
+          max_perm_size: node['cq'][local_id]['jvm']['max_perm_size'],
+          code_cache: node['cq'][local_id]['jvm']['code_cache_size'],
+          jvm_general_opts: node['cq'][local_id]['jvm']['general_opts'],
+          jvm_code_cache_opts: node['cq'][local_id]['jvm']['code_cache_opts'],
+          jvm_gc_opts: node['cq'][local_id]['jvm']['gc_opts'],
+          jvm_jmx_opts: node['cq'][local_id]['jvm']['jmx_opts'],
+          jvm_debug_opts: node['cq'][local_id]['jvm']['debug_opts'],
+          jvm_crx_opts: node['cq'][local_id]['jvm']['crx_opts'],
+          jvm_extra_opts: node['cq'][local_id]['jvm']['extra_opts'],
         }
-      }
+      end
     )
 
     notifies :restart,
@@ -181,7 +181,7 @@ define :cq_instance,
   end
 
   service daemon_name do
-    supports :status => true, :restart => true
+    supports status: true, restart: true
     action :start
 
     notifies :run, "ruby_block[cq-#{local_id}-start-guard]", :immediately
