@@ -43,6 +43,19 @@ namespace 'git' do
 end
 
 # -----------------------------------------------------------------------------
+# Style
+# -----------------------------------------------------------------------------
+namespace 'style' do
+  require 'cookstyle'
+  require 'rubocop/rake_task'
+  require 'foodcritic'
+
+  RuboCop::RakeTask.new(:cookstyle)
+
+  FoodCritic::Rake::LintTask.new(:foodcritic)
+end
+
+# -----------------------------------------------------------------------------
 # Main
 # -----------------------------------------------------------------------------
 desc 'Release new cookbook version'
