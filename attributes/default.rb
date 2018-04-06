@@ -49,7 +49,7 @@ default['cq']['crypto']['log_libs']['data'] = {
   '/maven2/org/slf4j/slf4j-api/1.7.12/slf4j-api-1.7.12.jar' =>
     '0aee9a77a4940d72932b0d0d9557793f872e66a03f598e473f45e7efecdccf99',
   '/maven2/org/slf4j/slf4j-simple/1.7.12/slf4j-simple-1.7.12.jar' =>
-    'ff15e390d71e9852c296fb63986995609dc8c6681f9eff45ef65281a94649acd'
+    'ff15e390d71e9852c296fb63986995609dc8c6681f9eff45ef65281a94649acd',
 }
 
 # Java attributes
