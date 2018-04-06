@@ -1,6 +1,6 @@
-agent_path = "/etc/replication/agents.author/publish100"
+agent_path = '/etc/replication/agents.author/publish100'
 agent_conf_path = agent_path + '/jcr:content'
-domain = "publish100.local"
+domain = 'publish100.local'
 port = node['cq']['publish']['port']
 transport_uri =
   "http://#{domain}:#{port}/bin/receive?sling:authRequestLogin=1"
