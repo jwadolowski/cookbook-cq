@@ -50,7 +50,7 @@ class Chef
           :install,
           :deploy,
           :uninstall,
-          :delete
+          :delete,
         ]
         @action = :nothing
 
@@ -71,63 +71,63 @@ class Chef
       end
 
       def name(arg = nil)
-        set_or_return(:name, arg, :kind_of => String)
+        set_or_return(:name, arg, kind_of: String)
       end
 
       def username(arg = nil)
-        set_or_return(:username, arg, :kind_of => String)
+        set_or_return(:username, arg, kind_of: String)
       end
 
       def password(arg = nil)
-        set_or_return(:password, arg, :kind_of => String)
+        set_or_return(:password, arg, kind_of: String)
       end
 
       def instance(arg = nil)
-        set_or_return(:instance, arg, :kind_of => String)
+        set_or_return(:instance, arg, kind_of: String)
       end
 
       def source(arg = nil)
-        set_or_return(:source, arg, :kind_of => String)
+        set_or_return(:source, arg, kind_of: String)
       end
 
       def http_user(arg = nil)
-        set_or_return(:http_user, arg, :kind_of => String)
+        set_or_return(:http_user, arg, kind_of: String)
       end
 
       def http_pass(arg = nil)
-        set_or_return(:http_pass, arg, :kind_of => String)
+        set_or_return(:http_pass, arg, kind_of: String)
       end
 
       def recursive_install(arg = nil)
         set_or_return(
           :recursive_install,
           arg,
-          :kind_of => [TrueClass, FalseClass]
+          kind_of: [TrueClass, FalseClass]
         )
       end
 
       def rescue_mode(arg = nil)
-        set_or_return(:rescue_mode, arg, :kind_of => [TrueClass, FalseClass])
+        set_or_return(:rescue_mode, arg, kind_of: [TrueClass, FalseClass])
       end
 
       def checksum(arg = nil)
-        set_or_return(:checksum, arg, :kind_of => String)
+        set_or_return(:checksum, arg, kind_of: String)
       end
 
       def same_state_barrier(arg = nil)
-        set_or_return(:same_state_barrier, arg, :kind_of => Integer)
+        set_or_return(:same_state_barrier, arg, kind_of: Integer)
       end
 
       def error_state_barrier(arg = nil)
-        set_or_return(:error_state_barrier, arg, :kind_of => Integer)
+        set_or_return(:error_state_barrier, arg, kind_of: Integer)
       end
 
       def max_attempts(arg = nil)
-        set_or_return(:max_attempts, arg, :kind_of => Integer)
+        set_or_return(:max_attempts, arg, kind_of: Integer)
       end
 
       def sleep_time(arg = nil)
-        set_or_return(:sleep_time, arg, :kind_of => Integer)
+        set_or_return(:sleep_time, arg, kind_of: Integer)
       end
     end
   end
