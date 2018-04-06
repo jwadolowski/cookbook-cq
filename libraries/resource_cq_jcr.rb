@@ -41,31 +41,31 @@ class Chef
       end
 
       def path(arg = nil)
-        set_or_return(:path, arg, :kind_of => String)
+        set_or_return(:path, arg, kind_of: String)
       end
 
       def username(arg = nil)
-        set_or_return(:username, arg, :kind_of => String)
+        set_or_return(:username, arg, kind_of: String)
       end
 
       def password(arg = nil)
-        set_or_return(:password, arg, :kind_of => String)
+        set_or_return(:password, arg, kind_of: String)
       end
 
       def instance(arg = nil)
-        set_or_return(:instance, arg, :kind_of => String)
+        set_or_return(:instance, arg, kind_of: String)
       end
 
       def properties(arg = nil)
-        set_or_return(:properties, arg, :kind_of => Hash)
+        set_or_return(:properties, arg, kind_of: Hash)
       end
 
       def append(arg = nil)
-        set_or_return(:append, arg, :kind_of => [TrueClass, FalseClass])
+        set_or_return(:append, arg, kind_of: [TrueClass, FalseClass])
       end
 
       def encrypted_fields(arg = nil)
-        set_or_return(:encrypted_fields, arg, :kind_of => Array)
+        set_or_return(:encrypted_fields, arg, kind_of: Array)
       end
     end
   end

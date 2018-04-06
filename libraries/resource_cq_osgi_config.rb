@@ -56,77 +56,77 @@ class Chef
       end
 
       def pid(arg = nil)
-        set_or_return(:pid, arg, :kind_of => String)
+        set_or_return(:pid, arg, kind_of: String)
       end
 
       def username(arg = nil)
-        set_or_return(:username, arg, :kind_of => String)
+        set_or_return(:username, arg, kind_of: String)
       end
 
       def password(arg = nil)
-        set_or_return(:password, arg, :kind_of => String)
+        set_or_return(:password, arg, kind_of: String)
       end
 
       def instance(arg = nil)
-        set_or_return(:instance, arg, :kind_of => String)
+        set_or_return(:instance, arg, kind_of: String)
       end
 
       def factory_pid(arg = nil)
-        set_or_return(:factory_pid, arg, :kind_of => String)
+        set_or_return(:factory_pid, arg, kind_of: String)
       end
 
       def properties(arg = nil)
-        set_or_return(:properties, arg, :kind_of => Hash)
+        set_or_return(:properties, arg, kind_of: Hash)
       end
 
       def append(arg = nil)
-        set_or_return(:append, arg, :kind_of => [TrueClass, FalseClass])
+        set_or_return(:append, arg, kind_of: [TrueClass, FalseClass])
       end
 
       def apply_all(arg = nil)
-        set_or_return(:apply_all, arg, :kind_of => [TrueClass, FalseClass])
+        set_or_return(:apply_all, arg, kind_of: [TrueClass, FalseClass])
       end
 
       def include_missing(arg = nil)
         set_or_return(
-          :include_missing, arg, :kind_of => [TrueClass, FalseClass]
+          :include_missing, arg, kind_of: [TrueClass, FalseClass]
         )
       end
 
       def unique_fields(arg = nil)
-        set_or_return(:unique_fields, arg, :kind_of => Array)
+        set_or_return(:unique_fields, arg, kind_of: Array)
       end
 
       def count(arg = nil)
-        set_or_return(:count, arg, :kind_of => Fixnum)
+        set_or_return(:count, arg, kind_of: Integer)
       end
 
       def enforce_count(arg = nil)
-        set_or_return(:enforce_count, arg, :kind_of => [TrueClass, FalseClass])
+        set_or_return(:enforce_count, arg, kind_of: [TrueClass, FalseClass])
       end
 
       def force(arg = nil)
-        set_or_return(:force, arg, :kind_of => [TrueClass, FalseClass])
+        set_or_return(:force, arg, kind_of: [TrueClass, FalseClass])
       end
 
       def rescue_mode(arg = nil)
-        set_or_return(:rescue_mode, arg, :kind_of => [TrueClass, FalseClass])
+        set_or_return(:rescue_mode, arg, kind_of: [TrueClass, FalseClass])
       end
 
       def same_state_barrier(arg = nil)
-        set_or_return(:same_state_barrier, arg, :kind_of => Integer)
+        set_or_return(:same_state_barrier, arg, kind_of: Integer)
       end
 
       def error_state_barrier(arg = nil)
-        set_or_return(:error_state_barrier, arg, :kind_of => Integer)
+        set_or_return(:error_state_barrier, arg, kind_of: Integer)
       end
 
       def max_attempts(arg = nil)
-        set_or_return(:max_attempts, arg, :kind_of => Integer)
+        set_or_return(:max_attempts, arg, kind_of: Integer)
       end
 
       def sleep_time(arg = nil)
-        set_or_return(:sleep_time, arg, :kind_of => Integer)
+        set_or_return(:sleep_time, arg, kind_of: Integer)
       end
     end
   end
