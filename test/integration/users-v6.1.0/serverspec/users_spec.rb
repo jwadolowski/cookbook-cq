@@ -19,7 +19,7 @@ describe 'Admin user' do
     '/querybuilder.json?path=%2fhome%2fusers&property=rep%3aprincipalName&'\
     'property.value=admin\' | python -mjson.tool | '\
     'grep -oP \'(?<="path":\ ")([^"])+\''
-    @admin_path = `#{cmd_str}`.gsub(/\n/, '')
+    @admin_path = `#{cmd_str}`.delete("\n")
   end
 
   it "has password set to 'passw0rd'" do

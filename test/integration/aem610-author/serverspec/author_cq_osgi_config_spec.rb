@@ -158,7 +158,7 @@ describe 'org.apache.sling.engine.impl.SlingMainServlet' do
         'org.apache.sling.engine.impl.SlingMainServlet',
         'sling.serverinfo'
       )
-    ).to eq("")
+    ).to eq('')
   end
 
   it 'sling.serverinfo is explicitly set' do
@@ -301,7 +301,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'scheduler.period'
       )
-    ).to eq("5")
+    ).to eq('5')
   end
 
   it 'scheduler.period is not explicitly set' do
@@ -319,7 +319,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'scheduler.concurrent'
       )
-    ).to eq("false")
+    ).to eq('false')
   end
 
   it 'scheduler.concurrent is not explicitly set' do
@@ -411,7 +411,7 @@ describe 'OSGi com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl' do
         'com.day.cq.rewriter.linkchecker.impl.LinkCheckerImpl',
         'service.special_link_patterns'
       )
-    ).to eq("")
+    ).to eq('')
   end
 
   it 'service.special_link_patterns is not explicitly set' do
@@ -606,7 +606,7 @@ describe 'org.apache.felix.eventadmin.impl.EventAdmin' do
         'com.day*',
         'com.example*',
         'org.apache.felix*',
-        'org.apache.sling*'
+        'org.apache.sling*',
       ]
     )
   end

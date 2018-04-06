@@ -193,7 +193,7 @@ class Chef
 
       def local_path
         ::File.join(
-         Chef::Config[:file_cache_path],
+          Chef::Config[:file_cache_path],
           uri_basename(new_resource.source)
         )
       end

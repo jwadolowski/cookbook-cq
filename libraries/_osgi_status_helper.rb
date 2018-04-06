@@ -57,7 +57,7 @@ module Cq
       # Covert raw txt into array of key=value strings
       arr = raw_system_properties(
         addr, user, password
-      ).split("\n").select {|l| l.match(/=/) }
+      ).split("\n").select { |l| l.match(/=/) }
 
       # Convert array into a hash
       properties = arr.map do |e|

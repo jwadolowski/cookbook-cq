@@ -213,7 +213,7 @@ cq_osgi_config 'DPSPagesUpdateHandler' do
   properties(
     'cq.pagesupdatehandler.imageresourcetypes' => [
       'foundation/components/image',
-      'foundation/components/test'
+      'foundation/components/test',
     ]
   )
 
@@ -290,7 +290,7 @@ cq_osgi_config 'Scene7AssetMimeTypeServiceImpl' do
   properties(
     'cq.dam.scene7.assetmimetypeservice.mapping' => [
       'Image=image/jpeg',
-      'Image=image/png'
+      'Image=image/png',
     ]
   )
   append true
@@ -581,7 +581,7 @@ cq_osgi_config 'ExplainQueryServlet' do
   properties(
     'log.logger-names' => [
       'org.apache.jackrabbit.oak.query',
-      'org.apache.jackrabbit.oak.plugins.index'
+      'org.apache.jackrabbit.oak.plugins.index',
     ],
     'log.pattern' => '%msg%n',
     'log.message-count-limit' => 150,
@@ -813,12 +813,11 @@ cq_osgi_config 'com.day.cq.mcm.impl.MCMConfiguration' do
   properties(
     'experience.indirection' => [
       'geometrixx/components/newsletterpage',
-      'mcm/components/newsletter/page'
+      'mcm/components/newsletter/page',
     ],
-    'touchpoint.indirection' => [
-      'exampleGeometrixxAddedComp',
-      'exampleMCMSuperTouchpoint'
-    ],
+    'touchpoint.indirection' => %w(
+      exampleGeometrixxAddedComp
+      exampleMCMSuperTouchpoint),
     'extraProperty' => %w(a b c)
   )
   count 7
@@ -938,7 +937,7 @@ cq_osgi_config 'org.apache.sling.hc.core.impl.CompositeHealthCheck' do
   password node['cq']['author']['credentials']['password']
   instance "http://localhost:#{node['cq']['author']['port']}"
   properties(
-    'hc.name' => 'Security Checks',
+    'hc.name' => 'Security Checks'
   )
   unique_fields ['hc.name']
 

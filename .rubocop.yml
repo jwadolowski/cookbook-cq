@@ -1,28 +1,6 @@
-AllCops:
+Metrics/LineLength:
+  Enabled: true
+  Max: 80
+  IgnoredPatterns: ['(\A|\s)#']
   Exclude:
     - 'Berksfile'
-    - 'metadata.rb'
-
-Encoding:
-  Enabled: false
-
-LineLength:
-  Max: 80
-
-HashSyntax:
-  EnforcedStyle: hash_rockets
-
-Documentation:
-  Enabled: false
-
-ClassLength:
-  Enabled: false
-
-AbcSize:
-  Max: 30
-
-MethodLength:
-  Max: 30
-
-ParameterLists:
-  Enabled: false

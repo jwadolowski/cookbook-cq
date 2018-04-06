@@ -261,14 +261,14 @@ class Chef
       # slingpostservlet-servlets-post.html#automatic-property-values-last-
       # modified-and-created-by
       def auto_properties
-        %w[
+        %w(
           jcr:created
           jcr:createdBy
           jcr:lastModified
           jcr:lastModifiedBy
           cq:lastModified
           cq:lastModifiedBy
-        ]
+        )
       end
 
       # Get protected properties of given JCR node type
@@ -314,7 +314,7 @@ class Chef
       def best_primary_type
         primary_types = [
           new_resource.properties['jcr:primaryType'],
-          current_resource.properties['jcr:primaryType']
+          current_resource.properties['jcr:primaryType'],
         ]
 
         primary_types.each do |t|

@@ -344,8 +344,8 @@ class Chef
 
       # Get all modified properties (non default ones)
       def customized_properties
-        current_resource.info['properties'].select do
-          |_k, v| v['is_set'] == true
+        current_resource.info['properties'].select do |_k, v|
+          v['is_set'] == true
         end
       end
 
@@ -420,15 +420,13 @@ class Chef
         instances.uniq { |c| property_checksum(c) }.length == 1
       end
 
-      # rubocop:disable Metrics/AbcSize
       def align_same_property_instances(candidates, diff)
-        case
-        when candidates.length == new_resource.count
+        if candidates.length == new_resource.count
           update_existing_instances(candidates, diff)
-        when candidates.length < new_resource.count
+        elsif candidates.length < new_resource.count
           update_existing_instances(candidates, diff)
           create_missing_instances(new_resource.count - candidates.length)
-        when candidates.length > new_resource.count
+        elsif candidates.length > new_resource.count
           if new_resource.enforce_count
             count = candidates.length - new_resource.count
 
@@ -444,16 +442,13 @@ class Chef
           end
         end
       end
-      # rubocop:enable Metrics/AbcSize
 
-      # rubocop:disable Metrics/AbcSize
       def zero_score_factories(copies)
-        case
-        when copies.length == new_resource.count
+        if copies.length == new_resource.count
           Chef::Log.info("#{new_resource.factory_pid} is already configured")
-        when copies.length < new_resource.count
+        elsif copies.length < new_resource.count
           create_missing_instances(new_resource.count - copies.length)
-        when copies.length > new_resource.count
+        elsif copies.length > new_resource.count
           if new_resource.enforce_count
             count = copies.length - new_resource.count
             delete_redundant_instances(copies[0..count - 1])
@@ -467,7 +462,6 @@ class Chef
           end
         end
       end
-      # rubocop:enable Metrics/AbcSize
 
       def non_zero_score_factories(rank)
         # Get lowest score instances out of non-zero score ones

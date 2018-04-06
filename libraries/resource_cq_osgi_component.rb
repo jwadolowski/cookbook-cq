@@ -44,39 +44,39 @@ class Chef
       end
 
       def pid(arg = nil)
-        set_or_return(:pid, arg, :kind_of => String)
+        set_or_return(:pid, arg, kind_of: String)
       end
 
       def username(arg = nil)
-        set_or_return(:username, arg, :kind_of => String)
+        set_or_return(:username, arg, kind_of: String)
       end
 
       def password(arg = nil)
-        set_or_return(:password, arg, :kind_of => String)
+        set_or_return(:password, arg, kind_of: String)
       end
 
       def instance(arg = nil)
-        set_or_return(:instance, arg, :kind_of => String)
+        set_or_return(:instance, arg, kind_of: String)
       end
 
       def rescue_mode(arg = nil)
-        set_or_return(:rescue_mode, arg, :kind_of => [TrueClass, FalseClass])
+        set_or_return(:rescue_mode, arg, kind_of: [TrueClass, FalseClass])
       end
 
       def same_state_barrier(arg = nil)
-        set_or_return(:same_state_barrier, arg, :kind_of => Integer)
+        set_or_return(:same_state_barrier, arg, kind_of: Integer)
       end
 
       def error_state_barrier(arg = nil)
-        set_or_return(:error_state_barrier, arg, :kind_of => Integer)
+        set_or_return(:error_state_barrier, arg, kind_of: Integer)
       end
 
       def max_attempts(arg = nil)
-        set_or_return(:max_attempts, arg, :kind_of => Integer)
+        set_or_return(:max_attempts, arg, kind_of: Integer)
       end
 
       def sleep_time(arg = nil)
-        set_or_return(:sleep_time, arg, :kind_of => Integer)
+        set_or_return(:sleep_time, arg, kind_of: Integer)
       end
     end
   end
