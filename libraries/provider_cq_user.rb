@@ -68,8 +68,8 @@ class Chef
 
       def modify_user
         if password_update?(new_resource.my_password) ||
-            !profile_diff.empty? ||
-            status_update?
+           !profile_diff.empty? ||
+           status_update?
           converge_by("Update #{new_resource.id} user") do
             profile_update(
               new_resource.username,
@@ -93,7 +93,7 @@ class Chef
             'j_password' => p,
             'j_workspace' => 'crx.default',
             'j_validate' => 'true',
-            '_charset_' => 'utf-8'
+            '_charset_' => 'utf-8',
           }
 
           http_resp = http_post(
@@ -177,7 +177,7 @@ class Chef
           'group.1_property.value' => new_resource.id,
           'group.2_property' => 'rep:principalName',
           'group.2_property_value' => new_resource.id,
-          'p.limit' => '-1'
+          'p.limit' => '-1',
         }
 
         resp = http_get(
@@ -332,7 +332,7 @@ class Chef
           'phoneNumber' => 'phone_number',
           'jobTitle' => 'job_title',
           'postalCode' => 'postal_code',
-          'aboutMe' => 'about'
+          'aboutMe' => 'about',
         }
 
         profile.keys.each do |k|
@@ -364,7 +364,7 @@ class Chef
           'country' => new_resource.country,
           'state' => new_resource.state,
           'gender' => new_resource.gender,
-          'about' => new_resource.about
+          'about' => new_resource.about,
         }
       end
 
@@ -402,7 +402,7 @@ class Chef
           'country' => './profile/country',
           'state' => './profile/state',
           'gender' => './profile/gender',
-          'about' => './profile/aboutMe'
+          'about' => './profile/aboutMe',
         }
 
         profile = profile_diff
