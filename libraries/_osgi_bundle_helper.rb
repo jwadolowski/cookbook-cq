@@ -17,6 +17,9 @@
 # limitations under the License.
 #
 
+require_relative '_healthcheck_helper'
+require_relative '_http_helper'
+
 module Cq
   module OsgiBundleHelper
     include Cq::HealthcheckHelper
