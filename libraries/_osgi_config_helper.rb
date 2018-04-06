@@ -49,7 +49,7 @@ module Cq
 
       Chef::Application.fatal!(
         "Can't download OSGi configurations from AEM!"
-      ) if !html.is_a?(Net::HTTPResponse)
+      ) unless html.is_a?(Net::HTTPResponse)
 
       Chef::Application.fatal!(
         "Can't download available OSGi configuratons! Response code: "\
@@ -171,7 +171,7 @@ module Cq
     end
 
     def validate_keyspace(c_prop, n_prop)
-      n_prop.each do |k, v|
+      n_prop.each do |k, _v|
         Chef::Log.warn(
           "#{k} is not a valid property key!"
         ) unless c_prop.include?(k)
@@ -181,7 +181,7 @@ module Cq
     # Always use _valid_ properties defined in your resource as a keyspace we
     # will loop thorugh
     def keyspace(c_prop, n_prop)
-      n_prop.delete_if { |k, v| !c_prop.include?(k) }
+      n_prop.delete_if { |k, _v| !c_prop.include?(k) }
     end
 
     def property_diff(c_prop, n_prop, append)
@@ -220,7 +220,7 @@ module Cq
     def update_config(instance, user, pass, info, diff, hc_params)
       req_path = '/system/console/configMgr/' + info['pid']
       payload = payload_builder(diff).merge(
-        { '$location' => info['bundle_location'] }
+        '$location' => info['bundle_location']
       )
 
       Chef::Log.debug("POST payload: #{payload}")
