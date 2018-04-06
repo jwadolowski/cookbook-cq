@@ -1,5 +1,6 @@
 Metrics/LineLength:
   Enabled: true
   Max: 80
+  IgnoredPatterns: ['(\A|\s)#']
   Exclude:
     - 'Berksfile'
