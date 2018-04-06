@@ -39,13 +39,13 @@ namespace 'git' do
   end
 
   desc 'Create new tag and push it to Git repository'
-  task :release => [:tag, :push]
+  task release: [:tag, :push]
 end
 
 # -----------------------------------------------------------------------------
 # Main
 # -----------------------------------------------------------------------------
 desc 'Release new cookbook version'
-task :release => ['berkshelf:update', 'git:release', 'berkshelf:upload']
+task release: ['berkshelf:update', 'git:release', 'berkshelf:upload']
 
 task default: :release
