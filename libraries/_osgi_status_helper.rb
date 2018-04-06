@@ -44,14 +44,14 @@ module Cq
     # Output format
     #
     # {
-    #   "awt.toolkit"=>"sun.awt.X11.XToolkit",
-    #   "com.rsa.crypto.default.random"=>"FIPS186PRNG",
-    #   "com.rsa.cryptoj.jce.kat.strategy"=>"on.demand",
-    #   "file.encoding"=>"UTF-8",
-    #   "file.encoding.pkg"=>"sun.io",
-    #   "file.separator"=>"/",
-    #   "java.awt.graphicsenv"=>"sun.awt.X11GraphicsEnvironment",
-    #   "java.awt.headless"=>"true"
+    #   "awt.toolkit" => "sun.awt.X11.XToolkit",
+    #   "com.rsa.crypto.default.random" => "FIPS186PRNG",
+    #   "com.rsa.cryptoj.jce.kat.strategy" => "on.demand",
+    #   "file.encoding" => "UTF-8",
+    #   "file.encoding.pkg" => "sun.io",
+    #   "file.separator" => "/",
+    #   "java.awt.graphicsenv" => "sun.awt.X11GraphicsEnvironment",
+    #   "java.awt.headless" => "true"
     # }
     def system_properties(addr, user, password)
       # Covert raw txt into array of key=value strings
