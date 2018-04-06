@@ -18,10 +18,14 @@
 #
 
 require_relative '_http_helper'
+require_relative '_osgi_bundle_helper'
+require_relative '_osgi_status_helper'
 
 module Cq
   module CryptoHelper
     include Cq::HttpHelper
+    include Cq::OsgiBundleHelper
+    include Cq::OsgiStatusHelper
 
     def crypto_root_dir
       ::File.join(Chef::Config[:file_cache_path], 'crypto')
@@ -77,6 +81,43 @@ module Cq
       Chef::Log.debug("JAR file successfully extracted:\n #{cmd.stdout}")
     rescue => e
       Chef::Application.fatal!("Can't extract content out of JAR file: #{e}")
+    end
+
+    def jar_contents(jar)
+      cmd_str = "unzip -l #{jar}"
+      Chef::Log.debug("Unzip command: #{cmd_str}")
+
+      cmd = Mixlib::ShellOut.new(cmd_str)
+      cmd.run_command
+      cmd.error!
+
+      cmd.stdout
+    rescue => e
+      Chef::Application.fatal!("Can't list JAR file contents: #{e}")
+    end
+
+    def crypto_jar_internal_path(jar)
+      libs = jar_contents(jar).scan(
+        %r{
+          (?<=\ )resources\/.*
+          (?<=\/[0-9])\/
+          com.adobe.granite.crypto-[0-9]+\.[0-9]+\.[0-9]+\.jar$
+        }x
+      )
+
+      Chef::Application.fatal!(
+        "Found #{jars}, but single com.adobe.granite.crypto-x.y.z.jar is "\
+        'expected. Aborting!'
+      ) if libs.length != 1
+
+      libs.first
+    end
+
+    def crypto_jar_system_path(dir)
+      ::Dir.glob("#{dir}/*").select do |f|
+        ::File.file?(f) &&
+          f.match(/com.adobe.granite.crypto-[0-9]+\.[0-9]+\.[0-9]+\.jar/)
+      end.first
     end
 
     # Source:
@@ -198,34 +239,23 @@ module Cq
         ) if tmp_files.length != 1
         standalone_jar = tmp_files.first
 
-        # Extract com.adobe.granite.crypto JAR file from standalone one
+        # Extract com.adobe.granite.crypto-x.y.z.jar file from the standalone
+        # JAR file
         extract_jar(
           standalone_jar,
-          'resources/install/0/com.adobe.granite.crypto*.jar',
+          crypto_jar_internal_path(standalone_jar),
           crypto_aem_dir
         )
 
         # Remove standalone JAR, as it is no longer needed
         ::File.delete(standalone_jar)
 
-        # Find out filename of com.adobe.granite.crypto file (varies by AEM
-        # version)
-        granite_crypto_name = ::Dir.entries(
+        # Extract libs out of com.adobe.granite.crypto-x.y.z.jar file
+        extract_jar(
+          crypto_jar_system_path(crypto_aem_dir),
+          'META-INF/lib/*',
           crypto_aem_dir
-        ).find_all { |f| f.match(/com\.adobe\.granite\.crypto.+/) }
-
-        Chef::Application.fatal!(
-          'Expected single com.adobe.granite.crypto JAR file, but found: '\
-          "#{granite_crypto_name}. It's probably a bug in CQ cookbook"
-        ) if granite_crypto_name.length != 1
-
-        granite_crypto_jar = ::File.join(
-          crypto_aem_dir,
-          granite_crypto_name.first
         )
-
-        # Extract libs out of com.adobe.granite.crypto JAR file
-        extract_jar(granite_crypto_jar, 'META-INF/lib/*', crypto_aem_dir)
       end
 
       Chef::Log.debug('All AEM crypto libraries are in place')
@@ -274,22 +304,86 @@ module Cq
       Chef::Application.fatal!("Compilation error: #{e}")
     end
 
-    # Downloads master key from AEM and saves it into crypto tmp directory
-    #
-    # Returns key name
-    def load_master_key(instance, username, password)
-      http_resp = http_get(
+    # TODO: move to misc helper module, as the same has been defined in
+    # package helper
+    def sleep_time(attempt)
+      1 + (2**attempt) + rand(2**attempt)
+    end
+
+    # Download master key file directly from the instance (AEM < 6.3)
+    def download_master_key(instance, username, password)
+      max_attempts ||= 3
+      attempt ||= 1
+
+      resp = http_get(
         instance,
         '/etc/key/master',
         username,
         password
       )
 
-      Chef::Application.fatal!(
-        "Can't download master key! Response code: #{http_resp.code}"
-      ) if http_resp.code != '200'
+      unless resp.is_a?(Net::HTTPResponse)
+        raise(Net::HTTPUnknownResponse, 'Unknown HTTP response')
+      end
 
-      save_key(http_resp.body)
+      # Return raw HTTP response, so status code can be evaluated
+      resp
+    rescue => e
+      if (attempt += 1) <= max_attempts
+        t = sleep_time(attempt)
+        Chef::Log.error(
+          "[#{attempt}/#{max_attempts}] Unable to download master key, "\
+          "retrying in #{t}s (reason: #{e})"
+        )
+        sleep(t)
+        retry
+      end
+    end
+
+    # Use com.adobe.granite.crypto.file information to retrive the key
+    #
+    # Compatible with AEM 6.3+
+    #
+    # http://www.nateyolles.com/blog/2017/05/sharing-crypto-keys-in-aem-63
+    def find_master_key(instance, username, password)
+      bundle_name = 'com.adobe.granite.crypto.file'
+      bundle_info = bundle_info(instance, username, password, bundle_name)
+      bundle_id = bundle_info['id']
+
+      Chef::Log.debug("com.adobe.granite.crypto.file bundle ID: #{bundle_id}")
+
+      root_dir = system_property(
+        instance,
+        username,
+        password,
+        'user.dir'
+      )
+
+      key_path = ::File.join(
+        root_dir,
+        "/crx-quickstart/launchpad/felix/bundle#{bundle_id}/data/master"
+      )
+
+      Chef::Log.debug("Master key system path: #{key_path}")
+
+      if ::File.file?(key_path)
+        ::File.read(key_path)
+      else
+        Chef::Application.fatal!("#{key_path} doesn't exist!")
+      end
+    end
+
+    # Retrieves master key from AEM and saves it into crypto tmp directory
+    def load_master_key(instance, username, password)
+      key_resp = download_master_key(instance, username, password)
+      key_content =
+        if key_resp.code == '200'
+          key_resp.body
+        else
+          find_master_key(instance, username, password)
+        end
+
+      save_key(key_content)
     end
 
     def save_key(content)

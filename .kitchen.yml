@@ -1,7 +1,7 @@
 ---
 <% chef_versions = %w( 12 ) %>
 <% platforms = %w( centos-6 centos-7 ) %>
-<% aem_versions = %w( 5.6.1 6.0.0 6.1.0 6.2.0 ) %>
+<% aem_versions = %w( 5.6.1 6.0.0 6.1.0 6.2.0 6.3.0 6.4.0 ) %>
 
 driver:
   name: vagrant
