@@ -1,0 +1,5 @@
+Metrics/LineLength:
+  Enabled: true
+  Max: 80
+  Exclude:
+    - 'Berksfile'
