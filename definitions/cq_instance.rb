@@ -18,8 +18,7 @@
 # limitations under the License.
 #
 
-define :cq_instance,
-       id: nil do
+define :cq_instance, id: nil do
   # Helpers
   # ---------------------------------------------------------------------------
   local_id = params[:id]
