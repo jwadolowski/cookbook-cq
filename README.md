@@ -1,11 +1,11 @@
 # CQ/AEM Chef cookbook
 
-This is CQ/AEM cookbook that is primarily a library cookbook.
+This cookbook deploys and configures Adobe Experience Manager (AEM), formerly
+known as CQ.
 
-FYI, this cookbook is not called `aem-coobkook`, because when I started
-development CQ was not rebranded to AEM  yet and I simply like the old name
-much better. Nowadays it seems to be already taken anyway, so I no longer have
-a choice.
+FYI, it is not called `aem-coobkook`, because when I started development there
+was no AEM yet (it was known as CQ at that time). Nowadays the `aem` name seems
+to be taken anyways, so I no longer have a choice.
 
 # Table of contents
 
@@ -60,6 +60,7 @@ a choice.
 ## Operating systems
 
 * CentOS/RHEL 6.x
+* CentOS/RHEL 7.x
 
 ## Chef versions
 
@@ -71,6 +72,8 @@ a choice.
 * AEM 6.0.0
 * AEM 6.1.0
 * AEM 6.2.0
+* AEM 6.3.0
+* AEM 6.4.0
 
 # Getting started
 
@@ -959,7 +962,7 @@ For factory configs:
     <td>If <tt>true</tt> all properties defined in a <tt>cq_osgi_config</tt>
     resource will be used when applying OSGi configuration (despite of the fact
     just a subset differs). Example: 5 properties were defined as
-    <tt>properties</tt>, 3 of them require update, but all of them will be set. 
+    <tt>properties</tt>, 3 of them require update, but all of them will be set.
     <tt>false</tt> by default
     </td>
   </tr>
