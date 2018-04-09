@@ -14,3 +14,9 @@ source_url       'https://github.com/jwadolowski/cookbook-cq'
 issues_url       'https://github.com/jwadolowski/cookbook-cq/issues'
 
 chef_version     '~> 12'
+
+supports         'centos', '~> 6.0'
+supports         'centos', '~> 7.0'
+
+supports         'redhat', '~> 6.0'
+supports         'redhat', '~> 7.0'
