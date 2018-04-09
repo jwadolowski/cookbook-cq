@@ -12,3 +12,5 @@ depends          'cq-unix-toolkit', '~> 1.2.0'
 
 source_url       'https://github.com/jwadolowski/cookbook-cq'
 issues_url       'https://github.com/jwadolowski/cookbook-cq/issues'
+
+chef_version     '~> 12'
