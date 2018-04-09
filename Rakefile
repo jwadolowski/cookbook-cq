@@ -55,10 +55,21 @@ namespace 'style' do
   FoodCritic::Rake::LintTask.new(:foodcritic)
 end
 
+namespace 'stove' do
+  require 'stove/rake_task'
+
+  # Credentials are stored in ~/.stove
+  Stove::RakeTask.new do |t|
+    t.stove_opts = ['--no-git']
+  end
+end
+
 # -----------------------------------------------------------------------------
 # Main
 # -----------------------------------------------------------------------------
 desc 'Release new cookbook version'
-task release: ['berkshelf:update', 'git:release', 'berkshelf:upload']
+task release: [
+  'berkshelf:update', 'git:release', 'berkshelf:upload', 'stove::publish'
+]
 
 task default: :release
