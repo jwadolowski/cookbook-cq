@@ -103,9 +103,18 @@ end
 describe 'JDK' do
   it 'is installed' do
     expect(command('java -version').exit_status).to eq 0
-    expect(command('which java').stdout).to match('/usr/bin/java')
-    expect(file('/usr/bin/java')).to be_symlink
-    expect(file('/usr/bin/java')).to be_linked_to('/etc/alternatives/java')
+
+    case os[:release]
+    when '6'
+      expect(command('which java').stdout).to match('/usr/bin/java')
+      expect(file('/usr/bin/java')).to be_symlink
+      expect(file('/usr/bin/java')).to be_linked_to('/etc/alternatives/java')
+    when '7'
+      expect(command('which java').stdout).to match('/bin/java')
+      expect(file('/bin/java')).to be_symlink
+      expect(file('/bin/java')).to be_linked_to('/etc/alternatives/java')
+    end
+
     expect(file('/etc/alternatives/java')).to be_symlink
     expect(file('/etc/alternatives/java')).to be_linked_to(
       '/usr/lib/jvm/java/bin/java'

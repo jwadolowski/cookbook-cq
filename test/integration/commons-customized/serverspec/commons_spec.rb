@@ -121,33 +121,23 @@ describe 'JDK' do
       expect(command('which java').stdout).to match('/usr/bin/java')
       expect(file('/usr/bin/java')).to be_symlink
       expect(file('/usr/bin/java')).to be_linked_to('/etc/alternatives/java')
-      expect(file('/etc/alternatives/java')).to be_symlink
-      expect(file('/etc/alternatives/java')).to be_linked_to(
-        '/usr/lib/jvm/java/bin/java'
-      )
-      expect(file('/usr/lib/jvm/java')).to be_symlink
-      expect(
-        command('ls -l /usr/lib/jvm/java').stdout
-      ).to match(%r{/usr/lib/jvm/jdk.+})
-      expect(
-        command('ls -l /usr/lib/jvm/java').stdout
-      ).not_to match(%r{/opt/.+})
     when '7'
       expect(command('which java').stdout).to match('/bin/java')
       expect(file('/bin/java')).to be_symlink
       expect(file('/bin/java')).to be_linked_to('/etc/alternatives/java')
-      expect(file('/etc/alternatives/java')).to be_symlink
-      expect(file('/etc/alternatives/java')).to be_linked_to(
-        '/usr/lib/jvm/java/bin/java'
-      )
-      expect(file('/usr/lib/jvm/java')).to be_symlink
-      expect(
-        command('ls -l /usr/lib/jvm/java').stdout
-      ).to match(%r{/usr/lib/jvm/jdk.+})
-      expect(
-        command('ls -l /usr/lib/jvm/java').stdout
-      ).not_to match(%r{/opt/.+})
     end
+
+    expect(file('/etc/alternatives/java')).to be_symlink
+    expect(file('/etc/alternatives/java')).to be_linked_to(
+      '/usr/lib/jvm/java/bin/java'
+    )
+    expect(file('/usr/lib/jvm/java')).to be_symlink
+    expect(
+      command('ls -l /usr/lib/jvm/java').stdout
+    ).to match(%r{/usr/lib/jvm/jdk.+})
+    expect(
+      command('ls -l /usr/lib/jvm/java').stdout
+    ).not_to match(%r{/opt/.+})
   end
 end
 
