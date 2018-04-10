@@ -1,8 +1,6 @@
-Encoding:
-    Enabled: false
-
-LineLength:
-    Max: 120
-
-HashSyntax:
-    EnforcedStyle: hash_rockets
+Metrics/LineLength:
+  Enabled: true
+  Max: 80
+  IgnoredPatterns: ['(\A|\s)#']
+  Exclude:
+    - 'Berksfile'

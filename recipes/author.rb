@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cq
-# Recipe:: default
+# Recipe:: author
 #
 # Copyright (C) 2018 Jakub Wadolowski
 #
@@ -17,13 +17,12 @@
 # limitations under the License.
 #
 
-chef_gem 'addressable' do
-  compile_time false if respond_to?(:compile_time)
-end
+# Make sure that all prerequisites are in place
+# -----------------------------------------------------------------------------
+include_recipe 'cq::commons'
 
-chef_gem 'multipart-post' do
-  compile_time false if respond_to?(:compile_time)
+# Create author instance
+# -----------------------------------------------------------------------------
+cq_instance 'CQ Author' do
+  id 'author'
 end
-
-package 'unzip'
-package 'rng-tools'

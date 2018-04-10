@@ -1,16 +1,94 @@
 ---
+<% chef_versions = %w( 12.20.3 ) %>
+<% platforms = %w( centos-6 centos-7 ) %>
+<% aem_versions = %w( 5.6.1 6.0.0 6.1.0 6.2.0 6.3.0 6.4.0 ) %>
+
 driver:
   name: vagrant
+  customize:
+    memory: 3072
 
 provisioner:
-  name: chef_solo
+  name: chef_zero
+  log_level: <%= ENV['TK_CHEF_LOG_LEVEL'] || 'info' %>
+  data_path: test/shared
 
 platforms:
-  - name: ubuntu-12.04
-  - name: centos-6.4
+<% platforms.each do |p| %>
+<%   chef_versions.each do |chef_version| %>
+  - name: <%= p %>-chef-<%= chef_version %>
+    driver:
+      linked_clone: true
+    driver_config:
+      box: bento/<%= p %>
+      require_chef_omnibus: <%= chef_version %>
+    attributes:
+      cq:
+        http_read_timeout: 900
+        license:
+          url: <%= ENV['CQ_LICENSE_URL'] %>
+        packages:
+          aem61:
+            sp2: <%= ENV['CQ_V610_SP2_URL'] %>
+            sp2_cfp3: <%= ENV['CQ_V610_SP2_CFP3_URL'] %>
+      java:
+        jdk:
+          '7':
+            x86_64:
+              url: <%= ENV['JAVA_JDK_7_X86_64_URL'] || "http://download.oracle.com/otn-pub/java/jdk/7u80-b15/jdk-7u80-linux-x64.tar.gz" %>
+              checksum: <%= ENV['JAVA_JDK_7_X86_64_CHECKSUM'] || '6152f8a7561acf795ca4701daa10a965' %>
+          '8':
+            x86_64:
+              url: <%= ENV['JAVA_JDK_8_X86_64_URL'] || 'http://download.oracle.com/otn-pub/java/jdk/8u112-b15/jdk-8u112-linux-x64.tar.gz' %>
+              checksum: <%= ENV['JAVA_JDK_8_X86_64_CHECKSUM'] || '777bd7d5268408a5a94f5e366c2e43e720c6ce4fe8c59d9a71e2961e50d774a5' %>
+<%   end %>
+<% end %>
 
 suites:
-  - name: default
+  - name: commons
     run_list:
       - recipe[cq::default]
+      - recipe[cq::commons]
+  - name: commons-customized
+    run_list:
+      - recipe[cq::default]
+      - recipe[cq::commons]
     attributes:
+      cq:
+        user: 'aem'
+        user_uid: 200
+        user_comment: 'Adobe AEM'
+        user_shell: '/bin/sh'
+        group: 'aem'
+        group_gid: 200
+        home_dir: '/opt/aem'
+
+<% aem_versions.each do |v| %>
+
+  <% short_ver = v.delete('.') %>
+  <% url_var = "CQ_V#{short_ver}_JAR_URL" %>
+
+  - name: aem<%= short_ver %>-author
+    run_list:
+      - recipe[cq::author]
+      - recipe[cq<%= short_ver %>::author_cq_package]
+      - recipe[cq<%= short_ver %>::author_cq_osgi_config]
+      - recipe[cq<%= short_ver %>::author_cq_osgi_bundle]
+      - recipe[cq<%= short_ver %>::author_cq_osgi_component]
+      - recipe[cq<%= short_ver %>::author_cq_user]
+      - recipe[cq<%= short_ver %>::author_cq_jcr]
+    attributes:
+      cq:
+        version: <%= v %>
+        jar:
+          url: <%= ENV[url_var] %>
+  - name: aem<%= short_ver %>-publish
+    run_list:
+      - recipe[cq::publish]
+      - recipe[cq<%= short_ver %>::publish_cq_user]
+    attributes:
+      cq:
+        version: <%= v %>
+        jar:
+          url: <%= ENV[url_var] %>
+<% end %>
