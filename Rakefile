@@ -69,7 +69,7 @@ end
 # -----------------------------------------------------------------------------
 desc 'Release new cookbook version'
 task release: [
-  'berkshelf:update', 'git:release', 'berkshelf:upload', 'stove::publish'
+  'berkshelf:update', 'git:release', 'berkshelf:upload', 'stove:publish'
 ]
 
 task default: :release
