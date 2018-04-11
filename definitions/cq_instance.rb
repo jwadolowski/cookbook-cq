@@ -201,11 +201,13 @@ define :cq_instance, id: nil do
   conf_file = "cq#{cq_version('short_squeezed')}-#{local_id}.conf"
 
   template "#{instance_conf_dir}/#{conf_file}" do
+    extend Cq::SystemUtils
+
     owner node['cq']['user']
     group node['cq']['group']
     mode '0644'
     cookbook node['cq']['conf_template_cookbook']
-    source 'cq.conf.erb'
+    source 'cq-init.conf.erb'
     variables(
       lazy do
         {
@@ -230,6 +232,45 @@ define :cq_instance, id: nil do
         }
       end
     )
+
+    only_if { rhel6? }
+
+    notifies :restart,
+      "service[cq#{cq_version('short_squeezed')}-#{local_id}]",
+      :immediately
+  end
+
+  template "#{instance_conf_dir}/#{conf_file}" do
+    extend Cq::SystemUtils
+
+    owner node['cq']['user']
+    group node['cq']['group']
+    mode '0644'
+    cookbook node['cq']['conf_template_cookbook']
+    source 'cq-systemd.conf.erb'
+    variables(
+      lazy do
+        {
+          tmp_dir: node['cq']['custom_tmp_dir'],
+          fd_limit: node['cq']['limits']['file_descriptors'],
+          port: node['cq'][local_id]['port'],
+          run_mode: node['cq'][local_id]['run_mode'],
+          min_heap: node['cq'][local_id]['jvm']['min_heap'],
+          max_heap: node['cq'][local_id]['jvm']['max_heap'],
+          jmx_ip: node['cq'][local_id]['jmx_ip'],
+          jmx_port: node['cq'][local_id]['jmx_port'],
+          debug_ip: node['cq'][local_id]['debug_ip'],
+          debug_port: node['cq'][local_id]['debug_port'],
+          jvm_general_opts: node['cq'][local_id]['jvm']['general_opts'],
+          jvm_gc_opts: node['cq'][local_id]['jvm']['gc_opts'],
+          jvm_jmx_opts: node['cq'][local_id]['jvm']['jmx_opts'],
+          jvm_debug_opts: node['cq'][local_id]['jvm']['debug_opts'],
+          jvm_extra_opts: node['cq'][local_id]['jvm']['extra_opts'],
+        }
+      end
+    )
+
+    only_if { rhel7? }
 
     notifies :restart,
       "service[cq#{cq_version('short_squeezed')}-#{local_id}]",
