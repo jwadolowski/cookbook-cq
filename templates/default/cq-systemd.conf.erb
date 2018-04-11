@@ -4,21 +4,14 @@
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-# General settings
-# -----------------------------------------------------------------------------
-<% if !@tmp_dir.nil? && !@tmp_dir.empty? %>
-CQ_TMP_DIR=<%= @tmp_dir %>
-<% end %>
-CQ_FILE_SIZE_LIMIT=<%= @fd_limit %>
-
-# -----------------------------------------------------------------------------
-# CQ start file variables
+# Overridable variables
 # -----------------------------------------------------------------------------
 CQ_PORT=<%= @port %>
 CQ_RUNMODE=<%= @run_mode %>
+CQ_FILE_SIZE_LIMIT=<%= @fd_limit %>
 
 # -----------------------------------------------------------------------------
-# JVM parameters
+# JVM options
 # -----------------------------------------------------------------------------
 CQ_MIN_HEAP=<%= @min_heap %>
 CQ_MAX_HEAP=<%= @max_heap %>
@@ -27,11 +20,8 @@ CQ_JMX_PORT=<%= @jmx_port %>
 CQ_DEBUG_IP=<%= @debug_ip %>
 CQ_DEBUG_PORT=<%= @debug_port %>
 
-# -----------------------------------------------------------------------------
-# JVM options
-# -----------------------------------------------------------------------------
 <% if !@tmp_dir.nil? && !@tmp_dir.empty? %>
-CQ_GENERAL_OPTS="<%= @jvm_general_opts %> -Djava.io.tmpdir=${CQ_TMP_DIR}"
+CQ_GENERAL_OPTS="<%= @jvm_general_opts %> -Djava.io.tmpdir=<%= @tmp_dir %>"
 <% else %>
 CQ_GENERAL_OPTS="<%= @jvm_general_opts %>"
 <% end %>
