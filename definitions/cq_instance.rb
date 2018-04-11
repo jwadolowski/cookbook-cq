@@ -104,7 +104,7 @@ define :cq_instance, id: nil do
     group 'root'
     mode '0755'
     cookbook node['cq']['init_template_cookbook']
-    source 'cq.init.erb'
+    source 'etc/init.d/cq.init.erb'
     variables(
       daemon_name: daemon_name,
       full_name: "Adobe CQ #{node['cq']['version']} " +
