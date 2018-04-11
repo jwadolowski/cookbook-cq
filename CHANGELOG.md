@@ -1,3 +1,8 @@
+# v1.0.1 (2018-04-11)
+
+* Git reference to CQ UNIX Toolkit cookbook was removed from `Berksfile`, as it
+  is available on Supermarket now
+
 # v1.0.0 (2018-04-10)
 
 First public release of CQ cookbook!
