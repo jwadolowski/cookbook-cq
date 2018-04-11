@@ -19,6 +19,7 @@
 #
 
 define :cq_instance, id: nil do
+  # ---------------------------------------------------------------------------
   # Helpers
   # ---------------------------------------------------------------------------
   local_id = params[:id]
@@ -30,6 +31,7 @@ define :cq_instance, id: nil do
   Chef::Log.warn "Attribute node['cq']['#{params[:id]}']['mode'] is now "\
     'deprecated and can be safely removed.' if node['cq'][local_id]['mode']
 
+  # ---------------------------------------------------------------------------
   # Create CQ instance directory
   # ---------------------------------------------------------------------------
   directory instance_home do
@@ -39,8 +41,10 @@ define :cq_instance, id: nil do
     action :create
   end
 
+  # ---------------------------------------------------------------------------
   # Download and unpack CQ JAR file
   # ---------------------------------------------------------------------------
+
   # Download JAR file to Chef's cache
   remote_file "#{Chef::Config[:file_cache_path]}/#{jar_name}" do
     owner 'root'
@@ -75,6 +79,7 @@ define :cq_instance, id: nil do
     not_if { ::Dir.exist?("#{instance_home}/crx-quickstart") }
   end
 
+  # ---------------------------------------------------------------------------
   # Deploy CQ license file
   # ---------------------------------------------------------------------------
   # Download license file to Chef's cache
@@ -97,6 +102,7 @@ define :cq_instance, id: nil do
       node['cq']['license']['checksum']
   end
 
+  # ---------------------------------------------------------------------------
   # Render SysVinit start script
   # ---------------------------------------------------------------------------
   template "/etc/init.d/#{daemon_name}" do
@@ -119,6 +125,7 @@ define :cq_instance, id: nil do
     only_if { rhel6? }
   end
 
+  # ---------------------------------------------------------------------------
   # Render systemd start script
   # ---------------------------------------------------------------------------
   template "/etc/systemd/system/#{daemon_name}.service" do
@@ -173,6 +180,7 @@ define :cq_instance, id: nil do
     action :nothing
   end
 
+  # ---------------------------------------------------------------------------
   # Render CQ config file
   #
   # All template variables are lazy evaluated to cover scenarios when one of
@@ -228,6 +236,7 @@ define :cq_instance, id: nil do
       :immediately
   end
 
+  # ---------------------------------------------------------------------------
   # Enable & start CQ instance
   # ---------------------------------------------------------------------------
   service "#{daemon_name} (enable)" do
@@ -242,6 +251,7 @@ define :cq_instance, id: nil do
     notifies :run, "ruby_block[cq-#{local_id}-start-guard]", :immediately
   end
 
+  # ---------------------------------------------------------------------------
   # Wait until CQ is fully up and running
   # ---------------------------------------------------------------------------
   ruby_block "cq-#{local_id}-start-guard" do # ~FC014
