@@ -190,8 +190,9 @@ define :cq_instance, id: nil do
   # all required amendments in compile phase and these changes will be
   # propagated correctly during converge phase.
   # ---------------------------------------------------------------------------
-  template "#{instance_conf_dir}/cq#{cq_version('short_squeezed')}"\
-    "-#{local_id}.conf" do
+  conf_file = "cq#{cq_version('short_squeezed')}-#{local_id}.conf"
+
+  template "#{instance_conf_dir}/#{conf_file}" do
     owner node['cq']['user']
     group node['cq']['group']
     mode '0644'
