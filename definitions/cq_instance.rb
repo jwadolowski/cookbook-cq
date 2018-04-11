@@ -68,7 +68,7 @@ define :cq_instance, id: nil do
   end
 
   # Unpack CQ JAR file once downloaded
-  bash 'Unpack CQ JAR file' do
+  bash "Unpack #{instance_home}/#{jar_name} file" do
     user node['cq']['user']
     group node['cq']['group']
     cwd instance_home
@@ -198,9 +198,7 @@ define :cq_instance, id: nil do
   # all required amendments in compile phase and these changes will be
   # propagated correctly during converge phase.
   # ---------------------------------------------------------------------------
-  conf_file = "cq#{cq_version('short_squeezed')}-#{local_id}.conf"
-
-  template "#{instance_conf_dir}/#{conf_file}" do
+  template "#{instance_conf_dir}/#{daemon_name}.conf" do
     extend Cq::SystemUtils
 
     owner node['cq']['user']
@@ -235,12 +233,10 @@ define :cq_instance, id: nil do
 
     only_if { rhel6? }
 
-    notifies :restart,
-      "service[cq#{cq_version('short_squeezed')}-#{local_id}]",
-      :immediately
+    notifies :restart, "service[#{daemon_name}]", :immediately
   end
 
-  template "#{instance_conf_dir}/#{conf_file}" do
+  template "#{instance_conf_dir}/#{daemon_name}.conf" do
     extend Cq::SystemUtils
 
     owner node['cq']['user']
@@ -272,9 +268,7 @@ define :cq_instance, id: nil do
 
     only_if { rhel7? }
 
-    notifies :restart,
-      "service[cq#{cq_version('short_squeezed')}-#{local_id}]",
-      :immediately
+    notifies :restart, "service[#{daemon_name}]", :immediately
   end
 
   # ---------------------------------------------------------------------------
