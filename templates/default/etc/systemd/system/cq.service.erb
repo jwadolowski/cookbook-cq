@@ -1,0 +1,19 @@
+[Unit]
+Description=<%= @daemon_name %>
+After=network.target
+
+[Service]
+# EnvironmentFile=<%= @conf_file %>
+ExecStart=/bin/bash \
+  <%= @cq_home %>/crx-quickstart/bin/start \
+  > <%= @cq_home %>/crx-quickstart/logs/start.log 2>&1
+ExecStop=/bin/bash \
+  <%= @cq_home %>/crx-quickstart/bin/stop \
+  > <%= @cq_home %>/crx-quickstart/logs/stop.log 2>&1
+Type=simple
+PIDFile=<%= @cq_home %>/crx-quickstart/conf/cq.pid
+User=<%= @user %>
+LimitNOFILE=<%= @fd_limit %>
+
+[Install]
+WantedBy=multi-user.target
