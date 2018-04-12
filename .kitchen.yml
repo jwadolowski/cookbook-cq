@@ -1,5 +1,5 @@
 ---
-<% chef_versions = %w( 12.20.3 ) %>
+<% chef_versions = %w( 13 14 ) %>
 <% platforms = %w( centos-6 centos-7 ) %>
 <% aem_versions = %w( 5.6.1 6.0.0 6.1.0 6.2.0 6.3.0 6.4.0 ) %>
 
@@ -39,8 +39,8 @@ platforms:
               checksum: <%= ENV['JAVA_JDK_7_X86_64_CHECKSUM'] || '6152f8a7561acf795ca4701daa10a965' %>
           '8':
             x86_64:
-              url: <%= ENV['JAVA_JDK_8_X86_64_URL'] || 'http://download.oracle.com/otn-pub/java/jdk/8u112-b15/jdk-8u112-linux-x64.tar.gz' %>
-              checksum: <%= ENV['JAVA_JDK_8_X86_64_CHECKSUM'] || '777bd7d5268408a5a94f5e366c2e43e720c6ce4fe8c59d9a71e2961e50d774a5' %>
+              url: <%= ENV['JAVA_JDK_8_X86_64_URL'] || 'http://download.oracle.com/otn-pub/java/jdk/8u162-b12/0da788060d494f5095bf8624735fa2f1/jdk-8u162-linux-x64.tar.gz' %>
+              checksum: <%= ENV['JAVA_JDK_8_X86_64_CHECKSUM'] || '68ec82d47fd9c2b8eb84225b6db398a72008285fafc98631b1ff8d2229680257' %>
 <%   end %>
 <% end %>
 
