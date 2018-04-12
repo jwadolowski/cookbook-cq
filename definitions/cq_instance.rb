@@ -247,16 +247,17 @@ define :cq_instance, id: nil do
     variables(
       lazy do
         {
-          tmp_dir: node['cq']['custom_tmp_dir'],
-          fd_limit: node['cq']['limits']['file_descriptors'],
           port: node['cq'][local_id]['port'],
           run_mode: node['cq'][local_id]['run_mode'],
+          fd_limit: node['cq']['limits']['file_descriptors'],
+          instance_home: instance_home,
           min_heap: node['cq'][local_id]['jvm']['min_heap'],
           max_heap: node['cq'][local_id]['jvm']['max_heap'],
           jmx_ip: node['cq'][local_id]['jmx_ip'],
           jmx_port: node['cq'][local_id]['jmx_port'],
           debug_ip: node['cq'][local_id]['debug_ip'],
           debug_port: node['cq'][local_id]['debug_port'],
+          tmp_dir: node['cq']['custom_tmp_dir'],
           jvm_general_opts: node['cq'][local_id]['jvm']['general_opts'],
           jvm_gc_opts: node['cq'][local_id]['jvm']['gc_opts'],
           jvm_jmx_opts: node['cq'][local_id]['jvm']['jmx_opts'],
