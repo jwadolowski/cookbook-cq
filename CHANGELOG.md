@@ -2,6 +2,7 @@
 
 * systemd service (default on CentOS/RHEL 7)
 * Chef 13.x and 14.x support
+* AEM 5.6.1 and 6.0.0 are no longer supported
 
 # v1.0.1 (2018-04-11)
 
