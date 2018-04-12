@@ -163,8 +163,6 @@ define :cq_instance, id: nil do
   end
 
   file "/etc/init.d/#{daemon_name}" do
-    extend Cq::SystemUtils
-
     action :nothing
   end
 
