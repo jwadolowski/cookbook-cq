@@ -1,0 +1,22 @@
+[Unit]
+Description=<%= @daemon_name %>
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+User=<%= @user %>
+EnvironmentFile=<%= @conf_file %>
+ExecStart=/bin/bash -c 'export CQ_FILE_SIZE_LIMIT=${CQ_FILE_SIZE_LIMIT} && \
+  export CQ_PORT=${CQ_PORT} && \
+  export CQ_RUNMODE=${CQ_RUNMODE} && \
+  export CQ_JVM_OPTS="${CQ_GENERAL_OPTS} -Xms${CQ_MIN_HEAP}m -Xmx${CQ_MAX_HEAP}m ${CQ_GC_OPTS} ${CQ_JMX_OPTS} ${CQ_DEBUG_OPTS} ${CQ_EXTRA_OPTS}" && \
+  <%= @cq_home %>/crx-quickstart/bin/start \
+  > <%= @cq_home %>/crx-quickstart/logs/start.log 2>&1'
+ExecStop=/bin/bash -c '<%= @cq_home %>/crx-quickstart/bin/stop \
+  > <%= @cq_home %>/crx-quickstart/logs/stop.log 2>&1'
+PIDFile=<%= @cq_home %>/crx-quickstart/conf/cq.pid
+LimitNOFILE=<%= @fd_limit %>
+
+[Install]
+WantedBy=multi-user.target

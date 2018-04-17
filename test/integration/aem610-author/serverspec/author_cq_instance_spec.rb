@@ -70,53 +70,117 @@ describe 'CQ license file' do
   end
 end
 
-describe 'CQ init script' do
-  it 'exists' do
-    expect(file('/etc/init.d/cq61-author')).to be_file
+case os[:release]
+when '6'
+  describe 'CQ init script' do
+    it 'exists' do
+      expect(file('/etc/init.d/cq61-author')).to be_file
+    end
+
+    it 'is executable' do
+      expect(file('/etc/init.d/cq61-author')).to be_executable
+    end
+
+    it 'is owned by root' do
+      expect(file('/etc/init.d/cq61-author')).to be_owned_by('root')
+    end
+
+    it 'is grouped into root' do
+      expect(file('/etc/init.d/cq61-author')).to be_grouped_into('root')
+    end
+
+    it 'contains PID_DIR line' do
+      expect(
+        file('/etc/init.d/cq61-author').content
+      ).to match('PID_DIR="\$CQ_HOME/crx-quickstart/conf"')
+    end
+
+    it 'contains KILL_DELAY line' do
+      expect(
+        file('/etc/init.d/cq61-author').content
+      ).to match('KILL_DELAY=120')
+    end
+
+    it 'contains sleep between stop and start' do
+      expect(
+        file('/etc/init.d/cq61-author').content
+      ).to match('sleep 5')
+    end
+
+    it 'contains CQ_CONF_FILE variable for author' do
+      expect(
+        file('/etc/init.d/cq61-author').content
+      ).to match(
+        'CQ_CONF_FILE=/opt/cq/author/crx-quickstart/conf/cq61-author.conf')
+    end
+
+    it 'does not contain CQ_CONF_FILE variable for publish' do
+      expect(
+        file('/etc/init.d/cq61-author').content
+      ).not_to match(
+        'CQ_CONF_FILE=/opt/cq/author/crx-quickstart/conf/cq61-publish.conf')
+    end
   end
 
-  it 'is executable' do
-    expect(file('/etc/init.d/cq61-author')).to be_executable
+  describe 'CQ systemd unit file' do
+    it 'does NOT exists' do
+      expect(file('/etc/systemd/system/cq61-author.service')).not_to exist
+    end
+  end
+when '7'
+  describe 'CQ systemd unit file' do
+    it 'exists' do
+      expect(file('/etc/systemd/system/cq61-author.service')).to be_file
+    end
+
+    it 'is not executable' do
+      expect(
+        file('/etc/systemd/system/cq61-author.service')
+      ).not_to be_executable
+    end
+
+    it 'is owned by root' do
+      expect(
+        file('/etc/systemd/system/cq61-author.service')
+      ).to be_owned_by('root')
+    end
+
+    it 'is grouped into root' do
+      expect(
+        file('/etc/systemd/system/cq61-author.service')
+      ).to be_grouped_into('root')
+    end
+
+    it 'contains PIDFile line' do
+      expect(
+        file('/etc/systemd/system/cq61-author.service').content
+      ).to match('PIDFile=/opt/cq/author/crx-quickstart/conf/cq.pid')
+    end
+
+    it 'contains ExecStart line' do
+      expect(
+        file('/etc/systemd/system/cq61-author.service').content
+      ).to match('ExecStart=/bin/bash')
+    end
+
+    it 'contains EnvironmentFile line' do
+      expect(
+        file('/etc/systemd/system/cq61-author.service').content
+      ).to match(
+        'EnvironmentFile=/opt/cq/author/crx-quickstart/conf/cq61-author.conf'
+      )
+    end
   end
 
-  it 'is owned by root' do
-    expect(file('/etc/init.d/cq61-author')).to be_owned_by('root')
-  end
-
-  it 'is grouped into root' do
-    expect(file('/etc/init.d/cq61-author')).to be_grouped_into('root')
-  end
-
-  it 'contains PID_DIR line' do
-    expect(
-      file('/etc/init.d/cq61-author').content
-    ).to match('PID_DIR="\$CQ_HOME/crx-quickstart/conf"')
-  end
-
-  it 'contains KILL_DELAY line' do
-    expect(
-      file('/etc/init.d/cq61-author').content
-    ).to match('KILL_DELAY=120')
-  end
-
-  it 'contains sleep between stop and start' do
-    expect(
-      file('/etc/init.d/cq61-author').content
-    ).to match('sleep 5')
-  end
-
-  it 'contains CQ_CONF_FILE variable for author' do
-    expect(
-      file('/etc/init.d/cq61-author').content
-    ).to match(
-      'CQ_CONF_FILE=/opt/cq/author/crx-quickstart/conf/cq61-author.conf')
-  end
-
-  it 'does not contain CQ_CONF_FILE variable for publish' do
-    expect(
-      file('/etc/init.d/cq61-author').content
-    ).not_to match(
-      'CQ_CONF_FILE=/opt/cq/author/crx-quickstart/conf/cq61-publish.conf')
+  describe 'CQ init script' do
+    it 'does NOT exists' do
+      expect(file('/etc/init.d/cq61-author')).not_to exist
+      expect(
+        command(
+          'find /etc/rc.d -type f -o -type l | grep cq61-author | wc -l'
+        ).stdout
+      ).to match('0')
+    end
   end
 end
 
@@ -139,28 +203,46 @@ describe 'CQ author config file' do
     ).to be_grouped_into('cq')
   end
 
-  it 'contains valid content' do
-    expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
-    ).to match('CQ_MIN_HEAP=256')
-    expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
-    ).to match('export CQ_HOME=/opt/cq/author')
-    expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
-    ).not_to match('export CQ_HOME=/opt/cq/publish')
-    expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
-    ).to match('export CQ_PORT=4502')
-    expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
-    ).not_to match('export CQ_PORT=4503')
-    expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
-    ).to match('export CQ_RUNMODE=aem61,author,kitchen')
-    expect(
-      file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
-    ).not_to match('export CQ_RUNMODE=author')
+  case os[:release]
+  when '6'
+    it 'contains valid content' do
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).to match('CQ_MIN_HEAP=256')
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).to match('export CQ_HOME=/opt/cq/author')
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).not_to match('export CQ_HOME=/opt/cq/publish')
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).to match('export CQ_PORT=4502')
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).not_to match('export CQ_PORT=4503')
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).to match('export CQ_RUNMODE=aem61,author,kitchen')
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).not_to match('export CQ_RUNMODE=author')
+    end
+  when '7'
+    it 'contains valid content' do
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).to match('CQ_PORT=4502')
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).to match('CQ_HOME=/opt/cq/author')
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).to match('CQ_MIN_HEAP=256')
+      expect(
+        file('/opt/cq/author/crx-quickstart/conf/cq61-author.conf').content
+      ).not_to match('export CQ')
+    end
   end
 end
 

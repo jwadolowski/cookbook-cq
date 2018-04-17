@@ -68,8 +68,6 @@ to be taken anyways, so I no longer have a choice.
 
 ## AEM/CQ versions
 
-* AEM 5.6.1
-* AEM 6.0.0
 * AEM 6.1.0
 * AEM 6.2.0
 * AEM 6.3.0

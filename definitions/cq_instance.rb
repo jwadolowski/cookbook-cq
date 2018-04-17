@@ -19,6 +19,7 @@
 #
 
 define :cq_instance, id: nil do
+  # ---------------------------------------------------------------------------
   # Helpers
   # ---------------------------------------------------------------------------
   local_id = params[:id]
@@ -30,6 +31,7 @@ define :cq_instance, id: nil do
   Chef::Log.warn "Attribute node['cq']['#{params[:id]}']['mode'] is now "\
     'deprecated and can be safely removed.' if node['cq'][local_id]['mode']
 
+  # ---------------------------------------------------------------------------
   # Create CQ instance directory
   # ---------------------------------------------------------------------------
   directory instance_home do
@@ -39,8 +41,10 @@ define :cq_instance, id: nil do
     action :create
   end
 
+  # ---------------------------------------------------------------------------
   # Download and unpack CQ JAR file
   # ---------------------------------------------------------------------------
+
   # Download JAR file to Chef's cache
   remote_file "#{Chef::Config[:file_cache_path]}/#{jar_name}" do
     owner 'root'
@@ -64,7 +68,7 @@ define :cq_instance, id: nil do
   end
 
   # Unpack CQ JAR file once downloaded
-  bash 'Unpack CQ JAR file' do
+  bash "Unpack #{instance_home}/#{jar_name} file" do
     user node['cq']['user']
     group node['cq']['group']
     cwd instance_home
@@ -75,6 +79,7 @@ define :cq_instance, id: nil do
     not_if { ::Dir.exist?("#{instance_home}/crx-quickstart") }
   end
 
+  # ---------------------------------------------------------------------------
   # Deploy CQ license file
   # ---------------------------------------------------------------------------
   # Download license file to Chef's cache
@@ -97,27 +102,83 @@ define :cq_instance, id: nil do
       node['cq']['license']['checksum']
   end
 
-  # Create init script
+  # ---------------------------------------------------------------------------
+  # Render SysVinit start script
   # ---------------------------------------------------------------------------
   template "/etc/init.d/#{daemon_name}" do
+    extend Cq::SystemUtils
+
     owner 'root'
     group 'root'
     mode '0755'
     cookbook node['cq']['init_template_cookbook']
-    source 'cq.init.erb'
+    source 'etc/init.d/cq.init.erb'
     variables(
       daemon_name: daemon_name,
       full_name: "Adobe CQ #{node['cq']['version']} " +
-                    local_id.to_s.capitalize,
-      conf_file: "#{cq_instance_conf_dir(
-        node['cq']['home_dir'],
-        local_id
-      )}/#{daemon_name}.conf",
+                 local_id.to_s.capitalize,
+      conf_file: ::File.join(instance_conf_dir, "#{daemon_name}.conf"),
       kill_delay: node['cq']['service']['kill_delay'],
       restart_sleep: node['cq']['service']['restart_sleep']
     )
+
+    only_if { rhel6? }
   end
 
+  # ---------------------------------------------------------------------------
+  # Render systemd start script
+  # ---------------------------------------------------------------------------
+  template "/etc/systemd/system/#{daemon_name}.service" do
+    extend Cq::SystemUtils
+
+    owner 'root'
+    group 'root'
+    mode '0644'
+    cookbook node['cq']['systemd_template_cookbook']
+    source 'etc/systemd/system/cq.service.erb'
+    variables(
+      daemon_name: daemon_name,
+      conf_file: ::File.join(instance_conf_dir, "#{daemon_name}.conf"),
+      cq_home: instance_home,
+      user: node['cq']['user'],
+      fd_limit: node['cq']['limits']['file_descriptors']
+    )
+
+    only_if { rhel7? }
+
+    # Delete SysVinit service before rendering systemd start script
+    notifies :run, "execute[chkconfig-delete-#{daemon_name}]", :before
+    notifies :run, "execute[systemd-verify-#{daemon_name}]", :immediately
+    notifies :run, 'execute[systemd-reload]', :immediately
+  end
+
+  execute "chkconfig-delete-#{daemon_name}" do
+    command "chkconfig --del #{daemon_name}"
+
+    action :nothing
+
+    only_if { ::File.exist?("/etc/init.d/#{daemon_name}") }
+
+    notifies :delete, "file[/etc/init.d/#{daemon_name}]", :immediately
+  end
+
+  file "/etc/init.d/#{daemon_name}" do
+    action :nothing
+  end
+
+  execute "systemd-verify-#{daemon_name}" do
+    command "systemd-analyze verify #{daemon_name}.service"
+
+    action :nothing
+  end
+
+  execute 'systemd-reload' do
+    command 'systemctl daemon-reload'
+
+    action :nothing
+  end
+
+  # ---------------------------------------------------------------------------
   # Render CQ config file
   #
   # All template variables are lazy evaluated to cover scenarios when one of
@@ -135,13 +196,14 @@ define :cq_instance, id: nil do
   # all required amendments in compile phase and these changes will be
   # propagated correctly during converge phase.
   # ---------------------------------------------------------------------------
-  template "#{instance_conf_dir}/cq#{cq_version('short_squeezed')}"\
-           "-#{local_id}.conf" do
+  template "#{instance_conf_dir}/#{daemon_name}.conf" do
+    extend Cq::SystemUtils
+
     owner node['cq']['user']
     group node['cq']['group']
     mode '0644'
     cookbook node['cq']['conf_template_cookbook']
-    source 'cq.conf.erb'
+    source 'cq-init.conf.erb'
     variables(
       lazy do
         {
@@ -167,11 +229,48 @@ define :cq_instance, id: nil do
       end
     )
 
-    notifies :restart,
-             "service[cq#{cq_version('short_squeezed')}-#{local_id}]",
-             :immediately
+    only_if { rhel6? }
+
+    notifies :restart, "service[#{daemon_name}]", :immediately
   end
 
+  template "#{instance_conf_dir}/#{daemon_name}.conf" do
+    extend Cq::SystemUtils
+
+    owner node['cq']['user']
+    group node['cq']['group']
+    mode '0644'
+    cookbook node['cq']['conf_template_cookbook']
+    source 'cq-systemd.conf.erb'
+    variables(
+      lazy do
+        {
+          port: node['cq'][local_id]['port'],
+          run_mode: node['cq'][local_id]['run_mode'],
+          fd_limit: node['cq']['limits']['file_descriptors'],
+          instance_home: instance_home,
+          min_heap: node['cq'][local_id]['jvm']['min_heap'],
+          max_heap: node['cq'][local_id]['jvm']['max_heap'],
+          jmx_ip: node['cq'][local_id]['jmx_ip'],
+          jmx_port: node['cq'][local_id]['jmx_port'],
+          debug_ip: node['cq'][local_id]['debug_ip'],
+          debug_port: node['cq'][local_id]['debug_port'],
+          tmp_dir: node['cq']['custom_tmp_dir'],
+          jvm_general_opts: node['cq'][local_id]['jvm']['general_opts'],
+          jvm_gc_opts: node['cq'][local_id]['jvm']['gc_opts'],
+          jvm_jmx_opts: node['cq'][local_id]['jvm']['jmx_opts'],
+          jvm_debug_opts: node['cq'][local_id]['jvm']['debug_opts'],
+          jvm_extra_opts: node['cq'][local_id]['jvm']['extra_opts'],
+        }
+      end
+    )
+
+    only_if { rhel7? }
+
+    notifies :restart, "service[#{daemon_name}]", :immediately
+  end
+
+  # ---------------------------------------------------------------------------
   # Enable & start CQ instance
   # ---------------------------------------------------------------------------
   service "#{daemon_name} (enable)" do
@@ -186,6 +285,7 @@ define :cq_instance, id: nil do
     notifies :run, "ruby_block[cq-#{local_id}-start-guard]", :immediately
   end
 
+  # ---------------------------------------------------------------------------
   # Wait until CQ is fully up and running
   # ---------------------------------------------------------------------------
   ruby_block "cq-#{local_id}-start-guard" do # ~FC014
@@ -229,7 +329,7 @@ define :cq_instance, id: nil do
         time_diff = Time.now - start_time
         Chef::Log.debug("Time elapsed since process start: #{time_diff}")
         abort "Aborting since #{daemon_name} start took more than "\
-              "#{start_timeout / 60} minutes " if time_diff > start_timeout
+          "#{start_timeout / 60} minutes " if time_diff > start_timeout
       end
 
       Chef::Log.info("CQ start time: #{time_diff} seconds")

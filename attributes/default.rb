@@ -40,6 +40,7 @@ default['cq']['service']['kill_delay'] = 120
 default['cq']['service']['restart_sleep'] = 5
 
 default['cq']['init_template_cookbook'] = 'cq'
+default['cq']['systemd_template_cookbook'] = 'cq'
 default['cq']['conf_template_cookbook'] = 'cq'
 
 default['cq']['http_read_timeout'] = 300
@@ -54,6 +55,6 @@ default['cq']['crypto']['log_libs']['data'] = {
 
 # Java attributes
 # -----------------------------------------------------------------------------
-default['java']['jdk_version'] = '7'
+default['java']['jdk_version'] = '8'
 default['java']['install_flavor'] = 'oracle'
 default['java']['oracle']['accept_oracle_download_terms'] = true

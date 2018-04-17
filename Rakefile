@@ -55,6 +55,9 @@ namespace 'style' do
   FoodCritic::Rake::LintTask.new(:foodcritic)
 end
 
+# -----------------------------------------------------------------------------
+# Stove
+# -----------------------------------------------------------------------------
 namespace 'stove' do
   require 'stove/rake_task'
 
