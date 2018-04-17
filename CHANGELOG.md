@@ -1,4 +1,4 @@
-# v1.1.0 (2018-04-12)
+# v1.1.0 (2018-04-17)
 
 * systemd service (default on CentOS/RHEL 7)
 * Chef 13.x and 14.x support
