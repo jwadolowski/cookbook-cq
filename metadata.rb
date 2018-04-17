@@ -8,7 +8,7 @@ version          '1.1.0'
 
 depends          'java'
 depends          'ulimit'
-depends          'cq-unix-toolkit', '~> 1.3'
+depends          'cq-unix-toolkit', '~> 1.3.0'
 
 source_url       'https://github.com/jwadolowski/cookbook-cq'
 issues_url       'https://github.com/jwadolowski/cookbook-cq/issues'
