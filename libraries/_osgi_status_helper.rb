@@ -21,6 +21,8 @@ module Cq
   module OsgiStatusHelper
     include Cq::HttpHelper
 
+    # TODO: retry on error!
+    #
     # Output format
     #
     # *** System Properties:
