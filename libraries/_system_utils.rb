@@ -21,13 +21,13 @@ module Cq
   module SystemUtils
     def rhel6?
       node['platform_family'] == 'rhel' &&
-        (node['platform'] == 'centos' || node['platform'] == 'rhel') &&
+        (node['platform'] == 'centos' || node['platform'] == 'redhat') &&
         node['platform_version'].to_i == 6
     end
 
     def rhel7?
       node['platform_family'] == 'rhel' &&
-        (node['platform'] == 'centos' || node['platform'] == 'rhel') &&
+        (node['platform'] == 'centos' || node['platform'] == 'redhat') &&
         node['platform_version'].to_i == 7
     end
   end

@@ -1,3 +1,7 @@
+# v1.1.1 (2018-04-27)
+
+* Bugfix in RHEL detection
+
 # v1.1.0 (2018-04-17)
 
 * systemd service (default on CentOS/RHEL 7)
