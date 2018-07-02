@@ -61,6 +61,7 @@ to be taken anyways, so I no longer have a choice.
 
 * CentOS/RHEL 6.x
 * CentOS/RHEL 7.x
+* Amazon Linux
 
 ## Chef versions
 

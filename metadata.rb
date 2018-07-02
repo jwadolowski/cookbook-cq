@@ -4,7 +4,7 @@ maintainer_email 'jakub.wadolowski@cognifide.com'
 license          'Apache-2.0'
 description      'Installs and configures Adobe AEM (formerly CQ)'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.1.1'
+version          '1.1.2'
 
 depends          'java'
 depends          'ulimit'
@@ -20,3 +20,5 @@ supports         'centos', '~> 7.0'
 
 supports         'redhat', '~> 6.0'
 supports         'redhat', '~> 7.0'
+
+supports         'amazon'
