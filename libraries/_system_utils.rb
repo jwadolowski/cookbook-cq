@@ -30,5 +30,9 @@ module Cq
         (node['platform'] == 'centos' || node['platform'] == 'redhat') &&
         node['platform_version'].to_i == 7
     end
+
+    def al?
+      node['platform_family'] == 'amazon'
+    end
   end
 end

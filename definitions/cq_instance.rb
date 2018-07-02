@@ -144,7 +144,7 @@ define :cq_instance, id: nil do
       fd_limit: node['cq']['limits']['file_descriptors']
     )
 
-    only_if { rhel7? }
+    only_if { rhel7? || al? }
 
     # Delete SysVinit service before rendering systemd start script
     notifies :run, "execute[chkconfig-delete-#{daemon_name}]", :before
@@ -265,7 +265,7 @@ define :cq_instance, id: nil do
       end
     )
 
-    only_if { rhel7? }
+    only_if { rhel7? || al? }
 
     notifies :restart, "service[#{daemon_name}]", :immediately
   end
