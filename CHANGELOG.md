@@ -1,3 +1,7 @@
+# v1.1.2 (2018-07-02)
+
+* Added support for Amazon Linux in service creation
+
 # v1.1.1 (2018-04-27)
 
 * Bugfix in RHEL detection

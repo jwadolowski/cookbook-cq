@@ -31,7 +31,7 @@ module Cq
         node['platform_version'].to_i == 7
     end
 
-    def al?
+    def amazon_linux?
       node['platform_family'] == 'amazon'
     end
   end
