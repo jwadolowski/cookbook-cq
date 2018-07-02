@@ -70,6 +70,9 @@ end
 # -----------------------------------------------------------------------------
 # Main
 # -----------------------------------------------------------------------------
+desc 'Run linters (Foodcritic & Cookstyle)'
+task lint: ['style:foodcritic', 'style:cookstyle']
+
 desc 'Release new cookbook version'
 task release: [
   'berkshelf:update', 'git:release', 'berkshelf:upload', 'stove:publish'
