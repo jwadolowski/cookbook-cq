@@ -47,8 +47,6 @@ action_class do
   end
 end
 
-action :nothing
-
 action :run do
   begin
     start_time ||= Time.now
@@ -65,7 +63,7 @@ action :run do
       raise(Net::HTTPUnknownResponse, 'Unknown HTTP response')
     end
 
-    unless expected_response?(resp, input_params)
+    unless expected_response?(resp)
       raise(Net::HTTPBadResponse, 'Wrong HTTP response')
     end
 
