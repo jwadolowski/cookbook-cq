@@ -1805,16 +1805,18 @@ cq_start_guard 'cq64-author' do
     expected_code '200'
     expected_body '{"status": "ok"}'
     timeout 900
-    http_timeout 10
+    http_timeout 5
     interval 10
 
     action :nothing
 end
 ```
 
-Right after restart of `cq64-author` send notification to `cq_start_guard`
-resource and wait until `/bin/healthchecks/instance` returns 200 code and
-`{"status": "ok"}` JSON.
+Right after restart of `cq64-author` service send notification to
+`cq_start_guard` and wait until `/bin/healthchecks/instance` returns 200 code
+and `{"status": "ok"}` JSON in the body. Don't spend more than 15 minutes on
+such health check. Requests will be send every 10 seconds, however each HTTP
+call can't last more than 5 seconds.
 
 # Testing
 
