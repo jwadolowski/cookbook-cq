@@ -545,14 +545,14 @@ For factory configs:
 * ( **String** ) `instance` - Instance URL
 * ( **String** ) `factory_pid` - Factory PID
 * ( **Hash** ) `properties` - Key-value pairs that represent OSGi config properties
-* ( **Boolean** ) `append` - If set to true arrays will be merged. Use if you'd like to specify just a subset of array
+* ( **Boolean** ) `append` - If set to `true` arrays will be merged. Use if you'd like to specify just a subset of array
   elements. `false` by default. Has no impact on other property types (String, Integer, etc)
-* ( **Boolean** ) `apply_all` - If true all properties defined in a `cq_osgi_config` resource will be used when applying
-  OSGi configuration (despite of the fact just a subset differs). Example: 5 properties were defined as properties, 3 of
-  them require update, but all of them will be set. `false` by default
+* ( **Boolean** ) `apply_all` - If `true` all properties defined in a `cq_osgi_config` resource will be used when
+  applying OSGi configuration (despite of the fact just a subset differs). Example: 5 properties were defined as
+  properties, 3 of them require update, but all of them will be set. `false` by default
 * ( **Boolean** ) `include_missing` - Properties that were NOT defined by user, but exist in OSGi will be included as a
-  part of an update if this property is set to true for regular OSGi configs. For factory configs it behaves almost the
-  same. If new instance needs to be created then defaults defined in factory PID will be used. In case of existing
+  part of an update if this property is set to `true` for regular OSGi configs. For factory configs it behaves almost
+  the same. If new instance needs to be created then defaults defined in factory PID will be used. In case of existing
   instance update, all missing properties will be based on properties defined in that instance. This is recommended
   property when you'd like to edit pre-existing factory or regular configs. `true` by default
 * ( **Array** ) `unique_fields` - Property names/keys that define uniqueness of given config. Applicable to factory
@@ -564,7 +564,7 @@ For factory configs:
   and every single one of them has exactly the same set of properties
 * ( **Boolean** ) `enforce_count` - Reduces number of duplicated configs if more than count has been found. Applicable
   to factory configs only. `false` by default
-* ( **Boolean** ) `force` - If true, defined OSGi config is deleted/updated regardless of current settings. Applies to
+* ( **Boolean** ) `force` - If `true`, defined OSGi config is deleted/updated regardless of current settings. Applies to
   regular OSGi configs only. This violates idempotence, so please use `only_if` or `not_if` blocks to prevent constant
   execution
 * ( **Boolean** ) `rescue_mode` - Some config operations may cause shutdown of the entire OSGi because of dependency
