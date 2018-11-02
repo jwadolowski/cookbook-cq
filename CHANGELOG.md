@@ -1,3 +1,8 @@
+# Unreleased
+
+* #68 New resource: `cq_start_guard`
+* #69 `cq_start_guard` docs
+
 # v1.1.2 (2018-07-02)
 
 * Added support for Amazon Linux in service creation
