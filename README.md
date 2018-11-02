@@ -68,6 +68,8 @@ that time). Nowadays the `aem` name seems to be taken anyways, so I no longer ha
 ## Chef versions
 
 * Chef 12.x
+* Chef 13.x
+* Chef 14.x
 
 ## AEM/CQ versions
 
