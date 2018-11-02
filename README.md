@@ -96,391 +96,88 @@ installs Oracle's JDK7.
 
 ---
 
-<table>
-  <tr>
-    <th>Attribute</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>['cq']['user']</tt></td>
-    <td>String</td>
-    <td>System user for CQ/AEM</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['user_uid']</tt></td>
-    <td>String</td>
-    <td>UID of CQ/AEM user</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['user_comment']</tt></td>
-    <td>String</td>
-    <td>Comment/description of CQ/AEM user</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['user_shell']</tt></td>
-    <td>String</td>
-    <td>Default shell of CQ/AEM user</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['group']</tt></td>
-    <td>String</td>
-    <td>System group for CQ/AEM</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['group_gid']</tt></td>
-    <td>String</td>
-    <td>GID of CQ/AEM group</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['limits']['file_descriptors']</tt></td>
-    <td>String</td>
-    <td>Max number of open file descriptor for CQ/AEM user</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['base_dir']</tt></td>
-    <td>String</td>
-    <td>Base directory for CQ/AEM instance(s)</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['home_dir']</tt></td>
-    <td>String</td>
-    <td>Home directory under wich CQ/AEM instances are deployed</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['version']</tt></td>
-    <td>String</td>
-    <td>CQ/AEM version</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['custom_tmp_dir']</tt></td>
-    <td>String</td>
-    <td>Custom directory that JVM uses for temporary files</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['jar']['url']</tt></td>
-    <td>String</td>
-    <td>URL from which CQ/AEM JAR file is downloaded</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['jar']['checksum']</tt></td>
-    <td>String</td>
-    <td>SHA256 checksum of CQ/AEM JAR file</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['license']['url']</tt></td>
-    <td>String</td>
-    <td>URL from which CQ/AEM license is downloaded</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['license']['checksum']</tt></td>
-    <td>String</td>
-    <td>SHA256 checksum of CQ/AEM license file</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['service']['start_timeout']</tt></td>
-    <td>Fixnum</td>
-    <td>Max number of seconds to wait until CQ/AEM instance is fully
-    operational after service start</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['service']['kill_delay']</tt></td>
-    <td>Fixnum</td>
-    <td>Max number of seconds for greceful instance stop before kill signal is
-    sent to the process</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['service']['restart_sleep']</tt></td>
-    <td>Fixnum</td>
-    <td>Number of seconds to wait between service stop and start</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['init_template_cookbook']</tt></td>
-    <td>String</td>
-    <td>Cookbook which is a source for init script template</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['conf_template_cookbook']</tt></td>
-    <td>String</td>
-    <td>Cookbook which is a source for conf file template</td>
-  </tr>
-</table>
+| Attribute                                  | Type   | Description                                                                                  |
+| ---                                        | ---    | ---                                                                                          |
+| `node['cq']['user']`                       | String | System user for CQ/AEM                                                                       |
+| `node['cq']['user_uid']`                   | String | UID of CQ/AEM user                                                                           |
+| `node['cq']['user_comment']`               | String | Comment/description of CQ/AEM user                                                           |
+| `node['cq']['user_shell']`                 | String | Default shell of CQ/AEM user                                                                 |
+| `node['cq']['group']`                      | String | System group for CQ/AEM                                                                      |
+| `node['cq']['group_gid']`                  | String | GID of CQ/AEM group                                                                          |
+| `node['cq']['limits']['file_descriptors']` | String | Max number of open file descriptor for CQ/AEM user                                           |
+| `node['cq']['base_dir']`                   | String | Base directory for CQ/AEM instance(s)                                                        |
+| `node['cq']['home_dir']`                   | String | Home directory under wich CQ/AEM instances are deployed                                      |
+| `node['cq']['version']`                    | String | CQ/AEM version                                                                               |
+| `node['cq']['custom_tmp_dir']`             | String | Custom directory that JVM uses for temporary files                                           |
+| `node['cq']['jar']['url']`                 | String | URL from which CQ/AEM JAR file is downloaded                                                 |
+| `node['cq']['jar']['checksum']`            | String | SHA256 checksum of CQ/AEM JAR file                                                           |
+| `node['cq']['license']['url']`             | String | URL from which CQ/AEM license is downloaded                                                  |
+| `node['cq']['license']['checksum']`        | String | SHA256 checksum of CQ/AEM license file                                                       |
+| `node['cq']['service']['start_timeout']`   | Fixnum | Max number of seconds to wait until CQ/AEM instance is fully operational after service start |
+| `node['cq']['service']['kill_delay']`      | Fixnum | Max number of seconds for greceful instance stop before kill signal is sent to the process   |
+| `node['cq']['service']['restart_sleep']`   | Fixnum | Number of seconds to wait between service stop and start                                     |
+| `node['cq']['init_template_cookbook']`     | String | Cookbook which is a source for init script template                                          |
+| `node['cq']['conf_template_cookbook']`     | String | Cookbook which is a source for conf file template                                            |
 
 ## author.rb
 
-All attributes in this file refer to CQ/AEM author instance (
-`['cq']['author']` namespace).
+All attributes in this file refer to CQ/AEM author instance (`node['cq']['author']` namespace).
 
-<table>
-  <tr>
-    <th>Attribute</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['run_mode']</tt></td>
-    <td>String</td>
-    <td>Instance run mode</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['port']</tt></td>
-    <td>String</td>
-    <td>Main port of CQ/AEM instance</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jmx_ip']</tt></td>
-    <td>String</td>
-    <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
-    reference to <tt>${CQ_JMX_IP}</tt> shell variable in
-    <tt>['cq']['author']['jvm']['jmx_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jmx_port']</tt></td>
-    <td>String</td>
-    <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
-    <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
-    reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
-    <tt>['cq']['author']['jvm']['jmx_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['debug_ip']</tt></td>
-    <td>String</td>
-    <td>IP to listen on with debug interface. Requires reference to
-    <tt>${CQ_DEBUG_IP}</tt> shell variable in
-    <tt>['cq']['author']['jvm']['debug_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['debug_port']</tt></td>
-    <td>String</td>
-    <td>Port of JVM debug interface. Requires reference to
-    <tt>${CQ_DEBUG_PORT}</tt> shell variable in
-    <tt>['cq']['author']['jvm']['debug_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['credentials']['login']</tt></td>
-    <td>String</td>
-    <td>User that's used to perform actions agains your CQ/AEM instance. The
-    most typical scenarios require <tt>admin</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['credentials']['password']</tt></td>
-    <td>String</td>
-    <td>Passowrd of user specified in
-    <tt>['cq']['author']['credentials']['login']</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['min_heap']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['max_heap']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['max_perm_size']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
-    parameter</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['code_cache_size']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to
-    <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['general_opts']</tt></td>
-    <td>String</td>
-    <td>Generic JVM parameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['code_cache_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to its code cache</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['gc_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to garbage collection</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['jmx_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameres related to JMX settings</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['debug_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to debug interface</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['crx_opts']</tt></td>
-    <td>String</td>
-    <td>CRX related JVM parameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['extra_opts']</tt></td>
-    <td>String</td>
-    <td>All other JVM patameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['healthcheck']['resource']</tt></td>
-    <td>String</td>
-    <td>Resource that's queried during instance start to determine whether
-    CQ/AEM is fully operational</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['healthcheck']['response_code']</tt></td>
-    <td>String</td>
-    <td>Expected HTTP status code of healthcheck resource</td>
-  </tr>
-</table>
+| Attribute                                              | Type   | Description                                                                                                                                                                                                                               |
+| ---                                                    | ---    | ---                                                                                                                                                                                                                                       |
+| `node['cq']['author']['run_mode']`                     | String | Instance run mode                                                                                                                                                                                                                         |
+| `node['cq']['author']['port']`                         | String | Main port of CQ/AEM instance                                                                                                                                                                                                              |
+| `node['cq']['author']['jmx_ip']`                       | String | Value of `-Djava.rmi.server.hostname` JVM parameter.Requires reference to `${CQ_JMX_IP} shell variable in `node['cq']['author']['jvm']['jmx_opts']` attribute to be effective                                                             |
+| `node['cq']['author']['jmx_port']`                     | String | Value of `-Dcom.sun.management.jmxremote.port` and `-Dcom.sun.management.jmxremote.rmi.port` JVM parameters. Requires reference to `${CQ_JMX_PORT}` shell variable in `node['cq']['author']['jvm']['jmx_opts']` attribute to be effective |
+| `node['cq']['author']['debug_ip']`                     | String | IP to listen on with debug interface. Requires reference to `${CQ_DEBUG_IP}` shell variable in `node['cq']['author']['jvm']['debug_opts']` attribute to be effective                                                                      |
+| `node['cq']['author']['debug_port']`                   | String | Port of JVM debug interface. Requires reference to `${CQ_DEBUG_PORT}` shell variable in `node['cq']['author']['jvm']['debug_opts']` attribute to be effective                                                                             |
+| `node['cq']['author']['credentials']['login']`         | String | User that's used to perform actions agains your CQ/AEM instance. The most typical scenarios require admin                                                                                                                                 |
+| `node['cq']['author']['credentials']['password']`      | String | Passowrd of user specified in `node['cq']['author']['credentials']['login']`                                                                                                                                                              |
+| `node['cq']['author']['jvm']['min_heap']`              | String | Number of megabytes that's passed on to `-Xms` JVM parameter                                                                                                                                                                              |
+| `node['cq']['author']['jvm']['max_heap']`              | String | Number of megabytes that's passed on to `-Xmx` JVM parameter                                                                                                                                                                              |
+| `node['cq']['author']['jvm']['max_perm_size']`         | String | Number of megabytes that's passed on to `-XX:MaxPermSize` JVM parameter                                                                                                                                                                   |
+| `node['cq']['author']['jvm']['code_cache_size']`       | String | Number of megabytes that's passed on to `-XX:ReservedCodeCacheSize` JVM parameter                                                                                                                                                         |
+| `node['cq']['author']['jvm']['general_opts']`          | String | Generic JVM parameters                                                                                                                                                                                                                    |
+| `node['cq']['author']['jvm']['code_cache_opts']`       | String | JVM parameters related to its code cache                                                                                                                                                                                                  |
+| `node['cq']['author']['jvm']['gc_opts']`               | String | JVM parameters related to garbage collection                                                                                                                                                                                              |
+| `node['cq']['author']['jvm']['jmx_opts']`              | String | JVM parameres related to JMX settings                                                                                                                                                                                                     |
+| `node['cq']['author']['jvm']['debug_opts']`            | String | JVM parameters related to debug interface                                                                                                                                                                                                 |
+| `node['cq']['author']['jvm']['crx_opts']`              | String | CRX related JVM parameters                                                                                                                                                                                                                |
+| `node['cq']['author']['jvm']['extra_opts']`            | String | All other JVM patameters                                                                                                                                                                                                                  |
+| `node['cq']['author']['healthcheck']['resource']`      | String | Resource that's queried during instance start to determine whether CQ/AEM is fully operational                                                                                                                                            |
+| `node['cq']['author']['healthcheck']['response_code']` | String | Expected HTTP status code of healthcheck resource                                                                                                                                                                                         |
+| `node['cq']['author']['healthcheck']['response_code']` | String | Expected HTTP status code of healthcheck resource                                                                                                                                                                                         |
+| `node['cq']['author']['healthcheck']['response_body']` | String | Expected string in HTTP healthcheck response
 
 ## publish.rb
 
-All attributes in this file refer to CQ/AEM publish instance (
-`['cq']['publish']` namespace).
+All attributes in this file refer to CQ/AEM publish instance (`node['cq']['publish']` namespace).
 
-<table>
-  <tr>
-    <th>Attribute</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['run_mode']</tt></td>
-    <td>String</td>
-    <td>Instance run mode</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['port']</tt></td>
-    <td>String</td>
-    <td>Main port of CQ/AEM instance</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jmx_ip']</tt></td>
-    <td>String</td>
-    <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
-    reference to <tt>${CQ_JMX_IP}</tt> shell variable in
-    <tt>['cq']['publish']['jvm']['jmx_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jmx_port']</tt></td>
-    <td>String</td>
-    <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
-    <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
-    reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
-    <tt>['cq']['publish']['jvm']['jmx_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['debug_ip']</tt></td>
-    <td>String</td>
-    <td>IP to listen on with debug interface. Requires reference to
-    <tt>${CQ_DEBUG_IP}</tt> shell variable in
-    <tt>['cq']['publish']['jvm']['debug_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['debug_port']</tt></td>
-    <td>String</td>
-    <td>Port of JVM debug interface. Requires reference to
-    <tt>${CQ_DEBUG_PORT}</tt> shell variable in
-    <tt>['cq']['publish']['jvm']['debug_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['credentials']['login']</tt></td>
-    <td>String</td>
-    <td>User that's used to perform actions agains your CQ/AEM instance. The
-    most typical scenarios require <tt>admin</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['credentials']['password']</tt></td>
-    <td>String</td>
-    <td>Passowrd of user specified in
-    <tt>['cq']['publish']['credentials']['login']</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['min_heap']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['max_heap']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['max_perm_size']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
-    parameter</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['code_cache_size']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to
-    <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['general_opts']</tt></td>
-    <td>String</td>
-    <td>Generic JVM parameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['code_cache_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to its code cache</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['gc_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to garbage collection</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['jmx_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameres related to JMX settings</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['debug_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to debug interface</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['crx_opts']</tt></td>
-    <td>String</td>
-    <td>CRX related JVM parameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['extra_opts']</tt></td>
-    <td>String</td>
-    <td>All other JVM patameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['healthcheck']['resource']</tt></td>
-    <td>String</td>
-    <td>Resource that's queried during instance start to determine whether
-    CQ/AEM is fully operational</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['healthcheck']['response_code']</tt></td>
-    <td>String</td>
-    <td>Expected HTTP status code of healthcheck resource</td>
-  </tr>
-</table>
+| Attribute                                               | Type   | Description                                                                                                                                                                                                                                |
+| ---                                                     | ---    | ---                                                                                                                                                                                                                                        |
+| `node['cq']['publish']['run_mode']`                     | String | Instance run mode                                                                                                                                                                                                                          |
+| `node['cq']['publish']['port']`                         | String | Main port of CQ/AEM instance                                                                                                                                                                                                               |
+| `node['cq']['publish']['jmx_ip']`                       | String | Value of `-Djava.rmi.server.hostname` JVM parameter.Requires reference to `${CQ_JMX_IP} shell variable in `node['cq']['publish']['jvm']['jmx_opts']` attribute to be effective                                                             |
+| `node['cq']['publish']['jmx_port']`                     | String | Value of `-Dcom.sun.management.jmxremote.port` and `-Dcom.sun.management.jmxremote.rmi.port` JVM parameters. Requires reference to `${CQ_JMX_PORT}` shell variable in `node['cq']['publish']['jvm']['jmx_opts']` attribute to be effective |
+| `node['cq']['publish']['debug_ip']`                     | String | IP to listen on with debug interface. Requires reference to `${CQ_DEBUG_IP}` shell variable in `node['cq']['publish']['jvm']['debug_opts']` attribute to be effective                                                                      |
+| `node['cq']['publish']['debug_port']`                   | String | Port of JVM debug interface. Requires reference to `${CQ_DEBUG_PORT}` shell variable in `node['cq']['publish']['jvm']['debug_opts']` attribute to be effective                                                                             |
+| `node['cq']['publish']['credentials']['login']`         | String | User that's used to perform actions agains your CQ/AEM instance. The most typical scenarios require admin                                                                                                                                  |
+| `node['cq']['publish']['credentials']['password']`      | String | Passowrd of user specified in `node['cq']['publish']['credentials']['login']`                                                                                                                                                              |
+| `node['cq']['publish']['jvm']['min_heap']`              | String | Number of megabytes that's passed on to `-Xms` JVM parameter                                                                                                                                                                               |
+| `node['cq']['publish']['jvm']['max_heap']`              | String | Number of megabytes that's passed on to `-Xmx` JVM parameter                                                                                                                                                                               |
+| `node['cq']['publish']['jvm']['max_perm_size']`         | String | Number of megabytes that's passed on to `-XX:MaxPermSize` JVM parameter                                                                                                                                                                    |
+| `node['cq']['publish']['jvm']['code_cache_size']`       | String | Number of megabytes that's passed on to `-XX:ReservedCodeCacheSize` JVM parameter                                                                                                                                                          |
+| `node['cq']['publish']['jvm']['general_opts']`          | String | Generic JVM parameters                                                                                                                                                                                                                     |
+| `node['cq']['publish']['jvm']['code_cache_opts']`       | String | JVM parameters related to its code cache                                                                                                                                                                                                   |
+| `node['cq']['publish']['jvm']['gc_opts']`               | String | JVM parameters related to garbage collection                                                                                                                                                                                               |
+| `node['cq']['publish']['jvm']['jmx_opts']`              | String | JVM parameres related to JMX settings                                                                                                                                                                                                      |
+| `node['cq']['publish']['jvm']['debug_opts']`            | String | JVM parameters related to debug interface                                                                                                                                                                                                  |
+| `node['cq']['publish']['jvm']['crx_opts']`              | String | CRX related JVM parameters                                                                                                                                                                                                                 |
+| `node['cq']['publish']['jvm']['extra_opts']`            | String | All other JVM patameters                                                                                                                                                                                                                   |
+| `node['cq']['publish']['healthcheck']['resource']`      | String | Resource that's queried during instance start to determine whether CQ/AEM is fully operational                                                                                                                                             |
+| `node['cq']['publish']['healthcheck']['response_code']` | String | Expected HTTP status code of healthcheck resource                                                                                                                                                                                          |
+| `node['cq']['publish']['healthcheck']['response_code']` | String | Expected HTTP status code of healthcheck resource                                                                                                                                                                                          |
+| `node['cq']['publish']['healthcheck']['response_body']` | String | Expected string in HTTP healthcheck response
 
 # Recipes
 
