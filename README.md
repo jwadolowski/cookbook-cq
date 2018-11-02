@@ -300,112 +300,36 @@ If you'd like to upload and install a package, in most cases please use `deploy`
 
 ### Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>name</tt></td>
-    <td>String</td>
-    <td>Package name. Can be anything as long as it means something to you.
-    Actual package name is extracted from provided ZIP file. Whenever you use
-    <tt>notifies</tt> on your package resource and more than a single action
-    was defined (i.e. <tt>action [:upload, :install]</tt>), two notifications
-    will be triggered (after <tt>:upload</tt> and <tt>:install</tt>
-    respectively)</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>source</tt></td>
-    <td>String</td>
-    <td>URL to ZIP package. Accepted protocols: <tt>file://</tt>,
-    <tt>http://</tt>, <tt>https://</tt></td>
-  </tr>
-  <tr>
-    <td><tt>http_user</tt></td>
-    <td>String</td>
-    <td>HTTP basic auth user. Use whenever <tt>source</tt> requires such
-    authentication</td>
-  </tr>
-  <tr>
-    <td><tt>http_pass</tt></td>
-    <td>String</td>
-    <td>HTTP basic auth password. Use whenever <tt>source</tt> requires such
-    authentication</td>
-  </tr>
-  <tr>
-    <td><tt>recursive_install</tt></td>
-    <td>Boolean</td>
-    <td>Whether to use recursive flag when installing packages (required for
-    service packs and some hotfixes). Applies only to install and deploy
-    actions</td>
-  </tr>
-  <tr>
-    <td><tt>rescue_mode</tt></td>
-    <td>Boolean</td>
-    <td>Some packages may cause shutdown of the entire OSGi because of
-    dependecy (i.e. cycle) or bundle priority issues. In such case after
-    package installation java process is still running, however the instance
-    is not responding over HTTP. After CQ/AEM restart everyting works
-    perfectly fine again.
-    This flag allows Chef to continue processing if it is not able to get OSGi
-    bundles state <tt>error_state_barrier</tt> times in a row.
-    In most (if not all) cases it should be combined with restart notification
-    (please see examples below).
-    It is highly discouraged to use this property, as 99% of CRX packages
-    shouldn't require such configuration. Unfortunately that 1% does. This is
-    rather a safety switch than a common pattern that should be used in every
-    single case.
-    Applies only to install and deploy actions.</td>
-  </tr>
-  <tr>
-    <td><tt>checksum</tt></td>
-    <td>String</td>
-    <td>ZIP file checksum (passed through to <tt>remote_file</tt> resource
-    that is used under the hood by <tt>cq_package</tt> provider)</td>
-  </tr>
-  <tr>
-    <td><tt>same_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>How many times in a row the same OSGi state should occur after package
-    (un)installation to consider this process successful. Default is 6</td>
-  </tr>
-  <tr>
-    <td><tt>error_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>How many times in a row the OSGi console was unavailable after package
-    (un)installation. Useful only when combined with <tt>rescue_mode</tt>. By
-    default set to 6</td>
-  </tr>
-  <tr>
-    <td><tt>max_attempts</tt></td>
-    <td>Integer</td>
-    <td>Number of attempts while waiting for stable OSGi state after package
-    (un)installation. Set to 30 by default</td>
-  </tr>
-  <tr>
-    <td><tt>sleep_time</tt></td>
-    <td>Integer</td>
-    <td>Sleep time between OSGi status checks (in seconds) after package
-    (un)installation. Set to 10 by default</td>
-  </tr>
-</table>
+* ( **String** ) `name` - Package name. Can be anything as long as it means something to you. Actual package name is
+  extracted from provided ZIP file. Whenever you use notifies on your package resource and more than a single action as
+  defined (i.e. action [:upload, :install]), two notifications will be triggered (after :upload and :install
+  respectively)
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+* ( **String** ) `source` - URL to ZIP package. Accepted protocols: `file://`, `http://`, `https://`
+* ( **String** ) `http_user` - HTTP basic auth user. Use whenever source requires such authentication
+* ( **String** ) `http_pass` - HTTP basic auth password. Use whenever source requires such authentication
+* ( **Boolean** ) `recursive_install` - Whether to use recursive flag when installing packages (required for service
+  packs and some hotfixes). Applies only to install and deploy actions
+* ( **Boolean** ) `rescue_mode` - Some packages may cause shutdown of the entire OSGi because of dependency (i.e. cycle)
+  or bundle priority issues. In such case after package installation java process is still running, however the instance
+  is not responding over HTTP. After CQ/AEM restart everything works perfectly fine again. This flag allows Chef to
+  continue processing if it is not able to get OSGi bundles state `error_state_barrier` times in a row. In most (if not
+  all) cases it should be combined with restart notification (please see examples below). It is highly discouraged to
+  use this property, as 99% of CRX packages shouldn't require such configuration. Unfortunately that 1% does. This is
+  rather a safety switch than a common pattern that should be used in every single case. Applies only to install and
+  deploy actions.
+* ( **String** ) `checksum` - ZIP file checksum (passed through to `remote_file` resource that is used under the hood by
+  `cq_package` provider)
+* ( **Integer** ) `same_state_barrier` - How many times in a row the same OSGi state should occur after package
+  (un)installation to consider this process successful. Default is 6
+* ( **Integer** ) `error_state_barrier` - How many times in a row the OSGi console was unavailable after package
+  (un)installation. Useful only when combined with `rescue_mode`. By default set to 6
+* ( **Integer** ) `max_attempts` - Number of attempts while waiting for stable OSGi state after package
+  (un)installation. Set to 30 by default
+* ( **Integer** ) `sleep_time` - Sleep time between OSGi status checks (in seconds) after package (un)installation. Set
+  to 10 by default
 
 ### Usage
 
@@ -419,7 +343,11 @@ cq_package 'Slice 4.2.1' do
 
   action :upload
 end
+```
 
+First `cq_package` resource will download Slice package from provided URL and upload it to defined AEM Author instance.
+
+```ruby
 cq_package 'Upgrade to Oak 1.0.13' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -431,7 +359,12 @@ cq_package 'Upgrade to Oak 1.0.13' do
 
   action :upload
 end
+```
 
+Second resource does the same as the first one, but for Oak 1.0.13 hotfix. The only difference is that provided URL
+requires basic auth, hence the `http_user` and `http_pass` properties.
+
+```ruby
 cq_package 'ACS AEM Commons 1.10.2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -442,7 +375,11 @@ cq_package 'ACS AEM Commons 1.10.2' do
 
   action [:upload, :install]
 end
+```
 
+Third package shows how to combine multiple actions in a single `cq_package` resource usage.
+
+```ruby
 cq_package 'AEM6 hotfix 6316' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -454,7 +391,14 @@ cq_package 'AEM6 hotfix 6316' do
 
   notifies :restart, 'service[cq60-author]', :immediately
 end
+```
 
+4th `cq_package` presents how to use `deploy` action that combines both `upload` and `install` in a single execution.
+This is preferred way of doing package deployment, in particular for those that require AEM service restart as soon as
+installation is completed. `recursive_install` was also used here, which is required for majority of hotfixes and every
+service pack.
+
+```ruby
 cq_package 'Geometrixx All' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -466,7 +410,12 @@ cq_package 'Geometrixx All' do
 
   action :uninstall
 end
+```
 
+Next example describes usage of `uninstall` action. In this particular case operation was executed against Geometrixx
+package.
+
+```ruby
 cq_package 'Not really well-thought-out package' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -480,7 +429,19 @@ cq_package 'Not really well-thought-out package' do
 
   notifies :restart, 'service[cq60-author]', :immediately
 end
+```
 
+6th `cq_package` presents usage of `rescue_mode` property. Imagine that this package provides new OSGi bundles and right
+after its installation some serious issue occurs (i.e. unresolvable OSGi dependency, conflict or cycle). As a result of
+this event all bundles will be turned off and effectively instance will stop responding or start serving 404s for all
+resources (including `/system/console`). The java process though will still be running. The only solution to that
+problem is AEM restart, after which all work perfectly fine again. Without `rescue_mode` property `cq_package` provider
+will keep checking OSGi bundles to detect their stable state, but none of these attempts will end successfully, as
+nothing is reachable over HTTP. Eventually Chef run will be aborted. If `rescue_mode` was activated (set to `true`) then
+after `error_state_barrier` unsuccessful attempts an error will be printed and the processing will be continued (restart
+of `cq60-author` service in this case).
+
+```ruby
 cq_package 'Author: Service Pack 2 (upload)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -507,49 +468,14 @@ cq_package 'Author: Service Pack 2 (install)' do
 end
 ```
 
-First `cq_package` resource will download Slice package from provided URL and
-upload it to defined AEM Author instance.
+7th & 8th `cq_package` resources explain how to deal with AEM instance restarts after package installation and tune post
+installation OSGi stability checks.
 
-Second resource does the same as the first one, but for Oak 1.0.13 hotfix. The
-only difference is that provided URL requires basic auth, hence the `http_user`
-and `http_pass` properties.
+Moreover it explains how to use combination of `upload` and `install` instead of `deploy`. Such procedure might be
+required sometimes, i.e. when some extra steps have to be done after package upload, but before its installation.
 
-Third package shows how to combine multiple actions in a single `cq_package`
-resource usage.
-
-4th `cq_package` presents how to use `deploy` action that combines both
-`upload` and `install` in a single execution. This is preferred way of doing
-package deployment, in particular for those that require AEM service restart
-as soon as installation is completed. `recursive_install` was also used here,
-which is required for majority of hotfixes and every service pack.
-
-Next example describes usage of `uninstall` action. In this particular case
-operation was executed against Geometrixx package.
-
-6th `cq_package` presents usage of `rescue_mode` property. Imagine that this
-package provides new OSGi bundles and right after its installation some serious
-issue occurs (i.e. unresolvable OSGi dependency, conflict or cycle). As a
-result of this event all bundles will be turned off and effectively instance
-will stop responding or start serving 404s for all resources (including
-`/system/console`). The java process though will still be running. The only
-solution to that problem is AEM restart, after which all work perfectly fine
-again. Without `rescue_mode` property `cq_package` provider will keep checking
-OSGi bundles to detect their stable state, but none of these attempts will end
-successfully, as nothing is reachable over HTTP. Eventually Chef run will be
-aborted. If `rescue_mode` was activated (set to `true`) then after
-`error_state_barrier` unsuccessful attempts an error will be printed and the
-processing will be continued (restart of `cq60-author` service in this case).
-
-7th & 8th `cq_package` resources explain how to deal with AEM instance
-restarts after package installation and tune post installation OSGi
-stability checks.
-
-Moreover it explains how to use combination of `upload` and `install` instead
-of `deploy`. Such procedure might be required sometimes, i.e. when some extra
-steps have to be done after package upload, but before its installation.
-
-Please notice that both resources were named differently on purpose
-to avoid resource merge and 2 restarts. If you'd use:
+Please notice that both resources were named differently on purpose to avoid resource merge and 2 restarts. If you'd
+use:
 
 ```ruby
 cq_package 'Author: Service Pack 2' do
@@ -592,15 +518,12 @@ end
 
 two restarts will be triggered.
 
-In the first case during compile phase Chef will generate 2 resources with the
-same name, but different actions.
+In the first case during compile phase Chef will generate 2 resources with the same name, but different actions.
 
-In second example restart still will be triggered after upload, even if it's
-not explicitly defined during 1st usage (upload action). The reason is quite
-simple - both resources are named the same (`Author: Service Pack 2`) and Chef
-will treat this as a single resource on resource collection. It means that
-notify parameter will be silently merged to the resource with upload action
-during compile phase.
+In second example restart still will be triggered after upload, even if it's not explicitly defined during 1st usage
+(upload action). The reason is quite simple - both resources are named the same (`Author: Service Pack 2`) and Chef will
+treat this as a single resource on resource collection. It means that notify parameter will be silently merged to the
+resource with upload action during compile phase.
 
 ## cq_osgi_config
 
