@@ -101,18 +101,18 @@ it installs Oracle's JDK7.
 * ( **String** ) `node['cq']['group_gid']` - GID of CQ/AEM group
 * ( **String** ) `node['cq']['limits']['file_descriptors']` - Max number of open file descriptor for CQ/AEM user
 * ( **String** ) `node['cq']['base_dir']` - Base directory for CQ/AEM instance(s)
-* ( **String** ) `node['cq']['home_dir']` - Home directory under wich CQ/AEM instances are deployed
+* ( **String** ) `node['cq']['home_dir']` - Home directory under which CQ/AEM instances are deployed
 * ( **String** ) `node['cq']['version']` - CQ/AEM version
 * ( **String** ) `node['cq']['custom_tmp_dir']` - Custom directory that JVM uses for temporary files
 * ( **String** ) `node['cq']['jar']['url']` - URL from which CQ/AEM JAR file is downloaded
 * ( **String** ) `node['cq']['jar']['checksum']` - SHA256 checksum of CQ/AEM JAR file
 * ( **String** ) `node['cq']['license']['url']` - URL from which CQ/AEM license is downloaded
 * ( **String** ) `node['cq']['license']['checksum']` - SHA256 checksum of CQ/AEM license file
-* ( **Fixnum** ) `node['cq']['service']['start_timeout']` - Max number of seconds to wait until CQ/AEM instance is fully
+* ( **Integer** ) `node['cq']['service']['start_timeout']` - Max number of seconds to wait until CQ/AEM instance is fully
   operational after service start 
-* ( **Fixnum** ) `node['cq']['service']['kill_delay']` - Max number of seconds for greceful instance stop before kill
+* ( **Integer** ) `node['cq']['service']['kill_delay']` - Max number of seconds for graceful instance stop before kill
   signal is sent to the process
-* ( **Fixnum** ) `node['cq']['service']['restart_sleep']` - Number of seconds to wait between service stop and start
+* ( **Integer** ) `node['cq']['service']['restart_sleep']` - Number of seconds to wait between service stop and start
 * ( **String** ) `node['cq']['init_template_cookbook']` - Cookbook which is a source for init script template
 * ( **String** ) `node['cq']['conf_template_cookbook']` - Cookbook which is a source for conf file template
 
@@ -131,9 +131,9 @@ All attributes in this file refer to CQ/AEM author instance (`node['cq']['author
   `${CQ_DEBUG_IP}` shell variable in `node['cq']['author']['jvm']['debug_opts']` attribute to be effective
 * ( **String** ) `node['cq']['author']['debug_port']` - Port of JVM debug interface. Requires reference to
   `${CQ_DEBUG_PORT}` shell variable in `node['cq']['author']['jvm']['debug_opts']` attribute to be effective
-* ( **String** ) `node['cq']['author']['credentials']['login']` - User that's used to perform actions agains your CQ/AEM
+* ( **String** ) `node['cq']['author']['credentials']['login']` - User that's used to perform actions on your CQ/AEM
   instance. The most typical scenarios require admin
-* ( **String** ) `node['cq']['author']['credentials']['password']` - Passowrd of user specified in
+* ( **String** ) `node['cq']['author']['credentials']['password']` - Password of user specified in
   `node['cq']['author']['credentials']['login']`
 * ( **String** ) `node['cq']['author']['jvm']['min_heap']` - Number of megabytes that's passed on to `-Xms` JVM
   parameter
@@ -587,7 +587,7 @@ For factory configs:
     <td>Boolean</td>
     <td>If set to <tt>true</tt> arrays will be merged. Use if you'd like to
     specify just a subset of array elements. <tt>false</tt> by default. Has no
-    impact on other property types (String, Fixnum, etc)</td>
+    impact on other property types (String, Integer, etc)</td>
   </tr>
   <tr>
     <td><tt>apply_all</tt></td>
@@ -623,7 +623,7 @@ For factory configs:
   </tr>
   <tr>
     <td><tt>count</tt></td>
-    <td>Fixnum</td>
+    <td>Integer</td>
     <td>Number of duplicated instances of given OSGi configuration. 1 by
     default. Applicable to factory configs only. Useful when duplicated
     instances are allowed, i.e. each instance specify some sort of a worker and
