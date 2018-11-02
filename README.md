@@ -802,33 +802,10 @@ Management of OSGi components
 
 ## Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>pid</tt></td>
-    <td>String</td>
-    <td>Component PID</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-</table>
+* ( **String** ) `pid` - Component PID
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
 
 ## Usage
 
@@ -852,16 +829,13 @@ cq_osgi_component 'Author: com.project.email.servlet' do
 end
 ```
 
-Both examples are self-explanatory. First one enables
-`com.example.my.component` component if it's in `disabled` state. Second one
-will disable `com.project.email.servlet` component, but only if it's state is
-not already `disabled`.
+Both examples are self-explanatory. First one enables `com.example.my.component` component if it's in `disabled` state.
+Second one will disable `com.project.email.servlet` component, but only if it's state is not already `disabled`.
 
 ---
 
-Please keep in mind that OSGi components used to get back to their original
-state after AEM instance restart. So if you disabled one, most probably it'll
-become enabled after instance restart.
+Please keep in mind that OSGi components used to get back to their original state after AEM instance restart. So if you
+disabled one, most probably it'll become enabled after instance restart.
 
 ---
 
@@ -875,145 +849,55 @@ Exposes a resource for CQ/AEM user management. Supports:
 
 ## Actions
 
-* `modify` - use to modify an existing user. Action will be skipped if given
-  user does not exist
+* `modify` - use to modify an existing user. Action will be skipped if given user does not exist
 
 ## Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>id</tt></td>
-    <td>String</td>
-    <td>User ID (login)</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>email</tt></td>
-    <td>String</td>
-    <td>E-mail</td>
-  </tr>
-  <tr>
-    <td><tt>first_name</tt></td>
-    <td>String</td>
-    <td>First name</td>
-  </tr>
-  <tr>
-    <td><tt>last_name</tt></td>
-    <td>String</td>
-    <td>Last name</td>
-  </tr>
-  <tr>
-    <td><tt>phone_number</tt></td>
-    <td>String</td>
-    <td>Phone number</td>
-  </tr>
-  <tr>
-    <td><tt>job_title</tt></td>
-    <td>String</td>
-    <td>Job title</td>
-  </tr>
-  <tr>
-    <td><tt>street</tt></td>
-    <td>String</td>
-    <td>Street</td>
-  </tr>
-  <tr>
-    <td><tt>mobile</tt></td>
-    <td>String</td>
-    <td>Mobile</td>
-  </tr>
-  <tr>
-    <td><tt>city</tt></td>
-    <td>String</td>
-    <td>City</td>
-  </tr>
-  <tr>
-    <td><tt>postal_code</tt></td>
-    <td>String</td>
-    <td>Postal code</td>
-  </tr>
-  <tr>
-    <td><tt>country</tt></td>
-    <td>String</td>
-    <td>Country</td>
-  </tr>
-  <tr>
-    <td><tt>state</tt></td>
-    <td>String</td>
-    <td>State</td>
-  </tr>
-  <tr>
-    <td><tt>gender</tt></td>
-    <td>String</td>
-    <td>Gender</td>
-  </tr>
-  <tr>
-    <td><tt>about</tt></td>
-    <td>String</td>
-    <td>About section</td>
-  </tr>
-  <tr>
-    <td><tt>user_password</tt></td>
-    <td>String</td>
-    <td>Desired password for non-admin user specified by <tt>id</tt>
-    property</td>
-  </tr>
-  <tr>
-    <td><tt>enabled</tt></td>
-    <td>Boolean</td>
-    <td>True by default, set to false to deactive given user. Has no effect
-    for admin user</td>
-  </tr>
-  <tr>
-    <td><tt>old_password</tt></td>
-    <td>String</td>
-    <td>Old password of admin user. Has no effect for non-admin ones</td>
-  </tr>
-</table>
+* ( **String** ) `id` - User ID (login)
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+* ( **String** ) `email` - E-mail
+* ( **String** ) `first_name` - First name
+* ( **String** ) `last_name` - Last name
+* ( **String** ) `phone_number` - Phone number
+* ( **String** ) `job_title` - Job title
+* ( **String** ) `street` - Street
+* ( **String** ) `mobile` - Mobile
+* ( **String** ) `city` - City
+* ( **String** ) `postal_code` - Postal code
+* ( **String** ) `country` - Country
+* ( **String** ) `state` - State
+* ( **String** ) `gender` - Gender
+* ( **String** ) `about` - About section
+* ( **String** ) `user_password` - Desired password for non-admin user specified by id property
+* ( **Boolean** ) `enabled` - `true` by default, set to `false` to deactivate given user. Has no effect for admin user
+* ( **String** ) `old_password` - Old password of admin user. Has no effect for non-admin ones
 
 ## Compatibility matrix
 
-| Property        | `admin` user        | All other users    |
-| --------------- | ------------------- | ------------------ |
-| `id`            | :white_check_mark:  | :white_check_mark: |
-| `username`      | :white_check_mark:  | :white_check_mark: |
-| `password`      | :white_check_mark:  | :white_check_mark: |
-| `instance`      | :white_check_mark:  | :white_check_mark: |
-| `email`         | :white_check_mark:  | :white_check_mark: |
-| `first_name`    | :white_check_mark:  | :white_check_mark: |
-| `last_name`     | :white_check_mark:  | :white_check_mark: |
-| `phone_number`  | :white_check_mark:  | :white_check_mark: |
-| `job_title`     | :white_check_mark:  | :white_check_mark: |
-| `street`        | :white_check_mark:  | :white_check_mark: |
-| `mobile`        | :white_check_mark:  | :white_check_mark: |
-| `city`          | :white_check_mark:  | :white_check_mark: |
-| `postal_code`   | :white_check_mark:  | :white_check_mark: |
-| `country`       | :white_check_mark:  | :white_check_mark: |
-| `state`         | :white_check_mark:  | :white_check_mark: |
-| `gender`        | :white_check_mark:  | :white_check_mark: |
-| `about`         | :white_check_mark:  | :white_check_mark: |
-| `user_password` | :x:                 | :white_check_mark: |
-| `enabled`       | :x:                 | :white_check_mark: |
-| `old_password`  | :white_check_mark:  | :x:                |
+| Property        | `admin` user       | All other users    |
+| ---             | ---                | ---                |
+| `id`            | :white_check_mark: | :white_check_mark: |
+| `username`      | :white_check_mark: | :white_check_mark: |
+| `password`      | :white_check_mark: | :white_check_mark: |
+| `instance`      | :white_check_mark: | :white_check_mark: |
+| `email`         | :white_check_mark: | :white_check_mark: |
+| `first_name`    | :white_check_mark: | :white_check_mark: |
+| `last_name`     | :white_check_mark: | :white_check_mark: |
+| `phone_number`  | :white_check_mark: | :white_check_mark: |
+| `job_title`     | :white_check_mark: | :white_check_mark: |
+| `street`        | :white_check_mark: | :white_check_mark: |
+| `mobile`        | :white_check_mark: | :white_check_mark: |
+| `city`          | :white_check_mark: | :white_check_mark: |
+| `postal_code`   | :white_check_mark: | :white_check_mark: |
+| `country`       | :white_check_mark: | :white_check_mark: |
+| `state`         | :white_check_mark: | :white_check_mark: |
+| `gender`        | :white_check_mark: | :white_check_mark: |
+| `about`         | :white_check_mark: | :white_check_mark: |
+| `user_password` | :x:                | :white_check_mark: |
+| `enabled`       | :x:                | :white_check_mark: |
+| `old_password`  | :white_check_mark: | :x:                |
 
 ## Usage
 
@@ -1029,7 +913,13 @@ cq_user 'admin' do
 
   action :modify
 end
+```
 
+Modify action on `cq_user 'admin'` resource will change CQ/AEM `admin` password to `d4rk_kn1ght` if the current one is
+either `passw0rd` or `admin` (the latter is automatically checked if both `password` and `old_password` are incorrect).
+Moreover `admin` first name and last name will be updated (to `Bruce` and `Wayne` respectively) if needed.
+
+```ruby
 cq_user 'author' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -1045,13 +935,6 @@ cq_user 'author' do
   action :modify
 end
 ```
-
-Modify action on `cq_user 'admin'` resource will change CQ/AEM admin's password
-to `d4rk_kn1ght` if the current one is either `passw0rd` or `admin` (the latter
-is automatically checked if both `password` and `old_password` are incorrect).
-Moreover admin's first name and last name will be updated (to `Bruce` and
-`Wayne` respectively) if needed.
-
 Second example (`cq_user 'author'`) also updates user password, but this time
 the old one doesn't have to be specified, as this operation will be executed on
 admin rights (auth credentials: `username`/`password`). Additionally `auhtor`'s
@@ -1064,52 +947,19 @@ CRUD operations on JCR nodes.
 
 ## Actions
 
-* `create` - creates new node under given path if it doesn't exist. Otherwise
-  it modifies its properties if required
+* `create` - creates new node under given path if it doesn't exist. Otherwise it modifies its properties if required
 * `delete` - deletes node if it exists. Prints error otherwise
 * `modify` - modifies properties of existing JCR node
 
 ## Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>path</tt></td>
-    <td>String</td>
-    <td>Node path</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>properties</tt></td>
-    <td>Hash</td>
-    <td>Node properties</td>
-  </tr>
-  <tr>
-    <td><tt>append</tt></td>
-    <td>Boolean</td>
-    <td>By default set to <tt>true</tt>. If full overwrite of properties is
-    required please set <tt>append</tt> property to <tt>false</tt>. Applies
-    only to <tt>:create</tt> and <tt>:modify</tt> actions</td>
-  </tr>
-</table>
+* ( **String** ) `path` - Node path
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+* ( **Hash** ) `properties` - Node properties
+* ( **Boolean** ) `append` - By default set to `true`. If full overwrite of properties is required please set append
+  property to `false`. Applies only to `:create` and `:modify` actions
 
 ## Usage
 
@@ -1126,7 +976,14 @@ cq_jcr '/content/test_node' do
 
   action :create
 end
+```
 
+Create action on `cq_jcr '/content/test_node'` will create such node with given properties if it doesn't exist yet.
+Otherwise its properties will be updated if necessary. By default `append` is set to `true`, which means existing
+properties of `/content/test_node` will stay untouched unless the same properties are specified in your `cq_jcr`
+resource.
+
+```ruby
 cq_jcr '/content/geometrixx/en/products/jcr:content' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -1141,7 +998,13 @@ cq_jcr '/content/geometrixx/en/products/jcr:content' do
 
   action :create
 end
+```
 
+2nd example sets `append` property to `false`, which means that all properties except those specified in your resource
+should be removed. It will act as a full overwrite (keep in mind that some properties are protected and can't be
+deleted, moreover Sling API automatically adds things like `jcr:createdBy`).
+
+```ruby
 cq_jcr '/content/dam/geometrixx-media/articles/en/2012' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -1149,7 +1012,12 @@ cq_jcr '/content/dam/geometrixx-media/articles/en/2012' do
 
   action :delete
 end
+```
 
+Next example is very simple - `/content/dam/geometrixx-media/articles/en/2012` will get deleted if it exists. Otherwise
+warning message will be printed.
+
+```ruby
 cq_jcr '/content/geometrixx/en/services/certification/jcr:content' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -1163,88 +1031,31 @@ cq_jcr '/content/geometrixx/en/services/certification/jcr:content' do
 end
 ```
 
-Create action on `cq_jcr '/content/test_node'` will create such node with
-given properties if it doesn't exist yet. Otherwise its properties will be
-updated if necessary. By default `append` is set to `true`, which means
-existing properties of `/content/test_node` will stay untouched unless the same
-properties are specified in your `cq_jcr` resource.
-
-2nd example sets `append` property to `false`, which means that all
-properties except those specified in your resource should be removed. It will
-act as a full overwrite (keep in mind that some properties are protected and
-can't be deleted, moreover Sling API automatically adds things like
-`jcr:createdBy`).
-
-Next example is very simple - `/content/dam/geometrixx-media/articles/en/2012`
-will get deleted if it exists. Otherwise warning message will be printed.
-
-Last `cq_jcr` resource uses `:modify` action. It applies updates to existing
-nodes only. If specified path does not exist warning message will be
-displayed.
+Last `cq_jcr` resource uses `:modify` action. It applies updates to existing nodes only. If specified path does not
+exist warning message will be displayed.
 
 # cq_start_guard
 
-Allows you to wait for full AEM instance start before moving on with subsequent
-operations. It periodically sends HTTP request to AEM and compares response
-(both status code and body) with expected state. As soon as defined
-requirements are met the resource stops its job.
+Allows you to wait for full AEM instance start before moving on with subsequent operations. It periodically sends HTTP
+request to AEM and compares response (both status code and body) with expected state. As soon as defined requirements
+are met the resource stops its job.
 
 ## Actions
 
 * `nothing` - default action, does nothing :)
-* `run` - verifies instance state according to defined properties. This action
-  is *NOT idempotent* by design and should be always triggered via `notify`
-  from other resources
+* `run` - verifies instance state according to defined properties. This action is *NOT idempotent* by design and should
+  be always triggered via `notify` from other resources
 
 ## Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>name</tt></td>
-    <td>String</td>
-    <td>Start guard name</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>path</tt></td>
-    <td>String</td>
-    <td>URL path that's requested to verify instance health</td>
-  </tr>
-  <tr>
-    <td><tt>expected_code</tt></td>
-    <td>String</td>
-    <td>Expected HTTP status code</td>
-  </tr>
-  <tr>
-    <td><tt>expected_body</tt></td>
-    <td>String</td>
-    <td>Expected string in HTTP response body</td>
-  </tr>
-  <tr>
-    <td><tt>timeout</tt></td>
-    <td>Integer</td>
-    <td>Maximum time in seconds before giving up</td>
-  </tr>
-  <tr>
-    <td><tt>http_timeout</tt></td>
-    <td>Integer</td>
-    <td>Maximum time for HTTP call</td>
-  </tr>
-  <tr>
-    <td><tt>interval</tt></td>
-    <td>Integer</td>
-    <td>Time in seconds between HTTP request attempts to </td>
-  </tr>
-</table>
+* ( **String** ) `name` - Start guard name
+* ( **String** ) `instance` - Instance URL
+* ( **String** ) `path` - URL path that's requested to verify instance health
+* ( **String** ) `expected_code` - Expected HTTP status code
+* ( **String** ) `expected_body` - Expected string in HTTP response body
+* ( **Integer** ) `timeout` - Maximum time in seconds before giving up
+* ( **Integer** ) `http_timeout` - Maximum time for HTTP call
+* ( **Integer** ) `interval` - Time in seconds between HTTP healthcheck request attempts
 
 ## Usage
 
@@ -1267,8 +1078,8 @@ cq_start_guard 'cq64-author' do
 end
 ```
 
-Whenever AEM gets (re)started run `cq_start_guard` and wait until
-`/libs/granite/core/content/login.html` returns 200 response code
+Whenever AEM gets (re)started run `cq_start_guard` and wait until `/libs/granite/core/content/login.html` returns 200
+response code
 
 ```ruby
 service 'cq64-author' do
@@ -1291,11 +1102,9 @@ cq_start_guard 'cq64-author' do
 end
 ```
 
-Right after restart of `cq64-author` service send notification to
-`cq_start_guard` and wait until `/bin/healthchecks/instance` returns 200 code
-and `{"status": "ok"}` JSON in the body. Don't spend more than 15 minutes on
-such health check. Requests will be send every 10 seconds, however each HTTP
-call can't last more than 5 seconds.
+Right after restart of `cq64-author` service send notification to `cq_start_guard` and wait until
+`/bin/healthchecks/instance` returns 200 code and `{"status": "ok"}` JSON in the body. Don't spend more than 15 minutes
+on such health check. Requests will be send every 10 seconds, however each HTTP call can't last more than 5 seconds.
 
 # Testing
 
