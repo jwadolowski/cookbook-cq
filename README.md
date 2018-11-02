@@ -1063,20 +1063,20 @@ are met the resource stops its job.
 
 ```ruby
 service 'cq64-author' do
-    supports status: true, restart: true
-    action :start
+  supports status: true, restart: true
+  action :start
 
-    notifies :run, "cq_start_guard[cq64-author]", :immediately
+  notifies :run, "cq_start_guard[cq64-author]", :immediately
 end
 
 cq_start_guard 'cq64-author' do
-    instance "http://localhost:#{node['cq']['author']['port']}"
-    path node['cq']['author']['healthcheck']['resource']
-    expected_code node['cq']['author']['healthcheck']['response_code']
-    expected_body node['cq']['author']['healthcheck']['response_body']
-    timeout node['cq']['service']['start_timeout']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  path node['cq']['author']['healthcheck']['resource']
+  expected_code node['cq']['author']['healthcheck']['response_code']
+  expected_body node['cq']['author']['healthcheck']['response_body']
+  timeout node['cq']['service']['start_timeout']
 
-    action :nothing
+  action :nothing
 end
 ```
 
