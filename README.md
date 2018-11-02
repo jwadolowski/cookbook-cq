@@ -1085,22 +1085,22 @@ response code
 
 ```ruby
 service 'cq64-author' do
-    supports status: true, restart: true
-    action :start
+  supports status: true, restart: true
+  action :start
 
-    notifies :run, "cq_start_guard[cq64-author]", :immediately
+  notifies :run, "cq_start_guard[cq64-author]", :immediately
 end
 
 cq_start_guard 'cq64-author' do
-    instance "http://localhost:#{node['cq']['author']['port']}"
-    path '/bin/healthchecks/instance'
-    expected_code '200'
-    expected_body '{"status": "ok"}'
-    timeout 900
-    http_timeout 5
-    interval 10
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  path '/bin/healthchecks/instance'
+  expected_code '200'
+  expected_body '{"status": "ok"}'
+  timeout 900
+  http_timeout 5
+  interval 10
 
-    action :nothing
+  action :nothing
 end
 ```
 
