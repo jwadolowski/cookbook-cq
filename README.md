@@ -52,6 +52,10 @@ to be taken anyways, so I no longer have a choice.
         * [Actions](#actions-5)
         * [Properties](#properties-5)
         * [Usage](#usage-5)
+    * [cq_start_guard](#cq_start_guard)
+        * [Actions](#actions-6)
+        * [Properties](#properties-6)
+        * [Usage](#usage-6)
 * [Testing](#testing)
 * [Author](#author)
 
@@ -1698,6 +1702,121 @@ will get deleted if it exists. Otherwise warning message will be printed.
 Last `cq_jcr` resource uses `:modify` action. It applies updates to existing
 nodes only. If specified path does not exist warning message will be
 displayed.
+
+# cq_start_guard
+
+Allows you to wait for full AEM instance start before moving on with subsequent
+operations. It periodically sends HTTP request to AEM and compares response
+(both status code and body) with expected state. As soon as defined
+requirements are met the resource stops its job.
+
+## Actions
+
+* `nothing` - default action, does nothing :)
+* `run` - verifies instance state according to defined properties. This action
+  is *NOT idempotent* by design and should be always triggered via `notify`
+  from other resources
+
+## Properties
+
+<table>
+  <tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>name</tt></td>
+    <td>String</td>
+    <td>Start guard name</td>
+  </tr>
+  <tr>
+    <td><tt>instance</tt></td>
+    <td>String</td>
+    <td>Instance URL</td>
+  </tr>
+  <tr>
+    <td><tt>path</tt></td>
+    <td>String</td>
+    <td>URL path that's requested to verify instance health</td>
+  </tr>
+  <tr>
+    <td><tt>expected_code</tt></td>
+    <td>String</td>
+    <td>Expected HTTP status code</td>
+  </tr>
+  <tr>
+    <td><tt>expected_body</tt></td>
+    <td>String</td>
+    <td>Expected string in HTTP response body</td>
+  </tr>
+  <tr>
+    <td><tt>timeout</tt></td>
+    <td>Integer</td>
+    <td>Maximum time in seconds before giving up</td>
+  </tr>
+  <tr>
+    <td><tt>http_timeout</tt></td>
+    <td>Integer</td>
+    <td>Maximum time for HTTP call</td>
+  </tr>
+  <tr>
+    <td><tt>interval</tt></td>
+    <td>Integer</td>
+    <td>Time in seconds between HTTP request attempts to </td>
+  </tr>
+</table>
+
+## Usage
+
+```ruby
+service 'cq64-author' do
+    supports status: true, restart: true
+    action :start
+
+    notifies :run, "cq_start_guard[cq64-author]", :immediately
+end
+
+cq_start_guard 'cq64-author' do
+    instance "http://localhost:#{node['cq']['author']['port']}"
+    path node['cq']['author']['healthcheck']['resource']
+    expected_code node['cq']['author']['healthcheck']['response_code']
+    expected_body node['cq']['author']['healthcheck']['response_body']
+    timeout node['cq']['service']['start_timeout']
+
+    action :nothing
+end
+```
+
+Whenever AEM gets (re)started run `cq_start_guard` and wait until
+`/libs/granite/core/content/login.html` returns 200 response code
+
+```ruby
+service 'cq64-author' do
+    supports status: true, restart: true
+    action :start
+
+    notifies :run, "cq_start_guard[cq64-author]", :immediately
+end
+
+cq_start_guard 'cq64-author' do
+    instance "http://localhost:#{node['cq']['author']['port']}"
+    path '/bin/healthchecks/instance'
+    expected_code '200'
+    expected_body '{"status": "ok"}'
+    timeout 900
+    http_timeout 5
+    interval 10
+
+    action :nothing
+end
+```
+
+Right after restart of `cq64-author` service send notification to
+`cq_start_guard` and wait until `/bin/healthchecks/instance` returns 200 code
+and `{"status": "ok"}` JSON in the body. Don't spend more than 15 minutes on
+such health check. Requests will be send every 10 seconds, however each HTTP
+call can't last more than 5 seconds.
 
 # Testing
 
