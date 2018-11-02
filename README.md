@@ -537,12 +537,12 @@ For factory configs:
 
 ### Properties
 
-* ( **String** ) - `pid` - Config name (PID). Relevant to regular configs only
-* ( **String** ) - `username` - Instance username
-* ( **String** ) - `password` - Instance password
-* ( **String** ) - `instance` - Instance URL
-* ( **String** ) - `factory_pid` - Factory PID
-* ( **Hash** ) - `properties` - Key-value pairs that represent OSGi config properties
+* ( **String** ) `pid` - Config name (PID). Relevant to regular configs only
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+* ( **String** ) `factory_pid` - Factory PID
+* ( **Hash** ) `properties` - Key-value pairs that represent OSGi config properties
 * ( **Boolean** ) `append` - If set to true arrays will be merged. Use if you'd like to specify just a subset of array
   elements. `false` by default. Has no impact on other property types (String, Integer, etc)
 * ( **Boolean** ) `apply_all` - If true all properties defined in a `cq_osgi_config` resource will be used when applying
@@ -553,7 +553,7 @@ For factory configs:
   same. If new instance needs to be created then defaults defined in factory PID will be used. In case of existing
   instance update, all missing properties will be based on properties defined in that instance. This is recommended
   property when you'd like to edit pre-existing factory or regular configs. `true` by default
-* ( **Array** ) - `unique_fields` - Property names/keys that define uniqueness of given config. Applicable to factory
+* ( **Array** ) `unique_fields` - Property names/keys that define uniqueness of given config. Applicable to factory
   configs only. By default all available property keys will be used (defined by factory config on AEM instance). User
   doesn't need to define that at all, unless you want to cherry pick particular config. It's generally recommended to
   specify this for every factory OSGi config. Example: log.name key needs to stay unique for your config
@@ -749,59 +749,16 @@ Adds ability to stop and start OSGi bundles
 
 ## Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>symbolic_name</tt></td>
-    <td>String</td>
-    <td>Symbolic name of the bundle, i.e. <tt>com.company.example.abc</tt>. If
-    not explicitly defined resource name will be used as symbolic name</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>rescue_mode</tt></td>
-    <td>Boolean</td>
-    <td>Same meaning as for <tt>cq_package</tt></td>
-  </tr>
-  <tr>
-    <td><tt>same_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>Same meaning as for <tt>cq_package</tt></td>
-  </tr>
-  <tr>
-    <td><tt>error_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>Same meaning as for <tt>cq_package</tt></td>
-  </tr>
-  <tr>
-    <td><tt>max_attempts</tt></td>
-    <td>Integer</td>
-    <td>Same meaning as for <tt>cq_package</tt></td>
-  </tr>
-  <tr>
-    <td><tt>sleep_time</tt></td>
-    <td>Integer</td>
-    <td>Same meaning as for <tt>cq_package</tt></td>
-  </tr>
-</table>
+* ( **String** ) `symbolic_name` - Symbolic name of the bundle, i.e. `com.company.example.abc`. If not explicitly
+  defined resource name will be used as symbolic name
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+* ( **Boolean** ) `rescue_mode` - Same meaning as for `cq_package`
+* ( **Integer** ) `same_state_barrier` - Same meaning as for `cq_package`
+* ( **Integer** ) `error_state_barrier` - Same meaning as for `cq_package`
+* ( **Integer** ) `max_attempts` - Same meaning as for `cq_package`
+* ( **Integer** ) `sleep_time` - Same meaning as for `cq_package`<Paste>
 
 ## Usage
 
@@ -816,7 +773,12 @@ cq_osgi_bundle 'Author: org.eclipse.equinox.region' do
 
   action :stop
 end
+```
 
+First example stops `org.eclipse.equinox.region` AEM author instance. Since there's just a few dependencies on this
+bundle, number of post-stop checks have been limited, as there's no point to wait for so long.
+
+```ruby
 cq_osgi_bundle 'com.adobe.xmp.worker.files.native.fragment.linux' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -825,10 +787,6 @@ cq_osgi_bundle 'com.adobe.xmp.worker.files.native.fragment.linux' do
   action :start
 end
 ```
-
-First example stops `org.eclipse.equinox.region` AEM author instance. Since
-there's just a few dependencies on this bundle, number of post-stop checks
-have been limited, as there's no point to wait for so long.
 
 Second instance of `cq_osgi_bundle` is fairly simple, as it just starts
 `com.adobe.xmp.worker.files.native.fragment.linux` bundle.
