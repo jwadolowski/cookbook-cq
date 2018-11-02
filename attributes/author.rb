@@ -41,3 +41,5 @@ default['cq']['author']['jvm']['extra_opts'] = ''
 default['cq']['author']['healthcheck']['resource'] =
   '/libs/granite/core/content/login.html'
 default['cq']['author']['healthcheck']['response_code'] = '200'
+default['cq']['author']['healthcheck']['response_body'] =
+  '<!-- QUICKSTART_HOMEPAGE - (string used for readyness detection, do not remove) -->'
