@@ -1,11 +1,11 @@
 # Unreleased
 
-* #68 New resource: `cq_start_guard`
-* #69 `cq_start_guard` docs
+* [#68](https://github.com/jwadolowski/cookbook-cq/pull/68) New resource: `cq_start_guard`
+* [#69](https://github.com/jwadolowski/cookbook-cq/pull/69) `cq_start_guard` docs
 
 # v1.1.2 (2018-07-02)
 
-* Added support for Amazon Linux in service creation
+* [#67](https://github.com/jwadolowski/cookbook-cq/pull/67) Amazon Linux support
 
 # v1.1.1 (2018-04-27)
 
@@ -13,8 +13,8 @@
 
 # v1.1.0 (2018-04-17)
 
-* systemd service (default on CentOS/RHEL 7)
-* Chef 13.x and 14.x support
+* [#66](https://github.com/jwadolowski/cookbook-cq/pull/66) systemd service (default on CentOS/RHEL 7)
+* [#66](https://github.com/jwadolowski/cookbook-cq/pull/66) Chef 13.x and 14.x support
 * AEM 5.6.1 and 6.0.0 are no longer supported
 
 # v1.0.1 (2018-04-11)
