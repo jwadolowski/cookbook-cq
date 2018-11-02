@@ -93,102 +93,102 @@ it installs Oracle's JDK7.
 
 ---
 
-* [ *String* ] `node['cq']['user']` - System user for CQ/AEM service
-* [ *String* ] `node['cq']['user_uid']` - UID of CQ/AEM user
-* [ *String* ] `node['cq']['user_comment']` - Comment/description of CQ/AEM user
-* [ *String* ] `node['cq']['user_shell']` - Default shell of CQ/AEM user
-* [ *String* ] `node['cq']['group']` - System group for CQ/AEM
-* [ *String* ] `node['cq']['group_gid']` - GID of CQ/AEM group
-* [ *String* ] `node['cq']['limits']['file_descriptors']` - Max number of open file descriptor for CQ/AEM user
-* [ *String* ] `node['cq']['base_dir']` - Base directory for CQ/AEM instance(s)
-* [ *String* ] `node['cq']['home_dir']` - Home directory under wich CQ/AEM instances are deployed
-* [ *String* ] `node['cq']['version']` - CQ/AEM version
-* [ *String* ] `node['cq']['custom_tmp_dir']` - Custom directory that JVM uses for temporary files
-* [ *String* ] `node['cq']['jar']['url']` - URL from which CQ/AEM JAR file is downloaded
-* [ *String* ] `node['cq']['jar']['checksum']` - SHA256 checksum of CQ/AEM JAR file
-* [ *String* ] `node['cq']['license']['url']` - URL from which CQ/AEM license is downloaded
-* [ *String* ] `node['cq']['license']['checksum']` - SHA256 checksum of CQ/AEM license file
-* [ *Fixnum* ] `node['cq']['service']['start_timeout']` - Max number of seconds to wait until CQ/AEM instance is fully
+* [ **String** ] `node['cq']['user']` - System user for CQ/AEM service
+* [ **String** ] `node['cq']['user_uid']` - UID of CQ/AEM user
+* [ **String** ] `node['cq']['user_comment']` - Comment/description of CQ/AEM user
+* [ **String** ] `node['cq']['user_shell']` - Default shell of CQ/AEM user
+* [ **String** ] `node['cq']['group']` - System group for CQ/AEM
+* [ **String** ] `node['cq']['group_gid']` - GID of CQ/AEM group
+* [ **String** ] `node['cq']['limits']['file_descriptors']` - Max number of open file descriptor for CQ/AEM user
+* [ **String** ] `node['cq']['base_dir']` - Base directory for CQ/AEM instance(s)
+* [ **String** ] `node['cq']['home_dir']` - Home directory under wich CQ/AEM instances are deployed
+* [ **String** ] `node['cq']['version']` - CQ/AEM version
+* [ **String** ] `node['cq']['custom_tmp_dir']` - Custom directory that JVM uses for temporary files
+* [ **String** ] `node['cq']['jar']['url']` - URL from which CQ/AEM JAR file is downloaded
+* [ **String** ] `node['cq']['jar']['checksum']` - SHA256 checksum of CQ/AEM JAR file
+* [ **String** ] `node['cq']['license']['url']` - URL from which CQ/AEM license is downloaded
+* [ **String** ] `node['cq']['license']['checksum']` - SHA256 checksum of CQ/AEM license file
+* [ **Fixnum** ] `node['cq']['service']['start_timeout']` - Max number of seconds to wait until CQ/AEM instance is fully
   operational after service start 
-* [ *Fixnum* ] `node['cq']['service']['kill_delay']` - Max number of seconds for greceful instance stop before kill
+* [ **Fixnum** ] `node['cq']['service']['kill_delay']` - Max number of seconds for greceful instance stop before kill
   signal is sent to the process
-* [ *Fixnum* ] `node['cq']['service']['restart_sleep']` - Number of seconds to wait between service stop and start
-* [ *String* ] `node['cq']['init_template_cookbook']` - Cookbook which is a source for init script template
-* [ *String* ] `node['cq']['conf_template_cookbook']` - Cookbook which is a source for conf file template
+* [ **Fixnum** ] `node['cq']['service']['restart_sleep']` - Number of seconds to wait between service stop and start
+* [ **String** ] `node['cq']['init_template_cookbook']` - Cookbook which is a source for init script template
+* [ **String** ] `node['cq']['conf_template_cookbook']` - Cookbook which is a source for conf file template
 
 ## author.rb
 
 All attributes in this file refer to CQ/AEM author instance (`node['cq']['author']` namespace).
 
-* [ *String* ] `node['cq']['author']['run_mode']` - Instance run mode
-* [ *String* ] `node['cq']['author']['port']` - Main port of CQ/AEM instance
-* [ *String* ] `node['cq']['author']['jmx_ip']` - Value of `-Djava.rmi.server.hostname` JVM parameter.Requires reference
+* [ **String** ] `node['cq']['author']['run_mode']` - Instance run mode
+* [ **String** ] `node['cq']['author']['port']` - Main port of CQ/AEM instance
+* [ **String** ] `node['cq']['author']['jmx_ip']` - Value of `-Djava.rmi.server.hostname` JVM parameter.Requires reference
   to `${CQ_JMX_IP}` shell variable in `node['cq']['author']['jvm']['jmx_opts']` attribute to be effective
-* [ *String* ] `node['cq']['author']['jmx_port']` - Value of `-Dcom.sun.management.jmxremote.port` and
+* [ **String** ] `node['cq']['author']['jmx_port']` - Value of `-Dcom.sun.management.jmxremote.port` and
   `-Dcom.sun.management.jmxremote.rmi.port` JVM parameters. Requires reference to `${CQ_JMX_PORT}` shell variable in
   `node['cq']['author']['jvm']['jmx_opts']` attribute to be effective 
-* [ *String* ] `node['cq']['author']['debug_ip']` - IP to listen on with debug interface. Requires reference to
+* [ **String** ] `node['cq']['author']['debug_ip']` - IP to listen on with debug interface. Requires reference to
   `${CQ_DEBUG_IP}` shell variable in `node['cq']['author']['jvm']['debug_opts']` attribute to be effective
-* [ *String* ] `node['cq']['author']['debug_port']` - Port of JVM debug interface. Requires reference to
+* [ **String** ] `node['cq']['author']['debug_port']` - Port of JVM debug interface. Requires reference to
   `${CQ_DEBUG_PORT}` shell variable in `node['cq']['author']['jvm']['debug_opts']` attribute to be effective
-* [ *String* ] `node['cq']['author']['credentials']['login']` - User that's used to perform actions agains your CQ/AEM
+* [ **String** ] `node['cq']['author']['credentials']['login']` - User that's used to perform actions agains your CQ/AEM
   instance. The most typical scenarios require admin
-* [ *String* ] `node['cq']['author']['credentials']['password']` - Passowrd of user specified in
+* [ **String** ] `node['cq']['author']['credentials']['password']` - Passowrd of user specified in
   `node['cq']['author']['credentials']['login']`
-* [ *String* ] `node['cq']['author']['jvm']['min_heap']` - Number of megabytes that's passed on to `-Xms` JVM parameter
-* [ *String* ] `node['cq']['author']['jvm']['max_heap']` - Number of megabytes that's passed on to `-Xmx` JVM parameter
-* [ *String* ] `node['cq']['author']['jvm']['max_perm_size']` - Number of megabytes that's passed on to
+* [ **String** ] `node['cq']['author']['jvm']['min_heap']` - Number of megabytes that's passed on to `-Xms` JVM parameter
+* [ **String** ] `node['cq']['author']['jvm']['max_heap']` - Number of megabytes that's passed on to `-Xmx` JVM parameter
+* [ **String** ] `node['cq']['author']['jvm']['max_perm_size']` - Number of megabytes that's passed on to
   `-XX:MaxPermSize` JVM parameter
 * [ *String* ] `node['cq']['author']['jvm']['code_cache_size']` - Number of megabytes that's passed on to
   `-XX:ReservedCodeCacheSize` JVM parameter
-* [ *String* ] `node['cq']['author']['jvm']['general_opts']` - Generic JVM parameters
-* [ *String* ] `node['cq']['author']['jvm']['code_cache_opts']` - JVM parameters related to its code cache
-* [ *String* ] `node['cq']['author']['jvm']['gc_opts']` - JVM parameters related to garbage collection
-* [ *String* ] `node['cq']['author']['jvm']['jmx_opts']` - JVM parameres related to JMX settings
-* [ *String* ] `node['cq']['author']['jvm']['debug_opts']` - JVM parameters related to debug interface
-* [ *String* ] `node['cq']['author']['jvm']['crx_opts']` - CRX related JVM parameters
-* [ *String* ] `node['cq']['author']['jvm']['extra_opts']` - All other JVM patameters
-* [ *String* ] `node['cq']['author']['healthcheck']['resource']` - Resource that's queried during instance start to
+* [ **String** ] `node['cq']['author']['jvm']['general_opts']` - Generic JVM parameters
+* [ **String** ] `node['cq']['author']['jvm']['code_cache_opts']` - JVM parameters related to its code cache
+* [ **String** ] `node['cq']['author']['jvm']['gc_opts']` - JVM parameters related to garbage collection
+* [ **String** ] `node['cq']['author']['jvm']['jmx_opts']` - JVM parameres related to JMX settings
+* [ **String** ] `node['cq']['author']['jvm']['debug_opts']` - JVM parameters related to debug interface
+* [ **String** ] `node['cq']['author']['jvm']['crx_opts']` - CRX related JVM parameters
+* [ **String** ] `node['cq']['author']['jvm']['extra_opts']` - All other JVM patameters
+* [ **String** ] `node['cq']['author']['healthcheck']['resource']` - Resource that's queried during instance start to
   determine whether CQ/AEM is fully operational
-* [ *String* ] `node['cq']['author']['healthcheck']['response_code']` - Expected HTTP status code of healthcheck
+* [ **String** ] `node['cq']['author']['healthcheck']['response_code']` - Expected HTTP status code of healthcheck
   resource
-* [ *String* ] `node['cq']['author']['healthcheck']['response_body']` - Expected string in HTTP healthcheck response
+* [ **String** ] `node['cq']['author']['healthcheck']['response_body']` - Expected string in HTTP healthcheck response
 
 ## publish.rb
 
 All attributes in this file refer to CQ/AEM publish instance (`node['cq']['publish']` namespace).
 
-* [ *String* ] `node['cq']['publish']['run_mode']` - Instance run mode
-* [ *String* ] `node['cq']['publish']['port']` - Main port of CQ/AEM instance
-* [ *String* ] `node['cq']['publish']['jmx_ip']` - Value of `-Djava.rmi.server.hostname` JVM parameter.Requires
+* [ **String** ] `node['cq']['publish']['run_mode']` - Instance run mode
+* [ **String** ] `node['cq']['publish']['port']` - Main port of CQ/AEM instance
+* [ **String** ] `node['cq']['publish']['jmx_ip']` - Value of `-Djava.rmi.server.hostname` JVM parameter.Requires
   reference to `${CQ_JMX_IP}` shell variable in `node['cq']['publish']['jvm']['jmx_opts']` attribute to be effective
-* [ *String* ] `node['cq']['publish']['jmx_port']` - Value of `-Dcom.sun.management.jmxremote.port` and
+* [ **String** ] `node['cq']['publish']['jmx_port']` - Value of `-Dcom.sun.management.jmxremote.port` and
   `-Dcom.sun.management.jmxremote.rmi.port` JVM parameters. Requires reference to `${CQ_JMX_PORT}` shell variable in
   `node['cq']['publish']['jvm']['jmx_opts']` attribute to be effective 
-* [ *String* ] `node['cq']['publish']['debug_ip']` - IP to listen on with debug interface. Requires reference to
+* [ **String** ] `node['cq']['publish']['debug_ip']` - IP to listen on with debug interface. Requires reference to
   `${CQ_DEBUG_IP}` shell variable in `node['cq']['publish']['jvm']['debug_opts']` attribute to be effective
-* [ *String* ] `node['cq']['publish']['debug_port']` - Port of JVM debug interface. Requires reference to
+* [ **String** ] `node['cq']['publish']['debug_port']` - Port of JVM debug interface. Requires reference to
   `${CQ_DEBUG_PORT}` shell variable in `node['cq']['publish']['jvm']['debug_opts']` attribute to be effective
-* [ *String* ] `node['cq']['publish']['credentials']['login']` - User that's used to perform actions agains your CQ/AEM
+* [ **String** ] `node['cq']['publish']['credentials']['login']` - User that's used to perform actions agains your CQ/AEM
   instance. The most typical scenarios require admin
-* [ *String* ] `node['cq']['publish']['credentials']['password']` - Passowrd of user specified in
+* [ **String** ] `node['cq']['publish']['credentials']['password']` - Passowrd of user specified in
   `node['cq']['publish']['credentials']['login']`
-* [ *String* ] `node['cq']['publish']['jvm']['min_heap']` - Number of megabytes that's passed on to `-Xms` JVM parameter
-* [ *String* ] `node['cq']['publish']['jvm']['max_heap']` - Number of megabytes that's passed on to `-Xmx` JVM parameter
-* [ *String* ] `node['cq']['publish']['jvm']['max_perm_size']` - Number of megabytes that's passed on to
+* [ **String** ] `node['cq']['publish']['jvm']['min_heap']` - Number of megabytes that's passed on to `-Xms` JVM parameter
+* [ **String** ] `node['cq']['publish']['jvm']['max_heap']` - Number of megabytes that's passed on to `-Xmx` JVM parameter
+* [ **String** ] `node['cq']['publish']['jvm']['max_perm_size']` - Number of megabytes that's passed on to
   `-XX:MaxPermSize` JVM parameter
-* [ *String* ] `node['cq']['publish']['jvm']['code_cache_size']` - Number of megabytes that's passed on to
+* [ **String** ] `node['cq']['publish']['jvm']['code_cache_size']` - Number of megabytes that's passed on to
   `-XX:ReservedCodeCacheSize` JVM parameter
-* [ *String* ] `node['cq']['publish']['jvm']['general_opts']` - Generic JVM parameters
-* [ *String* ] `node['cq']['publish']['jvm']['code_cache_opts']` - JVM parameters related to its code cache
-* [ *String* ] `node['cq']['publish']['jvm']['gc_opts']` - JVM parameters related to garbage collection
-* [ *String* ] `node['cq']['publish']['jvm']['jmx_opts']` - JVM parameres related to JMX settings
-* [ *String* ] `node['cq']['publish']['jvm']['debug_opts']` - JVM parameters related to debug interface
-* [ *String* ] `node['cq']['publish']['jvm']['crx_opts']` - CRX related JVM parameters
-* [ *String* ] `node['cq']['publish']['jvm']['extra_opts']` - All other JVM patameters
-* [ *String* ] `node['cq']['publish']['healthcheck']['resource']` - Resource that's queried during instance start to
+* [ **String** ] `node['cq']['publish']['jvm']['general_opts']` - Generic JVM parameters
+* [ **String** ] `node['cq']['publish']['jvm']['code_cache_opts']` - JVM parameters related to its code cache
+* [ **String** ] `node['cq']['publish']['jvm']['gc_opts']` - JVM parameters related to garbage collection
+* [ **String** ] `node['cq']['publish']['jvm']['jmx_opts']` - JVM parameres related to JMX settings
+* [ **String** ] `node['cq']['publish']['jvm']['debug_opts']` - JVM parameters related to debug interface
+* [ **String** ] `node['cq']['publish']['jvm']['crx_opts']` - CRX related JVM parameters
+* [ **String** ] `node['cq']['publish']['jvm']['extra_opts']` - All other JVM patameters
+* [ **String** ] `node['cq']['publish']['healthcheck']['resource']` - Resource that's queried during instance start to
   determine whether CQ/AEM is fully operational
-* [ *String* ] `node['cq']['publish']['healthcheck']['response_code']` - Expected HTTP status code of healthcheck
+* [ **String** ] `node['cq']['publish']['healthcheck']['response_code']` - Expected HTTP status code of healthcheck
   resource
 * [ *String* ] `node['cq']['publish']['healthcheck']['response_body']` - Expected string in HTTP healthcheck response
 
