@@ -302,7 +302,7 @@ If you'd like to upload and install a package, in most cases please use `deploy`
 
 * ( **String** ) `name` - Package name. Can be anything as long as it means something to you. Actual package name is
   extracted from provided ZIP file. Whenever you use notifies on your package resource and more than a single action as
-  defined (i.e. action [:upload, :install]), two notifications will be triggered (after :upload and :install
+  defined (i.e. `action [:upload, :install]`), two notifications will be triggered (after ``:upload` and `:install`
   respectively)
 * ( **String** ) `username` - Instance username
 * ( **String** ) `password` - Instance password
