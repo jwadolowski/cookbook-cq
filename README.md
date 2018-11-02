@@ -1,11 +1,9 @@
 # CQ/AEM Chef cookbook
 
-This cookbook deploys and configures Adobe Experience Manager (AEM), formerly
-known as CQ.
+This cookbook deploys and configures Adobe Experience Manager (AEM), formerly known as CQ.
 
-FYI, it is not called `aem-coobkook`, because when I started development there
-was no AEM yet (it was known as CQ at that time). Nowadays the `aem` name seems
-to be taken anyways, so I no longer have a choice.
+FYI, it is not called `aem-coobkook`, because when I started development there was no AEM yet (it was known as CQ at
+that time). Nowadays the `aem` name seems to be taken anyways, so I no longer have a choice.
 
 # Table of contents
 
@@ -70,6 +68,8 @@ to be taken anyways, so I no longer have a choice.
 ## Chef versions
 
 * Chef 12.x
+* Chef 13.x
+* Chef 14.x
 
 ## AEM/CQ versions
 
@@ -90,397 +90,107 @@ For default values please refer to appropriate files.
 
 ---
 
-To set Java related attributes please refer to [java
-cookbook](https://github.com/agileorbit-cookbooks/java). By default it
-installs Oracle's JDK7.
+To set Java related attributes please refer to [java cookbook](https://github.com/agileorbit-cookbooks/java). By default
+it installs Oracle's JDK7.
 
 ---
 
-<table>
-  <tr>
-    <th>Attribute</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>['cq']['user']</tt></td>
-    <td>String</td>
-    <td>System user for CQ/AEM</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['user_uid']</tt></td>
-    <td>String</td>
-    <td>UID of CQ/AEM user</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['user_comment']</tt></td>
-    <td>String</td>
-    <td>Comment/description of CQ/AEM user</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['user_shell']</tt></td>
-    <td>String</td>
-    <td>Default shell of CQ/AEM user</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['group']</tt></td>
-    <td>String</td>
-    <td>System group for CQ/AEM</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['group_gid']</tt></td>
-    <td>String</td>
-    <td>GID of CQ/AEM group</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['limits']['file_descriptors']</tt></td>
-    <td>String</td>
-    <td>Max number of open file descriptor for CQ/AEM user</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['base_dir']</tt></td>
-    <td>String</td>
-    <td>Base directory for CQ/AEM instance(s)</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['home_dir']</tt></td>
-    <td>String</td>
-    <td>Home directory under wich CQ/AEM instances are deployed</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['version']</tt></td>
-    <td>String</td>
-    <td>CQ/AEM version</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['custom_tmp_dir']</tt></td>
-    <td>String</td>
-    <td>Custom directory that JVM uses for temporary files</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['jar']['url']</tt></td>
-    <td>String</td>
-    <td>URL from which CQ/AEM JAR file is downloaded</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['jar']['checksum']</tt></td>
-    <td>String</td>
-    <td>SHA256 checksum of CQ/AEM JAR file</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['license']['url']</tt></td>
-    <td>String</td>
-    <td>URL from which CQ/AEM license is downloaded</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['license']['checksum']</tt></td>
-    <td>String</td>
-    <td>SHA256 checksum of CQ/AEM license file</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['service']['start_timeout']</tt></td>
-    <td>Fixnum</td>
-    <td>Max number of seconds to wait until CQ/AEM instance is fully
-    operational after service start</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['service']['kill_delay']</tt></td>
-    <td>Fixnum</td>
-    <td>Max number of seconds for greceful instance stop before kill signal is
-    sent to the process</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['service']['restart_sleep']</tt></td>
-    <td>Fixnum</td>
-    <td>Number of seconds to wait between service stop and start</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['init_template_cookbook']</tt></td>
-    <td>String</td>
-    <td>Cookbook which is a source for init script template</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['conf_template_cookbook']</tt></td>
-    <td>String</td>
-    <td>Cookbook which is a source for conf file template</td>
-  </tr>
-</table>
+* ( **String** ) `node['cq']['user']` - System user for CQ/AEM service
+* ( **String** ) `node['cq']['user_uid']` - UID of CQ/AEM user
+* ( **String** ) `node['cq']['user_comment']` - Comment/description of CQ/AEM user
+* ( **String** ) `node['cq']['user_shell']` - Default shell of CQ/AEM user
+* ( **String** ) `node['cq']['group']` - System group for CQ/AEM
+* ( **String** ) `node['cq']['group_gid']` - GID of CQ/AEM group
+* ( **String** ) `node['cq']['limits']['file_descriptors']` - Max number of open file descriptor for CQ/AEM user
+* ( **String** ) `node['cq']['base_dir']` - Base directory for CQ/AEM instance(s)
+* ( **String** ) `node['cq']['home_dir']` - Home directory under which CQ/AEM instances are deployed
+* ( **String** ) `node['cq']['version']` - CQ/AEM version
+* ( **String** ) `node['cq']['custom_tmp_dir']` - Custom directory that JVM uses for temporary files
+* ( **String** ) `node['cq']['jar']['url']` - URL from which CQ/AEM JAR file is downloaded
+* ( **String** ) `node['cq']['jar']['checksum']` - SHA256 checksum of CQ/AEM JAR file
+* ( **String** ) `node['cq']['license']['url']` - URL from which CQ/AEM license is downloaded
+* ( **String** ) `node['cq']['license']['checksum']` - SHA256 checksum of CQ/AEM license file
+* ( **Integer** ) `node['cq']['service']['start_timeout']` - Max number of seconds to wait until CQ/AEM instance is
+  fully operational after service start
+* ( **Integer** ) `node['cq']['service']['kill_delay']` - Max number of seconds for graceful instance stop before kill
+  signal is sent to the process
+* ( **Integer** ) `node['cq']['service']['restart_sleep']` - Number of seconds to wait between service stop and start
+* ( **String** ) `node['cq']['init_template_cookbook']` - Cookbook which is a source for init script template
+* ( **String** ) `node['cq']['conf_template_cookbook']` - Cookbook which is a source for conf file template
 
 ## author.rb
 
-All attributes in this file refer to CQ/AEM author instance (
-`['cq']['author']` namespace).
+All attributes in this file refer to CQ/AEM author instance (`node['cq']['author']` namespace).
 
-<table>
-  <tr>
-    <th>Attribute</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['run_mode']</tt></td>
-    <td>String</td>
-    <td>Instance run mode</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['port']</tt></td>
-    <td>String</td>
-    <td>Main port of CQ/AEM instance</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jmx_ip']</tt></td>
-    <td>String</td>
-    <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
-    reference to <tt>${CQ_JMX_IP}</tt> shell variable in
-    <tt>['cq']['author']['jvm']['jmx_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jmx_port']</tt></td>
-    <td>String</td>
-    <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
-    <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
-    reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
-    <tt>['cq']['author']['jvm']['jmx_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['debug_ip']</tt></td>
-    <td>String</td>
-    <td>IP to listen on with debug interface. Requires reference to
-    <tt>${CQ_DEBUG_IP}</tt> shell variable in
-    <tt>['cq']['author']['jvm']['debug_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['debug_port']</tt></td>
-    <td>String</td>
-    <td>Port of JVM debug interface. Requires reference to
-    <tt>${CQ_DEBUG_PORT}</tt> shell variable in
-    <tt>['cq']['author']['jvm']['debug_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['credentials']['login']</tt></td>
-    <td>String</td>
-    <td>User that's used to perform actions agains your CQ/AEM instance. The
-    most typical scenarios require <tt>admin</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['credentials']['password']</tt></td>
-    <td>String</td>
-    <td>Passowrd of user specified in
-    <tt>['cq']['author']['credentials']['login']</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['min_heap']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['max_heap']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['max_perm_size']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
-    parameter</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['code_cache_size']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to
-    <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['general_opts']</tt></td>
-    <td>String</td>
-    <td>Generic JVM parameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['code_cache_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to its code cache</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['gc_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to garbage collection</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['jmx_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameres related to JMX settings</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['debug_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to debug interface</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['crx_opts']</tt></td>
-    <td>String</td>
-    <td>CRX related JVM parameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['jvm']['extra_opts']</tt></td>
-    <td>String</td>
-    <td>All other JVM patameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['healthcheck']['resource']</tt></td>
-    <td>String</td>
-    <td>Resource that's queried during instance start to determine whether
-    CQ/AEM is fully operational</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['author']['healthcheck']['response_code']</tt></td>
-    <td>String</td>
-    <td>Expected HTTP status code of healthcheck resource</td>
-  </tr>
-</table>
+* ( **String** ) `node['cq']['author']['run_mode']` - Instance run mode
+* ( **String** ) `node['cq']['author']['port']` - Main port of CQ/AEM instance
+* ( **String** ) `node['cq']['author']['jmx_ip']` - Value of `-Djava.rmi.server.hostname` JVM parameter. Requires
+  reference to `${CQ_JMX_IP}` shell variable in `node['cq']['author']['jvm']['jmx_opts']` attribute to be effective
+* ( **String** ) `node['cq']['author']['jmx_port']` - Value of `-Dcom.sun.management.jmxremote.port` and
+  `-Dcom.sun.management.jmxremote.rmi.port` JVM parameters. Requires reference to `${CQ_JMX_PORT}` shell variable in
+  `node['cq']['author']['jvm']['jmx_opts']` attribute to be effective
+* ( **String** ) `node['cq']['author']['debug_ip']` - IP to listen on with debug interface. Requires reference to
+  `${CQ_DEBUG_IP}` shell variable in `node['cq']['author']['jvm']['debug_opts']` attribute to be effective
+* ( **String** ) `node['cq']['author']['debug_port']` - Port of JVM debug interface. Requires reference to
+  `${CQ_DEBUG_PORT}` shell variable in `node['cq']['author']['jvm']['debug_opts']` attribute to be effective
+* ( **String** ) `node['cq']['author']['credentials']['login']` - User that's used to perform actions on your CQ/AEM
+  instance. The most typical scenarios require admin
+* ( **String** ) `node['cq']['author']['credentials']['password']` - Password of user specified in
+  `node['cq']['author']['credentials']['login']`
+* ( **String** ) `node['cq']['author']['jvm']['min_heap']` - `-Xms` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['author']['jvm']['max_heap']` - `-Xmx` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['author']['jvm']['max_perm_size']` - `-XX:MaxPermSize` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['author']['jvm']['code_cache_size']` - `-XX:ReservedCodeCacheSize` JVM parameter (in
+  megabytes)
+* ( **String** ) `node['cq']['author']['jvm']['general_opts']` - Generic JVM parameters
+* ( **String** ) `node['cq']['author']['jvm']['code_cache_opts']` - JVM parameters related to its code cache
+* ( **String** ) `node['cq']['author']['jvm']['gc_opts']` - JVM parameters related to garbage collection
+* ( **String** ) `node['cq']['author']['jvm']['jmx_opts']` - JVM parameters related to JMX settings
+* ( **String** ) `node['cq']['author']['jvm']['debug_opts']` - JVM parameters related to debug interface
+* ( **String** ) `node['cq']['author']['jvm']['crx_opts']` - CRX related JVM parameters
+* ( **String** ) `node['cq']['author']['jvm']['extra_opts']` - All other JVM parameters
+* ( **String** ) `node['cq']['author']['healthcheck']['resource']` - Resource that's queried during instance start to
+  determine whether CQ/AEM is fully operational
+* ( **String** ) `node['cq']['author']['healthcheck']['response_code']` - Expected HTTP status code of healthcheck
+  resource
+* ( **String** ) `node['cq']['author']['healthcheck']['response_body']` - Expected string in HTTP healthcheck response
 
 ## publish.rb
 
-All attributes in this file refer to CQ/AEM publish instance (
-`['cq']['publish']` namespace).
+All attributes in this file refer to CQ/AEM publish instance (`node['cq']['publish']` namespace).
 
-<table>
-  <tr>
-    <th>Attribute</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['run_mode']</tt></td>
-    <td>String</td>
-    <td>Instance run mode</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['port']</tt></td>
-    <td>String</td>
-    <td>Main port of CQ/AEM instance</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jmx_ip']</tt></td>
-    <td>String</td>
-    <td>Value of <tt>-Djava.rmi.server.hostname</tt> JVM parameter. Requires
-    reference to <tt>${CQ_JMX_IP}</tt> shell variable in
-    <tt>['cq']['publish']['jvm']['jmx_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jmx_port']</tt></td>
-    <td>String</td>
-    <td>Value of <tt>-Dcom.sun.management.jmxremote.port</tt> and/or
-    <tt>-Dcom.sun.management.jmxremote.rmi.port</tt> JVM parameters. Requires
-    reference to <tt>${CQ_JMX_PORT}</tt> shell variable in
-    <tt>['cq']['publish']['jvm']['jmx_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['debug_ip']</tt></td>
-    <td>String</td>
-    <td>IP to listen on with debug interface. Requires reference to
-    <tt>${CQ_DEBUG_IP}</tt> shell variable in
-    <tt>['cq']['publish']['jvm']['debug_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['debug_port']</tt></td>
-    <td>String</td>
-    <td>Port of JVM debug interface. Requires reference to
-    <tt>${CQ_DEBUG_PORT}</tt> shell variable in
-    <tt>['cq']['publish']['jvm']['debug_opts']</tt> attribute to be effective
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['credentials']['login']</tt></td>
-    <td>String</td>
-    <td>User that's used to perform actions agains your CQ/AEM instance. The
-    most typical scenarios require <tt>admin</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['credentials']['password']</tt></td>
-    <td>String</td>
-    <td>Passowrd of user specified in
-    <tt>['cq']['publish']['credentials']['login']</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['min_heap']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-Xms</tt> JVM parameter
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['max_heap']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-Xmx</tt> JVM parameter
-    </td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['max_perm_size']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to <tt>-XX:MaxPermSize</tt> JVM
-    parameter</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['code_cache_size']</tt></td>
-    <td>String</td>
-    <td>Number of megabytes that's passed on to
-    <tt>-XX:ReservedCodeCacheSize</tt> JVM parameter</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['general_opts']</tt></td>
-    <td>String</td>
-    <td>Generic JVM parameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['code_cache_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to its code cache</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['gc_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to garbage collection</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['jmx_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameres related to JMX settings</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['debug_opts']</tt></td>
-    <td>String</td>
-    <td>JVM parameters related to debug interface</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['crx_opts']</tt></td>
-    <td>String</td>
-    <td>CRX related JVM parameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['jvm']['extra_opts']</tt></td>
-    <td>String</td>
-    <td>All other JVM patameters</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['healthcheck']['resource']</tt></td>
-    <td>String</td>
-    <td>Resource that's queried during instance start to determine whether
-    CQ/AEM is fully operational</td>
-  </tr>
-  <tr>
-    <td><tt>['cq']['publish']['healthcheck']['response_code']</tt></td>
-    <td>String</td>
-    <td>Expected HTTP status code of healthcheck resource</td>
-  </tr>
-</table>
+* ( **String** ) `node['cq']['publish']['run_mode']` - Instance run mode
+* ( **String** ) `node['cq']['publish']['port']` - Main port of CQ/AEM instance
+* ( **String** ) `node['cq']['publish']['jmx_ip']` - Value of `-Djava.rmi.server.hostname` JVM parameter.Requires
+  reference to `${CQ_JMX_IP}` shell variable in `node['cq']['publish']['jvm']['jmx_opts']` attribute to be effective
+* ( **String** ) `node['cq']['publish']['jmx_port']` - Value of `-Dcom.sun.management.jmxremote.port` and
+  `-Dcom.sun.management.jmxremote.rmi.port` JVM parameters. Requires reference to `${CQ_JMX_PORT}` shell variable in
+  `node['cq']['publish']['jvm']['jmx_opts']` attribute to be effective
+* ( **String** ) `node['cq']['publish']['debug_ip']` - IP to listen on with debug interface. Requires reference to
+  `${CQ_DEBUG_IP}` shell variable in `node['cq']['publish']['jvm']['debug_opts']` attribute to be effective
+* ( **String** ) `node['cq']['publish']['debug_port']` - Port of JVM debug interface. Requires reference to
+  `${CQ_DEBUG_PORT}` shell variable in `node['cq']['publish']['jvm']['debug_opts']` attribute to be effective
+* ( **String** ) `node['cq']['publish']['credentials']['login']` - User that's used to perform actions on your CQ/AEM
+  instance. The most typical scenarios require admin
+* ( **String** ) `node['cq']['publish']['credentials']['password']` - Password of user specified in
+  `node['cq']['publish']['credentials']['login']`
+* ( **String** ) `node['cq']['publish']['jvm']['min_heap']` - `-Xms` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['publish']['jvm']['max_heap']` - `-Xmx` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['publish']['jvm']['max_perm_size']` - `-XX:MaxPermSize` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['publish']['jvm']['code_cache_size']` - `-XX:ReservedCodeCacheSize` JVM parameter (in
+  megabytes)
+* ( **String** ) `node['cq']['publish']['jvm']['general_opts']` - Generic JVM parameters
+* ( **String** ) `node['cq']['publish']['jvm']['code_cache_opts']` - JVM parameters related to its code cache
+* ( **String** ) `node['cq']['publish']['jvm']['gc_opts']` - JVM parameters related to garbage collection
+* ( **String** ) `node['cq']['publish']['jvm']['jmx_opts']` - JVM parameters related to JMX settings
+* ( **String** ) `node['cq']['publish']['jvm']['debug_opts']` - JVM parameters related to debug interface
+* ( **String** ) `node['cq']['publish']['jvm']['crx_opts']` - CRX related JVM parameters
+* ( **String** ) `node['cq']['publish']['jvm']['extra_opts']` - All other JVM parameters
+* ( **String** ) `node['cq']['publish']['healthcheck']['resource']` - Resource that's queried during instance start to
+  determine whether CQ/AEM is fully operational
+* ( **String** ) `node['cq']['publish']['healthcheck']['response_code']` - Expected HTTP status code of healthcheck
+  resource
+* ( **String** ) `node['cq']['publish']['healthcheck']['response_body']` - Expected string in HTTP healthcheck response
 
 # Recipes
 
@@ -509,17 +219,15 @@ Installs CQ/AEM publish instance.
 
 ---
 
-All CQ/AEM related resource are idempotent, so action won't be taken if not
-required.
+All CQ/AEM related resource are idempotent, so action won't be taken if not required.
 
 ---
 
 ---
 
-Whenever you need to deploy 2 or more CQ/AEM instances on a single server
-please make sure you named all your custom resources differently, as you may
-get unexpected results otherwise (i.e. when CQ/AEM restart is required
-afterwards). Please find `cq_package` example below:
+Whenever you need to deploy 2 or more CQ/AEM instances on a single server please make sure you named all your custom
+resources differently, as you may get unexpected results otherwise (i.e. when CQ/AEM restart is required afterwards).
+Please find `cq_package` example below:
 
 *Bad*:
 
@@ -561,144 +269,63 @@ Allows for CRX package manipulation using CRX Package Manager API.
 
 Key features:
 
-* package specific details (name, group, version) are always extracted from ZIP
-  file (`/META-INF/vault/properties.xml`), so you don't have to define that
-  anywhere else. All you need is an URL to your package
+* package specific details (name, group, version) are always extracted from ZIP file (`/META-INF/vault/properties.xml`),
+  so you don't have to define that anywhere else. All you need is an URL to your package
 * `cq_package` identifies packages by name/group/version properties
-* packages are automatically downloaded from remote (`http://`, `https://`) or
-  local (`file://`) sources. If HTTP(S) source requires basic auth please use
-  `http_user` and `http_pass`
+* packages are automatically downloaded from remote (`http://`, `https://`) or local (`file://`) sources. If HTTP(S)
+  source requires basic auth please use `http_user` and `http_pass`
 * by default all packages are downloaded to Chef's cache (`/var/chef/cache`)
-* installation process is considered finished only when both "foreground"
-  (Package Manager) and "background" (OSGi bundle/component restarts) ones are
-  over - no more 'wait until you see X in `error.log`'
+* installation process is considered finished only when both "foreground" (Package Manager) and "background" (OSGi
+  bundle/component restarts) ones are over - no more 'wait until you see X in `error.log`'
 
 ### Actions
 
 ---
 
-If you'd like to upload and install a package, in most cases please use
-`deploy` action instead of combined `upload` and `install`. Detailed
-explanation can be found below.
+If you'd like to upload and install a package, in most cases please use `deploy` action instead of combined `upload` and
+`install`. Detailed explanation can be found below.
 
 ---
 
 * `upload` - uploads package to given CQ instance
 * `install` - installs already uploaded package
-* `deploy` - uploads and installs given package as a single action. This action
-  is quicker than separate `upload` + `install` as less healthchecks have to be
-  executed
+* `deploy` - uploads and installs given package as a single action. This action is quicker than separate `upload` +
+  `install` as less healthchecks have to be executed
 * `uninstall` - uninstalls given CQ package
 * `delete` - deletes given CQ package
 
 ### Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>name</tt></td>
-    <td>String</td>
-    <td>Package name. Can be anything as long as it means something to you.
-    Actual package name is extracted from provided ZIP file. Whenever you use
-    <tt>notifies</tt> on your package resource and more than a single action
-    was defined (i.e. <tt>action [:upload, :install]</tt>), two notifications
-    will be triggered (after <tt>:upload</tt> and <tt>:install</tt>
-    respectively)</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>source</tt></td>
-    <td>String</td>
-    <td>URL to ZIP package. Accepted protocols: <tt>file://</tt>,
-    <tt>http://</tt>, <tt>https://</tt></td>
-  </tr>
-  <tr>
-    <td><tt>http_user</tt></td>
-    <td>String</td>
-    <td>HTTP basic auth user. Use whenever <tt>source</tt> requires such
-    authentication</td>
-  </tr>
-  <tr>
-    <td><tt>http_pass</tt></td>
-    <td>String</td>
-    <td>HTTP basic auth password. Use whenever <tt>source</tt> requires such
-    authentication</td>
-  </tr>
-  <tr>
-    <td><tt>recursive_install</tt></td>
-    <td>Boolean</td>
-    <td>Whether to use recursive flag when installing packages (required for
-    service packs and some hotfixes). Applies only to install and deploy
-    actions</td>
-  </tr>
-  <tr>
-    <td><tt>rescue_mode</tt></td>
-    <td>Boolean</td>
-    <td>Some packages may cause shutdown of the entire OSGi because of
-    dependecy (i.e. cycle) or bundle priority issues. In such case after
-    package installation java process is still running, however the instance
-    is not responding over HTTP. After CQ/AEM restart everyting works
-    perfectly fine again.
-    This flag allows Chef to continue processing if it is not able to get OSGi
-    bundles state <tt>error_state_barrier</tt> times in a row.
-    In most (if not all) cases it should be combined with restart notification
-    (please see examples below).
-    It is highly discouraged to use this property, as 99% of CRX packages
-    shouldn't require such configuration. Unfortunately that 1% does. This is
-    rather a safety switch than a common pattern that should be used in every
-    single case.
-    Applies only to install and deploy actions.</td>
-  </tr>
-  <tr>
-    <td><tt>checksum</tt></td>
-    <td>String</td>
-    <td>ZIP file checksum (passed through to <tt>remote_file</tt> resource
-    that is used under the hood by <tt>cq_package</tt> provider)</td>
-  </tr>
-  <tr>
-    <td><tt>same_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>How many times in a row the same OSGi state should occur after package
-    (un)installation to consider this process successful. Default is 6</td>
-  </tr>
-  <tr>
-    <td><tt>error_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>How many times in a row the OSGi console was unavailable after package
-    (un)installation. Useful only when combined with <tt>rescue_mode</tt>. By
-    default set to 6</td>
-  </tr>
-  <tr>
-    <td><tt>max_attempts</tt></td>
-    <td>Integer</td>
-    <td>Number of attempts while waiting for stable OSGi state after package
-    (un)installation. Set to 30 by default</td>
-  </tr>
-  <tr>
-    <td><tt>sleep_time</tt></td>
-    <td>Integer</td>
-    <td>Sleep time between OSGi status checks (in seconds) after package
-    (un)installation. Set to 10 by default</td>
-  </tr>
-</table>
+* ( **String** ) `name` - Package name. Can be anything as long as it means something to you. Actual package name is
+  extracted from provided ZIP file. Whenever you use notifies on your package resource and more than a single action as
+  defined (i.e. `action [:upload, :install]`), two notifications will be triggered (after `:upload` and `:install`
+  respectively)
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+* ( **String** ) `source` - URL to ZIP package. Accepted protocols: `file://`, `http://`, `https://`
+* ( **String** ) `http_user` - HTTP basic auth user. Use whenever source requires such authentication
+* ( **String** ) `http_pass` - HTTP basic auth password. Use whenever source requires such authentication
+* ( **Boolean** ) `recursive_install` - Whether to use recursive flag when installing packages (required for service
+  packs and some hotfixes). Applies only to install and deploy actions
+* ( **Boolean** ) `rescue_mode` - Some packages may cause shutdown of the entire OSGi because of dependency (i.e. cycle)
+  or bundle priority issues. In such case after package installation java process is still running, however the instance
+  is not responding over HTTP. After CQ/AEM restart everything works perfectly fine again. This flag allows Chef to
+  continue processing if it is not able to get OSGi bundles state `error_state_barrier` times in a row. In most (if not
+  all) cases it should be combined with restart notification (please see examples below). It is highly discouraged to
+  use this property, as 99% of CRX packages shouldn't require such configuration. Unfortunately that 1% does. This is
+  rather a safety switch than a common pattern that should be used in every single case. Applies only to install and
+  deploy actions.
+* ( **String** ) `checksum` - ZIP file checksum (passed through to `remote_file` resource that is used under the hood by
+  `cq_package` provider)
+* ( **Integer** ) `same_state_barrier` - How many times in a row the same OSGi state should occur after package
+  (un)installation to consider this process successful. Default is 6
+* ( **Integer** ) `error_state_barrier` - How many times in a row the OSGi console was unavailable after package
+  (un)installation. Useful only when combined with `rescue_mode`. By default set to 6
+* ( **Integer** ) `max_attempts` - Number of attempts while waiting for stable OSGi state after package
+  (un)installation. Set to 30 by default
+* ( **Integer** ) `sleep_time` - Sleep time between OSGi status checks (in seconds) after package (un)installation. Set
+  to 10 by default
 
 ### Usage
 
@@ -712,7 +339,11 @@ cq_package 'Slice 4.2.1' do
 
   action :upload
 end
+```
 
+First `cq_package` resource will download Slice package from provided URL and upload it to defined AEM Author instance.
+
+```ruby
 cq_package 'Upgrade to Oak 1.0.13' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -724,7 +355,12 @@ cq_package 'Upgrade to Oak 1.0.13' do
 
   action :upload
 end
+```
 
+Second resource does the same as the first one, but for Oak 1.0.13 hotfix. The only difference is that provided URL
+requires basic auth, hence the `http_user` and `http_pass` properties.
+
+```ruby
 cq_package 'ACS AEM Commons 1.10.2' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -735,7 +371,11 @@ cq_package 'ACS AEM Commons 1.10.2' do
 
   action [:upload, :install]
 end
+```
 
+Third package shows how to combine multiple actions in a single `cq_package` resource usage.
+
+```ruby
 cq_package 'AEM6 hotfix 6316' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -747,7 +387,14 @@ cq_package 'AEM6 hotfix 6316' do
 
   notifies :restart, 'service[cq60-author]', :immediately
 end
+```
 
+4th `cq_package` presents how to use `deploy` action that combines both `upload` and `install` in a single execution.
+This is preferred way of doing package deployment, in particular for those that require AEM service restart as soon as
+installation is completed. `recursive_install` was also used here, which is required for majority of hotfixes and every
+service pack.
+
+```ruby
 cq_package 'Geometrixx All' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -759,7 +406,12 @@ cq_package 'Geometrixx All' do
 
   action :uninstall
 end
+```
 
+Next example describes usage of `uninstall` action. In this particular case operation was executed against Geometrixx
+package.
+
+```ruby
 cq_package 'Not really well-thought-out package' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -773,7 +425,19 @@ cq_package 'Not really well-thought-out package' do
 
   notifies :restart, 'service[cq60-author]', :immediately
 end
+```
 
+6th `cq_package` presents usage of `rescue_mode` property. Imagine that this package provides new OSGi bundles and right
+after its installation some serious issue occurs (i.e. unresolvable OSGi dependency, conflict or cycle). As a result of
+this event all bundles will be turned off and effectively instance will stop responding or start serving 404s for all
+resources (including `/system/console`). The java process though will still be running. The only solution to that
+problem is AEM restart, after which all work perfectly fine again. Without `rescue_mode` property `cq_package` provider
+will keep checking OSGi bundles to detect their stable state, but none of these attempts will end successfully, as
+nothing is reachable over HTTP. Eventually Chef run will be aborted. If `rescue_mode` was activated (set to `true`) then
+after `error_state_barrier` unsuccessful attempts an error will be printed and the processing will be continued (restart
+of `cq60-author` service in this case).
+
+```ruby
 cq_package 'Author: Service Pack 2 (upload)' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -800,49 +464,14 @@ cq_package 'Author: Service Pack 2 (install)' do
 end
 ```
 
-First `cq_package` resource will download Slice package from provided URL and
-upload it to defined AEM Author instance.
+7th & 8th `cq_package` resources explain how to deal with AEM instance restarts after package installation and tune post
+installation OSGi stability checks.
 
-Second resource does the same as the first one, but for Oak 1.0.13 hotfix. The
-only difference is that provided URL requires basic auth, hence the `http_user`
-and `http_pass` properties.
+Moreover it explains how to use combination of `upload` and `install` instead of `deploy`. Such procedure might be
+required sometimes, i.e. when some extra steps have to be done after package upload, but before its installation.
 
-Third package shows how to combine multiple actions in a single `cq_package`
-resource usage.
-
-4th `cq_package` presents how to use `deploy` action that combines both
-`upload` and `install` in a single execution. This is preferred way of doing
-package deployment, in particular for those that require AEM service restart
-as soon as installation is completed. `recursive_install` was also used here,
-which is required for majority of hotfixes and every service pack.
-
-Next example describes usage of `uninstall` action. In this particular case
-operation was executed against Geometrixx package.
-
-6th `cq_package` presents usage of `rescue_mode` property. Imagine that this
-package provides new OSGi bundles and right after its installation some serious
-issue occurs (i.e. unresolvable OSGi dependency, conflict or cycle). As a
-result of this event all bundles will be turned off and effectively instance
-will stop responding or start serving 404s for all resources (including
-`/system/console`). The java process though will still be running. The only
-solution to that problem is AEM restart, after which all work perfectly fine
-again. Without `rescue_mode` property `cq_package` provider will keep checking
-OSGi bundles to detect their stable state, but none of these attempts will end
-successfully, as nothing is reachable over HTTP. Eventually Chef run will be
-aborted. If `rescue_mode` was activated (set to `true`) then after
-`error_state_barrier` unsuccessful attempts an error will be printed and the
-processing will be continued (restart of `cq60-author` service in this case).
-
-7th & 8th `cq_package` resources explain how to deal with AEM instance
-restarts after package installation and tune post installation OSGi
-stability checks.
-
-Moreover it explains how to use combination of `upload` and `install` instead
-of `deploy`. Such procedure might be required sometimes, i.e. when some extra
-steps have to be done after package upload, but before its installation.
-
-Please notice that both resources were named differently on purpose
-to avoid resource merge and 2 restarts. If you'd use:
+Please notice that both resources were named differently on purpose to avoid resource merge and 2 restarts. If you'd
+use:
 
 ```ruby
 cq_package 'Author: Service Pack 2' do
@@ -885,15 +514,12 @@ end
 
 two restarts will be triggered.
 
-In the first case during compile phase Chef will generate 2 resources with the
-same name, but different actions.
+In the first case during compile phase Chef will generate 2 resources with the same name, but different actions.
 
-In second example restart still will be triggered after upload, even if it's
-not explicitly defined during 1st usage (upload action). The reason is quite
-simple - both resources are named the same (`Author: Service Pack 2`) and Chef
-will treat this as a single resource on resource collection. It means that
-notify parameter will be silently merged to the resource with upload action
-during compile phase.
+In second example restart still will be triggered after upload, even if it's not explicitly defined during 1st usage
+(upload action). The reason is quite simple - both resources are named the same (`Author: Service Pack 2`) and Chef will
+treat this as a single resource on resource collection. It means that notify parameter will be silently merged to the
+resource with upload action during compile phase.
 
 ## cq_osgi_config
 
@@ -908,163 +534,59 @@ For regular (non-factory, single instance) configs:
 
 For factory configs:
 
-* `create` - creates a new factory instance if none of existing ones match to
-  defined state
-* `delete` - deletes factory config instance if there's one that matches to
-  defined state
-
+* `create` - creates a new factory instance if none of existing ones match to defined state
+* `delete` - deletes factory config instance if there's one that matches to defined state
 
 ### Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>pid</tt></td>
-    <td>String</td>
-    <td>Config name (PID). Relevant to regular configs only</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>factory_pid</tt></td>
-    <td>String</td>
-    <td>Factory PID</td>
-  </tr>
-  <tr>
-    <td><tt>properties</tt></td>
-    <td>Hash</td>
-    <td>Key-value pairs that represent OSGi config properties</td>
-  </tr>
-  <tr>
-    <td><tt>append</tt></td>
-    <td>Boolean</td>
-    <td>If set to <tt>true</tt> arrays will be merged. Use if you'd like to
-    specify just a subset of array elements. <tt>false</tt> by default. Has no
-    impact on other property types (String, Fixnum, etc)</td>
-  </tr>
-  <tr>
-    <td><tt>apply_all</tt></td>
-    <td>Boolean</td>
-    <td>If <tt>true</tt> all properties defined in a <tt>cq_osgi_config</tt>
-    resource will be used when applying OSGi configuration (despite of the fact
-    just a subset differs). Example: 5 properties were defined as
-    <tt>properties</tt>, 3 of them require update, but all of them will be set.
-    <tt>false</tt> by default
-    </td>
-  </tr>
-  <tr>
-    <td><tt>include_missing</tt></td>
-    <td>Boolean</td>
-    <td>Properties that were NOT defined by user, but exist in OSGi will be
-    included as a part of an update if this property is set to <tt>true</tt>
-    for regular OSGi configs. For factory configs it bahaves almost the same.
-    If new instance needs to be created then defaults defined in factory PID
-    will be used. In case of existing instance update, all missing properties
-    will be based on properties defined in that instance. This is
-    <b>recommended</b> property when you'd like to edit pre-existing factory
-    or regular configs. <tt>true</tt> by default</td>
-  </tr>
-  <tr>
-    <td><tt>unique_fields</tt></td>
-    <td>Array</td>
-    <td>Property names/keys that define uniqueness of given config. Applicable
-    to factory configs only. By deafult all available property keys will be
-    used (defined by factory config on AEM instance). User doesn't need to
-    define that at all, unless you want to cherry pick particular config. It's
-    generally <b>recommended</b> to specify this for every factory OSGi config.
-    Example: <tt>log.name</tt> key needs to stay unique for your config</td>
-  </tr>
-  <tr>
-    <td><tt>count</tt></td>
-    <td>Fixnum</td>
-    <td>Number of duplicated instances of given OSGi configuration. 1 by
-    default. Applicable to factory configs only. Useful when duplicated
-    instances are allowed, i.e. each instance specify some sort of a worker and
-    every single one of them has exactly the same set of properties
-    </td>
-  </tr>
-  <tr>
-    <td><tt>enforce_count</tt></td>
-    <td>Boolean</td>
-    <td>Reduces number of duplicated configs if more than <tt>count</tt> has
-    been found. Applicable to factory configs only. <tt>false</tt> by default
-    </td>
-  </tr>
-  <tr>
-    <td><tt>force</tt></td>
-    <td>Boolean</td>
-    <td>If <tt>true</tt>, defined OSGi config is deleted/updated reagrdless of
-    current settings. Applies to regular OSGi configs only. This violates
-    idempotence, so please use <tt>only_if</tt> or <tt>not_if</tt> blocks to
-    prevent constant execution</td>
-  </tr>
-  <tr>
-    <td><tt>rescue_mode</tt></td>
-    <td>Boolean</td>
-    <td>Some config operations may cause shutdown of the entire OSGi because of
-    dependecy (i.e. cycle) or bundle/component priority issues. In such case
-    after config update java process is still running, however the instance
-    is not responding over HTTP. After CQ/AEM restart everyting works
-    perfectly fine again.
-    This flag allows Chef to continue processing if it is not able to get OSGi
-    component state <tt>error_state_barrier</tt> times in a row.
-    In most (if not all) cases it should be combined with AEM restart
-    notification.
-    It is highly discouraged to use this property, as 99% of OSGi configs
-    shouldn't require such configuration. Unfortunately that 1% does. This is
-    rather a safety switch than a common pattern that should be used in every
-    single case.
-    </td>
-  </tr>
-  <tr>
-    <td><tt>same_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>How many times in a row the same OSGi component state should occur
-    after configuration update to consider this process successful. 3 by
-    default</td>
-  </tr>
-  <tr>
-    <td><tt>error_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>How many times in a row the OSGi console was unavailable after OSGi
-    config update. Useful only when combined with <tt>rescue_mode</tt>. 3 by
-    default</td>
-  </tr>
-  <tr>
-    <td><tt>max_attempts</tt></td>
-    <td>Integer</td>
-    <td>Number of attempts while waiting for stable OSGi state after OSGi
-    config update. 60 by default</td>
-  </tr>
-  <tr>
-    <td><tt>sleep_time</tt></td>
-    <td>Integer</td>
-    <td>Sleep time between OSGi component status checks (in seconds) after
-    config update. 2 by default</td>
-  </tr>
-</table>
+* ( **String** ) `pid` - Config name (PID). Relevant to regular configs only
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+* ( **String** ) `factory_pid` - Factory PID
+* ( **Hash** ) `properties` - Key-value pairs that represent OSGi config properties
+* ( **Boolean** ) `append` - If set to `true` arrays will be merged. Use if you'd like to specify just a subset of array
+  elements. `false` by default. Has no impact on other property types (String, Integer, etc)
+* ( **Boolean** ) `apply_all` - If `true` all properties defined in a `cq_osgi_config` resource will be used when
+  applying OSGi configuration (despite of the fact just a subset differs). Example: 5 properties were defined as
+  properties, 3 of them require update, but all of them will be set. `false` by default
+* ( **Boolean** ) `include_missing` - Properties that were NOT defined by user, but exist in OSGi will be included as a
+  part of an update if this property is set to `true` for regular OSGi configs. For factory configs it behaves almost
+  the same. If new instance needs to be created then defaults defined in factory PID will be used. In case of existing
+  instance update, all missing properties will be based on properties defined in that instance. This is recommended
+  property when you'd like to edit pre-existing factory or regular configs. `true` by default
+* ( **Array** ) `unique_fields` - Property names/keys that define uniqueness of given config. Applicable to factory
+  configs only. By default all available property keys will be used (defined by factory config on AEM instance). User
+  doesn't need to define that at all, unless you want to cherry pick particular config. It's generally recommended to
+  specify this for every factory OSGi config. Example: log.name key needs to stay unique for your config
+* ( **Integer** ) `count` - Number of duplicated instances of given OSGi configuration. 1 by default. Applicable to
+  factory configs only. Useful when duplicated instances are allowed, i.e. each instance specify some sort of a worker
+  and every single one of them has exactly the same set of properties
+* ( **Boolean** ) `enforce_count` - Reduces number of duplicated configs if more than count has been found. Applicable
+  to factory configs only. `false` by default
+* ( **Boolean** ) `force` - If `true`, defined OSGi config is deleted/updated regardless of current settings. Applies to
+  regular OSGi configs only. This violates idempotence, so please use `only_if` or `not_if` blocks to prevent constant
+  execution
+* ( **Boolean** ) `rescue_mode` - Some config operations may cause shutdown of the entire OSGi because of dependency
+  (i.e. cycle) or bundle/component priority issues. In such case after config update java process is still running,
+  however the instance is not responding over HTTP. After CQ/AEM restart everything works perfectly fine again. This
+  flag allows Chef to continue processing if it is not able to get OSGi component state `error_state_barrier` times in a
+  row. In most (if not all) cases it should be combined with AEM restart notification. It is highly discouraged to use
+  this property, as 99% of OSGi configs shouldn't require such configuration. Unfortunately that 1% does. This is rather
+  a safety switch than a common pattern that should be used in every single case.
+* ( **Integer** ) `same_state_barrier` - How many times in a row the same OSGi component state should occur after
+  configuration update to consider this process successful. 3 by default
+* ( **Integer** ) `error_state_barrier` - How many times in a row the OSGi console was unavailable after OSGi config
+  update. Useful only when combined with `rescue_mode`. 3 by default
+* ( **Integer** ) `max_attempts` - Number of attempts while waiting for stable OSGi state after OSGi config update. 60
+  by default
+* ( **Integer** ) `sleep_time` - Sleep time between OSGi component status checks (in seconds) after config update. 2 by
+  default
 
 ### Compatibility matrix
 
 | Property          | Regular OSGi config | Factory OSGi config |
-| ----------------- | ------------------- | ------------------- |
+| ---               | ---                 | ---                 |
 | `pid`             | :white_check_mark:  | :white_check_mark:  |
 | `username`        | :white_check_mark:  | :white_check_mark:  |
 | `password`        | :white_check_mark:  | :white_check_mark:  |
@@ -1093,7 +615,11 @@ cq_osgi_config 'Root Mapping' do
 
   action :create
 end
+```
 
+`Root Mapping` resource sets `/` redirect to `/welcome.html` if it's not already set.
+
+```ruby
 cq_osgi_config 'Event Admin' do
   pid 'org.apache.felix.eventadmin.impl.EventAdmin'
   username node['cq']['author']['credentials']['login']
@@ -1106,7 +632,28 @@ cq_osgi_config 'Event Admin' do
 
   action :create
 end
+```
 
+`Event Admin` merges defined properties with the ones that are already set (because of `append` property). This is how
+`Event Admin` will look like before:
+
+| ID                                           | VALUE                                |
+| ---                                          | ---                                  |
+| `org.apache.felix.eventadmin.ThreadPoolSize` | `20`                                 |
+| `org.apache.felix.eventadmin.Timeout`        | `5000`                               |
+| `org.apache.felix.eventadmin.RequireTopic`   | `true`                               |
+| `org.apache.felix.eventadmin.IgnoreTimeout`  | `["org.apache.felix*","com.adobe*"]` |
+
+and after Chef run:
+
+| ID                                           | VALUE                                               |
+| ---                                          | ---                                                 |
+| `org.apache.felix.eventadmin.ThreadPoolSize` | `20`                                                |
+| `org.apache.felix.eventadmin.Timeout`        | `5000`                                              |
+| `org.apache.felix.eventadmin.RequireTopic`   | `true`                                              |
+| `org.apache.felix.eventadmin.IgnoreTimeout`  | `["com.adobe*","com.example*","org.apache.felix*"]` |
+
+```ruby
 cq_osgi_config 'OAuth Twitter' do
   pid 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl'
   username node['cq']['author']['credentials']['login']
@@ -1118,7 +665,12 @@ cq_osgi_config 'OAuth Twitter' do
 
   action :delete
 end
+```
 
+Properties of `OAuth Twitter` will be restored to default values if any of them was previously modified (explicitly
+set).
+
+```ruby
 cq_osgi_config 'Promotion Manager' do
   pid 'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl'
   username node['cq']['author']['credentials']['login']
@@ -1130,34 +682,8 @@ cq_osgi_config 'Promotion Manager' do
 end
 ```
 
-`Root Mapping` resource sets `/` redirect to `/welcome.html` if it's not
-already set.
-
-`Event Admin` merges defined properties with the ones that are already set
-(because of `append` property). This is how `Event Admin` will look like
-before:
-
-| ID                                         | VALUE |
-| ------------------------------------------ | ----- |
-| org.apache.felix.eventadmin.ThreadPoolSize | 20    |
-| org.apache.felix.eventadmin.Timeout        | 5000  |
-| org.apache.felix.eventadmin.RequireTopic   | true  |
-| org.apache.felix.eventadmin.IgnoreTimeout  | ["org.apache.felix\*","com.adobe\*"] |
-
-and after Chef run:
-
-| ID                                         | VALUE |
-| ------------------------------------------ | ----- |
-| org.apache.felix.eventadmin.ThreadPoolSize | 20    |
-| org.apache.felix.eventadmin.Timeout        | 5000  |
-| org.apache.felix.eventadmin.RequireTopic   | true  |
-| org.apache.felix.eventadmin.IgnoreTimeout  | ["com.adobe\*","com.example\*","org.apache.felix\*"] |
-
-Properties of `OAuth Twitter` will be restored to default values if any of them
-was previously modified (explicitly set).
-
-`Promotion Manager` will behave as `OAuth Twitter` with one exception - it will
-happen on every Chef run due to `force` property.
+`Promotion Manager` will behave as `OAuth Twitter` with one exception - it will happen on every Chef run due to `force`
+property.
 
 #### Factory OSGi configs
 
@@ -1181,7 +707,14 @@ cq_osgi_config 'Custom Logger' do
 
   action :create
 end
+```
 
+`Custom Logger` resource will create a new logger according to defined properties. `org.apache.sling.commons.log.file`
+is a virtual identifier of given OSGi config instance (specified by user). If instance with such "ID" already exists
+nothing happens. Otherwise a brand new configuration will be created. Please keep in mind that there's no need to
+specify any UUID in resource definition.
+
+```ruby
 cq_osgi_config 'Job Queue' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -1201,21 +734,11 @@ cq_osgi_config 'Job Queue' do
 
   action :delete
 end
-
 ```
 
-`Custom Logger` resource will create a new logger according to defined
-properties. `org.apache.sling.commons.log.file` is a virtual identifier of
-given OSGi config instance (specified by user). If instance with such "ID"
-already exists nothing happens. Otherwise a brand new configuration will be
-created.
-Please keep in mind that there's no need to specify any UUID in resource definition.
-
-
-`Job Queue` resource will delete factory instance of
-`org.apache.sling.event.jobs.QueueConfiguration` that has `queue.name` set to
-`Granite Workflow Timeout Queue`. Presence of additional properties doesn't
-matter in this case and will be completely ignored.
+`Job Queue` resource will delete factory instance of `org.apache.sling.event.jobs.QueueConfiguration` that has
+`queue.name` set to `Granite Workflow Timeout Queue`. Presence of additional properties doesn't matter in this case and
+will be completely ignored.
 
 # cq_osgi_bundle
 
@@ -1228,59 +751,16 @@ Adds ability to stop and start OSGi bundles
 
 ## Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>symbolic_name</tt></td>
-    <td>String</td>
-    <td>Symbolic name of the bundle, i.e. <tt>com.company.example.abc</tt>. If
-    not explicitly defined resource name will be used as symbolic name</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>rescue_mode</tt></td>
-    <td>Boolean</td>
-    <td>Same meaning as for <tt>cq_package</tt></td>
-  </tr>
-  <tr>
-    <td><tt>same_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>Same meaning as for <tt>cq_package</tt></td>
-  </tr>
-  <tr>
-    <td><tt>error_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>Same meaning as for <tt>cq_package</tt></td>
-  </tr>
-  <tr>
-    <td><tt>max_attempts</tt></td>
-    <td>Integer</td>
-    <td>Same meaning as for <tt>cq_package</tt></td>
-  </tr>
-  <tr>
-    <td><tt>sleep_time</tt></td>
-    <td>Integer</td>
-    <td>Same meaning as for <tt>cq_package</tt></td>
-  </tr>
-</table>
+* ( **String** ) `symbolic_name` - Symbolic name of the bundle, i.e. `com.company.example.abc`. If not explicitly
+  defined resource name will be used as symbolic name
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+* ( **Boolean** ) `rescue_mode` - Same meaning as for `cq_package`
+* ( **Integer** ) `same_state_barrier` - Same meaning as for `cq_package`
+* ( **Integer** ) `error_state_barrier` - Same meaning as for `cq_package`
+* ( **Integer** ) `max_attempts` - Same meaning as for `cq_package`
+* ( **Integer** ) `sleep_time` - Same meaning as for `cq_package`<Paste>
 
 ## Usage
 
@@ -1295,7 +775,12 @@ cq_osgi_bundle 'Author: org.eclipse.equinox.region' do
 
   action :stop
 end
+```
 
+First example stops `org.eclipse.equinox.region` AEM author instance. Since there's just a few dependencies on this
+bundle, number of post-stop checks have been limited, as there's no point to wait for so long.
+
+```ruby
 cq_osgi_bundle 'com.adobe.xmp.worker.files.native.fragment.linux' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -1304,10 +789,6 @@ cq_osgi_bundle 'com.adobe.xmp.worker.files.native.fragment.linux' do
   action :start
 end
 ```
-
-First example stops `org.eclipse.equinox.region` AEM author instance. Since
-there's just a few dependencies on this bundle, number of post-stop checks
-have been limited, as there's no point to wait for so long.
 
 Second instance of `cq_osgi_bundle` is fairly simple, as it just starts
 `com.adobe.xmp.worker.files.native.fragment.linux` bundle.
@@ -1323,33 +804,10 @@ Management of OSGi components
 
 ## Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>pid</tt></td>
-    <td>String</td>
-    <td>Component PID</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-</table>
+* ( **String** ) `pid` - Component PID
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
 
 ## Usage
 
@@ -1373,16 +831,13 @@ cq_osgi_component 'Author: com.project.email.servlet' do
 end
 ```
 
-Both examples are self-explanatory. First one enables
-`com.example.my.component` component if it's in `disabled` state. Second one
-will disable `com.project.email.servlet` component, but only if it's state is
-not already `disabled`.
+Both examples are self-explanatory. First one enables `com.example.my.component` component if it's in `disabled` state.
+Second one will disable `com.project.email.servlet` component, but only if it's state is not already `disabled`.
 
 ---
 
-Please keep in mind that OSGi components used to get back to their original
-state after AEM instance restart. So if you disabled one, most probably it'll
-become enabled after instance restart.
+Please keep in mind that OSGi components used to get back to their original state after AEM instance restart. So if you
+disabled one, most probably it'll become enabled after instance restart.
 
 ---
 
@@ -1396,145 +851,55 @@ Exposes a resource for CQ/AEM user management. Supports:
 
 ## Actions
 
-* `modify` - use to modify an existing user. Action will be skipped if given
-  user does not exist
+* `modify` - use to modify an existing user. Action will be skipped if given user does not exist
 
 ## Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>id</tt></td>
-    <td>String</td>
-    <td>User ID (login)</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>email</tt></td>
-    <td>String</td>
-    <td>E-mail</td>
-  </tr>
-  <tr>
-    <td><tt>first_name</tt></td>
-    <td>String</td>
-    <td>First name</td>
-  </tr>
-  <tr>
-    <td><tt>last_name</tt></td>
-    <td>String</td>
-    <td>Last name</td>
-  </tr>
-  <tr>
-    <td><tt>phone_number</tt></td>
-    <td>String</td>
-    <td>Phone number</td>
-  </tr>
-  <tr>
-    <td><tt>job_title</tt></td>
-    <td>String</td>
-    <td>Job title</td>
-  </tr>
-  <tr>
-    <td><tt>street</tt></td>
-    <td>String</td>
-    <td>Street</td>
-  </tr>
-  <tr>
-    <td><tt>mobile</tt></td>
-    <td>String</td>
-    <td>Mobile</td>
-  </tr>
-  <tr>
-    <td><tt>city</tt></td>
-    <td>String</td>
-    <td>City</td>
-  </tr>
-  <tr>
-    <td><tt>postal_code</tt></td>
-    <td>String</td>
-    <td>Postal code</td>
-  </tr>
-  <tr>
-    <td><tt>country</tt></td>
-    <td>String</td>
-    <td>Country</td>
-  </tr>
-  <tr>
-    <td><tt>state</tt></td>
-    <td>String</td>
-    <td>State</td>
-  </tr>
-  <tr>
-    <td><tt>gender</tt></td>
-    <td>String</td>
-    <td>Gender</td>
-  </tr>
-  <tr>
-    <td><tt>about</tt></td>
-    <td>String</td>
-    <td>About section</td>
-  </tr>
-  <tr>
-    <td><tt>user_password</tt></td>
-    <td>String</td>
-    <td>Desired password for non-admin user specified by <tt>id</tt>
-    property</td>
-  </tr>
-  <tr>
-    <td><tt>enabled</tt></td>
-    <td>Boolean</td>
-    <td>True by default, set to false to deactive given user. Has no effect
-    for admin user</td>
-  </tr>
-  <tr>
-    <td><tt>old_password</tt></td>
-    <td>String</td>
-    <td>Old password of admin user. Has no effect for non-admin ones</td>
-  </tr>
-</table>
+* ( **String** ) `id` - User ID (login)
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+* ( **String** ) `email` - E-mail
+* ( **String** ) `first_name` - First name
+* ( **String** ) `last_name` - Last name
+* ( **String** ) `phone_number` - Phone number
+* ( **String** ) `job_title` - Job title
+* ( **String** ) `street` - Street
+* ( **String** ) `mobile` - Mobile
+* ( **String** ) `city` - City
+* ( **String** ) `postal_code` - Postal code
+* ( **String** ) `country` - Country
+* ( **String** ) `state` - State
+* ( **String** ) `gender` - Gender
+* ( **String** ) `about` - About section
+* ( **String** ) `user_password` - Desired password for non-admin user specified by id property
+* ( **Boolean** ) `enabled` - `true` by default, set to `false` to deactivate given user. Has no effect for admin user
+* ( **String** ) `old_password` - Old password of admin user. Has no effect for non-admin ones
 
 ## Compatibility matrix
 
-| Property        | `admin` user        | All other users    |
-| --------------- | ------------------- | ------------------ |
-| `id`            | :white_check_mark:  | :white_check_mark: |
-| `username`      | :white_check_mark:  | :white_check_mark: |
-| `password`      | :white_check_mark:  | :white_check_mark: |
-| `instance`      | :white_check_mark:  | :white_check_mark: |
-| `email`         | :white_check_mark:  | :white_check_mark: |
-| `first_name`    | :white_check_mark:  | :white_check_mark: |
-| `last_name`     | :white_check_mark:  | :white_check_mark: |
-| `phone_number`  | :white_check_mark:  | :white_check_mark: |
-| `job_title`     | :white_check_mark:  | :white_check_mark: |
-| `street`        | :white_check_mark:  | :white_check_mark: |
-| `mobile`        | :white_check_mark:  | :white_check_mark: |
-| `city`          | :white_check_mark:  | :white_check_mark: |
-| `postal_code`   | :white_check_mark:  | :white_check_mark: |
-| `country`       | :white_check_mark:  | :white_check_mark: |
-| `state`         | :white_check_mark:  | :white_check_mark: |
-| `gender`        | :white_check_mark:  | :white_check_mark: |
-| `about`         | :white_check_mark:  | :white_check_mark: |
-| `user_password` | :x:                 | :white_check_mark: |
-| `enabled`       | :x:                 | :white_check_mark: |
-| `old_password`  | :white_check_mark:  | :x:                |
+| Property        | `admin` user       | All other users    |
+| ---             | ---                | ---                |
+| `id`            | :white_check_mark: | :white_check_mark: |
+| `username`      | :white_check_mark: | :white_check_mark: |
+| `password`      | :white_check_mark: | :white_check_mark: |
+| `instance`      | :white_check_mark: | :white_check_mark: |
+| `email`         | :white_check_mark: | :white_check_mark: |
+| `first_name`    | :white_check_mark: | :white_check_mark: |
+| `last_name`     | :white_check_mark: | :white_check_mark: |
+| `phone_number`  | :white_check_mark: | :white_check_mark: |
+| `job_title`     | :white_check_mark: | :white_check_mark: |
+| `street`        | :white_check_mark: | :white_check_mark: |
+| `mobile`        | :white_check_mark: | :white_check_mark: |
+| `city`          | :white_check_mark: | :white_check_mark: |
+| `postal_code`   | :white_check_mark: | :white_check_mark: |
+| `country`       | :white_check_mark: | :white_check_mark: |
+| `state`         | :white_check_mark: | :white_check_mark: |
+| `gender`        | :white_check_mark: | :white_check_mark: |
+| `about`         | :white_check_mark: | :white_check_mark: |
+| `user_password` | :x:                | :white_check_mark: |
+| `enabled`       | :x:                | :white_check_mark: |
+| `old_password`  | :white_check_mark: | :x:                |
 
 ## Usage
 
@@ -1550,7 +915,13 @@ cq_user 'admin' do
 
   action :modify
 end
+```
 
+Modify action on `cq_user 'admin'` resource will change CQ/AEM `admin` password to `d4rk_kn1ght` if the current one is
+either `passw0rd` or `admin` (the latter is automatically checked if both `password` and `old_password` are incorrect).
+Moreover `admin` first name and last name will be updated (to `Bruce` and `Wayne` respectively) if needed.
+
+```ruby
 cq_user 'author' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -1566,13 +937,6 @@ cq_user 'author' do
   action :modify
 end
 ```
-
-Modify action on `cq_user 'admin'` resource will change CQ/AEM admin's password
-to `d4rk_kn1ght` if the current one is either `passw0rd` or `admin` (the latter
-is automatically checked if both `password` and `old_password` are incorrect).
-Moreover admin's first name and last name will be updated (to `Bruce` and
-`Wayne` respectively) if needed.
-
 Second example (`cq_user 'author'`) also updates user password, but this time
 the old one doesn't have to be specified, as this operation will be executed on
 admin rights (auth credentials: `username`/`password`). Additionally `auhtor`'s
@@ -1585,52 +949,19 @@ CRUD operations on JCR nodes.
 
 ## Actions
 
-* `create` - creates new node under given path if it doesn't exist. Otherwise
-  it modifies its properties if required
+* `create` - creates new node under given path if it doesn't exist. Otherwise it modifies its properties if required
 * `delete` - deletes node if it exists. Prints error otherwise
 * `modify` - modifies properties of existing JCR node
 
 ## Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>path</tt></td>
-    <td>String</td>
-    <td>Node path</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>properties</tt></td>
-    <td>Hash</td>
-    <td>Node properties</td>
-  </tr>
-  <tr>
-    <td><tt>append</tt></td>
-    <td>Boolean</td>
-    <td>By default set to <tt>true</tt>. If full overwrite of properties is
-    required please set <tt>append</tt> property to <tt>false</tt>. Applies
-    only to <tt>:create</tt> and <tt>:modify</tt> actions</td>
-  </tr>
-</table>
+* ( **String** ) `path` - Node path
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+* ( **Hash** ) `properties` - Node properties
+* ( **Boolean** ) `append` - By default set to `true`. If full overwrite of properties is required please set append
+  property to `false`. Applies only to `:create` and `:modify` actions
 
 ## Usage
 
@@ -1647,7 +978,14 @@ cq_jcr '/content/test_node' do
 
   action :create
 end
+```
 
+Create action on `cq_jcr '/content/test_node'` will create such node with given properties if it doesn't exist yet.
+Otherwise its properties will be updated if necessary. By default `append` is set to `true`, which means existing
+properties of `/content/test_node` will stay untouched unless the same properties are specified in your `cq_jcr`
+resource.
+
+```ruby
 cq_jcr '/content/geometrixx/en/products/jcr:content' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -1662,7 +1000,13 @@ cq_jcr '/content/geometrixx/en/products/jcr:content' do
 
   action :create
 end
+```
 
+2nd example sets `append` property to `false`, which means that all properties except those specified in your resource
+should be removed. It will act as a full overwrite (keep in mind that some properties are protected and can't be
+deleted, moreover Sling API automatically adds things like `jcr:createdBy`).
+
+```ruby
 cq_jcr '/content/dam/geometrixx-media/articles/en/2012' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -1670,7 +1014,12 @@ cq_jcr '/content/dam/geometrixx-media/articles/en/2012' do
 
   action :delete
 end
+```
 
+Next example is very simple - `/content/dam/geometrixx-media/articles/en/2012` will get deleted if it exists. Otherwise
+warning message will be printed.
+
+```ruby
 cq_jcr '/content/geometrixx/en/services/certification/jcr:content' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -1684,88 +1033,31 @@ cq_jcr '/content/geometrixx/en/services/certification/jcr:content' do
 end
 ```
 
-Create action on `cq_jcr '/content/test_node'` will create such node with
-given properties if it doesn't exist yet. Otherwise its properties will be
-updated if necessary. By default `append` is set to `true`, which means
-existing properties of `/content/test_node` will stay untouched unless the same
-properties are specified in your `cq_jcr` resource.
-
-2nd example sets `append` property to `false`, which means that all
-properties except those specified in your resource should be removed. It will
-act as a full overwrite (keep in mind that some properties are protected and
-can't be deleted, moreover Sling API automatically adds things like
-`jcr:createdBy`).
-
-Next example is very simple - `/content/dam/geometrixx-media/articles/en/2012`
-will get deleted if it exists. Otherwise warning message will be printed.
-
-Last `cq_jcr` resource uses `:modify` action. It applies updates to existing
-nodes only. If specified path does not exist warning message will be
-displayed.
+Last `cq_jcr` resource uses `:modify` action. It applies updates to existing nodes only. If specified path does not
+exist warning message will be displayed.
 
 # cq_start_guard
 
-Allows you to wait for full AEM instance start before moving on with subsequent
-operations. It periodically sends HTTP request to AEM and compares response
-(both status code and body) with expected state. As soon as defined
-requirements are met the resource stops its job.
+Allows you to wait for full AEM instance start before moving on with subsequent operations. It periodically sends HTTP
+request to AEM and compares response (both status code and body) with expected state. As soon as defined requirements
+are met the resource stops its job.
 
 ## Actions
 
 * `nothing` - default action, does nothing :)
-* `run` - verifies instance state according to defined properties. This action
-  is *NOT idempotent* by design and should be always triggered via `notify`
-  from other resources
+* `run` - verifies instance state according to defined properties. This action is *NOT idempotent* by design and should
+  be always triggered via `notify` from other resources
 
 ## Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>name</tt></td>
-    <td>String</td>
-    <td>Start guard name</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>path</tt></td>
-    <td>String</td>
-    <td>URL path that's requested to verify instance health</td>
-  </tr>
-  <tr>
-    <td><tt>expected_code</tt></td>
-    <td>String</td>
-    <td>Expected HTTP status code</td>
-  </tr>
-  <tr>
-    <td><tt>expected_body</tt></td>
-    <td>String</td>
-    <td>Expected string in HTTP response body</td>
-  </tr>
-  <tr>
-    <td><tt>timeout</tt></td>
-    <td>Integer</td>
-    <td>Maximum time in seconds before giving up</td>
-  </tr>
-  <tr>
-    <td><tt>http_timeout</tt></td>
-    <td>Integer</td>
-    <td>Maximum time for HTTP call</td>
-  </tr>
-  <tr>
-    <td><tt>interval</tt></td>
-    <td>Integer</td>
-    <td>Time in seconds between HTTP request attempts to </td>
-  </tr>
-</table>
+* ( **String** ) `name` - Start guard name
+* ( **String** ) `instance` - Instance URL
+* ( **String** ) `path` - URL path that's requested to verify instance health
+* ( **String** ) `expected_code` - Expected HTTP status code
+* ( **String** ) `expected_body` - Expected string in HTTP response body
+* ( **Integer** ) `timeout` - Maximum time in seconds before giving up
+* ( **Integer** ) `http_timeout` - Maximum time for HTTP call
+* ( **Integer** ) `interval` - Time in seconds between HTTP healthcheck request attempts
 
 ## Usage
 
@@ -1788,8 +1080,8 @@ cq_start_guard 'cq64-author' do
 end
 ```
 
-Whenever AEM gets (re)started run `cq_start_guard` and wait until
-`/libs/granite/core/content/login.html` returns 200 response code
+Whenever AEM gets (re)started run `cq_start_guard` and wait until `/libs/granite/core/content/login.html` returns 200
+response code
 
 ```ruby
 service 'cq64-author' do
@@ -1812,11 +1104,9 @@ cq_start_guard 'cq64-author' do
 end
 ```
 
-Right after restart of `cq64-author` service send notification to
-`cq_start_guard` and wait until `/bin/healthchecks/instance` returns 200 code
-and `{"status": "ok"}` JSON in the body. Don't spend more than 15 minutes on
-such health check. Requests will be send every 10 seconds, however each HTTP
-call can't last more than 5 seconds.
+Right after restart of `cq64-author` service send notification to `cq_start_guard` and wait until
+`/bin/healthchecks/instance` returns 200 code and `{"status": "ok"}` JSON in the body. Don't spend more than 15 minutes
+on such health check. Requests will be send every 10 seconds, however each HTTP call can't last more than 5 seconds.
 
 # Testing
 
