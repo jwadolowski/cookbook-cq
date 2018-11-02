@@ -108,8 +108,8 @@ it installs Oracle's JDK7.
 * ( **String** ) `node['cq']['jar']['checksum']` - SHA256 checksum of CQ/AEM JAR file
 * ( **String** ) `node['cq']['license']['url']` - URL from which CQ/AEM license is downloaded
 * ( **String** ) `node['cq']['license']['checksum']` - SHA256 checksum of CQ/AEM license file
-* ( **Integer** ) `node['cq']['service']['start_timeout']` - Max number of seconds to wait until CQ/AEM instance is fully
-  operational after service start 
+* ( **Integer** ) `node['cq']['service']['start_timeout']` - Max number of seconds to wait until CQ/AEM instance is
+  fully operational after service start
 * ( **Integer** ) `node['cq']['service']['kill_delay']` - Max number of seconds for graceful instance stop before kill
   signal is sent to the process
 * ( **Integer** ) `node['cq']['service']['restart_sleep']` - Number of seconds to wait between service stop and start
@@ -126,7 +126,7 @@ All attributes in this file refer to CQ/AEM author instance (`node['cq']['author
   reference to `${CQ_JMX_IP}` shell variable in `node['cq']['author']['jvm']['jmx_opts']` attribute to be effective
 * ( **String** ) `node['cq']['author']['jmx_port']` - Value of `-Dcom.sun.management.jmxremote.port` and
   `-Dcom.sun.management.jmxremote.rmi.port` JVM parameters. Requires reference to `${CQ_JMX_PORT}` shell variable in
-  `node['cq']['author']['jvm']['jmx_opts']` attribute to be effective 
+  `node['cq']['author']['jvm']['jmx_opts']` attribute to be effective
 * ( **String** ) `node['cq']['author']['debug_ip']` - IP to listen on with debug interface. Requires reference to
   `${CQ_DEBUG_IP}` shell variable in `node['cq']['author']['jvm']['debug_opts']` attribute to be effective
 * ( **String** ) `node['cq']['author']['debug_port']` - Port of JVM debug interface. Requires reference to
@@ -135,21 +135,18 @@ All attributes in this file refer to CQ/AEM author instance (`node['cq']['author
   instance. The most typical scenarios require admin
 * ( **String** ) `node['cq']['author']['credentials']['password']` - Password of user specified in
   `node['cq']['author']['credentials']['login']`
-* ( **String** ) `node['cq']['author']['jvm']['min_heap']` - Number of megabytes that's passed on to `-Xms` JVM
-  parameter
-* ( **String** ) `node['cq']['author']['jvm']['max_heap']` - Number of megabytes that's passed on to `-Xmx` JVM
-  parameter
-* ( **String** ) `node['cq']['author']['jvm']['max_perm_size']` - Number of megabytes that's passed on to
-  `-XX:MaxPermSize` JVM parameter
-* ( **String** ) `node['cq']['author']['jvm']['code_cache_size']` - Number of megabytes that's passed on to
-  `-XX:ReservedCodeCacheSize` JVM parameter
+* ( **String** ) `node['cq']['author']['jvm']['min_heap']` - `-Xms` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['author']['jvm']['max_heap']` - `-Xmx` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['author']['jvm']['max_perm_size']` - `-XX:MaxPermSize` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['author']['jvm']['code_cache_size']` - `-XX:ReservedCodeCacheSize` JVM parameter (in
+  megabytes)
 * ( **String** ) `node['cq']['author']['jvm']['general_opts']` - Generic JVM parameters
 * ( **String** ) `node['cq']['author']['jvm']['code_cache_opts']` - JVM parameters related to its code cache
 * ( **String** ) `node['cq']['author']['jvm']['gc_opts']` - JVM parameters related to garbage collection
-* ( **String** ) `node['cq']['author']['jvm']['jmx_opts']` - JVM parameres related to JMX settings
+* ( **String** ) `node['cq']['author']['jvm']['jmx_opts']` - JVM parameters related to JMX settings
 * ( **String** ) `node['cq']['author']['jvm']['debug_opts']` - JVM parameters related to debug interface
 * ( **String** ) `node['cq']['author']['jvm']['crx_opts']` - CRX related JVM parameters
-* ( **String** ) `node['cq']['author']['jvm']['extra_opts']` - All other JVM patameters
+* ( **String** ) `node['cq']['author']['jvm']['extra_opts']` - All other JVM parameters
 * ( **String** ) `node['cq']['author']['healthcheck']['resource']` - Resource that's queried during instance start to
   determine whether CQ/AEM is fully operational
 * ( **String** ) `node['cq']['author']['healthcheck']['response_code']` - Expected HTTP status code of healthcheck
@@ -166,30 +163,27 @@ All attributes in this file refer to CQ/AEM publish instance (`node['cq']['publi
   reference to `${CQ_JMX_IP}` shell variable in `node['cq']['publish']['jvm']['jmx_opts']` attribute to be effective
 * ( **String** ) `node['cq']['publish']['jmx_port']` - Value of `-Dcom.sun.management.jmxremote.port` and
   `-Dcom.sun.management.jmxremote.rmi.port` JVM parameters. Requires reference to `${CQ_JMX_PORT}` shell variable in
-  `node['cq']['publish']['jvm']['jmx_opts']` attribute to be effective 
+  `node['cq']['publish']['jvm']['jmx_opts']` attribute to be effective
 * ( **String** ) `node['cq']['publish']['debug_ip']` - IP to listen on with debug interface. Requires reference to
   `${CQ_DEBUG_IP}` shell variable in `node['cq']['publish']['jvm']['debug_opts']` attribute to be effective
 * ( **String** ) `node['cq']['publish']['debug_port']` - Port of JVM debug interface. Requires reference to
   `${CQ_DEBUG_PORT}` shell variable in `node['cq']['publish']['jvm']['debug_opts']` attribute to be effective
-* ( **String** ) `node['cq']['publish']['credentials']['login']` - User that's used to perform actions agains your
-  CQ/AEM instance. The most typical scenarios require admin
-* ( **String** ) `node['cq']['publish']['credentials']['password']` - Passowrd of user specified in
+* ( **String** ) `node['cq']['publish']['credentials']['login']` - User that's used to perform actions on your CQ/AEM
+  instance. The most typical scenarios require admin
+* ( **String** ) `node['cq']['publish']['credentials']['password']` - Password of user specified in
   `node['cq']['publish']['credentials']['login']`
-* ( **String** ) `node['cq']['publish']['jvm']['min_heap']` - Number of megabytes that's passed on to `-Xms` JVM
-  parameter
-* ( **String** ) `node['cq']['publish']['jvm']['max_heap']` - Number of megabytes that's passed on to `-Xmx` JVM
-  parameter
-* ( **String** ) `node['cq']['publish']['jvm']['max_perm_size']` - Number of megabytes that's passed on to
-  `-XX:MaxPermSize` JVM parameter
-* ( **String** ) `node['cq']['publish']['jvm']['code_cache_size']` - Number of megabytes that's passed on to
-  `-XX:ReservedCodeCacheSize` JVM parameter
+* ( **String** ) `node['cq']['publish']['jvm']['min_heap']` - `-Xms` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['publish']['jvm']['max_heap']` - `-Xmx` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['publish']['jvm']['max_perm_size']` - `-XX:MaxPermSize` JVM parameter (in megabytes)
+* ( **String** ) `node['cq']['publish']['jvm']['code_cache_size']` - `-XX:ReservedCodeCacheSize` JVM parameter (in
+  megabytes)
 * ( **String** ) `node['cq']['publish']['jvm']['general_opts']` - Generic JVM parameters
 * ( **String** ) `node['cq']['publish']['jvm']['code_cache_opts']` - JVM parameters related to its code cache
 * ( **String** ) `node['cq']['publish']['jvm']['gc_opts']` - JVM parameters related to garbage collection
-* ( **String** ) `node['cq']['publish']['jvm']['jmx_opts']` - JVM parameres related to JMX settings
+* ( **String** ) `node['cq']['publish']['jvm']['jmx_opts']` - JVM parameters related to JMX settings
 * ( **String** ) `node['cq']['publish']['jvm']['debug_opts']` - JVM parameters related to debug interface
 * ( **String** ) `node['cq']['publish']['jvm']['crx_opts']` - CRX related JVM parameters
-* ( **String** ) `node['cq']['publish']['jvm']['extra_opts']` - All other JVM patameters
+* ( **String** ) `node['cq']['publish']['jvm']['extra_opts']` - All other JVM parameters
 * ( **String** ) `node['cq']['publish']['healthcheck']['resource']` - Resource that's queried during instance start to
   determine whether CQ/AEM is fully operational
 * ( **String** ) `node['cq']['publish']['healthcheck']['response_code']` - Expected HTTP status code of healthcheck
@@ -302,7 +296,7 @@ If you'd like to upload and install a package, in most cases please use `deploy`
 
 * ( **String** ) `name` - Package name. Can be anything as long as it means something to you. Actual package name is
   extracted from provided ZIP file. Whenever you use notifies on your package resource and more than a single action as
-  defined (i.e. `action [:upload, :install]`), two notifications will be triggered (after ``:upload` and `:install`
+  defined (i.e. `action [:upload, :install]`), two notifications will be triggered (after `:upload` and `:install`
   respectively)
 * ( **String** ) `username` - Instance username
 * ( **String** ) `password` - Instance password
@@ -538,163 +532,59 @@ For regular (non-factory, single instance) configs:
 
 For factory configs:
 
-* `create` - creates a new factory instance if none of existing ones match to
-  defined state
-* `delete` - deletes factory config instance if there's one that matches to
-  defined state
-
+* `create` - creates a new factory instance if none of existing ones match to defined state
+* `delete` - deletes factory config instance if there's one that matches to defined state
 
 ### Properties
 
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><tt>pid</tt></td>
-    <td>String</td>
-    <td>Config name (PID). Relevant to regular configs only</td>
-  </tr>
-  <tr>
-    <td><tt>username</tt></td>
-    <td>String</td>
-    <td>Instance username</td>
-  </tr>
-  <tr>
-    <td><tt>password</tt></td>
-    <td>String</td>
-    <td>Instance password</td>
-  </tr>
-  <tr>
-    <td><tt>instance</tt></td>
-    <td>String</td>
-    <td>Instance URL</td>
-  </tr>
-  <tr>
-    <td><tt>factory_pid</tt></td>
-    <td>String</td>
-    <td>Factory PID</td>
-  </tr>
-  <tr>
-    <td><tt>properties</tt></td>
-    <td>Hash</td>
-    <td>Key-value pairs that represent OSGi config properties</td>
-  </tr>
-  <tr>
-    <td><tt>append</tt></td>
-    <td>Boolean</td>
-    <td>If set to <tt>true</tt> arrays will be merged. Use if you'd like to
-    specify just a subset of array elements. <tt>false</tt> by default. Has no
-    impact on other property types (String, Integer, etc)</td>
-  </tr>
-  <tr>
-    <td><tt>apply_all</tt></td>
-    <td>Boolean</td>
-    <td>If <tt>true</tt> all properties defined in a <tt>cq_osgi_config</tt>
-    resource will be used when applying OSGi configuration (despite of the fact
-    just a subset differs). Example: 5 properties were defined as
-    <tt>properties</tt>, 3 of them require update, but all of them will be set.
-    <tt>false</tt> by default
-    </td>
-  </tr>
-  <tr>
-    <td><tt>include_missing</tt></td>
-    <td>Boolean</td>
-    <td>Properties that were NOT defined by user, but exist in OSGi will be
-    included as a part of an update if this property is set to <tt>true</tt>
-    for regular OSGi configs. For factory configs it bahaves almost the same.
-    If new instance needs to be created then defaults defined in factory PID
-    will be used. In case of existing instance update, all missing properties
-    will be based on properties defined in that instance. This is
-    <b>recommended</b> property when you'd like to edit pre-existing factory
-    or regular configs. <tt>true</tt> by default</td>
-  </tr>
-  <tr>
-    <td><tt>unique_fields</tt></td>
-    <td>Array</td>
-    <td>Property names/keys that define uniqueness of given config. Applicable
-    to factory configs only. By deafult all available property keys will be
-    used (defined by factory config on AEM instance). User doesn't need to
-    define that at all, unless you want to cherry pick particular config. It's
-    generally <b>recommended</b> to specify this for every factory OSGi config.
-    Example: <tt>log.name</tt> key needs to stay unique for your config</td>
-  </tr>
-  <tr>
-    <td><tt>count</tt></td>
-    <td>Integer</td>
-    <td>Number of duplicated instances of given OSGi configuration. 1 by
-    default. Applicable to factory configs only. Useful when duplicated
-    instances are allowed, i.e. each instance specify some sort of a worker and
-    every single one of them has exactly the same set of properties
-    </td>
-  </tr>
-  <tr>
-    <td><tt>enforce_count</tt></td>
-    <td>Boolean</td>
-    <td>Reduces number of duplicated configs if more than <tt>count</tt> has
-    been found. Applicable to factory configs only. <tt>false</tt> by default
-    </td>
-  </tr>
-  <tr>
-    <td><tt>force</tt></td>
-    <td>Boolean</td>
-    <td>If <tt>true</tt>, defined OSGi config is deleted/updated reagrdless of
-    current settings. Applies to regular OSGi configs only. This violates
-    idempotence, so please use <tt>only_if</tt> or <tt>not_if</tt> blocks to
-    prevent constant execution</td>
-  </tr>
-  <tr>
-    <td><tt>rescue_mode</tt></td>
-    <td>Boolean</td>
-    <td>Some config operations may cause shutdown of the entire OSGi because of
-    dependecy (i.e. cycle) or bundle/component priority issues. In such case
-    after config update java process is still running, however the instance
-    is not responding over HTTP. After CQ/AEM restart everyting works
-    perfectly fine again.
-    This flag allows Chef to continue processing if it is not able to get OSGi
-    component state <tt>error_state_barrier</tt> times in a row.
-    In most (if not all) cases it should be combined with AEM restart
-    notification.
-    It is highly discouraged to use this property, as 99% of OSGi configs
-    shouldn't require such configuration. Unfortunately that 1% does. This is
-    rather a safety switch than a common pattern that should be used in every
-    single case.
-    </td>
-  </tr>
-  <tr>
-    <td><tt>same_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>How many times in a row the same OSGi component state should occur
-    after configuration update to consider this process successful. 3 by
-    default</td>
-  </tr>
-  <tr>
-    <td><tt>error_state_barrier</tt></td>
-    <td>Integer</td>
-    <td>How many times in a row the OSGi console was unavailable after OSGi
-    config update. Useful only when combined with <tt>rescue_mode</tt>. 3 by
-    default</td>
-  </tr>
-  <tr>
-    <td><tt>max_attempts</tt></td>
-    <td>Integer</td>
-    <td>Number of attempts while waiting for stable OSGi state after OSGi
-    config update. 60 by default</td>
-  </tr>
-  <tr>
-    <td><tt>sleep_time</tt></td>
-    <td>Integer</td>
-    <td>Sleep time between OSGi component status checks (in seconds) after
-    config update. 2 by default</td>
-  </tr>
-</table>
+* ( **String** ) - `pid` - Config name (PID). Relevant to regular configs only
+* ( **String** ) - `username` - Instance username
+* ( **String** ) - `password` - Instance password
+* ( **String** ) - `instance` - Instance URL
+* ( **String** ) - `factory_pid` - Factory PID
+* ( **Hash** ) - `properties` - Key-value pairs that represent OSGi config properties
+* ( **Boolean** ) `append` - If set to true arrays will be merged. Use if you'd like to specify just a subset of array
+  elements. `false` by default. Has no impact on other property types (String, Integer, etc)
+* ( **Boolean** ) `apply_all` - If true all properties defined in a `cq_osgi_config` resource will be used when applying
+  OSGi configuration (despite of the fact just a subset differs). Example: 5 properties were defined as properties, 3 of
+  them require update, but all of them will be set. `false` by default
+* ( **Boolean** ) `include_missing` - Properties that were NOT defined by user, but exist in OSGi will be included as a
+  part of an update if this property is set to true for regular OSGi configs. For factory configs it behaves almost the
+  same. If new instance needs to be created then defaults defined in factory PID will be used. In case of existing
+  instance update, all missing properties will be based on properties defined in that instance. This is recommended
+  property when you'd like to edit pre-existing factory or regular configs. `true` by default
+* ( **Array** ) - `unique_fields` - Property names/keys that define uniqueness of given config. Applicable to factory
+  configs only. By default all available property keys will be used (defined by factory config on AEM instance). User
+  doesn't need to define that at all, unless you want to cherry pick particular config. It's generally recommended to
+  specify this for every factory OSGi config. Example: log.name key needs to stay unique for your config
+* ( **Integer** ) `count` - Number of duplicated instances of given OSGi configuration. 1 by default. Applicable to
+  factory configs only. Useful when duplicated instances are allowed, i.e. each instance specify some sort of a worker
+  and every single one of them has exactly the same set of properties
+* ( **Boolean** ) `enforce_count` - Reduces number of duplicated configs if more than count has been found. Applicable
+  to factory configs only. `false` by default
+* ( **Boolean** ) `force` - If true, defined OSGi config is deleted/updated regardless of current settings. Applies to
+  regular OSGi configs only. This violates idempotence, so please use `only_if` or `not_if` blocks to prevent constant
+  execution
+* ( **Boolean** ) `rescue_mode` - Some config operations may cause shutdown of the entire OSGi because of dependency
+  (i.e. cycle) or bundle/component priority issues. In such case after config update java process is still running,
+  however the instance is not responding over HTTP. After CQ/AEM restart everything works perfectly fine again. This
+  flag allows Chef to continue processing if it is not able to get OSGi component state `error_state_barrier` times in a
+  row. In most (if not all) cases it should be combined with AEM restart notification. It is highly discouraged to use
+  this property, as 99% of OSGi configs shouldn't require such configuration. Unfortunately that 1% does. This is rather
+  a safety switch than a common pattern that should be used in every single case.
+* ( **Integer** ) `same_state_barrier` - How many times in a row the same OSGi component state should occur after
+  configuration update to consider this process successful. 3 by default
+* ( **Integer** ) `error_state_barrier` - How many times in a row the OSGi console was unavailable after OSGi config
+  update. Useful only when combined with `rescue_mode`. 3 by default
+* ( **Integer** ) `max_attempts` - Number of attempts while waiting for stable OSGi state after OSGi config update. 60
+  by default
+* ( **Integer** ) `sleep_time` - Sleep time between OSGi component status checks (in seconds) after config update. 2 by
+  default
 
 ### Compatibility matrix
 
 | Property          | Regular OSGi config | Factory OSGi config |
-| ----------------- | ------------------- | ------------------- |
+| ---               | ---                 | ---                 |
 | `pid`             | :white_check_mark:  | :white_check_mark:  |
 | `username`        | :white_check_mark:  | :white_check_mark:  |
 | `password`        | :white_check_mark:  | :white_check_mark:  |
@@ -723,7 +613,11 @@ cq_osgi_config 'Root Mapping' do
 
   action :create
 end
+```
 
+`Root Mapping` resource sets `/` redirect to `/welcome.html` if it's not already set.
+
+```ruby
 cq_osgi_config 'Event Admin' do
   pid 'org.apache.felix.eventadmin.impl.EventAdmin'
   username node['cq']['author']['credentials']['login']
@@ -736,7 +630,28 @@ cq_osgi_config 'Event Admin' do
 
   action :create
 end
+```
 
+`Event Admin` merges defined properties with the ones that are already set (because of `append` property). This is how
+`Event Admin` will look like before:
+
+| ID                                           | VALUE                                |
+| ---                                          | ---                                  |
+| `org.apache.felix.eventadmin.ThreadPoolSize` | `20`                                 |
+| `org.apache.felix.eventadmin.Timeout`        | `5000`                               |
+| `org.apache.felix.eventadmin.RequireTopic`   | `true`                               |
+| `org.apache.felix.eventadmin.IgnoreTimeout`  | `["org.apache.felix*","com.adobe*"]` |
+
+and after Chef run:
+
+| ID                                           | VALUE                                               |
+| ---                                          | ---                                                 |
+| `org.apache.felix.eventadmin.ThreadPoolSize` | `20`                                                |
+| `org.apache.felix.eventadmin.Timeout`        | `5000`                                              |
+| `org.apache.felix.eventadmin.RequireTopic`   | `true`                                              |
+| `org.apache.felix.eventadmin.IgnoreTimeout`  | `["com.adobe*","com.example*","org.apache.felix*"]` |
+
+```ruby
 cq_osgi_config 'OAuth Twitter' do
   pid 'com.adobe.granite.auth.oauth.impl.TwitterProviderImpl'
   username node['cq']['author']['credentials']['login']
@@ -748,7 +663,12 @@ cq_osgi_config 'OAuth Twitter' do
 
   action :delete
 end
+```
 
+Properties of `OAuth Twitter` will be restored to default values if any of them was previously modified (explicitly
+set).
+
+```ruby
 cq_osgi_config 'Promotion Manager' do
   pid 'com.adobe.cq.commerce.impl.promotion.PromotionManagerImpl'
   username node['cq']['author']['credentials']['login']
@@ -760,34 +680,8 @@ cq_osgi_config 'Promotion Manager' do
 end
 ```
 
-`Root Mapping` resource sets `/` redirect to `/welcome.html` if it's not
-already set.
-
-`Event Admin` merges defined properties with the ones that are already set
-(because of `append` property). This is how `Event Admin` will look like
-before:
-
-| ID                                         | VALUE |
-| ------------------------------------------ | ----- |
-| org.apache.felix.eventadmin.ThreadPoolSize | 20    |
-| org.apache.felix.eventadmin.Timeout        | 5000  |
-| org.apache.felix.eventadmin.RequireTopic   | true  |
-| org.apache.felix.eventadmin.IgnoreTimeout  | ["org.apache.felix\*","com.adobe\*"] |
-
-and after Chef run:
-
-| ID                                         | VALUE |
-| ------------------------------------------ | ----- |
-| org.apache.felix.eventadmin.ThreadPoolSize | 20    |
-| org.apache.felix.eventadmin.Timeout        | 5000  |
-| org.apache.felix.eventadmin.RequireTopic   | true  |
-| org.apache.felix.eventadmin.IgnoreTimeout  | ["com.adobe\*","com.example\*","org.apache.felix\*"] |
-
-Properties of `OAuth Twitter` will be restored to default values if any of them
-was previously modified (explicitly set).
-
-`Promotion Manager` will behave as `OAuth Twitter` with one exception - it will
-happen on every Chef run due to `force` property.
+`Promotion Manager` will behave as `OAuth Twitter` with one exception - it will happen on every Chef run due to `force`
+property.
 
 #### Factory OSGi configs
 
@@ -811,7 +705,14 @@ cq_osgi_config 'Custom Logger' do
 
   action :create
 end
+```
 
+`Custom Logger` resource will create a new logger according to defined properties. `org.apache.sling.commons.log.file`
+is a virtual identifier of given OSGi config instance (specified by user). If instance with such "ID" already exists
+nothing happens. Otherwise a brand new configuration will be created. Please keep in mind that there's no need to
+specify any UUID in resource definition.
+
+```ruby
 cq_osgi_config 'Job Queue' do
   username node['cq']['author']['credentials']['login']
   password node['cq']['author']['credentials']['password']
@@ -831,21 +732,11 @@ cq_osgi_config 'Job Queue' do
 
   action :delete
 end
-
 ```
 
-`Custom Logger` resource will create a new logger according to defined
-properties. `org.apache.sling.commons.log.file` is a virtual identifier of
-given OSGi config instance (specified by user). If instance with such "ID"
-already exists nothing happens. Otherwise a brand new configuration will be
-created.
-Please keep in mind that there's no need to specify any UUID in resource definition.
-
-
-`Job Queue` resource will delete factory instance of
-`org.apache.sling.event.jobs.QueueConfiguration` that has `queue.name` set to
-`Granite Workflow Timeout Queue`. Presence of additional properties doesn't
-matter in this case and will be completely ignored.
+`Job Queue` resource will delete factory instance of `org.apache.sling.event.jobs.QueueConfiguration` that has
+`queue.name` set to `Granite Workflow Timeout Queue`. Presence of additional properties doesn't matter in this case and
+will be completely ignored.
 
 # cq_osgi_bundle
 
