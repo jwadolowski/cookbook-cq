@@ -64,7 +64,7 @@ action_class do
     end
 
     Chef::Log.debug("Clientlib endpoint response code: #{http_resp.code}")
-    Chef::Log.debug("Clientlib response response body: #{http_resp.body}")
+    Chef::Log.debug("Clientlib endpoint response body: #{http_resp.body}")
   rescue => e
     if (attempt += 1) <= max_attempts
       t = sleep_time(attempt)
