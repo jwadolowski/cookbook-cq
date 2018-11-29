@@ -1121,7 +1121,7 @@ This resource enables invalidation/rebuilt of internal clientlib cache in AEM. P
 
 * `nothing` - default action
 * `invalidate` - invalidates the entire clientlib cache
-* `rebuild` - rebuilds all clientlibs
+* `rebuild` - rebuilds all clientlibs (please keep in mind this operation usually takes at least a couple of minutes)
 
 ## Properties
 
