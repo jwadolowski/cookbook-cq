@@ -54,7 +54,7 @@ that time). Nowadays the `aem` name seems to be taken anyways, so I no longer ha
         * [Actions](#actions-6)
         * [Properties](#properties-6)
         * [Usage](#usage-6)
-    * [cq_clientlib_cache](#cq_clienlib_cache)
+    * [cq_clientlib_cache](#cq_clientlib_cache)
         * [Actions](#actions-7)
         * [Properties](#properties-7)
         * [Usage](#usage-7)
