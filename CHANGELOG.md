@@ -3,6 +3,7 @@
 * [#68](https://github.com/jwadolowski/cookbook-cq/pull/68) New resource: `cq_start_guard`
 * [#69](https://github.com/jwadolowski/cookbook-cq/pull/69) `cq_start_guard` docs
 * [#71](https://github.com/jwadolowski/cookbook-cq/pull/71) Documentation improvements
+* [#72](https://github.com/jwadolowski/cookbook-cq/pull/72) New resource: `cq_clientlib_cache`
 
 # v1.1.2 (2018-07-02)
 
