@@ -73,6 +73,7 @@ suites:
       - recipe[cq<%= short_ver %>::author_cq_osgi_component]
       - recipe[cq<%= short_ver %>::author_cq_user]
       - recipe[cq<%= short_ver %>::author_cq_jcr]
+      - recipe[cq<%= short_ver %>::author_cq_clientlib_cache]
     attributes:
       cq:
         version: <%= v %>
