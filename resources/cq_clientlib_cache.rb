@@ -21,7 +21,6 @@ include Cq::HttpHelper
 
 resource_name :cq_clientlib_cache
 
-property :name, String, name_property: true
 property :instance, String, default: 'http://localhost:4502'
 property :username, String, default: 'admin'
 property :password, String, default: 'admin'

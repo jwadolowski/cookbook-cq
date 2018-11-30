@@ -21,7 +21,6 @@ include Cq::HttpHelper
 
 resource_name :cq_start_guard
 
-property :name, String, name_property: true
 property :instance, String, default: 'http://localhost:4502'
 property :path, String, default: '/libs/granite/core/content/login.html'
 property :expected_code, String, default: '200'
