@@ -54,6 +54,10 @@ that time). Nowadays the `aem` name seems to be taken anyways, so I no longer ha
         * [Actions](#actions-6)
         * [Properties](#properties-6)
         * [Usage](#usage-6)
+    * [cq_clientlib_cache](#cq_clientlib_cache)
+        * [Actions](#actions-7)
+        * [Properties](#properties-7)
+        * [Usage](#usage-7)
 * [Testing](#testing)
 * [Author](#author)
 
@@ -1107,6 +1111,47 @@ end
 Right after restart of `cq64-author` service send notification to `cq_start_guard` and wait until
 `/bin/healthchecks/instance` returns 200 code and `{"status": "ok"}` JSON in the body. Don't spend more than 15 minutes
 on such health check. Requests will be send every 10 seconds, however each HTTP call can't last more than 5 seconds.
+
+# cq_clientlib_cache
+
+This resource enables invalidation/rebuilt of internal clientlib cache in AEM. Please keep in mind that
+`cq_clientlib_cache` is not idempotent and it is generally recommended to trigger it via `notify` from other resources.
+
+## Actions
+
+* `nothing` - default action
+* `invalidate` - invalidates the entire clientlib cache
+* `rebuild` - rebuilds all clientlibs (please keep in mind this operation usually takes at least a couple of minutes)
+
+## Properties
+
+* ( **String** ) `username` - Instance username
+* ( **String** ) `password` - Instance password
+* ( **String** ) `instance` - Instance URL
+
+## Usage
+
+```ruby
+cq_package 'Custom AEM app' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  source 'http://artifacts.example.org/app/1.0/myapp-1.0.zip'
+  recursive_install true
+
+  action :deploy
+
+  notifies :restart, 'cq_clientlib_cache[invalidation]', :delayed
+end
+
+cq_clientlib_cache 'invalidation' do
+  username node['cq']['author']['credentials']['login']
+  password node['cq']['author']['credentials']['password']
+  instance "http://localhost:#{node['cq']['author']['port']}"
+
+  action :nothing
+end
+```
 
 # Testing
 
