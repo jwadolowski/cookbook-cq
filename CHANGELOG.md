@@ -1,4 +1,4 @@
-# Unreleased
+# v1.2.0 (2018-12-02)
 
 * [#68](https://github.com/jwadolowski/cookbook-cq/pull/68) New resource: `cq_start_guard`
 * [#69](https://github.com/jwadolowski/cookbook-cq/pull/69) `cq_start_guard` docs
