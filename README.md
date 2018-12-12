@@ -1141,7 +1141,7 @@ cq_package 'Custom AEM app' do
 
   action :deploy
 
-  notifies :restart, 'cq_clientlib_cache[invalidation]', :delayed
+  notifies :invalidate, 'cq_clientlib_cache[invalidation]', :delayed
 end
 
 cq_clientlib_cache 'invalidation' do
