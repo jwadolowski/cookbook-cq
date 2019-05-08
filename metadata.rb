@@ -10,8 +10,6 @@ depends          'java'
 depends          'ulimit'
 depends          'cq-unix-toolkit', '~> 1.3.0'
 
-gem              'multipart-post', '= 2.0.0'
-
 source_url       'https://github.com/jwadolowski/cookbook-cq'
 issues_url       'https://github.com/jwadolowski/cookbook-cq/issues'
 

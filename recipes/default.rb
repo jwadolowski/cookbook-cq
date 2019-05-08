@@ -23,6 +23,7 @@ end
 
 chef_gem 'multipart-post' do
   compile_time false if respond_to?(:compile_time)
+  version '2.0.0'
 end
 
 package 'unzip'
