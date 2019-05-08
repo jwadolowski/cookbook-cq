@@ -1,3 +1,7 @@
+# v1.2.1 (2019-05-08)
+
+* Pin version of multipart-post gem for backwards compatibility with pre 2.5 Ruby versions
+
 # v1.2.0 (2018-12-02)
 
 * [#68](https://github.com/jwadolowski/cookbook-cq/pull/68) New resource: `cq_start_guard`
