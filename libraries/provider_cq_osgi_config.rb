@@ -78,7 +78,7 @@ class Chef
 
       def regular_config(list)
         # Since property check of not existing OSGi configuraton returns proper
-        # JSON, we need to look up the entire list first to define wether given
+        # JSON, we need to look up the entire list first to define whether given
         # config exists or not. This is what AEM returns when there's no
         # defined PID:
         #
