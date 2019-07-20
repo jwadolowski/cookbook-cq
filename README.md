@@ -560,7 +560,7 @@ For factory configs:
   instance update, all missing properties will be based on properties defined in that instance. This is recommended
   property when you'd like to edit pre-existing factory or regular configs. `true` by default
 - ( **Array** ) `unique_fields` - Property names/keys that define uniqueness of given config. Applicable to factory
-  configs only. By default all available property keys will be used (defined by factory config on AEM instance). User
+  configs only. By default, all available property keys will be used (defined by factory config on AEM instance). User
   doesn't need to define that at all, unless you want to cherry pick particular config. It's generally recommended to
   specify this for every factory OSGi config. Example: log.name key needs to stay unique for your config
 - ( **Integer** ) `count` - Number of duplicated instances of given OSGi configuration. 1 by default. Applicable to
@@ -764,7 +764,7 @@ Adds ability to stop and start OSGi bundles
 - ( **Integer** ) `same_state_barrier` - Same meaning as for `cq_package`
 - ( **Integer** ) `error_state_barrier` - Same meaning as for `cq_package`
 - ( **Integer** ) `max_attempts` - Same meaning as for `cq_package`
-- ( **Integer** ) `sleep_time` - Same meaning as for `cq_package`<Paste>
+- ( **Integer** ) `sleep_time` - Same meaning as for `cq_package`
 
 ## Usage
 
