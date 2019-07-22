@@ -92,12 +92,8 @@ For default values please refer to appropriate files.
 
 ## default.rb
 
----
-
 To set Java related attributes please refer to [java cookbook](https://github.com/agileorbit-cookbooks/java). By default
 it installs Oracle's JDK7.
-
----
 
 - ( **String** ) `node['cq']['user']` - System user for CQ/AEM service
 - ( **String** ) `node['cq']['user_uid']` - UID of CQ/AEM user
@@ -116,7 +112,8 @@ it installs Oracle's JDK7.
 - ( **String** ) `node['cq']['license']['checksum']` - SHA256 checksum of CQ/AEM license file
 - ( **Integer** ) `node['cq']['service']['start_timeout']` - Max number of seconds to wait until CQ/AEM instance is
   fully operational after service start
-- ( **Integer** ) `node['cq']['service']['kill_delay']` - Max number of seconds for graceful instance stop before kill
+- ( **Integer** ) `node['cq']['service']['kill_delay']` - Max number of seconds for graceful instance stop before
+    `KILL`
   signal is sent to the process
 - ( **Integer** ) `node['cq']['service']['restart_sleep']` - Number of seconds to wait between service stop and start
 - ( **String** ) `node['cq']['init_template_cookbook']` - Cookbook which is a source for init script template
@@ -221,13 +218,7 @@ Installs CQ/AEM publish instance.
 
 # Custom resources
 
----
-
 All CQ/AEM related resource are idempotent, so action won't be taken if not required.
-
----
-
----
 
 Whenever you need to deploy 2 or more CQ/AEM instances on a single server please make sure you named all your custom
 resources differently, as you may get unexpected results otherwise (i.e. when CQ/AEM restart is required afterwards).
@@ -265,8 +256,6 @@ cq_package 'Publish: package1' do
 end
 ```
 
----
-
 ## cq_package
 
 Allows for CRX package manipulation using CRX Package Manager API.
@@ -284,12 +273,8 @@ Key features:
 
 ### Actions
 
----
-
 If you'd like to upload and install a package, in most cases please use `deploy` action instead of combined `upload` and
 `install`. Detailed explanation can be found below.
-
----
 
 - `upload` - uploads package to given CQ instance
 - `install` - installs already uploaded package
@@ -744,16 +729,16 @@ end
 `queue.name` set to `Granite Workflow Timeout Queue`. Presence of additional properties doesn't matter in this case and
 will be completely ignored.
 
-# cq_osgi_bundle
+## cq_osgi_bundle
 
 Adds ability to stop and start OSGi bundles
 
-## Actions
+### Actions
 
 - `stop` - stop given OSGi bundle if it is in `Active` state
 - `start` - starts defined bundle, but only when it's in `Resolved` state
 
-## Properties
+### Properties
 
 - ( **String** ) `symbolic_name` - Symbolic name of the bundle, i.e. `com.company.example.abc`. If not explicitly
   defined resource name will be used as symbolic name
@@ -766,7 +751,7 @@ Adds ability to stop and start OSGi bundles
 - ( **Integer** ) `max_attempts` - Same meaning as for `cq_package`
 - ( **Integer** ) `sleep_time` - Same meaning as for `cq_package`
 
-## Usage
+### Usage
 
 ```ruby
 cq_osgi_bundle 'Author: org.eclipse.equinox.region' do
@@ -797,23 +782,24 @@ end
 Second instance of `cq_osgi_bundle` is fairly simple, as it just starts
 `com.adobe.xmp.worker.files.native.fragment.linux` bundle.
 
-# cq_osgi_component
+## cq_osgi_component
 
-Management of OSGi components
+Please keep in mind that OSGi components used to get back to their original state after AEM instance restart. If you
+disabled one, most probably it'll become enabled after instance restart.
 
-## Actions
+### Actions
 
 - `enable` - enable given OSGi component
 - `disable` - disable defined OSGi component
 
-## Properties
+### Properties
 
 - ( **String** ) `pid` - Component PID
 - ( **String** ) `username` - Instance username
 - ( **String** ) `password` - Instance password
 - ( **String** ) `instance` - Instance URL
 
-## Usage
+### Usage
 
 ```ruby
 cq_osgi_component 'Author: com.example.my.component' do
@@ -838,14 +824,7 @@ end
 Both examples are self-explanatory. First one enables `com.example.my.component` component if it's in `disabled` state.
 Second one will disable `com.project.email.servlet` component, but only if it's state is not already `disabled`.
 
----
-
-Please keep in mind that OSGi components used to get back to their original state after AEM instance restart. So if you
-disabled one, most probably it'll become enabled after instance restart.
-
----
-
-# cq_user
+## cq_user
 
 Exposes a resource for CQ/AEM user management. Supports:
 
@@ -853,11 +832,11 @@ Exposes a resource for CQ/AEM user management. Supports:
 - profile updates (e-mail, job title, etc)
 - status updates (activate/deactivate given user)
 
-## Actions
+### Actions
 
 - `modify` - use to modify an existing user. Action will be skipped if given user does not exist
 
-## Properties
+### Properties
 
 - ( **String** ) `id` - User ID (login)
 - ( **String** ) `username` - Instance username
@@ -880,7 +859,7 @@ Exposes a resource for CQ/AEM user management. Supports:
 - ( **Boolean** ) `enabled` - `true` by default, set to `false` to deactivate given user. Has no effect for admin user
 - ( **String** ) `old_password` - Old password of admin user. Has no effect for non-admin ones
 
-## Compatibility matrix
+### Compatibility matrix
 
 | Property        | `admin` user       | All other users    |
 | --------------- | ------------------ | ------------------ |
@@ -905,7 +884,7 @@ Exposes a resource for CQ/AEM user management. Supports:
 | `enabled`       | :x:                | :white_check_mark: |
 | `old_password`  | :white_check_mark: | :x:                |
 
-## Usage
+### Usage
 
 ```ruby
 cq_user 'admin' do
@@ -948,17 +927,17 @@ admin rights (auth credentials: `username`/`password`). Additionally `auhtor`'s
 profile will be updated and user will be disabled (`enabled false`), so you
 won't be able to log in as this user anymore.
 
-# cq_jcr
+## cq_jcr
 
 CRUD operations on JCR nodes.
 
-## Actions
+### Actions
 
 - `create` - creates new node under given path if it doesn't exist. Otherwise it modifies its properties if required
 - `delete` - deletes node if it exists. Prints error otherwise
 - `modify` - modifies properties of existing JCR node
 
-## Properties
+### Properties
 
 - ( **String** ) `path` - Node path
 - ( **String** ) `username` - Instance username
@@ -968,7 +947,7 @@ CRUD operations on JCR nodes.
 - ( **Boolean** ) `append` - By default set to `true`. If full overwrite of properties is required please set append
   property to `false`. Applies only to `:create` and `:modify` actions
 
-## Usage
+### Usage
 
 ```ruby
 cq_jcr '/content/test_node' do
@@ -1021,7 +1000,7 @@ cq_jcr '/content/dam/geometrixx-media/articles/en/2012' do
 end
 ```
 
-Next example is very simple - `/content/dam/geometrixx-media/articles/en/2012` will get deleted if it exists. Otherwise
+Next example is quite simple - `/content/dam/geometrixx-media/articles/en/2012` will get deleted if it exists. Otherwise
 warning message will be printed.
 
 ```ruby
@@ -1041,19 +1020,19 @@ end
 Last `cq_jcr` resource uses `:modify` action. It applies updates to existing nodes only. If specified path does not
 exist warning message will be displayed.
 
-# cq_start_guard
+## cq_start_guard
 
 Allows you to wait for full AEM instance start before moving on with subsequent operations. It periodically sends HTTP
 request to AEM and compares response (both status code and body) with expected state. As soon as defined requirements
 are met the resource stops its job.
 
-## Actions
+### Actions
 
 - `nothing` - default action, does nothing :)
 - `run` - verifies instance state according to defined properties. This action is _NOT idempotent_ by design and should
   be always triggered via `notify` from other resources
 
-## Properties
+### Properties
 
 - ( **String** ) `name` - Start guard name
 - ( **String** ) `instance` - Instance URL
@@ -1064,7 +1043,7 @@ are met the resource stops its job.
 - ( **Integer** ) `http_timeout` - Maximum time for HTTP call
 - ( **Integer** ) `interval` - Time in seconds between HTTP healthcheck request attempts
 
-## Usage
+### Usage
 
 ```ruby
 service 'cq64-author' do
@@ -1113,24 +1092,24 @@ Right after restart of `cq64-author` service send notification to `cq_start_guar
 `/bin/healthchecks/instance` returns 200 code and `{"status": "ok"}` JSON in the body. Don't spend more than 15 minutes
 on such health check. Requests will be send every 10 seconds, however each HTTP call can't last more than 5 seconds.
 
-# cq_clientlib_cache
+## cq_clientlib_cache
 
 This resource enables invalidation/rebuilt of internal clientlib cache in AEM. Please keep in mind that
 `cq_clientlib_cache` is not idempotent and it is generally recommended to trigger it via `notify` from other resources.
 
-## Actions
+### Actions
 
 - `nothing` - default action
 - `invalidate` - invalidates the entire clientlib cache
 - `rebuild` - rebuilds all clientlibs (please keep in mind this operation usually takes at least a couple of minutes)
 
-## Properties
+### Properties
 
 - ( **String** ) `username` - Instance username
 - ( **String** ) `password` - Instance password
 - ( **String** ) `instance` - Instance URL
 
-## Usage
+### Usage
 
 ```ruby
 cq_package 'Custom AEM app' do
