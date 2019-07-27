@@ -13,7 +13,7 @@ depends          'cq-unix-toolkit', '~> 1.3.0'
 source_url       'https://github.com/jwadolowski/cookbook-cq'
 issues_url       'https://github.com/jwadolowski/cookbook-cq/issues'
 
-chef_version     '>= 13', '< 15'
+chef_version     '>= 13', '< 16'
 
 supports         'centos', '~> 6.0'
 supports         'centos', '~> 7.0'

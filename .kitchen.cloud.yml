@@ -1,0 +1,50 @@
+---
+<% aem_versions = %w( 6.1.0 6.2.0 6.3.0 6.4.0 6.5.0 ) %>
+
+driver:
+  name: digitalocean
+  region: fra1
+  size: c-8
+  tags:
+    - test-kitchen
+    - cq-cookbook
+
+provisioner:
+  name: chef_zero
+  client_rb:
+    chef_license: accept
+  attributes:
+    cq:
+      license:
+        url: <%= ENV['CQ_LICENSE_URL'] %>
+    java:
+      jdk:
+        '8':
+          x86_64:
+            url: <%= ENV['JAVA_JDK_8_X86_64_URL'] %>
+            checksum: <%= ENV['JAVA_JDK_8_X86_64_CHECKSUM'] %>
+
+verifier:
+
+platforms:
+  - name: centos-6
+  - name: centos-7
+
+suites:
+  - name: default
+    run_list:
+      - recipe[cq::default]
+
+<% aem_versions.each do |v| %>
+  <% short_ver = v.delete('.') %>
+  <% url_var = "CQ_V#{short_ver}_JAR_URL" %>
+
+  - name: aem<%= short_ver %>-author
+    run_list:
+      - recipe[cq::author]
+    attributes:
+      cq:
+        version: <%= v %>
+        jar:
+          url: <%= ENV[url_var] %>
+<% end %>
