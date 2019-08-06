@@ -24,7 +24,13 @@ module Cq
 
     def component_list(addr, user, password)
       json_to_hash(
-        http_get(addr, '/system/console/components/.json', user, password).body
+          http_get(addr, '/system/console/components/.json', user, password).body
+      )
+    end
+
+    def component_get(addr, user, password, pid)
+      json_to_hash(
+          http_get(addr, "/system/console/components/#{pid}.json", user, password).body
       )
     end
 
@@ -47,7 +53,7 @@ module Cq
 
     # Component operation returns complete list of OSGi components. It needs to
     # be filtered
-    def valid_component_op?(http_resp, expected_state, pid)
+    def valid_component_op?(addr, user, password, http_resp, expected_state, pid)
       # Check if first API call returned 200
       return false if http_resp.code != '200'
 
@@ -59,10 +65,11 @@ module Cq
             "Retrying, #{i}/3 attempts!"
         ) if i > 1
 
-        body = component_info(http_resp.body, pid)
-        Chef::Log.debug("Post-action component information: #{body}")
+        data = component_get(addr, user, password, pid)
+        info = component_info(data, pid)
+        Chef::Log.debug("Post-action component information: #{info}")
 
-        return true if body['state'] == expected_state
+        return true if info['state'] == expected_state
       end
       false
     end
