@@ -48,11 +48,23 @@ module Cq
     # Component operation returns complete list of OSGi components. It needs to
     # be filtered
     def valid_component_op?(http_resp, expected_state, pid)
+      # Check if first API call returned 200
       return false if http_resp.code != '200'
 
-      body = component_info(json_to_hash(http_resp.body), pid)
-      Chef::Log.debug("Post-action component information: #{body}")
-      body['state'] == expected_state
+      # Call API again to validate component status
+      (1..3).each do |i|
+        sleep 2
+
+        Chef::Log.warning(
+            "Retrying, #{i}/3 attempts!"
+        ) if i > 1
+
+        body = component_info(http_resp.body, pid)
+        Chef::Log.debug("Post-action component information: #{body}")
+
+        return true if body['state'] == expected_state
+      end
+      false
     end
 
     def osgi_component_stability(addr, user, pass, hc_params)
