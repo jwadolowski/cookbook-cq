@@ -77,7 +77,14 @@ class Chef
         Chef::Application.fatal!(
           "Expected disabled state, but got #{resp.code} HTTP response and "\
           "#{resp.body} body"
-        ) unless valid_component_op?(resp, 'disabled', new_resource.pid)
+        ) unless valid_component_op?(
+          new_resource.instance,
+          new_resource.username,
+          new_resource.password,
+          resp,
+          'disabled',
+          new_resource.pid
+        )
 
         osgi_component_stability(
           new_resource.instance,
@@ -99,7 +106,14 @@ class Chef
         Chef::Application.fatal!(
           "Expected active state, but got #{resp.code} HTTP response and "\
           "#{resp.body} body"
-        ) unless valid_component_op?(resp, 'active', new_resource.pid)
+        ) unless valid_component_op?(
+          new_resource.instance,
+          new_resource.username,
+          new_resource.password,
+          resp,
+          'disabled',
+          new_resource.pid
+        )
 
         osgi_component_stability(
           new_resource.instance,
