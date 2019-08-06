@@ -53,16 +53,16 @@ module Cq
 
     # Component operation returns complete list of OSGi components. It needs to
     # be filtered
-    def valid_component_op?(addr, user, password, http_resp, expected_state, pid)
+    def valid_component_op?(addr, user, password, http_resp, expected_state, pid, hc_params)
       # Check if first API call returned 200
       return false if http_resp.code != '200'
 
       # Call API again to validate component status
-      (1..3).each do |i|
+      (1..hc_params['max_attempts']).each do |i|
         sleep 2
 
         Chef::Log.debug(
-          "Retrying component check, #{i}/3 attempts!"
+          "Retrying component check, #{i}/#{hc_params['max_attempts']} attempts."
         ) if i > 1
 
         data = component_get(addr, user, password, pid)

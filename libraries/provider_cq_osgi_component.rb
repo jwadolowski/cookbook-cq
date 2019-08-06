@@ -83,7 +83,8 @@ class Chef
           new_resource.password,
           resp,
           'disabled',
-          new_resource.pid
+          new_resource.pid,
+          new_resource.healthcheck_params
         )
 
         osgi_component_stability(
@@ -112,7 +113,8 @@ class Chef
           new_resource.password,
           resp,
           'disabled',
-          new_resource.pid
+          new_resource.pid,
+          new_resource.healthcheck_params
         )
 
         osgi_component_stability(
