@@ -24,13 +24,13 @@ module Cq
 
     def component_list(addr, user, password)
       json_to_hash(
-          http_get(addr, '/system/console/components/.json', user, password).body
+        http_get(addr, '/system/console/components/.json', user, password).body
       )
     end
 
     def component_get(addr, user, password, pid)
       json_to_hash(
-          http_get(addr, "/system/console/components/#{pid}.json", user, password).body
+        http_get(addr, "/system/console/components/#{pid}.json", user, password).body
       )
     end
 
@@ -61,8 +61,8 @@ module Cq
       (1..3).each do |i|
         sleep 2
 
-        Chef::Log.warning(
-            "Retrying, #{i}/3 attempts!"
+        Chef::Log.debug(
+          "Retrying component check, #{i}/3 attempts!"
         ) if i > 1
 
         data = component_get(addr, user, password, pid)
