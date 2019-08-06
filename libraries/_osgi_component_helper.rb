@@ -60,14 +60,14 @@ module Cq
 
         if i == 4
           Chef::Application.fatal!(
-              "Expected #{expected_state} state and HTTP 200, but got HTTP #{http_resp.code} "\
+            "Expected #{expected_state} state and HTTP 200, but got HTTP #{http_resp.code} "\
             "and #{http_resp.body} body after #{i} checks"
           ) if http_resp.code != '200' or info['state'] != expected_state
           break
         end
 
         Chef::Log.debug(
-            "Retrying component check, #{i+1}/3 attempts."
+          "Retrying component check, #{i+1}/3 attempts."
         )
 
         sleep hc_params['sleep_time']
