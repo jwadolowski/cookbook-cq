@@ -28,12 +28,6 @@ module Cq
       )
     end
 
-    def component_get(addr, user, password, pid)
-      json_to_hash(
-        http_get(addr, "/system/console/components/#{pid}.json", user, password).body
-      )
-    end
-
     # pid is unique, hence filtering using .detect
     def component_info(list, pid)
       list['data'].detect { |c| c['pid'] == pid }
@@ -53,25 +47,34 @@ module Cq
 
     # Component operation returns complete list of OSGi components. It needs to
     # be filtered
-    def valid_component_op?(addr, user, password, http_resp, expected_state, pid, hc_params)
-      # Check if first API call returned 200
-      return false if http_resp.code != '200'
+    def valid_component_op(addr, user, password, http_resp, expected_state, pid, hc_params)
+      (1..4).each do |i|
+        if http_resp.code == '200'
+          info = component_info(json_to_hash(http_resp.body), pid)
 
-      # Call API again to validate component status
-      (1..hc_params['max_attempts']).each do |i|
-        sleep 2
+          if info['state'] == expected_state
+            Chef::Log.debug("Post-action component information: #{info}")
+            break
+          end
+        end
+
+        if i == 4
+          Chef::Application.fatal!(
+              "Expected #{expected_state} state and HTTP 200, but got HTTP #{http_resp.code} "\
+            "and #{http_resp.body} body after #{i} checks"
+          ) if http_resp.code != '200' or info['state'] != expected_state
+          break
+        end
 
         Chef::Log.debug(
-          "Retrying component check, #{i}/#{hc_params['max_attempts']} attempts."
-        ) if i > 1
+            "Retrying component check, #{i+1}/3 attempts."
+        )
 
-        data = component_get(addr, user, password, pid)
-        info = component_info(data, pid)
-        Chef::Log.debug("Post-action component information: #{info}")
+        sleep hc_params['sleep_time']
 
-        return true if info['state'] == expected_state
+        # Call API again
+        http_resp = http_get(addr, "/system/console/components/#{pid}.json", user, password)
       end
-      false
     end
 
     def osgi_component_stability(addr, user, pass, hc_params)

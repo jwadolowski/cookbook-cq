@@ -104,10 +104,7 @@ class Chef
           'enable'
         )
 
-        Chef::Application.fatal!(
-          "Expected active state, but got #{resp.code} HTTP response and "\
-          "#{resp.body} body"
-        ) unless valid_component_op?(
+        valid_component_op(
           new_resource.instance,
           new_resource.username,
           new_resource.password,
