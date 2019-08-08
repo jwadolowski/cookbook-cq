@@ -80,11 +80,11 @@ module Cq
           Chef::Log.debug("Post-action component information: #{info}")
           return true
         end
+
+        Chef::Log.error(
+          "Expected #{expected_state} state, but got #{info['state']} after #{i} checks"
+        ) if i == max_checks
       end
-      Chef::Log.error(
-        "Expected HTTP 200 and #{expected_state} state, but got HTTP #{http_resp.code} "\
-        "and #{http_resp.body} body after #{max_checks} checks"
-      )
       false
     end
 
