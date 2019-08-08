@@ -1,6 +1,11 @@
+# v1.2.2 (2019-08-08)
+
+* [#75](https://github.com/jwadolowski/cookbook-cq/pull/76) OSGi component validation fix
+
 # v1.2.1 (2019-05-08)
 
-* [#75](https://github.com/jwadolowski/cookbook-cq/pull/75) Pin version of multipart-post gem for backwards compatibility with pre 2.5 Ruby versions
+* [#75](https://github.com/jwadolowski/cookbook-cq/pull/75) Pin version of multipart-post gem for backwards
+  compatibility with pre 2.5 Ruby versions
 
 # v1.2.0 (2018-12-02)
 
