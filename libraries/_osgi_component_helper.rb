@@ -33,6 +33,13 @@ module Cq
       list['data'].detect { |c| c['pid'] == pid }
     end
 
+    def component_get(addr, user, password, pid)
+      list = json_to_hash(
+        http_get(addr, "/system/console/components/#{pid}.json", user, password).body
+      )
+      component_info(list, pid)
+    end
+
     # Executes defined operation on given component
     #
     # Allowed actions:
@@ -47,12 +54,38 @@ module Cq
 
     # Component operation returns complete list of OSGi components. It needs to
     # be filtered
-    def valid_component_op?(http_resp, expected_state, pid)
-      return false if http_resp.code != '200'
+    def valid_component_op?(addr, user, password, http_resp, expected_state, pid, hc_params)
+      # Check if POST request was successful
+      if http_resp.code != '200'
+        Chef::Log.error(
+          "POST request returned #{http_resp.code} code (expected 200)" \
+          "and #{http_resp.body} body"
+        )
+        return false
+      end
 
-      body = component_info(json_to_hash(http_resp.body), pid)
-      Chef::Log.debug("Post-action component information: #{body}")
-      body['state'] == expected_state
+      max_checks = 4
+
+      # Call API again to check component state
+      (1..max_checks).each do |i|
+        Chef::Log.debug(
+          "Retrying component check in #{hc_params['sleep_time']} sec, #{i}/#{max_checks} attempts."
+        ) if i > 1
+
+        sleep hc_params['sleep_time']
+
+        info = component_get(addr, user, password, pid)
+
+        if info['state'] == expected_state
+          Chef::Log.debug("Post-action component information: #{info}")
+          return true
+        end
+
+        Chef::Log.error(
+          "Expected #{expected_state} state, but got #{info['state']} after #{i} checks"
+        ) if i == max_checks
+      end
+      false
     end
 
     def osgi_component_stability(addr, user, pass, hc_params)
