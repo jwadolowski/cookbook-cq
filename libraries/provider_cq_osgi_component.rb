@@ -75,8 +75,7 @@ class Chef
         )
 
         Chef::Application.fatal!(
-          "Expected disabled state, but got #{resp.code} HTTP response and "\
-          "#{resp.body} body"
+          "Unsuccessful component disable operation."
         ) unless valid_component_op?(
           new_resource.instance,
           new_resource.username,
@@ -104,12 +103,14 @@ class Chef
           'enable'
         )
 
-        valid_component_op(
+        Chef::Application.fatal!(
+          "Unsuccessful component enable operation."
+        ) unless valid_component_op?(
           new_resource.instance,
           new_resource.username,
           new_resource.password,
           resp,
-          'disabled',
+          'active',
           new_resource.pid,
           new_resource.healthcheck_params
         )
