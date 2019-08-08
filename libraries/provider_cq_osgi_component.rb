@@ -75,7 +75,7 @@ class Chef
         )
 
         Chef::Application.fatal!(
-          "Unsuccessful component disable operation."
+          "#{new_resource.pid} OSGi component can't be disabled!"
         ) unless valid_component_op?(
           new_resource.instance,
           new_resource.username,
@@ -104,7 +104,7 @@ class Chef
         )
 
         Chef::Application.fatal!(
-          "Unsuccessful component enable operation."
+          "#{new_resource.pid} OSGi component can't be enabled!"
         ) unless valid_component_op?(
           new_resource.instance,
           new_resource.username,

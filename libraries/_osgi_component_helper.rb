@@ -35,7 +35,9 @@ module Cq
 
     def component_get(addr, user, password, pid)
       list = json_to_hash(
-        http_get(addr, "/system/console/components/#{pid}.json", user, password).body
+        http_get(
+          addr, "/system/console/components/#{pid}.json", user, password
+        ).body
       )
       component_info(list, pid)
     end
@@ -58,8 +60,8 @@ module Cq
       # Check if POST request was successful
       if http_resp.code != '200'
         Chef::Log.error(
-          "POST request returned #{http_resp.code} code (expected 200)" \
-          "and #{http_resp.body} body"
+          "OSGi component action ended with #{http_resp.code} code (expected "\
+          "200) and #{http_resp.body} body"
         )
         return false
       end
@@ -67,24 +69,22 @@ module Cq
       max_checks = 4
 
       # Call API again to check component state
-      (1..max_checks).each do |i|
+      max_checks.times do |i|
+        info = component_get(addr, user, password, pid)
         Chef::Log.debug(
-          "Retrying component check in #{hc_params['sleep_time']} sec, #{i}/#{max_checks} attempts."
-        ) if i > 1
+          "[#{i + 1}/#{max_checks}] Current component info: #{info}"
+        )
+
+        return true if info['state'] == expected_state
 
         sleep hc_params['sleep_time']
 
-        info = component_get(addr, user, password, pid)
-
-        if info['state'] == expected_state
-          Chef::Log.debug("Post-action component information: #{info}")
-          return true
-        end
-
         Chef::Log.error(
-          "Expected #{expected_state} state, but got #{info['state']} after #{i} checks"
-        ) if i == max_checks
+          "Expected #{expected_state} state, but got #{info['state']} after "\
+          "#{max_checks} checks"
+        ) if i == max_checks - 1
       end
+
       false
     end
 
