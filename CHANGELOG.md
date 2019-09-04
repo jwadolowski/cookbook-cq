@@ -1,3 +1,7 @@
+# v1.2.3 (2019-09-04)
+
+* Logging bugfix - incorrect reference to local variable
+
 # v1.2.2 (2019-08-08)
 
 * [#75](https://github.com/jwadolowski/cookbook-cq/pull/76) OSGi component validation fix

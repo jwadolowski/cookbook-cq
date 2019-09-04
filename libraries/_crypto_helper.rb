@@ -106,7 +106,7 @@ module Cq
       )
 
       Chef::Application.fatal!(
-        "Found #{jars}, but single com.adobe.granite.crypto-x.y.z.jar is "\
+        "Found #{libs}, but single com.adobe.granite.crypto-x.y.z.jar is "\
         'expected. Aborting!'
       ) if libs.length != 1
 
