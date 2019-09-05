@@ -105,9 +105,9 @@ module Cq
         %r{
           (?<=\ )resources\/.*
           (?<=\/[0-9])\/
-          com\.adobe\.granite\.crypto-[0-9]+\.[0-9]+\.[0-9]+(-[A-Z0-9]+-[A-Z0-9]+)?\.jar$
+          (?<crypto_file>com\.adobe\.granite\.crypto-[0-9]+\.[0-9]+\.[0-9]+[^\.]*\.jar)$
         }x
-      )
+      ).flatten
 
       Chef::Application.fatal!(
         "Found #{libs}, but single com.adobe.granite.crypto-x.y.z.jar is "\

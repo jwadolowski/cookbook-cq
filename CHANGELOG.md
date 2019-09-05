@@ -1,5 +1,9 @@
 # v1.2.4 (2019-09-05)
 
+* Crypto JAR regex fine-tuning
+
+# v1.2.4 (2019-09-05)
+
 * Regex responsible for crypto JAR extraction updated to address AEM 6.1 regression
 
 # v1.2.3 (2019-09-04)
