@@ -96,12 +96,16 @@ module Cq
       Chef::Application.fatal!("Can't list JAR file contents: #{e}")
     end
 
+    # AEM 6.1:
+    # - resources/install/0/com.adobe.granite.crypto-3.0.18-CQ610-B0004.jar
+    # AEM 6.2 onwards:
+    # - resources/bundles/1/com.adobe.granite.crypto-X.Y.Z.jar
     def crypto_jar_internal_path(jar)
       libs = jar_contents(jar).scan(
         %r{
           (?<=\ )resources\/.*
           (?<=\/[0-9])\/
-          com.adobe.granite.crypto-[0-9]+\.[0-9]+\.[0-9]+\.jar$
+          com\.adobe\.granite\.crypto-[0-9]+\.[0-9]+\.[0-9]+(-[A-Z0-9]+-[A-Z0-9]+)?\.jar$
         }x
       )
 
