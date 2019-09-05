@@ -1,3 +1,7 @@
+# v1.2.7 (2019-09-05)
+
+* All crypto JAR regexes updated to keep things consistent
+
 # v1.2.6 (2019-09-05)
 
 * Regex gruop removed, as full path to crypto JAR file is expected

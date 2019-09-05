@@ -110,8 +110,7 @@ module Cq
       ).flatten
 
       Chef::Application.fatal!(
-        "Found #{libs}, but single com.adobe.granite.crypto-x.y.z.jar is "\
-        'expected. Aborting!'
+        "Found #{libs}, but single JAR file is expected. Aborting!"
       ) if libs.length != 1
 
       libs.first
@@ -120,7 +119,7 @@ module Cq
     def crypto_jar_system_path(dir)
       ::Dir.glob("#{dir}/*").select do |f|
         ::File.file?(f) &&
-          f.match(/com.adobe.granite.crypto-[0-9]+\.[0-9]+\.[0-9]+\.jar/)
+          f.match(/com\.adobe\.granite\.crypto-[0-9]+\.[0-9]+\.[0-9]+[^\.]*\.jar/)
       end.first
     end
 
