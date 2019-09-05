@@ -1,4 +1,8 @@
-# v1.2.4 (2019-09-05)
+# v1.2.6 (2019-09-05)
+
+* Regex gruop removed, as full path to crypto JAR file is expected
+
+# v1.2.5 (2019-09-05)
 
 * Crypto JAR regex fine-tuning
 

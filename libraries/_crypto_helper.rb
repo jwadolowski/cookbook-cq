@@ -105,7 +105,7 @@ module Cq
         %r{
           (?<=\ )resources\/.*
           (?<=\/[0-9])\/
-          (?<crypto_file>com\.adobe\.granite\.crypto-[0-9]+\.[0-9]+\.[0-9]+[^\.]*\.jar)$
+          com\.adobe\.granite\.crypto-[0-9]+\.[0-9]+\.[0-9]+[^\.]*\.jar$
         }x
       ).flatten
 
