@@ -1,3 +1,7 @@
+# v1.2.8 (2019-10-31)
+
+* `cq_clientlib_cache` actions wrapped into `ruby_block` to mark resource execution during converge phase
+
 # v1.2.7 (2019-09-05)
 
 * All crypto JAR regexes updated to keep things consistent
