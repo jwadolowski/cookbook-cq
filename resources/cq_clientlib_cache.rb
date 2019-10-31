@@ -81,9 +81,21 @@ action_class do
 end
 
 action :invalidate do
-  cache_action(:invalidate)
+  ruby_block 'Invalidate clientlib cache' do
+    block do
+      cache_action(:invalidate)
+    end
+
+    action :run
+  end
 end
 
 action :rebuild do
-  cache_action(:rebuild)
+  ruby_block 'Rebuild clientlib cache' do
+    block do
+      cache_action(:rebuild)
+    end
+
+    action :run
+  end
 end
