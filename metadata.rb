@@ -4,7 +4,7 @@ maintainer_email 'jakub.wadolowski@cognifide.com'
 license          'Apache-2.0'
 description      'Installs and configures Adobe AEM (formerly CQ)'
 long_description 'Installs and configures Adobe AEM (formerly CQ)'
-version          '1.2.7'
+version          '1.2.8'
 
 depends          'java'
 depends          'ulimit'
@@ -17,8 +17,10 @@ chef_version     '>= 13', '< 15'
 
 supports         'centos', '~> 6.0'
 supports         'centos', '~> 7.0'
+supports         'centos', '~> 8.0'
 
 supports         'redhat', '~> 6.0'
 supports         'redhat', '~> 7.0'
+supports         'redhat', '~> 8.0'
 
 supports         'amazon'
