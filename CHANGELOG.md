@@ -1,3 +1,7 @@
+# v1.2.8 (2020-02-10)
+
+* Update of Maven repository URL
+
 # v1.2.7 (2019-09-05)
 
 * All crypto JAR regexes updated to keep things consistent
