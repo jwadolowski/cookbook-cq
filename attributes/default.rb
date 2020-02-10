@@ -45,7 +45,7 @@ default['cq']['conf_template_cookbook'] = 'cq'
 
 default['cq']['http_read_timeout'] = 300
 
-default['cq']['crypto']['log_libs']['server'] = 'http://central.maven.org'
+default['cq']['crypto']['log_libs']['server'] = 'https://repo1.maven.org'
 default['cq']['crypto']['log_libs']['data'] = {
   '/maven2/org/slf4j/slf4j-api/1.7.12/slf4j-api-1.7.12.jar' =>
     '0aee9a77a4940d72932b0d0d9557793f872e66a03f598e473f45e7efecdccf99',
