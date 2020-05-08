@@ -291,9 +291,13 @@ class Chef
       # All credits goes to Tomasz Rekawek
       # https://gist.github.com/trekawek/9955166
       def password_update?(new_pass)
-        return false if current_resource.info['rep:password'].end_with?(
-          hash_generator(new_pass)
-        )
+        if current_resource.info['rep:password'] == nil
+          return true
+        else
+          return false if current_resource.info['rep:password'].end_with?(
+            hash_generator(new_pass)
+          )
+        end
         true
       end
 
