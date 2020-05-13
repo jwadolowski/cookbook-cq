@@ -4,7 +4,7 @@
 
 # v1.2.8 (2020-02-10)
 
-* Update of Maven repository URL
+* [#79](https://github.com/jwadolowski/cookbook-cq/pull/79) Update of Maven repository URL
 
 # v1.2.7 (2019-09-05)
 
