@@ -31,6 +31,12 @@ module Cq
         node['platform_version'].to_i == 7
     end
 
+    def rhel8?
+      node['platform_family'] == 'rhel' &&
+      (node['platform'] == 'centos' || node['platform'] == 'redhat') &&
+      node['platform_version'].to_i == 8
+    end
+
     def amazon_linux?
       node['platform_family'] == 'amazon'
     end

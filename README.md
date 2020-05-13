@@ -67,6 +67,7 @@ that time). Nowadays the `aem` name seems to be taken anyways, so I no longer ha
 
 - CentOS/RHEL 6.x
 - CentOS/RHEL 7.x
+- CentOS/RHEL 8.x
 - Amazon Linux
 
 ## Chef versions
