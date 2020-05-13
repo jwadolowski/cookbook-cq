@@ -1,5 +1,10 @@
-# v1.3.0 (2019-12-05)
-* RHEL/CentOS 8 Support
+# v1.3.0 (2020-05-13)
+
+* [#75](https://github.com/jwadolowski/cookbook-cq/pull/78) RHEL/CentOS 8 Support
+
+# v1.2.8 (2020-02-10)
+
+* Update of Maven repository URL
 
 # v1.2.7 (2019-09-05)
 
