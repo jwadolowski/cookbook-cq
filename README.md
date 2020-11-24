@@ -71,6 +71,15 @@ that time). Nowadays the `aem` name seems to be taken anyways, so I no longer ha
 
 ## Chef versions
 
+---
+
+**IMPORTANT**
+
+Since version 2.0.0 only Chef Infra Client 16.x is supported. Please stick to version 1.x if you're using older version
+of Chef!
+
+---
+
 - Chef 16.x
 
 ## AEM/CQ versions
