@@ -1,3 +1,7 @@
+# v2.0.1 (2020-11-24)
+
+* Cleanup of SysVInit leftovers
+
 # v2.0.0 (2020-11-24)
 
 * Chef 16.x support

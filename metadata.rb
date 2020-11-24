@@ -3,7 +3,7 @@ maintainer       'Jakub Wadolowski'
 maintainer_email 'jakub.wadolowski@cognifide.com'
 license          'Apache-2.0'
 description      'Installs and configures Adobe AEM (formerly CQ)'
-version          '2.0.0'
+version          '2.0.1'
 
 depends          'java'
 depends          'ulimit'
