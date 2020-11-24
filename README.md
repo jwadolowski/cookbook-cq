@@ -65,16 +65,13 @@ that time). Nowadays the `aem` name seems to be taken anyways, so I no longer ha
 
 ## Operating systems
 
-- CentOS/RHEL 6.x
 - CentOS/RHEL 7.x
 - CentOS/RHEL 8.x
 - Amazon Linux
 
 ## Chef versions
 
-- Chef 12.x
-- Chef 13.x
-- Chef 14.x
+- Chef 16.x
 
 ## AEM/CQ versions
 
@@ -82,6 +79,7 @@ that time). Nowadays the `aem` name seems to be taken anyways, so I no longer ha
 - AEM 6.2.0
 - AEM 6.3.0
 - AEM 6.4.0
+- AEM 6.5.0
 
 # Getting started
 

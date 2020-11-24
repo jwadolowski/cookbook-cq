@@ -24,12 +24,14 @@ class Chef
 
       attr_accessor :exist
 
+      allowed_actions [:nothing, :create, :delete, :modify]
+
+      resource_name :cq_jcr
+
+      default_action :create
+
       def initialize(name, run_context = nil)
         super
-
-        @resource_name = :cq_jcr
-        @allowed_actions = [:nothing, :create, :delete, :modify]
-        @action = :create
 
         @path = name
         @username = nil
@@ -40,33 +42,13 @@ class Chef
         @encrypted_fields = []
       end
 
-      def path(arg = nil)
-        set_or_return(:path, arg, kind_of: String)
-      end
-
-      def username(arg = nil)
-        set_or_return(:username, arg, kind_of: String)
-      end
-
-      def password(arg = nil)
-        set_or_return(:password, arg, kind_of: String)
-      end
-
-      def instance(arg = nil)
-        set_or_return(:instance, arg, kind_of: String)
-      end
-
-      def properties(arg = nil)
-        set_or_return(:properties, arg, kind_of: Hash)
-      end
-
-      def append(arg = nil)
-        set_or_return(:append, arg, kind_of: [TrueClass, FalseClass])
-      end
-
-      def encrypted_fields(arg = nil)
-        set_or_return(:encrypted_fields, arg, kind_of: Array)
-      end
+      property :path, String
+      property :username, String
+      property :password, String
+      property :instance, String
+      property :properties, Hash
+      property :append, [true, false]
+      property :encrypted_fields, Array
     end
   end
 end

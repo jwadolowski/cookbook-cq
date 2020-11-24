@@ -24,10 +24,6 @@ class Chef
 
       provides :cq_osgi_bundle if Chef::Provider.respond_to?(:provides)
 
-      def whyrun_supported?
-        true
-      end
-
       def load_current_resource
         @current_resource = Chef::Resource::CqOsgiBundle.new(
           new_resource.symbolic_name
@@ -61,9 +57,7 @@ class Chef
         Chef::Log.debug("Bundle info: #{current_resource.info}")
 
         # Stop processing if there's no such bundle
-        Chef::Application.fatal!(
-          "#{current_resource.symbolic_name} bundle doesn't exist!"
-        ) unless current_resource.info
+        raise("#{current_resource.symbolic_name} bundle doesn't exist!") unless current_resource.info
       end
 
       def stop_bundle
@@ -75,10 +69,8 @@ class Chef
           'stop'
         )
 
-        Chef::Application.fatal!(
-          "Expected stateRaw 4, but got #{resp.code} HTTP response and "\
-          "#{resp.body} body"
-        ) unless valid_bundle_op?(resp, 4)
+        raise("Expected stateRaw 4, but got #{resp.code} HTTP response and "\
+          "#{resp.body} body") unless valid_bundle_op?(resp, 4)
       end
 
       def start_bundle
@@ -90,13 +82,11 @@ class Chef
           'start'
         )
 
-        Chef::Application.fatal!(
-          "Expected stateRaw 32, but got #{resp.code} HTTP response and "\
-          "#{resp.body} body"
-        ) unless valid_bundle_op?(resp, 32)
+        raise("Expected stateRaw 32, but got #{resp.code} HTTP response and "\
+          "#{resp.body} body") unless valid_bundle_op?(resp, 32)
       end
 
-      def action_stop
+      action :stop do
         if current_resource.info['state'] == 'Active'
           converge_by("Stop #{new_resource.symbolic_name} bundle") do
             stop_bundle
@@ -121,7 +111,7 @@ class Chef
         end
       end
 
-      def action_start
+      action :start do
         if %w(Resolved Installed).include?(current_resource.info['state'])
           converge_by("Start #{new_resource.symbolic_name} bundle") do
             start_bundle

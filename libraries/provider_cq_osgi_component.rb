@@ -24,10 +24,6 @@ class Chef
 
       provides :cq_osgi_component if Chef::Provider.respond_to?(:provides)
 
-      def whyrun_supported?
-        true
-      end
-
       def load_current_resource
         @current_resource = Chef::Resource::CqOsgiComponent.new(
           new_resource.pid
@@ -60,9 +56,7 @@ class Chef
         Chef::Log.debug("Component info: #{current_resource.info}")
 
         # Stop processing if there's no such component
-        Chef::Application.fatal!(
-          "#{current_resource.pid} component doesn't exist!"
-        ) unless current_resource.info
+        raise("#{current_resource.pid} component doesn't exist!") unless current_resource.info
       end
 
       def disable_component
@@ -74,9 +68,7 @@ class Chef
           'disable'
         )
 
-        Chef::Application.fatal!(
-          "#{new_resource.pid} OSGi component can't be disabled!"
-        ) unless valid_component_op?(
+        raise("#{new_resource.pid} OSGi component can't be disabled!") unless valid_component_op?(
           new_resource.instance,
           new_resource.username,
           new_resource.password,
@@ -103,9 +95,7 @@ class Chef
           'enable'
         )
 
-        Chef::Application.fatal!(
-          "#{new_resource.pid} OSGi component can't be enabled!"
-        ) unless valid_component_op?(
+        raise("#{new_resource.pid} OSGi component can't be enabled!") unless valid_component_op?(
           new_resource.instance,
           new_resource.username,
           new_resource.password,
@@ -123,7 +113,7 @@ class Chef
         )
       end
 
-      def action_disable
+      action :disable do
         # Only components in active, satisfied and unsatisfied can be disabled
         if current_resource.info['state'] != 'disabled'
           converge_by("Disable #{new_resource.pid} component") do
@@ -142,7 +132,7 @@ class Chef
         end
       end
 
-      def action_enable
+      action :enable do
         if current_resource.info['state'] == 'disabled'
           converge_by("Enable #{new_resource.pid} component") do
             enable_component

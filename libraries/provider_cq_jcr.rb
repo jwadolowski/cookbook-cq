@@ -25,10 +25,6 @@ class Chef
 
       provides :cq_jcr if Chef::Provider.respond_to?(:provides)
 
-      def whyrun_supported?
-        true
-      end
-
       def load_current_resource
         @current_resource = Chef::Resource::CqJcr.new(new_resource.path)
 
@@ -61,7 +57,7 @@ class Chef
         )
       end
 
-      def action_create
+      action :create do
         if !current_resource.exist
           converge_by("Create #{new_resource.path} node") do
             update_via_sling(new_resource.properties)
@@ -71,7 +67,7 @@ class Chef
         end
       end
 
-      def action_delete
+      action :delete do
         if current_resource.exist
           converge_by("Delete #{new_resource.path} node") do
             delete_node
@@ -83,7 +79,7 @@ class Chef
         end
       end
 
-      def action_modify
+      action :modify do
         if current_resource.exist
           apply_update
         else
@@ -148,9 +144,7 @@ class Chef
           attempt = 1
           retry
         else
-          Chef::Application.fatal!(
-            "Giving up, unable to delete #{new_resource.path} node!"
-          )
+          raise("Giving up, unable to delete #{new_resource.path} node!")
         end
       end
 
@@ -234,12 +228,10 @@ class Chef
       def http_response_validator(http_resp)
         return if http_resp.code.start_with?('20')
 
-        Chef::Application.fatal!(
-          "Something went wrong during operation on #{new_resource.path}\n"\
+        raise("Something went wrong during operation on #{new_resource.path}\n"\
           "HTTP response code: #{http_resp.code}\n"\
           "HTTP response body: #{http_resp.body}\n"\
-          'Please check error.log file to get more info.'
-        )
+          'Please check error.log file to get more info.')
       end
 
       def regular_diff

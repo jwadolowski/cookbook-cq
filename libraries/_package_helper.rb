@@ -26,7 +26,7 @@ module Cq
     def xmlify(str)
       REXML::Document.new(str)
     rescue => e
-      Chef::Application.fatal!("Can't serialize #{str} to XML: #{e}")
+      raise("Can't serialize #{str} to XML: #{e}")
     end
 
     def sleep_time(attempt)
@@ -60,9 +60,7 @@ module Cq
         sleep(t)
         retry
       else
-        Chef::Application.fatal!(
-          "Unable to fetch package list after #{max_attempts} attempts"
-        )
+        raise("Unable to fetch package list after #{max_attempts} attempts")
       end
     else
       resp.body
@@ -81,7 +79,7 @@ module Cq
         )
       end
     rescue => e
-      Chef::Application.fatal!(e.message)
+      raise(e.message)
     else
       packages
     end
@@ -174,9 +172,7 @@ module Cq
       if response['success']
         Chef::Log.debug("CRX Package Manager response: #{response}")
       else
-        Chef::Application.fatal!(
-          "Not successful package operation: #{response}"
-        )
+        raise("Not successful package operation: #{response}")
       end
     end
 
@@ -196,9 +192,7 @@ module Cq
         cmd.error!
         xmlify(cmd.stdout)
       rescue => e
-        Chef::Application.fatal!(
-          "Can't extract properties.xml from #{path} file: #{e}"
-        )
+        raise("Can't extract properties.xml from #{path} file: #{e}")
       end
     end
 
@@ -211,9 +205,7 @@ module Cq
       begin
         element = xml.elements[name]
       rescue => e
-        Chef::Application.fatal!(
-          "Can't extract #{name} from package object: #{e}"
-        )
+        raise("Can't extract #{name} from package object: #{e}")
       end
 
       if element.nil?

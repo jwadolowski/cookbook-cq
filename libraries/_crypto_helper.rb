@@ -80,7 +80,7 @@ module Cq
 
       Chef::Log.debug("JAR file successfully extracted:\n #{cmd.stdout}")
     rescue => e
-      Chef::Application.fatal!("Can't extract content out of JAR file: #{e}")
+      raise("Can't extract content out of JAR file: #{e}")
     end
 
     def jar_contents(jar)
@@ -93,7 +93,7 @@ module Cq
 
       cmd.stdout
     rescue => e
-      Chef::Application.fatal!("Can't list JAR file contents: #{e}")
+      raise("Can't list JAR file contents: #{e}")
     end
 
     # AEM 6.1:
@@ -109,9 +109,7 @@ module Cq
         }x
       ).flatten
 
-      Chef::Application.fatal!(
-        "Found #{libs}, but single JAR file is expected. Aborting!"
-      ) if libs.length != 1
+      raise("Found #{libs}, but single JAR file is expected. Aborting!") if libs.length != 1
 
       libs.first
     end
@@ -170,7 +168,7 @@ module Cq
 
       java_version
     rescue => e
-      Chef::Application.fatal!("Cannot disassemble #{filename} file: #{e}")
+      raise("Cannot disassemble #{filename} file: #{e}")
     end
 
     def jvm_version_changed?(filename)
@@ -235,11 +233,9 @@ module Cq
 
         # Crypto tmp dir should contain just a standalone jar file
         tmp_files = ::Dir[::File.join(crypto_tmp_dir, '*')]
-        Chef::Application.fatal!(
-          'Crypto tmp directory should contain only one CQ quickstart JAR '\
+        raise('Crypto tmp directory should contain only one CQ quickstart JAR '\
           "file. Found: #{tmp_files}. That's either a bug in CQ cookbook or "\
-          'something is wrong with your primary JAR file'
-        ) if tmp_files.length != 1
+          'something is wrong with your primary JAR file') if tmp_files.length != 1
         standalone_jar = tmp_files.first
 
         # Extract com.adobe.granite.crypto-x.y.z.jar file from the standalone
@@ -304,7 +300,7 @@ module Cq
 
       Chef::Log.debug('Decryptor successfully compiled')
     rescue => e
-      Chef::Application.fatal!("Compilation error: #{e}")
+      raise("Compilation error: #{e}")
     end
 
     # TODO: move to misc helper module, as the same has been defined in
@@ -372,7 +368,7 @@ module Cq
       if ::File.file?(key_path)
         ::File.read(key_path)
       else
-        Chef::Application.fatal!("#{key_path} doesn't exist!")
+        raise("#{key_path} doesn't exist!")
       end
     end
 
@@ -401,7 +397,7 @@ module Cq
       begin
         ::File.write(path, content)
       rescue => e
-        Chef::Application.fatal!("Can't write master key to #{path}: #{e}")
+        raise("Can't write master key to #{path}: #{e}")
       end
 
       uuid
@@ -450,18 +446,16 @@ module Cq
       Chef::Log.debug("Decryption error: #{e}")
       case cmd.exitstatus
       when 1
-        Chef::Application.fatal!("Wrong number of arguments: #{e}")
+        raise("Wrong number of arguments: #{e}")
       when 2
-        Chef::Application.fatal!("Error while reading master key: #{e}")
+        raise("Error while reading master key: #{e}")
       when 3
         Chef::Log.error("Error while decrypting #{str}")
         nil
       when 4
-        Chef::Application.fatal!(
-          "Error while initializing cipher with master key: #{e}"
-        )
+        raise("Error while initializing cipher with master key: #{e}")
       when 5
-        Chef::Application.fatal!("Master key file does not exist: #{e}")
+        raise("Master key file does not exist: #{e}")
       end
     end
 
@@ -474,9 +468,7 @@ module Cq
         'datum' => str
       )
 
-      Chef::Application.fatal!(
-        "Crypto console returned #{http_resp.code}!"
-      ) if http_resp.code != '200'
+      raise("Crypto console returned #{http_resp.code}!") if http_resp.code != '200'
 
       Chef::Log.debug("Crypto console response: #{http_resp.body}")
 

@@ -2,7 +2,7 @@
 # Cookbook:: cq
 # Recipe:: author
 #
-# Copyright:: (C) 2018 Jakub Wadolowski
+# Copyright:: (C) 2020 Jakub Wadolowski
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +17,40 @@
 # limitations under the License.
 #
 
-# Make sure that all prerequisites are in place
-# -----------------------------------------------------------------------------
 include_recipe 'cq::commons'
 
-# Create author instance
-# -----------------------------------------------------------------------------
 cq_instance 'CQ Author' do
   id 'author'
+end
+
+# -----------------------------------------------------------------------------
+# Define service resource for given cq_instance
+#
+# "service <daemon_name>" used to be defined within definition, so its scope
+# was global (definiton acts as compile time macro). Nowadays, cq_instance is a
+# custom resource, hence access to its internal (and dynamic) sub-resources is
+# not possible. Since many other resourcess notify service resource (e.g. in
+# order to restart AEM after CRX package deployment) it's been decided to
+# preserve global character of service resource and define it here.
+# -----------------------------------------------------------------------------
+daemon_name = cq_daemon_name('author')
+
+# Start the instance if it hasn't started yet
+service daemon_name do
+  supports status: true, restart: true
+
+  action [:start, :enable]
+
+  notifies :run, "cq_start_guard[#{daemon_name}]", :immediately
+end
+
+# Wait until CQ is fully up and running
+cq_start_guard daemon_name do
+  instance "http://localhost:#{node['cq']['author']['port']}"
+  path node['cq']['author']['healthcheck']['resource']
+  expected_code node['cq']['author']['healthcheck']['response_code']
+  expected_body node['cq']['author']['healthcheck']['response_body']
+  timeout node['cq']['service']['start_timeout']
+
+  action :nothing
 end

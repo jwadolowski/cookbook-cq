@@ -40,11 +40,7 @@ class Chef
 
       attr_accessor :healthcheck_params
 
-      def initialize(name, run_context = nil)
-        super
-
-        @resource_name = :cq_package
-        @allowed_actions = [
+      allowed_actions [
           :nothing,
           :upload,
           :install,
@@ -52,7 +48,13 @@ class Chef
           :uninstall,
           :delete,
         ]
-        @action = :nothing
+
+      resource_name :cq_package
+
+      default_action :nothing
+
+      def initialize(name, run_context = nil)
+        super
 
         @name = name
         @username = nil
@@ -70,65 +72,19 @@ class Chef
         @sleep_time = 10
       end
 
-      def name(arg = nil)
-        set_or_return(:name, arg, kind_of: String)
-      end
-
-      def username(arg = nil)
-        set_or_return(:username, arg, kind_of: String)
-      end
-
-      def password(arg = nil)
-        set_or_return(:password, arg, kind_of: String)
-      end
-
-      def instance(arg = nil)
-        set_or_return(:instance, arg, kind_of: String)
-      end
-
-      def source(arg = nil)
-        set_or_return(:source, arg, kind_of: String)
-      end
-
-      def http_user(arg = nil)
-        set_or_return(:http_user, arg, kind_of: String)
-      end
-
-      def http_pass(arg = nil)
-        set_or_return(:http_pass, arg, kind_of: String)
-      end
-
-      def recursive_install(arg = nil)
-        set_or_return(
-          :recursive_install,
-          arg,
-          kind_of: [TrueClass, FalseClass]
-        )
-      end
-
-      def rescue_mode(arg = nil)
-        set_or_return(:rescue_mode, arg, kind_of: [TrueClass, FalseClass])
-      end
-
-      def checksum(arg = nil)
-        set_or_return(:checksum, arg, kind_of: String)
-      end
-
-      def same_state_barrier(arg = nil)
-        set_or_return(:same_state_barrier, arg, kind_of: Integer)
-      end
-
-      def error_state_barrier(arg = nil)
-        set_or_return(:error_state_barrier, arg, kind_of: Integer)
-      end
-
-      def max_attempts(arg = nil)
-        set_or_return(:max_attempts, arg, kind_of: Integer)
-      end
-
-      def sleep_time(arg = nil)
-        set_or_return(:sleep_time, arg, kind_of: Integer)
-      end
+      property :username, String
+      property :password, String
+      property :instance, String
+      property :source, String
+      property :http_user, String
+      property :http_pass, String
+      property :recursive_install, [true, false]
+      property :rescue_mode, [true, false]
+      property :checksum, String
+      property :same_state_barrier, Integer
+      property :error_state_barrier, Integer
+      property :max_attempts, Integer
+      property :sleep_time, Integer
     end
   end
 end

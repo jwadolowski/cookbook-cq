@@ -29,7 +29,7 @@ module Cq
       uri.query_values = query
       uri.normalize
     rescue => e
-      Chef::Application.fatal!("Invalid URI: #{e}")
+      raise("Invalid URI: #{e}")
     end
 
     def json_to_hash(str)
@@ -37,7 +37,7 @@ module Cq
 
       JSON.parse(str)
     rescue => e
-      Chef::Application.fatal!("Unable to parse #{str} as JSON: #{e}")
+      raise("Unable to parse #{str} as JSON: #{e}")
     end
 
     def http_get(addr, path, user, password, query = nil)

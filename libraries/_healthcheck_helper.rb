@@ -118,10 +118,8 @@ module Cq
           node.default['cq']['http_read_timeout'] = current_timeout
         end
 
-        Chef::Application.fatal!(
-          "Cannot detect stable state after #{hc_params['max_attempts']} "\
-          'attempts!'
-        ) if i == hc_params['max_attempts']
+        raise("Cannot detect stable state after #{hc_params['max_attempts']} "\
+          'attempts!') if i == hc_params['max_attempts']
 
         Chef::Log.info(
           "[#{i}/#{hc_params['max_attempts']}] Next check of OSGi "\

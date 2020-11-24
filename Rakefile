@@ -29,7 +29,7 @@ end
 # -----------------------------------------------------------------------------
 namespace 'git' do
   desc 'Create new Git tag'
-  task :tag do
+  task tag: ['lint'] do
     sh "git tag -a v#{cookbook_version} -m \"v#{cookbook_version} release\""
   end
 
@@ -48,11 +48,8 @@ end
 namespace 'style' do
   require 'cookstyle'
   require 'rubocop/rake_task'
-  require 'foodcritic'
 
   RuboCop::RakeTask.new(:cookstyle)
-
-  FoodCritic::Rake::LintTask.new(:foodcritic)
 end
 
 # -----------------------------------------------------------------------------
@@ -70,12 +67,15 @@ end
 # -----------------------------------------------------------------------------
 # Main
 # -----------------------------------------------------------------------------
-desc 'Run linters (Foodcritic & Cookstyle)'
-task lint: ['style:foodcritic', 'style:cookstyle']
+desc 'Run linters'
+task lint: ['style:cookstyle']
 
 desc 'Release new cookbook version'
 task release: [
   'berkshelf:update', 'git:release', 'berkshelf:upload', 'stove:publish'
 ]
+
+desc 'Upload released cookbook to Chef Server'
+task upload: ['berkshelf:update', 'berkshelf:upload']
 
 task default: :release

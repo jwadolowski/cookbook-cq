@@ -20,6 +20,7 @@
 include Cq::HttpHelper
 
 resource_name :cq_clientlib_cache
+provides :cq_clientlib_cache
 
 property :instance, String, default: 'http://localhost:4502'
 property :username, String, default: 'admin'
@@ -73,9 +74,7 @@ action_class do
       sleep(t)
       retry
     else
-      Chef::Application.fatal!(
-        "Unable to #{action} clientlibs after #{max_attempts} attempts"
-      )
+      raise("Unable to #{action} clientlibs after #{max_attempts} attempts")
     end
   end
 end
