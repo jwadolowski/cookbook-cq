@@ -1,6 +1,6 @@
 ---
 <% chef_versions = %w( 16 ) %>
-<% platforms = %w( centos-7 ) %>
+<% platforms = %w( centos-6 centos-7 ) %>
 <% aem_versions = %w( 6.1.0 6.2.0 6.3.0 6.4.0 ) %>
 
 driver:
@@ -67,13 +67,13 @@ suites:
   - name: aem<%= short_ver %>-author
     run_list:
       - recipe[cq::author]
-      - recipe[cq<%= short_ver %>::author_cq_package]
-      - recipe[cq<%= short_ver %>::author_cq_osgi_config]
-      - recipe[cq<%= short_ver %>::author_cq_osgi_bundle]
-      - recipe[cq<%= short_ver %>::author_cq_osgi_component]
-      - recipe[cq<%= short_ver %>::author_cq_user]
-      - recipe[cq<%= short_ver %>::author_cq_jcr]
-      - recipe[cq<%= short_ver %>::author_cq_clientlib_cache]
+      # - recipe[cq<%= short_ver %>::author_cq_package]
+      # - recipe[cq<%= short_ver %>::author_cq_osgi_config]
+      # - recipe[cq<%= short_ver %>::author_cq_osgi_bundle]
+      # - recipe[cq<%= short_ver %>::author_cq_osgi_component]
+      # - recipe[cq<%= short_ver %>::author_cq_user]
+      # - recipe[cq<%= short_ver %>::author_cq_jcr]
+      # - recipe[cq<%= short_ver %>::author_cq_clientlib_cache]
     attributes:
       cq:
         version: <%= v %>
