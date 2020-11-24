@@ -1,0 +1,104 @@
+#!/bin/sh
+#
+# <%= "#{@daemon_name} Startup script for the #{@full_name} instance"%>
+#
+# chkconfig:   - 20 80
+# description: Adobe CQ is a Java-based web content management system
+
+### BEGIN INIT INFO
+# Provides: <%= @daemon_name %>
+# Required-Start: $local_fs $network
+# Required-Stop: $local_fs $network
+# Short-Description: start and stop <%= @full_name %>
+# Description: Adobe CQ is a Java-based web content management system
+### END INIT INFO
+
+# Please make sure that the following file exists: <%= @conf_file %>
+
+PROG=<%= @daemon_name %>
+CQ_CONF_FILE=<%= @conf_file %>
+
+# -----------------------------------------------------------------------------
+# do not configure below this point
+# -----------------------------------------------------------------------------
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Soruce CQ configuration file
+[ -e $CQ_CONF_FILE ] && . $CQ_CONF_FILE
+
+# Add JAVA_HOME to the PATH variable if necessary
+if [ -n "$JAVA_HOME" ]; then
+    EXP_PATH="export PATH=\"$JAVA_HOME/bin:$PATH\"; "
+fi
+
+# PID file
+PID_DIR="$CQ_HOME/crx-quickstart/conf"
+PID_FILE="$PID_DIR/cq.pid"
+
+# Log directory
+LOG_DIR="$CQ_HOME/crx-quickstart/logs"
+
+# Execute path
+EXEC=". $CQ_CONF_FILE; $EXP_PATH bash $CQ_HOME/crx-quickstart/bin/start 2>$LOG_DIR/start_error.log > $LOG_DIR/start.log"
+
+# Kill delay
+KILL_DELAY=<%= @kill_delay %>
+
+lockfile=/var/lock/subsys/$PROG
+
+start() {
+    [ -x $CQ_HOME/crx-quickstart/bin/start ] || exit 5
+    [ -f $CQ_CONF_FILE ] || exit 6
+    echo -n $"Starting $PROG: "
+    daemon --user=$CQ_USER --pidfile=$PID_FILE --check $PROG $EXEC
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $PROG: "
+    killproc -p $PID_FILE -d $KILL_DELAY $PROG
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    stop
+    sleep <%= @restart_sleep %>
+    start
+}
+
+rh_status() {
+    status -p $PID_FILE $PROG
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
+
+case "$1" in
+    start)
+        rh_status_q && exit 0
+        $1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    restart)
+        $1
+        ;;
+    status)
+        rh_status
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart}"
+        exit 2
+esac
+exit $?

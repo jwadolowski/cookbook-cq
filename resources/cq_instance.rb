@@ -110,6 +110,28 @@ action :install do
   end
 
   # ---------------------------------------------------------------------------
+  # Render SysVinit start script
+  # ---------------------------------------------------------------------------
+  template "/etc/init.d/#{daemon_name}" do
+    extend Cq::SystemUtils
+
+    owner 'root'
+    group 'root'
+    mode '0755'
+    cookbook node['cq']['init_template_cookbook']
+    source 'etc/init.d/cq.init.erb'
+    variables(
+      daemon_name: daemon_name,
+      full_name: "Adobe CQ #{node['cq']['version']} #{new_resource.id.to_s.capitalize}",
+      conf_file: ::File.join(instance_conf_dir, "#{daemon_name}.conf"),
+      kill_delay: node['cq']['service']['kill_delay'],
+      restart_sleep: node['cq']['service']['restart_sleep']
+    )
+
+    only_if { rhel6? || amazon_linux1? }
+  end
+
+  # ---------------------------------------------------------------------------
   # Render systemd start script
   # ---------------------------------------------------------------------------
   template "/etc/systemd/system/#{daemon_name}.service" do
@@ -128,10 +150,26 @@ action :install do
       fd_limit: node['cq']['limits']['file_descriptors']
     )
 
-    only_if { rhel7? || rhel8? || amazon_linux? }
+    only_if { rhel7? || rhel8? || amazon_linux2? }
 
+    # Delete SysVinit service before rendering systemd start script
+    notifies :run, "execute[chkconfig-delete-#{daemon_name}]", :before
     notifies :run, "execute[systemd-verify-#{daemon_name}]", :immediately
     notifies :run, 'execute[systemd-reload]', :immediately
+  end
+
+  execute "chkconfig-delete-#{daemon_name}" do
+    command "chkconfig --del #{daemon_name}"
+
+    action :nothing
+
+    only_if { ::File.exist?("/etc/init.d/#{daemon_name}") }
+
+    notifies :delete, "file[/etc/init.d/#{daemon_name}]", :immediately
+  end
+
+  file "/etc/init.d/#{daemon_name}" do
+    action :nothing
   end
 
   execute "systemd-verify-#{daemon_name}" do
@@ -171,6 +209,44 @@ action :install do
     group node['cq']['group']
     mode '0644'
     cookbook node['cq']['conf_template_cookbook']
+    source 'cq-init.conf.erb'
+    variables(
+      lazy do
+        {
+          port: node['cq'][new_resource.id]['port'],
+          jmx_ip: node['cq'][new_resource.id]['jmx_ip'],
+          jmx_port: node['cq'][new_resource.id]['jmx_port'],
+          debug_ip: node['cq'][new_resource.id]['debug_ip'],
+          debug_port: node['cq'][new_resource.id]['debug_port'],
+          instance_home: instance_home,
+          run_mode: node['cq'][new_resource.id]['run_mode'],
+          min_heap: node['cq'][new_resource.id]['jvm']['min_heap'],
+          max_heap: node['cq'][new_resource.id]['jvm']['max_heap'],
+          max_perm_size: node['cq'][new_resource.id]['jvm']['max_perm_size'],
+          code_cache: node['cq'][new_resource.id]['jvm']['code_cache_size'],
+          jvm_general_opts: node['cq'][new_resource.id]['jvm']['general_opts'],
+          jvm_code_cache_opts: node['cq'][new_resource.id]['jvm']['code_cache_opts'],
+          jvm_gc_opts: node['cq'][new_resource.id]['jvm']['gc_opts'],
+          jvm_jmx_opts: node['cq'][new_resource.id]['jvm']['jmx_opts'],
+          jvm_debug_opts: node['cq'][new_resource.id]['jvm']['debug_opts'],
+          jvm_crx_opts: node['cq'][new_resource.id]['jvm']['crx_opts'],
+          jvm_extra_opts: node['cq'][new_resource.id]['jvm']['extra_opts'],
+        }
+      end
+    )
+
+    only_if { rhel6? || amazon_linux1? }
+
+    notifies :restart, "service[#{daemon_name}]", :immediately
+  end
+
+  template "#{instance_conf_dir}/#{daemon_name}.conf" do
+    extend Cq::SystemUtils
+
+    owner node['cq']['user']
+    group node['cq']['group']
+    mode '0644'
+    cookbook node['cq']['conf_template_cookbook']
     source 'cq-systemd.conf.erb'
     variables(
       lazy do
@@ -195,7 +271,7 @@ action :install do
       end
     )
 
-    only_if { rhel7? || rhel8? || amazon_linux? }
+    only_if { rhel7? || rhel8? || amazon_linux2? }
 
     notifies :restart, "service[#{daemon_name}]", :immediately
     # Theoretically service restart should be enough, however notification

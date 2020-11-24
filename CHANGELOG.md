@@ -1,3 +1,8 @@
+# v2.1.0 (2020-11-24)
+
+* CentOS/RHEL 6.x support restored
+* Better Amazon Linux support
+
 # v2.0.1 (2020-11-24)
 
 * Cleanup of SysVInit leftovers
