@@ -39,7 +39,7 @@ module Cq
 
     def amazon_linux1?
       node['platform_family'] == 'amazon' && node['platform'] == 'amazon' &&
-        node['platform_version'].between?(2013,2018)
+        node['platform_version'].between?(2013, 2018)
     end
 
     def amazon_linux2?
