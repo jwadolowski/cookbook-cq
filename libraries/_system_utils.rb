@@ -19,12 +19,6 @@
 
 module Cq
   module SystemUtils
-    def rhel6?
-      node['platform_family'] == 'rhel' &&
-        (node['platform'] == 'centos' || node['platform'] == 'redhat') &&
-        node['platform_version'].to_i == 6
-    end
-
     def rhel7?
       node['platform_family'] == 'rhel' &&
         (node['platform'] == 'centos' || node['platform'] == 'redhat') &&
@@ -33,8 +27,8 @@ module Cq
 
     def rhel8?
       node['platform_family'] == 'rhel' &&
-      (node['platform'] == 'centos' || node['platform'] == 'redhat') &&
-      node['platform_version'].to_i == 8
+        (node['platform'] == 'centos' || node['platform'] == 'redhat') &&
+        node['platform_version'].to_i == 8
     end
 
     def amazon_linux?

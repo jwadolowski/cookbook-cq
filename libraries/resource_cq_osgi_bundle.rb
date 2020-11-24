@@ -25,12 +25,14 @@ class Chef
       attr_accessor :info
       attr_accessor :healthcheck_params
 
+      allowed_actions [:nothing, :stop, :start]
+
+      resource_name :cq_osgi_bundle
+
+      default_action :nothing
+
       def initialize(name, run_context = nil)
         super
-
-        @resource_name = :cq_osgi_bundle
-        @allowed_actions = [:nothing, :stop, :start]
-        @action = :nothing
 
         @symbolic_name = name
         @username = nil
@@ -43,41 +45,15 @@ class Chef
         @sleep_time = 3
       end
 
-      def symbolic_name(arg = nil)
-        set_or_return(:symbolic_name, arg, kind_of: String)
-      end
-
-      def username(arg = nil)
-        set_or_return(:username, arg, kind_of: String)
-      end
-
-      def password(arg = nil)
-        set_or_return(:password, arg, kind_of: String)
-      end
-
-      def instance(arg = nil)
-        set_or_return(:instance, arg, kind_of: String)
-      end
-
-      def rescue_mode(arg = nil)
-        set_or_return(:rescue_mode, arg, kind_of: [TrueClass, FalseClass])
-      end
-
-      def same_state_barrier(arg = nil)
-        set_or_return(:same_state_barrier, arg, kind_of: Integer)
-      end
-
-      def error_state_barrier(arg = nil)
-        set_or_return(:error_state_barrier, arg, kind_of: Integer)
-      end
-
-      def max_attempts(arg = nil)
-        set_or_return(:max_attempts, arg, kind_of: Integer)
-      end
-
-      def sleep_time(arg = nil)
-        set_or_return(:sleep_time, arg, kind_of: Integer)
-      end
+      property :symbolic_name, String
+      property :username, String
+      property :password, String
+      property :instance, String
+      property :rescue_mode, [true, false]
+      property :same_state_barrier, Integer
+      property :error_state_barrier, Integer
+      property :max_attempts, Integer
+      property :sleep_time, Integer
     end
   end
 end

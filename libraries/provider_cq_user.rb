@@ -24,10 +24,6 @@ class Chef
 
       provides :cq_user if Chef::Provider.respond_to?(:provides)
 
-      def whyrun_supported?
-        true
-      end
-
       def load_current_resource
         @current_resource = Chef::Resource::CqUser.new(new_resource.id)
 
@@ -47,10 +43,8 @@ class Chef
         # Verify whether given user exists
         @current_resource.exist = exist?(current_resource.query_result)
 
-        Chef::Application.fatal!(
-          "admin user does not exist! It's either a bug in this cookbook or "\
-          'your AEM instance behaves really odd'
-        ) if current_resource.id == 'admin' && !current_resource.exist
+        raise("admin user does not exist! It's either a bug in this cookbook or "\
+          'your AEM instance behaves really odd') if current_resource.id == 'admin' && !current_resource.exist
 
         populate_user_data(
           new_resource.username,
@@ -58,7 +52,7 @@ class Chef
         ) if current_resource.exist
       end
 
-      def action_modify
+      action :modify do
         if current_resource.exist
           modify_user
         else
@@ -111,39 +105,37 @@ class Chef
           return p if http_resp.code == '200'
         end
 
-        Chef::Application.fatal!(
-          'Unable to determine valid admin credentials! The following '\
+        raise('Unable to determine valid admin credentials! The following '\
           "user/pass pairs were verified: \n"\
           "* admin / <password>\n"\
           "* admin / <old_password>\n"\
-          '* admin / admin'
-        )
+          '* admin / admin')
       end
 
       def resource_validation
         if new_resource.id == 'admin'
-          begin
+          unless new_resource.user_password.nil?
             Chef::Log.warn(
               'user_password is not supported by admin user and will be '\
               'ignored'
             )
             @new_resource.user_password(nil)
-          end unless new_resource.user_password.nil?
+          end
 
-          begin
+          if new_resource.enabled == false
             Chef::Log.warn(
               'enabled is not supported by admin user and will be ignored'
             )
             @new_resource.enabled(true)
-          end if new_resource.enabled == false
+          end
         else
-          begin
+          unless new_resource.old_password.nil?
             Chef::Log.warn(
               'old_password is not supported by non-admin users and will be '\
               'ignored'
             )
             @new_resource.old_password(nil)
-          end unless new_resource.old_password.nil?
+          end
         end
       end
 
@@ -201,9 +193,7 @@ class Chef
           sleep(t)
           retry
         else
-          Chef::Application.fatal!(
-            "Giving up, user query failed after #{max_attempts} attempts!"
-          )
+          raise("Giving up, user query failed after #{max_attempts} attempts!")
         end
       else
         json_to_hash(resp.body)
@@ -216,10 +206,8 @@ class Chef
         when 1
           true
         else
-          Chef::Application.fatal!(
-            'Query result set is neither 0 nor 1, which may indicate that '\
-            'more than a single user with given id was found'
-          )
+          raise('Query result set is neither 0 nor 1, which may indicate that '\
+            'more than a single user with given id was found')
         end
       end
 
@@ -247,7 +235,7 @@ class Chef
           /^\{(?<algo>.+)\}(?<salt>\w+)-(?<iter>(\d+)-)?(?<hash>\w+)$/
         )
 
-        Chef::Application.fatal!('Unsupported hash format!') unless hash_params
+        raise('Unsupported hash format!') unless hash_params
 
         hash_params
       end
@@ -335,7 +323,8 @@ class Chef
           'aboutMe' => 'about',
         }
 
-        profile.keys.each do |k|
+        # .dup to avoid "can't add a new key into hash during iteration"
+        profile.dup.each_key do |k|
           profile[mappings[k]] = profile.delete(k) if mappings[k]
         end
 
@@ -407,7 +396,8 @@ class Chef
 
         profile = profile_diff
 
-        profile.keys.each do |k|
+        # .dup to avoid "can't add a new key into hash during iteration"
+        profile.dup.each_key do |k|
           profile[mappings[k]] = profile.delete(k) if mappings[k]
         end
 

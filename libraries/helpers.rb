@@ -17,6 +17,7 @@
 # limitations under the License.
 #
 
+# -----------------------------------------------------------------------------
 # Get filename from given URI
 # -----------------------------------------------------------------------------
 def cq_jarfile(uri)
@@ -25,18 +26,21 @@ def cq_jarfile(uri)
   Pathname.new(URI.parse(uri).path).basename.to_s
 end
 
+# -----------------------------------------------------------------------------
 # Get CQ instance home for given mode (author/publish)
 # -----------------------------------------------------------------------------
 def cq_instance_home(home_dir, mode)
   "#{home_dir}/#{mode}"
 end
 
+# -----------------------------------------------------------------------------
 # Get CQ conf dir
 # -----------------------------------------------------------------------------
 def cq_instance_conf_dir(home_dir, mode)
   "#{cq_instance_home(home_dir, mode)}/crx-quickstart/conf"
 end
 
+# -----------------------------------------------------------------------------
 # Get different form of given CQ version
 # -----------------------------------------------------------------------------
 def cq_version(type)
@@ -50,6 +54,7 @@ def cq_version(type)
   end
 end
 
+# -----------------------------------------------------------------------------
 # Create deamon name for given CQ instance type
 # -----------------------------------------------------------------------------
 def cq_daemon_name(mode)

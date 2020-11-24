@@ -47,14 +47,10 @@ module Cq
     def config_list(addr, user, password)
       html = http_get(addr, '/system/console/configMgr', user, password)
 
-      Chef::Application.fatal!(
-        "Can't download OSGi configurations from AEM!"
-      ) unless html.is_a?(Net::HTTPResponse)
+      raise("Can't download OSGi configurations from AEM!") unless html.is_a?(Net::HTTPResponse)
 
-      Chef::Application.fatal!(
-        "Can't download available OSGi configuratons! Response code: "\
-        "#{html.code}, response body: #{html.body}"
-      ) if html.code != '200'
+      raise("Can't download available OSGi configuratons! Response code: "\
+        "#{html.code}, response body: #{html.body}") if html.code != '200'
 
       json_to_hash(html.body[/configData\ = (.+);/, 1])
     end
@@ -130,10 +126,8 @@ module Cq
       path = '/system/console/configMgr/' + pid
       json = http_post(addr, path, user, password, {})
 
-      Chef::Application.fatal!(
-        "Can't download #{pid} configuration! Response code: #{json.code}, "\
-        "response body: #{json.body}"
-      ) if json.code != '200'
+      raise("Can't download #{pid} configuration! Response code: #{json.code}, "\
+        "response body: #{json.body}") if json.code != '200'
 
       json_to_hash(json.body)
     end
@@ -273,9 +267,7 @@ module Cq
     end
 
     def validate_response(http_resp, expected_code)
-      Chef::Application.fatal!(
-        "Got #{http_resp.code}, but expected #{expected_code}"
-      ) if http_resp.code != expected_code
+      raise("Got #{http_resp.code}, but expected #{expected_code}") if http_resp.code != expected_code
     end
   end
 end

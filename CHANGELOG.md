@@ -1,3 +1,13 @@
+# v2.0.0 (2020-11-24)
+
+* Chef 16.x support
+* Older Chef Infra Client versions are no longer supported
+* All references to `foodcritic` removed (deprecated, replaced by `cookstyle`)
+* CentOS 6.x / SysVInit support removed
+* Java cookbook pinned to 7.0.0 in `Berksfile` to enforce Oracle JDK compatibility
+* `cq_instance` definition converted into custom resource
+* Various code style fixes
+
 # v1.3.0 (2020-05-13)
 
 * [#75](https://github.com/jwadolowski/cookbook-cq/pull/78) RHEL/CentOS 8 Support

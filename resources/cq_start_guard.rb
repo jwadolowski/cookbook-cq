@@ -20,6 +20,7 @@
 include Cq::HttpHelper
 
 resource_name :cq_start_guard
+provides :cq_start_guard
 
 property :instance, String, default: 'http://localhost:4502'
 property :path, String, default: '/libs/granite/core/content/login.html'
@@ -72,9 +73,7 @@ action :run do
       sleep(new_resource.interval)
       retry
     else
-      Chef::Application.fatal!(
-        "Chef run aborted, as CQ start took more than #{new_resource.timeout}s"
-      )
+      raise("Chef run aborted, as CQ start took more than #{new_resource.timeout}s")
     end
   ensure
     # Restore original HTTP timeout

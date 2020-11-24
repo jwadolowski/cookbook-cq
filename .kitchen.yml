@@ -1,6 +1,6 @@
 ---
-<% chef_versions = %w( 13 14 ) %>
-<% platforms = %w( centos-6 centos-7 ) %>
+<% chef_versions = %w( 16 ) %>
+<% platforms = %w( centos-7 ) %>
 <% aem_versions = %w( 6.1.0 6.2.0 6.3.0 6.4.0 ) %>
 
 driver:

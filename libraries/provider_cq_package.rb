@@ -233,7 +233,7 @@ class Chef
         )
       end
 
-      def action_upload
+      action :upload do
         if new_resource.uploaded
           Chef::Log.info("Package #{new_resource.name} is already uploaded")
         else
@@ -243,7 +243,7 @@ class Chef
         end
       end
 
-      def action_install
+      action :install do
         if new_resource.uploaded
           if new_resource.installed
             Chef::Log.info("Package #{new_resource.name} is already installed")
@@ -257,7 +257,7 @@ class Chef
         end
       end
 
-      def action_deploy
+      action :deploy do
         if new_resource.uploaded
           if new_resource.installed
             Chef::Log.info(
@@ -281,7 +281,7 @@ class Chef
         end
       end
 
-      def action_uninstall
+      action :uninstall do
         if new_resource.installed
           converge_by("Uninstall #{new_resource.name}") do
             package_uninstall(
@@ -310,7 +310,7 @@ class Chef
         end
       end
 
-      def action_delete
+      action :delete do
         if new_resource.uploaded
           converge_by("Delete #{new_resource.name}") do
             package_delete(

@@ -24,10 +24,6 @@ class Chef
 
       provides :cq_osgi_config if Chef::Provider.respond_to?(:provides)
 
-      def whyrun_supported?
-        true
-      end
-
       def load_current_resource
         @current_resource = Chef::Resource::CqOsgiConfig.new(new_resource.pid)
 
@@ -107,7 +103,7 @@ class Chef
             new_resource.properties
           )
         else
-          Chef::Application.fatal!("#{new_resource.pid} PID does NOT exist!")
+          raise("#{new_resource.pid} PID does NOT exist!")
         end
       end
 
@@ -199,9 +195,7 @@ class Chef
             "Fingerprint groups: #{current_resource.fingerprint_groups}"
           )
         else
-          Chef::Application.fatal!(
-            "#{new_resource.factory_pid} PID does NOT exist!"
-          )
+          raise("#{new_resource.factory_pid} PID does NOT exist!")
         end
       end
 
@@ -433,12 +427,10 @@ class Chef
             delete_redundant_instances(candidates[0..count - 1])
             update_existing_instances(candidates[count..-1], diff)
           else
-            Chef::Application.fatal!(
-              "Expected #{new_resource.count} #{new_resource.factory_pid} "\
+            raise("Expected #{new_resource.count} #{new_resource.factory_pid} "\
               "instance(s), but found #{candidates.length} possible "\
               'candidates. enforce_count is off, so please either turn it '\
-              'on or update unique_fields property'
-            )
+              'on or update unique_fields property')
           end
         end
       end
@@ -453,12 +445,10 @@ class Chef
             count = copies.length - new_resource.count
             delete_redundant_instances(copies[0..count - 1])
           else
-            Chef::Application.fatal!(
-              "Expected #{new_resource.count} #{new_resource.factory_pid} "\
+            raise("Expected #{new_resource.count} #{new_resource.factory_pid} "\
               "instance(s), but found #{copies.length} of them. "\
               'enforce_count is off, so please either turn it on to '\
-              'get rid of redundant configs or update unique_fields property'
-            )
+              'get rid of redundant configs or update unique_fields property')
           end
         end
       end
@@ -484,13 +474,11 @@ class Chef
             align_same_property_instances(candidates, diff)
           end
         else
-          Chef::Application.fatal!(
-            'Given set of unique fields has a few similar instances: '\
+          raise('Given set of unique fields has a few similar instances: '\
             "#{candidates}. Unfortunately, even though they have the "\
             "same number of different properties, it's not possible to "\
             'determine which ones of them should be taken into '\
-            'consideration. Please redefine your unique properties'
-          )
+            'consideration. Please redefine your unique properties')
         end
       end
 
@@ -563,7 +551,7 @@ class Chef
       # Actions
       # -----------------------------------------------------------------------
 
-      def action_create
+      action :create do
         if new_resource.factory_pid
           create_factory_config
         else
@@ -571,7 +559,7 @@ class Chef
         end
       end
 
-      def action_delete
+      action :delete do
         if new_resource.factory_pid
           delete_factory_config
         else
