@@ -62,12 +62,12 @@ module Cq
 
       rescue JSON::ParserError
         {
-          "id": "-1",
-          "name": pid,
-          "state": "undefined",
-          "stateRaw": -1,
-          "pid": pid,
-          "props": []
+          "id" => "-1",
+          "name" => pid,
+          "state" => "undefined",
+          "stateRaw" => -1,
+          "pid" => pid,
+          "props" => []
         }
     end
 
