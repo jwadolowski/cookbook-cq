@@ -1,6 +1,7 @@
 # v1.3.1 (2021-07-29)
 
 * Prevent runtime failures after OSGi component state change (invalid response from AEM)
+* `Rakefile` changes backported from `master`
 
 # v1.3.0 (2020-05-13)
 
