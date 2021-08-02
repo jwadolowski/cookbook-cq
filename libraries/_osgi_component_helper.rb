@@ -33,8 +33,9 @@ module Cq
       list['data'].detect { |c| c['pid'] == pid }
     end
 
-    # OSGi console may returun non-JSON response when component operation is
-    # still in progress, i.e.
+    # OSGi console may return 404 status code with plain HTML response when
+    # component operation is in progress or its status changed to 'disabled'
+    # (obeserved on AEM 6.2), i.e.
     #
     # <html>
     #     <head>
@@ -48,6 +49,11 @@ module Cq
     #         <hr /><i><small>Powered by Jetty://</small></i>
     #     </body>
     # </html>
+    #
+    # To mitigate that the status fetch process was redesigned into 2 phases:
+    # * get component JSON from /system/console/components/<PID>.json
+    # * if above ended up with 404/non-JSON response then try to get the status
+    #   out of component list
     def component_get(addr, user, password, pid)
       require 'json'
 
@@ -60,15 +66,16 @@ module Cq
         component_info(list, pid)
       end
 
-      rescue JSON::ParserError
-        {
-          "id" => "-1",
-          "name" => pid,
-          "state" => "undefined",
-          "stateRaw" => -1,
-          "pid" => pid,
-          "props" => []
-        }
+    rescue JSON::ParserError
+      # Get component info from the global list or fallback to undefined state
+      component_info(component_list(addr, user, password), pid) || {
+        "id" => "-1",
+        "name" => pid,
+        "state" => "undefined",
+        "stateRaw" => -1,
+        "pid" => pid,
+        "props" => []
+      }
     end
 
     # Executes defined operation on given component
@@ -89,8 +96,7 @@ module Cq
       # Check if POST request was successful
       if http_resp.code != '200'
         Chef::Log.error(
-          "OSGi component action ended with #{http_resp.code} code (expected "\
-          "200) and #{http_resp.body} body"
+          "OSGi component action ended with #{http_resp.code} code (expected 200) and #{http_resp.body} body"
         )
         return false
       end
