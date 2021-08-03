@@ -1,3 +1,8 @@
+# v1.3.1 (2021-08-03)
+
+* Prevent runtime failures after OSGi component state change (invalid response from AEM)
+* `Rakefile` changes backported from `master`
+
 # v1.3.0 (2020-05-13)
 
 * [#75](https://github.com/jwadolowski/cookbook-cq/pull/78) RHEL/CentOS 8 Support

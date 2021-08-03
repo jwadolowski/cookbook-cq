@@ -33,13 +33,49 @@ module Cq
       list['data'].detect { |c| c['pid'] == pid }
     end
 
+    # OSGi console may return 404 status code with plain HTML response when
+    # component operation is in progress or its status changed to 'disabled'
+    # (obeserved on AEM 6.2), i.e.
+    #
+    # <html>
+    #     <head>
+    #         <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1"/>
+    #         <title>Error 404 </title>
+    #     </head>
+    #     <body>
+    #         <h2>HTTP ERROR: 404</h2>
+    #         <p>Problem accessing /system/console/components/[PID].json Reason:
+    #         <pre>    Not Found</pre></p>
+    #         <hr /><i><small>Powered by Jetty://</small></i>
+    #     </body>
+    # </html>
+    #
+    # To mitigate that the status fetch process was redesigned into 2 phases:
+    # * get component JSON from /system/console/components/<PID>.json
+    # * if above ended up with 404/non-JSON response then try to get the status
+    #   out of component list
     def component_get(addr, user, password, pid)
-      list = json_to_hash(
-        http_get(
-          addr, "/system/console/components/#{pid}.json", user, password
-        ).body
-      )
-      component_info(list, pid)
+      require 'json'
+
+      resp_body = http_get(
+        addr, "/system/console/components/#{pid}.json", user, password
+      ).body
+
+      if JSON.parse(resp_body)
+        list = json_to_hash(resp_body)
+        component_info(list, pid)
+      end
+
+    rescue JSON::ParserError
+      # Get component info from the global list or fallback to undefined state
+      component_info(component_list(addr, user, password), pid) || {
+        "id" => "-1",
+        "name" => pid,
+        "state" => "undefined",
+        "stateRaw" => -1,
+        "pid" => pid,
+        "props" => []
+      }
     end
 
     # Executes defined operation on given component
@@ -60,8 +96,7 @@ module Cq
       # Check if POST request was successful
       if http_resp.code != '200'
         Chef::Log.error(
-          "OSGi component action ended with #{http_resp.code} code (expected "\
-          "200) and #{http_resp.body} body"
+          "OSGi component action ended with #{http_resp.code} code (expected 200) and #{http_resp.body} body"
         )
         return false
       end
@@ -80,8 +115,7 @@ module Cq
         sleep hc_params['sleep_time']
 
         Chef::Log.error(
-          "Expected #{expected_state} state, but got #{info['state']} after "\
-          "#{max_checks} checks"
+          "Expected #{expected_state} state, but got #{info['state']} after #{max_checks} checks"
         ) if i == max_checks - 1
       end
 
