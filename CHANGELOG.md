@@ -1,3 +1,7 @@
+# v2.1.1 (2021-08-03)
+
+* [#84](https://github.com/jwadolowski/cookbook-cq/pull/84) Prevent runtime failures after OSGi component state change (invalid response from AEM)
+
 # v2.1.0 (2020-11-24)
 
 * CentOS/RHEL 6.x support restored
